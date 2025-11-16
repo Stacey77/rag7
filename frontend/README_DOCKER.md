@@ -14,8 +14,10 @@ This document provides instructions for running the RAG7 application using Docke
 From the root directory of the project, run:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
+
+**Note:** If you have an older version of Docker Compose, use `docker-compose` (with a hyphen) instead of `docker compose`.
 
 This will build and start three services:
 - **api**: Django REST API backend (port 8000)
@@ -26,12 +28,14 @@ The first build may take several minutes. Subsequent starts will be faster.
 
 ### 2. Create a Django Superuser
 
-In a new terminal, while the stack is running, create a superuser account:
+In a new terminal, while the stack is running, run the database migrations and create a superuser account:
 
 ```bash
-docker-compose exec api python manage.py migrate
-docker-compose exec api python manage.py createsuperuser
+docker compose exec api python manage.py migrate
+docker compose exec api python manage.py createsuperuser
 ```
+
+**Note:** If using older Docker Compose, use `docker-compose` instead of `docker compose`.
 
 Follow the prompts to create a username and password. You can use simple credentials for local development (e.g., username: `admin`, password: `admin`).
 
@@ -99,13 +103,13 @@ The application uses the following environment variables (configured in `docker-
 To stop all services:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 To stop and remove all data (including the database):
 
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 ## Troubleshooting
@@ -119,8 +123,8 @@ If you see port binding errors, ensure ports 3000, 8000, and 5432 are not in use
 If the API can't connect to the database, try:
 
 ```bash
-docker-compose down
-docker-compose up --build
+docker compose down
+docker compose up --build
 ```
 
 ### Frontend Hot Reload Not Working
@@ -128,7 +132,7 @@ docker-compose up --build
 The `CHOKIDAR_USEPOLLING=true` environment variable should enable hot reload. If it's still not working, restart the frontend service:
 
 ```bash
-docker-compose restart frontend
+docker compose restart frontend
 ```
 
 ### Permission Issues with Media Files
