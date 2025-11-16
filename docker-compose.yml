@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # LangFlow container for visual flow building
+  langflow:
+    build:
+      context: ./langflow
+      dockerfile: Dockerfile
+    container_name: epic-langflow
+    ports:
+      - "7860:7860"
+    volumes:
+      - langflow_data:/app/langflow
+    environment:
+      - LANGFLOW_DATABASE_URL=sqlite:///./langflow.db
+    networks:
+      - epic-network
+    restart: unless-stopped
+
+  # FastAPI Backend for flow management and execution
+  backend:
+    build:
+      context: ./langflow-backend
+      dockerfile: Dockerfile
+    container_name: epic-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./langflow-backend/flows:/app/flows
+    environment:
+      - LANGFLOW_HOST=langflow
+      - LANGFLOW_PORT=7860
+    depends_on:
+      - langflow
+    networks:
+      - epic-network
+    restart: unless-stopped
+
+  # React Web Client
+  web-client:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    container_name: epic-web-client
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - epic-network
+    restart: unless-stopped
+
+volumes:
+  langflow_data:
+    driver: local
+
+networks:
+  epic-network:
+    driver: bridge
