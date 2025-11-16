@@ -62,9 +62,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Flows storage directory
-FLOWS_DIR = Path("/app/flows")
-FLOWS_DIR.mkdir(parents=True, exist_ok=True)
+# Flows storage directory (configurable via environment variable)
+FLOWS_DIR = Path(os.getenv("FLOWS_DIR", "/app/flows"))
+try:
+    FLOWS_DIR.mkdir(parents=True, exist_ok=True)
+except PermissionError:
+    # Fallback to local directory if /app is not writable
+    FLOWS_DIR = Path("./flows")
+    FLOWS_DIR.mkdir(parents=True, exist_ok=True)
+    logger.warning(f"⚠️  Using fallback flows directory: {FLOWS_DIR.absolute()}")
 
 # Pydantic models
 class FlowData(BaseModel):
