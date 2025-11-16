@@ -58,7 +58,7 @@ Follow the prompts to enter:
 2. A modal form will appear with the following fields:
    - **Full Name** (required): Enter the candidate's full name
    - **Email** (required): Enter a valid email address
-   - **Applied Role** (required): Enter the job role (e.g., "Software Engineer")
+   - **Applied Role** (optional): Enter the job role (e.g., "Software Engineer")
    - **Resume**: Upload a PDF, DOC, DOCX, or TXT file (optional)
 3. Click **"Create Candidate"** to submit
 4. The modal will close and the new candidate will appear at the top of the list
