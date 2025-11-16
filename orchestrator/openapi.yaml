@@ -1,0 +1,260 @@
+openapi: 3.0.0
+info:
+  title: FortFail Orchestrator API
+  description: Central orchestrator for FortFail backup and restore system
+  version: 0.1.0-poc
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TokenRequest:
+      type: object
+      required:
+        - registration_secret
+      properties:
+        registration_secret:
+          type: string
+        agent_id:
+          type: string
+
+    TokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        expires_in:
+          type: integer
+
+    SnapshotMetadata:
+      type: object
+      required:
+        - id
+        - agent_id
+        - checksum
+        - size
+      properties:
+        id:
+          type: string
+        agent_id:
+          type: string
+        checksum:
+          type: string
+        size:
+          type: integer
+        metadata:
+          type: object
+
+    RestoreJobRequest:
+      type: object
+      required:
+        - snapshot_id
+        - target_agent_id
+      properties:
+        snapshot_id:
+          type: string
+        target_agent_id:
+          type: string
+
+    RestoreJobResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        snapshot_id:
+          type: string
+        target_agent_id:
+          type: string
+        status:
+          type: string
+          enum: [pending, in_progress, completed, failed]
+
+paths:
+  /auth/token:
+    post:
+      summary: Mint JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+
+  /snapshots:
+    post:
+      summary: Create snapshot metadata
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnapshotMetadata'
+      responses:
+        '200':
+          description: Snapshot created with presigned URL
+
+  /snapshots/{snapshot_id}/object:
+    post:
+      summary: Upload snapshot object (multipart)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: snapshot_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Object uploaded successfully
+
+    get:
+      summary: Download snapshot object
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: snapshot_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object stream
+
+  /restore-jobs:
+    post:
+      summary: Create restore job
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestoreJobRequest'
+      responses:
+        '200':
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestoreJobResponse'
+
+  /restore-jobs/{job_id}:
+    get:
+      summary: Get restore job status
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestoreJobResponse'
+
+  /agents:
+    get:
+      summary: List all agents
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Agent list
+
+  /agent/{agent_id}/commands:
+    get:
+      summary: Get pending commands for agent
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Command list
+
+  /agent/{agent_id}/events:
+    post:
+      summary: Post agent event
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Event recorded
+
+  /health/live:
+    get:
+      summary: Liveness probe
+      responses:
+        '200':
+          description: Service is alive
+
+  /health/ready:
+    get:
+      summary: Readiness probe
+      responses:
+        '200':
+          description: Service is ready
+
+  /ws:
+    get:
+      summary: WebSocket endpoint for real-time events
+      parameters:
+        - name: token
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '101':
+          description: WebSocket connection established
