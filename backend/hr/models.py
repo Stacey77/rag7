@@ -6,7 +6,7 @@ class Candidate(models.Model):
     
     full_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    applied_role = models.CharField(max_length=255)
+    applied_role = models.CharField(max_length=255, blank=True, default='')
     resume = models.FileField(upload_to='resumes/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

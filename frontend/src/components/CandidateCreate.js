@@ -67,8 +67,8 @@ export default function CandidateCreate({ open, onClose, onCreated }) {
     } catch (err) {
       console.error("Candidate create error:", err);
       const detail =
-        err?.response?.data ||
         err?.response?.data?.detail ||
+        err?.response?.data ||
         "Failed to create candidate.";
       if (typeof detail === "object") {
         const msgs = Object.entries(detail)
