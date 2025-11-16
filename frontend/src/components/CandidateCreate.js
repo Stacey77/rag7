@@ -58,7 +58,7 @@ export default function CandidateCreate({ open, onClose, onCreated }) {
 
     setSubmitting(true);
     try {
-      const resp = await api.post("/candidates/", fd, {
+      const resp = await api.post("candidates/", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       const created = resp.data;
@@ -67,8 +67,8 @@ export default function CandidateCreate({ open, onClose, onCreated }) {
     } catch (err) {
       console.error("Candidate create error:", err);
       const detail =
-        err?.response?.data ||
         err?.response?.data?.detail ||
+        err?.response?.data ||
         "Failed to create candidate.";
       if (typeof detail === "object") {
         const msgs = Object.entries(detail)
