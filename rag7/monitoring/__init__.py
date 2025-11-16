@@ -222,7 +222,7 @@ class MonitoringService:
             "total_cost": self.cost_tracker.get_total_cost(),
             "cost_by_provider": dict(self.cost_tracker.cost_by_provider),
             "provider_metrics": {
-                name: metrics.dict()
+                name: metrics.model_dump()
                 for name, metrics in self.metrics_collector.get_all_metrics().items()
             },
             "average_latencies": {
