@@ -179,6 +179,39 @@ All services are configured via environment variables:
 | `S3_SECRET_KEY` | S3 secret key | `minioadmin` |
 | `S3_BUCKET` | Bucket name | `fortfail-snapshots` |
 | `WAL_PATH` | Write-ahead log path | `/data/orchestrator_wal.log` |
+| **Production Features** | | |
+| `SECRETS_BACKEND` | Secrets backend (env/aws/vault) | `env` |
+| `CORS_ALLOWED_ORIGINS` | Allowed CORS origins (comma-separated) | `*` |
+| `RATE_LIMIT_ENABLED` | Enable rate limiting | `true` |
+| `RATE_LIMIT_PER_MINUTE` | Requests per minute per IP | `60` |
+| `TLS_ENABLED` | Enable HTTPS/TLS | `false` |
+| `TLS_CERT_FILE` | Path to TLS certificate | - |
+| `TLS_KEY_FILE` | Path to TLS private key | - |
+| `TLS_CA_FILE` | Path to CA certificate (optional) | - |
+
+#### Secrets Management
+
+FortFail supports multiple secrets backends:
+
+**Environment Variables** (default):
+```bash
+export ORCH_JWT_SECRET="your-secret"
+```
+
+**AWS Secrets Manager**:
+```bash
+export SECRETS_BACKEND=aws
+export ORCH_JWT_SECRET="fortfail/production:jwt_secret"
+```
+
+**HashiCorp Vault**:
+```bash
+export SECRETS_BACKEND=vault
+export VAULT_ADDR="https://vault.example.com"
+export VAULT_TOKEN="your-token"
+export ORCH_JWT_SECRET="fortfail/orchestrator:jwt_secret"
+```
+| `WAL_PATH` | Write-ahead log path | `/data/orchestrator_wal.log` |
 
 ### Agent
 
@@ -252,6 +285,48 @@ See the interactive API documentation at http://localhost:8000/docs
 - `GET /agent/{id}/commands` - Get pending commands
 - `POST /agent/{id}/events` - Post agent event
 - `WS /ws` - WebSocket event stream
+
+## 🚀 Production Features
+
+### ✅ Implemented
+
+1. **Secrets Management**
+   - Support for AWS Secrets Manager
+   - Support for HashiCorp Vault
+   - Fallback to environment variables
+
+2. **Security Enhancements**
+   - HTTPS/TLS support with configurable certificates
+   - Rate limiting (60 requests/minute per IP by default)
+   - Enhanced input validation with Pydantic
+   - Configurable CORS origins
+
+3. **CI/CD Pipeline**
+   - Automated testing and linting
+   - Security scanning with Trivy
+   - Docker image builds and publishing
+   - Integration tests with smoke test
+   - Staging and production deployment workflows
+
+4. **Scaling Support**
+   - Multi-orchestrator architecture
+   - Load balancer configurations (nginx, HAProxy)
+   - Kubernetes HPA support
+   - Database read replicas
+   - See [docs/SCALING.md](docs/SCALING.md) for details
+
+### Production Deployment Checklist
+
+- [ ] Configure strong secrets (not default placeholders)
+- [ ] Enable TLS/HTTPS with valid certificates
+- [ ] Set specific CORS allowed origins
+- [ ] Configure secrets backend (Vault/AWS Secrets Manager)
+- [ ] Set up database backups and replication
+- [ ] Configure monitoring and alerting
+- [ ] Review and adjust rate limits
+- [ ] Set up load balancer with session affinity
+- [ ] Enable audit logging
+- [ ] Configure firewall rules and network segmentation
 
 ## 🤝 Contributing
 

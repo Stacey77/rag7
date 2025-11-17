@@ -19,30 +19,43 @@ from typing import Optional, List, Dict, Any
 from pathlib import Path
 import threading
 
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, BackgroundTasks, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, constr, validator
 import jwt
 import boto3
 from botocore.client import Config
 from sqlalchemy import create_engine, Column, String, DateTime, Text, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 # Import WebSocket manager
 from ws import router as ws_router, ws_manager
 
-# Configuration from environment
-ORCH_JWT_SECRET = os.getenv("ORCH_JWT_SECRET", "dev-jwt-secret-change-in-production")
-ORCH_REG_SECRET = os.getenv("ORCH_REG_SECRET", "dev-reg-secret-change-in-production")
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./orchestrator.db")
+# Import secrets manager
+from secrets import secrets_manager
+
+# Configuration from environment with secrets management support
+ORCH_JWT_SECRET = secrets_manager.get("ORCH_JWT_SECRET", "dev-jwt-secret-change-in-production")
+ORCH_REG_SECRET = secrets_manager.get("ORCH_REG_SECRET", "dev-reg-secret-change-in-production")
+DATABASE_URL = secrets_manager.get("DATABASE_URL", "sqlite:///./orchestrator.db")
 S3_ENDPOINT = os.getenv("S3_ENDPOINT", "http://minio:9000")
-S3_ACCESS_KEY = os.getenv("S3_ACCESS_KEY", "minioadmin")
-S3_SECRET_KEY = os.getenv("S3_SECRET_KEY", "minioadmin")
+S3_ACCESS_KEY = secrets_manager.get("S3_ACCESS_KEY", "minioadmin")
+S3_SECRET_KEY = secrets_manager.get("S3_SECRET_KEY", "minioadmin")
 S3_BUCKET = os.getenv("S3_BUCKET", "fortfail-snapshots")
 WAL_PATH = os.getenv("WAL_PATH", "/data/orchestrator_wal.log")
+
+# CORS configuration
+ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "*").split(",")
+
+# Rate limiting configuration
+RATE_LIMIT_ENABLED = os.getenv("RATE_LIMIT_ENABLED", "true").lower() == "true"
+RATE_LIMIT_PER_MINUTE = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
 
 # Ensure WAL directory exists
 Path(WAL_PATH).parent.mkdir(parents=True, exist_ok=True)
@@ -117,10 +130,16 @@ except:
     except Exception as e:
         print(f"Warning: Could not create S3 bucket: {e}")
 
-# Pydantic models for API
+# Pydantic models for API with enhanced validation
 class TokenRequest(BaseModel):
-    registration_secret: str
-    agent_id: Optional[str] = None
+    registration_secret: constr(min_length=8) = Field(..., description="Registration secret (min 8 chars)")
+    agent_id: Optional[constr(pattern=r'^[a-zA-Z0-9_-]+$')] = Field(None, description="Agent ID (alphanumeric, dash, underscore)")
+    
+    @validator('registration_secret')
+    def validate_secret(cls, v):
+        if v == "dev-jwt-secret-change-in-production":
+            raise ValueError("Please use a production secret, not the default placeholder")
+        return v
 
 
 class TokenResponse(BaseModel):
@@ -129,11 +148,15 @@ class TokenResponse(BaseModel):
 
 
 class SnapshotMetadata(BaseModel):
-    id: str
-    agent_id: str
-    checksum: str
-    size: int
+    id: constr(min_length=1, max_length=255) = Field(..., description="Snapshot ID")
+    agent_id: constr(min_length=1, max_length=255) = Field(..., description="Agent ID")
+    checksum: constr(pattern=r'^[a-fA-F0-9]{64}$') = Field(..., description="SHA256 checksum (64 hex chars)")
+    size: int = Field(..., gt=0, le=10*1024*1024*1024, description="Size in bytes (max 10GB)")
     metadata: Optional[Dict[str, Any]] = None
+    
+    @validator('checksum')
+    def validate_checksum(cls, v):
+        return v.lower()
 
 
 class SnapshotResponse(BaseModel):
@@ -143,8 +166,8 @@ class SnapshotResponse(BaseModel):
 
 
 class RestoreJobRequest(BaseModel):
-    snapshot_id: str
-    target_agent_id: str
+    snapshot_id: constr(min_length=1, max_length=255) = Field(..., description="Snapshot ID to restore")
+    target_agent_id: constr(min_length=1, max_length=255) = Field(..., description="Target agent ID")
 
 
 class RestoreJobResponse(BaseModel):
@@ -180,10 +203,15 @@ app = FastAPI(
     version="0.1.0-poc"
 )
 
-# CORS middleware
+# Rate limiter setup
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# CORS middleware - configurable origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify allowed origins
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -263,23 +291,26 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) 
 
 # Endpoints
 @app.post("/auth/token", response_model=TokenResponse)
-async def mint_token(request: TokenRequest):
+@limiter.limit(f"{RATE_LIMIT_PER_MINUTE}/minute")
+async def mint_token(request: Request, token_req: TokenRequest):
     """Mint JWT token using registration secret"""
-    if request.registration_secret != ORCH_REG_SECRET:
+    if token_req.registration_secret != ORCH_REG_SECRET:
         raise HTTPException(status_code=403, detail="Invalid registration secret")
     
-    token = create_token(agent_id=request.agent_id)
+    token = create_token(agent_id=token_req.agent_id)
     
     append_wal({
         "event": "token_minted",
-        "agent_id": request.agent_id
+        "agent_id": token_req.agent_id
     })
     
     return TokenResponse(token=token, expires_in=7 * 24 * 3600)
 
 
 @app.post("/snapshots", response_model=SnapshotResponse)
+@limiter.limit(f"{RATE_LIMIT_PER_MINUTE}/minute")
 async def create_snapshot(
+    request: Request,
     metadata: SnapshotMetadata,
     payload: Dict = Depends(verify_token),
     db: Session = Depends(get_db)
@@ -595,4 +626,15 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    from tls_config import get_uvicorn_ssl_config
+    
+    # Get TLS configuration
+    ssl_config = get_uvicorn_ssl_config()
+    
+    # Run with or without TLS
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        **ssl_config
+    )
