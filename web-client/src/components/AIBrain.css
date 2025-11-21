@@ -1,0 +1,136 @@
+.ai-brain {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brain-small {
+  width: 60px;
+  height: 60px;
+}
+
+.brain-medium {
+  width: 120px;
+  height: 120px;
+}
+
+.brain-large {
+  width: 200px;
+  height: 200px;
+}
+
+.brain-core {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 2px solid var(--accent-primary);
+  box-shadow: 0 0 20px var(--accent-primary);
+}
+
+.ai-brain.active .brain-core {
+  animation: brainGlow 2s ease-in-out infinite;
+}
+
+.ai-brain.inactive .brain-core {
+  opacity: 0.3;
+  border-color: var(--text-muted);
+  box-shadow: none;
+}
+
+.brain-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--accent-primary);
+  animation: pulsate 2s ease-in-out infinite;
+}
+
+.brain-pulse.pulse-0 { animation-delay: 0s; }
+.brain-pulse.pulse-1 { animation-delay: 0.5s; }
+.brain-pulse.pulse-2 { animation-delay: 1s; }
+.brain-pulse.pulse-3 { animation-delay: 1.5s; }
+
+.brain-icon {
+  font-size: 2em;
+  z-index: 1;
+  filter: drop-shadow(0 0 10px var(--accent-primary));
+}
+
+.brain-small .brain-icon {
+  font-size: 1.5em;
+}
+
+.brain-large .brain-icon {
+  font-size: 4em;
+}
+
+.brain-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 5px var(--accent-primary);
+}
+
+.ai-brain.active .particle {
+  animation: floatParticle 3s ease-in-out infinite;
+}
+
+.particle-0 { top: 10%; left: 50%; animation-delay: 0s; }
+.particle-1 { top: 30%; left: 80%; animation-delay: 0.2s; }
+.particle-2 { top: 50%; left: 90%; animation-delay: 0.4s; }
+.particle-3 { top: 70%; left: 80%; animation-delay: 0.6s; }
+.particle-4 { top: 90%; left: 50%; animation-delay: 0.8s; }
+.particle-5 { top: 70%; left: 20%; animation-delay: 1s; }
+.particle-6 { top: 50%; left: 10%; animation-delay: 1.2s; }
+.particle-7 { top: 30%; left: 20%; animation-delay: 1.4s; }
+
+@keyframes brainGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--accent-primary);
+  }
+  50% {
+    box-shadow: 0 0 40px var(--accent-primary), 0 0 60px var(--accent-primary);
+  }
+}
+
+@keyframes pulsate {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes floatParticle {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.5);
+    opacity: 1;
+  }
+}

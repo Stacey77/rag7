@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  langflow:
+    build:
+      context: ./langflow
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"
+    environment:
+      - LANGFLOW_HOST=0.0.0.0
+      - LANGFLOW_PORT=7860
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./langflow-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./langflow-backend/flows:/app/flows
+    environment:
+      - LANGFLOW_URL=http://langflow:7860
+    networks:
+      - ragamuffin-network
+    depends_on:
+      - langflow
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    networks:
+      - ragamuffin-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  ragamuffin-network:
+    driver: bridge

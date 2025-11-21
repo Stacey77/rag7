@@ -1,0 +1,123 @@
+.section-agent {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-agent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.section-agent:hover {
+  border-color: var(--accent-primary);
+  transform: translateX(5px);
+}
+
+.section-agent:hover::before {
+  opacity: 1;
+}
+
+.section-agent.active {
+  border-color: var(--success);
+  background: linear-gradient(90deg, var(--bg-secondary), var(--bg-tertiary));
+}
+
+.section-agent.error {
+  border-color: var(--error);
+}
+
+.agent-icon {
+  font-size: 2.5rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+.agent-content {
+  flex: 1;
+}
+
+.agent-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.agent-description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.agent-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+.status-active .status-dot {
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+}
+
+.status-idle .status-dot {
+  background: var(--text-muted);
+  animation: none;
+}
+
+.status-error .status-dot {
+  background: var(--error);
+  box-shadow: 0 0 10px var(--error);
+}
+
+.status-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.status-active .status-label {
+  color: var(--success);
+}
+
+.status-idle .status-label {
+  color: var(--text-muted);
+}
+
+.status-error .status-label {
+  color: var(--error);
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
