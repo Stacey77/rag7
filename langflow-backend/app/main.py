@@ -75,6 +75,13 @@ async def save_flow(file: UploadFile = File(...)):
     - Consider encrypting sensitive flow data
     """
     try:
+        # SECURITY: Validate filename is present
+        if not file.filename:
+            raise HTTPException(
+                status_code=400,
+                detail="Filename is required"
+            )
+        
         # SECURITY: Validate file extension (basic check)
         if not file.filename.endswith('.json'):
             raise HTTPException(
@@ -83,8 +90,11 @@ async def save_flow(file: UploadFile = File(...)):
             )
         
         # SECURITY: Sanitize filename to prevent path traversal
+        # Path().name automatically extracts just the basename, removing any directory components
         safe_filename = Path(file.filename).name
-        if ".." in safe_filename or "/" in safe_filename:
+        
+        # Additional validation: ensure no hidden files or empty names
+        if not safe_filename or safe_filename.startswith('.'):
             raise HTTPException(
                 status_code=400,
                 detail="Invalid filename"
@@ -158,8 +168,11 @@ async def get_flow(flow_name: str):
     """
     try:
         # SECURITY: Sanitize filename
+        # Path().name automatically extracts just the basename, removing any directory components
         safe_filename = Path(flow_name).name
-        if ".." in safe_filename or "/" in safe_filename:
+        
+        # Additional validation: ensure no hidden files or empty names
+        if not safe_filename or safe_filename.startswith('.'):
             raise HTTPException(
                 status_code=400,
                 detail="Invalid flow name"
@@ -315,8 +328,11 @@ async def delete_flow(flow_name: str):
     """
     try:
         # SECURITY: Sanitize filename
+        # Path().name automatically extracts just the basename, removing any directory components
         safe_filename = Path(flow_name).name
-        if ".." in safe_filename or "/" in safe_filename:
+        
+        # Additional validation: ensure no hidden files or empty names
+        if not safe_filename or safe_filename.startswith('.'):
             raise HTTPException(
                 status_code=400,
                 detail="Invalid flow name"
