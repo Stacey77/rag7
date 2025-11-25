@@ -1,12 +1,14 @@
 """Core configuration and settings for the Agentic platform."""
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 from typing import Optional
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
+    
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
     
     # Application
     APP_NAME: str = "Agentic Agent Platform"
@@ -40,10 +42,6 @@ class Settings(BaseSettings):
     # Celery
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/2"
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
 
 
 @lru_cache()
