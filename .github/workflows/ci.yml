@@ -10,10 +10,16 @@ env:
   PYTHON_VERSION: "3.11"
   NODE_VERSION: "20"
 
+# Set minimal permissions for the workflow
+permissions:
+  contents: read
+
 jobs:
   backend-lint-test:
     name: Backend - Lint & Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     services:
       postgres:
@@ -73,6 +79,8 @@ jobs:
   frontend-lint-build:
     name: Frontend - Lint & Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - uses: actions/checkout@v4
@@ -103,6 +111,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [backend-lint-test, frontend-lint-build]
     if: github.event_name == 'push'
+    permissions:
+      contents: read
     
     steps:
       - uses: actions/checkout@v4
