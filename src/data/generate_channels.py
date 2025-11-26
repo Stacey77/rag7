@@ -135,7 +135,7 @@ def generate_channels(num_channels: int, start_id: int) -> List[Dict]:
             
             # If we've tried max_attempts, just add a number to make it unique
             if attempt == max_attempts - 1:
-                channel["name"] = f"{channel['name']} {i+1}"
+                channel["name"] = f"{channel['name']} {channel_id}"
                 used_names.add(channel["name"])
                 channels.append(channel)
     
@@ -157,13 +157,17 @@ def main():
         type_counts[channel["type"]] = type_counts.get(channel["type"], 0) + 1
     
     print(f"\nGenerated {len(channels)} channels:")
-    print(f"  Tier distribution:")
-    print(f"    Gold:   {tier_counts['gold']} ({tier_counts['gold']/len(channels)*100:.1f}%)")
-    print(f"    Silver: {tier_counts['silver']} ({tier_counts['silver']/len(channels)*100:.1f}%)")
-    print(f"    Free:   {tier_counts['free']} ({tier_counts['free']/len(channels)*100:.1f}%)")
-    print(f"  Type distribution:")
-    for channel_type, count in sorted(type_counts.items()):
-        print(f"    {channel_type.capitalize()}: {count} ({count/len(channels)*100:.1f}%)")
+    
+    if len(channels) > 0:
+        print(f"  Tier distribution:")
+        print(f"    Gold:   {tier_counts['gold']} ({tier_counts['gold']/len(channels)*100:.1f}%)")
+        print(f"    Silver: {tier_counts['silver']} ({tier_counts['silver']/len(channels)*100:.1f}%)")
+        print(f"    Free:   {tier_counts['free']} ({tier_counts['free']/len(channels)*100:.1f}%)")
+        print(f"  Type distribution:")
+        for channel_type, count in sorted(type_counts.items()):
+            print(f"    {channel_type.capitalize()}: {count} ({count/len(channels)*100:.1f}%)")
+    else:
+        print("  Warning: No channels generated!")
     
     # Save to file
     output_file = "channels.generated.json"
