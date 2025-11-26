@@ -20,6 +20,16 @@ function Sidebar() {
           <span>Playground</span>
         </NavLink>
         
+        <NavLink to="/rag-query" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <span className="nav-icon">🔍</span>
+          <span>RAG Query</span>
+        </NavLink>
+        
+        <NavLink to="/documents" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <span className="nav-icon">📚</span>
+          <span>Documents</span>
+        </NavLink>
+        
         <NavLink to="/datasets" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           <span className="nav-icon">📂</span>
           <span>Datasets</span>

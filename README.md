@@ -28,7 +28,7 @@ This monorepo contains eight main components:
 ```
 
 ## Access Points
-- **Frontend**: http://localhost:8080 - Main UI
+- **Frontend**: http://localhost:8080 - Main UI with RAG interface
 - **Backend API**: http://localhost:8000 - Flow & RAG API
 - **RAG Service**: http://localhost:8001 - Multimodal RAG API
 - **LangFlow UI**: http://localhost:7860 - Flow designer
@@ -44,6 +44,14 @@ This monorepo contains eight main components:
 - **Document Processing**: PDF and document support
 - **Vector Search**: Fast similarity search with Milvus
 - **Hybrid Retrieval**: Combine multiple modalities
+
+### Frontend UI (NEW!)
+- **RAG Query Page**: Interactive RAG query and vector search interface
+- **Documents Page**: Embed and manage text documents and images
+- **Dashboard**: System overview and metrics
+- **Playground**: Conversation interface
+- **Datasets**: Dataset management
+- **Agent Builder**: Flow design and execution
 
 ### Workflow Automation
 - **n8n Integration**: Visual workflow builder
