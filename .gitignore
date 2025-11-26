@@ -47,3 +47,7 @@ yarn-error.log*
 # Flows directory (keep structure but ignore contents)
 langflow-backend/flows/*
 !langflow-backend/flows/.gitkeep
+
+# RAG service data directory (keep structure but ignore contents)
+rag-service/data/*
+!rag-service/data/.gitkeep

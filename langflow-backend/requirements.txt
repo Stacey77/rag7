@@ -2,3 +2,5 @@ fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
 langflow>=0.6.0
 python-multipart>=0.0.6
+pymilvus>=2.3.0
+httpx>=0.25.0
