@@ -63,24 +63,81 @@ This monorepo contains eight main components:
 - **Persistence**: Save and version flows
 - **Execution**: Run flows with context
 
+## Staging Deployment
+
+Deploy to staging environment with the included scripts:
+
+```bash
+# 1. Copy and configure staging environment
+cp .env.staging.example .env.staging
+# Edit .env.staging with your credentials
+
+# 2. Run deployment checklist
+./deploy-staging.sh --checklist
+
+# 3. Deploy to staging
+./deploy-staging.sh --build
+
+# 4. Check status
+./deploy-staging.sh --status
+
+# 5. View logs
+./deploy-staging.sh --logs
+```
+
+See [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) for complete deployment guide.
+
+## Production Deployment
+
+For production environments, follow the comprehensive guides:
+
+1. **Security**: Review [SECURITY.md](./SECURITY.md) for security checklist
+2. **Production**: Follow [PRODUCTION.md](./PRODUCTION.md) for deployment
+3. **Checklist**: Complete [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)
+
+Key production requirements:
+- Change all default passwords
+- Generate secure JWT secret: `openssl rand -hex 32`
+- Configure HTTPS/TLS with certificates
+- Set up PostgreSQL for user data
+- Configure proper CORS origins
+- Enable monitoring and alerting
+
+## Security Features
+
+The platform includes production-ready security:
+
+- **JWT Authentication**: Token-based auth with refresh tokens
+- **Rate Limiting**: Per-IP rate limiting with slowapi
+- **Input Validation**: Pydantic models for all endpoints
+- **Security Headers**: HSTS, X-Frame-Options, CSP
+- **Request Logging**: Unique request IDs, structured logging
+- **Password Hashing**: bcrypt for secure password storage
+
+## Advanced RAG Features
+
+- **Document Chunking**: Multiple strategies (character, sentence, separator)
+- **Hybrid Search**: Dense + BM25 sparse retrieval with RRF fusion
+- **Result Reranking**: MMR for diversity, phrase boosting
+- **Collection Management**: Multiple embedding collections
+
 ## Documentation
-- See [README_MONOREPO.md](./README_MONOREPO.md) for detailed monorepo structure
-- See [RUN_COMMANDS.md](./RUN_COMMANDS.md) for comprehensive run instructions
-- See [rag-service/README.md](./rag-service/README.md) for RAG service details
-- Individual service READMEs in each service directory
+
+- [README_MONOREPO.md](./README_MONOREPO.md) - Detailed monorepo structure
+- [RUN_COMMANDS.md](./RUN_COMMANDS.md) - Comprehensive run instructions
+- [SECURITY.md](./SECURITY.md) - Security guidelines and checklist
+- [PRODUCTION.md](./PRODUCTION.md) - Production deployment guide
+- [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) - Pre-deployment checklist
+- [rag-service/README.md](./rag-service/README.md) - RAG service details
 
 ## UI Inspiration
 The web client features a cyberpunk-inspired design with the Orbitron font and modern React components:
 
 ![UI Reference](<img>)
 
-## Next Steps
-After setup, consider:
-- Implementing authentication and authorization
-- Securing CORS for production
-- Adding flow validation and sandboxing
-- Setting up persistent storage for flows
-- Implementing user management
-- Configuring OpenAI API for advanced embeddings
-- Setting up n8n workflows for RAG pipelines
-- Adding more embedding models
+## Support
+
+For issues and questions:
+- Review documentation in this repository
+- Check [SECURITY.md](./SECURITY.md) for security concerns
+- Check [PRODUCTION.md](./PRODUCTION.md) for deployment issues
