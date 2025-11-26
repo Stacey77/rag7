@@ -114,16 +114,16 @@ class GPT4Agent(BaseLLMAgent):
                 "content": context["system_message"]
             })
         
-        # Add the user prompt
+        # Add conversation history if provided (before the current prompt)
+        if context and "history" in context:
+            for msg in context["history"]:
+                messages.append(msg)
+        
+        # Add the user prompt (current message)
         messages.append({
             "role": "user",
             "content": prompt
         })
-        
-        # Add conversation history if provided
-        if context and "history" in context:
-            for msg in context["history"]:
-                messages.append(msg)
         
         self.logger.debug(f"Calling OpenAI API with {len(messages)} messages")
         
