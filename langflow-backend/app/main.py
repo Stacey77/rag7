@@ -519,6 +519,294 @@ async def rag_list_collections():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============================================================================
+# Retell.ai Voice AI Endpoints
+# ============================================================================
+
+# Import Retell client
+try:
+    from .retell import (
+        get_retell_client, 
+        verify_webhook_signature, 
+        parse_webhook_event,
+        format_phone_number
+    )
+    RETELL_AVAILABLE = True
+    logger.info("✓ Retell.ai integration available")
+except ImportError as e:
+    RETELL_AVAILABLE = False
+    logger.warning(f"⚠️  Retell.ai integration not available: {e}")
+
+
+@app.get("/retell/status")
+async def retell_status():
+    """Check if Retell.ai is configured"""
+    if not RETELL_AVAILABLE:
+        return {"configured": False, "error": "Retell module not available"}
+    
+    client = get_retell_client()
+    return {
+        "configured": client.is_configured,
+        "warning": None if client.is_configured else "RETELL_API_KEY not set"
+    }
+
+
+@app.get("/retell/agents")
+async def list_retell_agents():
+    """List all Retell AI agents"""
+    if not RETELL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Retell.ai not available")
+    
+    try:
+        client = get_retell_client()
+        if not client.is_configured:
+            raise HTTPException(status_code=503, detail="Retell API key not configured")
+        
+        agents = await client.list_agents()
+        return {"agents": agents}
+    
+    except Exception as e:
+        logger.error(f"Error listing Retell agents: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/retell/agents/{agent_id}")
+async def get_retell_agent(agent_id: str):
+    """Get Retell agent details"""
+    if not RETELL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Retell.ai not available")
+    
+    try:
+        client = get_retell_client()
+        if not client.is_configured:
+            raise HTTPException(status_code=503, detail="Retell API key not configured")
+        
+        agent = await client.get_agent(agent_id)
+        return agent
+    
+    except Exception as e:
+        logger.error(f"Error getting Retell agent: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/retell/web-call")
+async def create_retell_web_call(
+    agent_id: str = Form(...),
+    metadata: Optional[str] = Form(None)
+):
+    """
+    Create a web-based voice call with Retell.ai
+    
+    Returns an access token for WebSocket connection to start the call
+    """
+    if not RETELL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Retell.ai not available")
+    
+    try:
+        client = get_retell_client()
+        if not client.is_configured:
+            raise HTTPException(status_code=503, detail="Retell API key not configured")
+        
+        # Parse metadata if provided
+        meta = None
+        if metadata:
+            try:
+                meta = json.loads(metadata)
+            except json.JSONDecodeError:
+                meta = {"raw": metadata}
+        
+        # Create web call
+        call = await client.create_web_call(
+            agent_id=agent_id,
+            metadata=meta
+        )
+        
+        logger.info(f"✓ Created Retell web call: {call.call_id}")
+        
+        return {
+            "call_id": call.call_id,
+            "agent_id": call.agent_id,
+            "access_token": call.access_token,
+            "status": call.call_status
+        }
+    
+    except Exception as e:
+        logger.error(f"Error creating Retell web call: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/retell/phone-call")
+async def create_retell_phone_call(
+    agent_id: str = Form(...),
+    from_number: str = Form(...),
+    to_number: str = Form(...),
+    metadata: Optional[str] = Form(None)
+):
+    """
+    Create an outbound phone call with Retell.ai
+    
+    Requires verified phone number on Retell account
+    """
+    if not RETELL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Retell.ai not available")
+    
+    try:
+        client = get_retell_client()
+        if not client.is_configured:
+            raise HTTPException(status_code=503, detail="Retell API key not configured")
+        
+        # Format phone numbers
+        formatted_from = format_phone_number(from_number)
+        formatted_to = format_phone_number(to_number)
+        
+        # Parse metadata if provided
+        meta = None
+        if metadata:
+            try:
+                meta = json.loads(metadata)
+            except json.JSONDecodeError:
+                meta = {"raw": metadata}
+        
+        # Create phone call
+        call = await client.create_phone_call(
+            agent_id=agent_id,
+            from_number=formatted_from,
+            to_number=formatted_to,
+            metadata=meta
+        )
+        
+        logger.info(f"✓ Created Retell phone call: {call.get('call_id')}")
+        
+        return call
+    
+    except Exception as e:
+        logger.error(f"Error creating Retell phone call: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/retell/calls/{call_id}")
+async def get_retell_call(call_id: str):
+    """Get Retell call details including transcript"""
+    if not RETELL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Retell.ai not available")
+    
+    try:
+        client = get_retell_client()
+        if not client.is_configured:
+            raise HTTPException(status_code=503, detail="Retell API key not configured")
+        
+        call = await client.get_call(call_id)
+        return {
+            "call_id": call.call_id,
+            "agent_id": call.agent_id,
+            "call_status": call.call_status,
+            "call_type": call.call_type,
+            "direction": call.direction,
+            "from_number": call.from_number,
+            "to_number": call.to_number,
+            "start_timestamp": call.start_timestamp,
+            "end_timestamp": call.end_timestamp,
+            "transcript": call.transcript,
+            "recording_url": call.recording_url,
+            "disconnection_reason": call.disconnection_reason
+        }
+    
+    except Exception as e:
+        logger.error(f"Error getting Retell call: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/retell/calls")
+async def list_retell_calls(limit: int = 50):
+    """List recent Retell calls"""
+    if not RETELL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Retell.ai not available")
+    
+    try:
+        client = get_retell_client()
+        if not client.is_configured:
+            raise HTTPException(status_code=503, detail="Retell API key not configured")
+        
+        calls = await client.list_calls(limit=limit)
+        return {"calls": calls}
+    
+    except Exception as e:
+        logger.error(f"Error listing Retell calls: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/retell/end-call/{call_id}")
+async def end_retell_call(call_id: str):
+    """End an ongoing Retell call"""
+    if not RETELL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Retell.ai not available")
+    
+    try:
+        client = get_retell_client()
+        if not client.is_configured:
+            raise HTTPException(status_code=503, detail="Retell API key not configured")
+        
+        result = await client.end_call(call_id)
+        logger.info(f"✓ Ended Retell call: {call_id}")
+        return result
+    
+    except Exception as e:
+        logger.error(f"Error ending Retell call: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/retell/voices")
+async def list_retell_voices():
+    """List available Retell voices"""
+    if not RETELL_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Retell.ai not available")
+    
+    try:
+        client = get_retell_client()
+        if not client.is_configured:
+            raise HTTPException(status_code=503, detail="Retell API key not configured")
+        
+        voices = await client.list_voices()
+        return {"voices": voices}
+    
+    except Exception as e:
+        logger.error(f"Error listing Retell voices: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/retell/webhook")
+async def retell_webhook(request: dict):
+    """
+    Handle Retell.ai webhooks
+    
+    Events: call_started, call_ended, call_analyzed
+    
+    SECURITY: Verify webhook signature in production
+    """
+    try:
+        event = parse_webhook_event(request)
+        
+        logger.info(f"Received Retell webhook: {event.event}")
+        
+        # Process different event types
+        if event.event == "call_started":
+            logger.info(f"Call started: {event.call.get('call_id')}")
+        
+        elif event.event == "call_ended":
+            logger.info(f"Call ended: {event.call.get('call_id')}")
+            # Could store transcript, update database, etc.
+        
+        elif event.event == "call_analyzed":
+            logger.info(f"Call analyzed: {event.call.get('call_id')}")
+            # Post-call analysis available
+        
+        return {"status": "ok", "event": event.event}
+    
+    except Exception as e:
+        logger.error(f"Error processing Retell webhook: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -134,6 +134,8 @@ services:
       - MILVUS_PORT=19530
       - RAG_SERVICE_URL=http://rag-service:8001
       - N8N_URL=http://n8n:5678
+      - RETELL_API_KEY=${RETELL_API_KEY:-}
+      - RETELL_WEBHOOK_SECRET=${RETELL_WEBHOOK_SECRET:-}
     depends_on:
       - langflow
       - milvus

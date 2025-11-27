@@ -6,6 +6,7 @@ import Datasets from './pages/Datasets'
 import AgentBuilder from './pages/AgentBuilder'
 import RAGQuery from './pages/RAGQuery'
 import Documents from './pages/Documents'
+import VoiceCalls from './pages/VoiceCalls'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/playground" element={<Playground />} />
+          <Route path="/voice-calls" element={<VoiceCalls />} />
           <Route path="/datasets" element={<Datasets />} />
           <Route path="/agent-builder" element={<AgentBuilder />} />
           <Route path="/rag-query" element={<RAGQuery />} />
