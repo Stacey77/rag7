@@ -1,0 +1,108 @@
+{
+  "name": "Document Ingestion Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ingest-document",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "document-ingestion"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "Extract text content from the received document"
+      },
+      "id": "extract-text",
+      "name": "Extract Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "http://backend:8000/rag/embed",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "texts",
+              "value": "={{ $json.text }}"
+            },
+            {
+              "name": "collection_name",
+              "value": "documents"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "embed-document",
+      "name": "Embed Document",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "channel": "#rag-notifications",
+        "text": "=Document ingested: {{ $json.document_name }}"
+      },
+      "id": "notify-slack",
+      "name": "Notify Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text": {
+      "main": [
+        [
+          {
+            "node": "Embed Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embed Document": {
+      "main": [
+        [
+          {
+            "node": "Notify Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["rag", "ingestion", "documents"]
+}

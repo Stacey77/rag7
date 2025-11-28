@@ -1,0 +1,140 @@
+{
+  "name": "RAG Query Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rag-query",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Query Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "rag-query-pipeline"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Preprocess the query\nconst query = $input.first().json.query;\nconst cleanedQuery = query.toLowerCase().trim();\nreturn [{ json: { query, cleanedQuery, timestamp: new Date().toISOString() } }];"
+      },
+      "id": "preprocess-query",
+      "name": "Preprocess Query",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://rag-service:8001/search/text",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.cleanedQuery }}"
+            },
+            {
+              "name": "top_k",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "search-vectors",
+      "name": "Search Vectors",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://backend:8000/rag/query",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.query }}"
+            },
+            {
+              "name": "context",
+              "value": "={{ $json.results }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "generate-response",
+      "name": "Generate Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format the final response\nconst response = $input.first().json;\nreturn [{\n  json: {\n    answer: response.response,\n    sources: response.context || [],\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "Query Webhook": {
+      "main": [
+        [
+          {
+            "node": "Preprocess Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preprocess Query": {
+      "main": [
+        [
+          {
+            "node": "Search Vectors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Vectors": {
+      "main": [
+        [
+          {
+            "node": "Generate Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Response": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["rag", "query", "search"]
+}

@@ -1,0 +1,259 @@
+version: '3.8'
+
+# Staging environment Docker Compose configuration
+# This configuration is optimized for staging/testing before production deployment
+
+services:
+  # Etcd - Metadata storage for Milvus
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: ragamuffin-staging-etcd
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - etcd_staging_data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    networks:
+      - ragamuffin-staging-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MinIO - Object storage for Milvus
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: ragamuffin-staging-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-stagingadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-stagingpassword123}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_staging_data:/minio_data
+    command: minio server /minio_data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - ragamuffin-staging-network
+    restart: unless-stopped
+
+  # Milvus - Vector database
+  milvus:
+    image: milvusdb/milvus:v2.3.3
+    container_name: ragamuffin-staging-milvus
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+      MINIO_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-stagingadmin}
+      MINIO_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-stagingpassword123}
+    volumes:
+      - milvus_staging_data:/var/lib/milvus
+    ports:
+      - "${MILVUS_PORT:-19530}:19530"
+      - "${MILVUS_METRICS_PORT:-9091}:9091"
+    depends_on:
+      etcd:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+    networks:
+      - ragamuffin-staging-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+
+  # n8n - Workflow automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: ragamuffin-staging-n8n
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-stagingadmin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-stagingpassword123}
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - NODE_ENV=production
+      - WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://localhost:5678/}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-}
+    volumes:
+      - n8n_staging_data:/home/node/.n8n
+    networks:
+      - ragamuffin-staging-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # RAG Service - Multimodal RAG with Milvus integration
+  rag-service:
+    build:
+      context: ./rag-service
+      dockerfile: Dockerfile
+    container_name: ragamuffin-staging-rag
+    ports:
+      - "${RAG_SERVICE_PORT:-8001}:8001"
+    environment:
+      - MILVUS_HOST=milvus
+      - MILVUS_PORT=19530
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      - ENVIRONMENT=staging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./rag-service/data:/app/data
+    depends_on:
+      milvus:
+        condition: service_healthy
+    networks:
+      - ragamuffin-staging-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+
+  # LangFlow - Flow designer
+  langflow:
+    build:
+      context: ./langflow
+      dockerfile: Dockerfile
+    ports:
+      - "${LANGFLOW_PORT:-7860}:7860"
+    container_name: ragamuffin-staging-langflow
+    environment:
+      - LANGFLOW_HOST=0.0.0.0
+      - LANGFLOW_PORT=7860
+      - LANGFLOW_LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+    networks:
+      - ragamuffin-staging-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend - FastAPI application
+  backend:
+    build:
+      context: ./langflow-backend
+      dockerfile: Dockerfile
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    container_name: ragamuffin-staging-backend
+    volumes:
+      - ./langflow-backend/flows:/app/flows
+    environment:
+      # Application
+      - ENVIRONMENT=staging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      
+      # Service URLs
+      - LANGFLOW_HOST=langflow
+      - LANGFLOW_PORT=7860
+      - MILVUS_HOST=milvus
+      - MILVUS_PORT=19530
+      - RAG_SERVICE_URL=http://rag-service:8001
+      - N8N_URL=http://n8n:5678
+      
+      # Security
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-staging-secret-change-me}
+      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - REFRESH_TOKEN_EXPIRE_DAYS=${REFRESH_TOKEN_EXPIRE_DAYS:-7}
+      
+      # CORS
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:8080,http://staging.yourdomain.com}
+      
+      # Rate Limiting
+      - RATE_LIMIT_PER_MINUTE=${RATE_LIMIT_PER_MINUTE:-100}
+    depends_on:
+      - langflow
+      - milvus
+      - rag-service
+      - n8n
+    restart: unless-stopped
+    networks:
+      - ragamuffin-staging-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  # Frontend - React application
+  frontend:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
+        - VITE_RAG_API_URL=${VITE_RAG_API_URL:-http://localhost:8001}
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    container_name: ragamuffin-staging-frontend
+    environment:
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - ragamuffin-staging-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  ragamuffin-staging-network:
+    driver: bridge
+    name: ragamuffin-staging-network
+
+volumes:
+  etcd_staging_data:
+    name: ragamuffin_etcd_staging
+  minio_staging_data:
+    name: ragamuffin_minio_staging
+  milvus_staging_data:
+    name: ragamuffin_milvus_staging
+  n8n_staging_data:
+    name: ragamuffin_n8n_staging

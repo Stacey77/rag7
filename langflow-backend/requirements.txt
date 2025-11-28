@@ -1,0 +1,18 @@
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+langflow>=0.6.0
+python-multipart>=0.0.6
+pymilvus>=2.3.0
+httpx>=0.25.0
+# Authentication and security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.6
+# Rate limiting
+slowapi>=0.1.9
+# Validation
+pydantic>=2.0.0
+email-validator>=2.0.0
+# Retell.ai voice AI (no direct SDK, using httpx for API calls)
+# The SDK is optional for backend: pip install retell-sdk
+

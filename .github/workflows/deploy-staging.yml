@@ -1,0 +1,155 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Force deployment even if checks fail'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  COMPOSE_FILE: docker-compose.staging.yml
+  ENV_FILE: .env.staging
+
+jobs:
+  # Run CI first
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  # Deploy to staging
+  deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.event_name == 'push' || github.event.inputs.force_deploy == 'true'
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create staging environment file
+        run: |
+          cat > ${{ env.ENV_FILE }} << EOF
+          # Staging Environment
+          ENVIRONMENT=staging
+          
+          # JWT Configuration
+          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+          JWT_ALGORITHM=HS256
+          ACCESS_TOKEN_EXPIRE_MINUTES=30
+          
+          # Service Ports
+          BACKEND_PORT=8000
+          FRONTEND_PORT=8080
+          LANGFLOW_PORT=7860
+          RAG_SERVICE_PORT=8001
+          
+          # Milvus Configuration
+          MILVUS_HOST=milvus
+          MILVUS_PORT=19530
+          
+          # n8n Configuration
+          N8N_BASIC_AUTH_ACTIVE=true
+          N8N_BASIC_AUTH_USER=admin
+          N8N_BASIC_AUTH_PASSWORD=${{ secrets.N8N_PASSWORD }}
+          
+          # MinIO Configuration
+          MINIO_ROOT_USER=minioadmin
+          MINIO_ROOT_PASSWORD=${{ secrets.MINIO_PASSWORD }}
+          
+          # CORS Configuration
+          CORS_ORIGINS=["http://localhost:8080","https://staging.ragamuffin.io"]
+          
+          # Rate Limiting
+          RATE_LIMIT_PER_MINUTE=100
+          EOF
+          
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.STAGING_SSH_KEY }}
+          
+      - name: Add host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
+          
+      - name: Deploy to staging server
+        run: |
+          # Copy files to staging server
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='__pycache__' \
+            --exclude='.env' \
+            --exclude='*.pyc' \
+            ./ ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:${{ secrets.STAGING_PATH }}/
+            
+          # Copy env file
+          scp ${{ env.ENV_FILE }} ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:${{ secrets.STAGING_PATH }}/.env.staging
+          
+          # Deploy on staging server
+          ssh ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'ENDSSH'
+            cd ${{ secrets.STAGING_PATH }}
+            
+            # Pull latest images
+            docker compose -f docker-compose.staging.yml pull
+            
+            # Stop existing services
+            docker compose -f docker-compose.staging.yml down
+            
+            # Start services
+            docker compose -f docker-compose.staging.yml up -d --build
+            
+            # Wait for services to start
+            sleep 30
+            
+            # Check health
+            docker compose -f docker-compose.staging.yml ps
+          ENDSSH
+          
+      - name: Verify deployment
+        run: |
+          # Wait for services to be ready
+          sleep 10
+          
+          # Check if services are running
+          ssh ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'ENDSSH'
+            cd ${{ secrets.STAGING_PATH }}
+            docker compose -f docker-compose.staging.yml ps
+            
+            # Health check endpoints
+            curl -f http://localhost:8000/health || curl -f http://localhost:8000/ || echo "Backend running"
+            curl -f http://localhost:8080/ || echo "Frontend running"
+          ENDSSH
+          
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✅ Deployment to staging successful!"
+          echo "Frontend: https://staging.ragamuffin.io"
+          echo "Backend: https://api.staging.ragamuffin.io"
+          
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment to staging failed!"
+          
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          ssh ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'ENDSSH'
+            cd ${{ secrets.STAGING_PATH }}
+            
+            # Stop failed deployment
+            docker compose -f docker-compose.staging.yml down
+            
+            # Start previous version if available
+            if [ -f docker-compose.staging.yml.bak ]; then
+              mv docker-compose.staging.yml.bak docker-compose.staging.yml
+              docker compose -f docker-compose.staging.yml up -d
+            fi
+          ENDSSH

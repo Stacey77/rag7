@@ -1,0 +1,169 @@
+version: '3.8'
+
+services:
+  # Etcd - Metadata storage for Milvus
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: ragamuffin-etcd
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - etcd_data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  # MinIO - Object storage for Milvus
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: ragamuffin-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/minio_data
+    command: minio server /minio_data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  # Milvus - Vector database
+  milvus:
+    image: milvusdb/milvus:v2.3.3
+    container_name: ragamuffin-milvus
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+      MINIO_ACCESS_KEY_ID: minioadmin
+      MINIO_SECRET_ACCESS_KEY: minioadmin
+    volumes:
+      - milvus_data:/var/lib/milvus
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    depends_on:
+      - etcd
+      - minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  # n8n - Workflow automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: ragamuffin-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://localhost:5678/
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  # RAG Service - Multimodal RAG with Milvus integration
+  rag-service:
+    build:
+      context: ./rag-service
+      dockerfile: Dockerfile
+    container_name: ragamuffin-rag
+    ports:
+      - "8001:8001"
+    environment:
+      - MILVUS_HOST=milvus
+      - MILVUS_PORT=19530
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+    volumes:
+      - ./rag-service/data:/app/data
+    depends_on:
+      - milvus
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  langflow:
+    build:
+      context: ./langflow
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"
+    container_name: ragamuffin-langflow
+    restart: unless-stopped
+    networks:
+      - ragamuffin-network
+
+  backend:
+    build:
+      context: ./langflow-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    container_name: ragamuffin-backend
+    volumes:
+      - ./langflow-backend/flows:/app/flows
+    environment:
+      - LANGFLOW_HOST=langflow
+      - LANGFLOW_PORT=7860
+      - MILVUS_HOST=milvus
+      - MILVUS_PORT=19530
+      - RAG_SERVICE_URL=http://rag-service:8001
+      - N8N_URL=http://n8n:5678
+      - RETELL_API_KEY=${RETELL_API_KEY:-}
+      - RETELL_WEBHOOK_SECRET=${RETELL_WEBHOOK_SECRET:-}
+    depends_on:
+      - langflow
+      - milvus
+      - rag-service
+      - n8n
+    restart: unless-stopped
+    networks:
+      - ragamuffin-network
+
+  frontend:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    container_name: ragamuffin-frontend
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - ragamuffin-network
+
+networks:
+  ragamuffin-network:
+    driver: bridge
+
+volumes:
+  etcd_data:
+  minio_data:
+  milvus_data:
+  n8n_data:

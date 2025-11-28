@@ -1,0 +1,210 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--secondary-bg) 0%, var(--primary-bg) 100%);
+  border-right: 2px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 5px 0 20px rgba(0, 255, 249, 0.1);
+}
+
+.sidebar-header {
+  padding: 2rem 1.5rem;
+  border-bottom: 2px solid var(--border-color);
+  background: linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(176, 38, 255, 0.1));
+}
+
+.sidebar-logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 2rem 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.nav-link:hover {
+  background: rgba(0, 255, 249, 0.1);
+  color: var(--accent-cyan);
+  border-left-color: var(--accent-cyan);
+}
+
+.nav-link.active {
+  background: rgba(0, 255, 249, 0.15);
+  color: var(--accent-cyan);
+  border-left-color: var(--accent-cyan);
+  box-shadow: inset 0 0 20px rgba(0, 255, 249, 0.1);
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 2px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.status-panel {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* User Section Styles */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.user-info:hover {
+  opacity: 0.8;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.user-email {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.logout-btn:hover {
+  opacity: 1;
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  text-decoration: none;
+  margin-bottom: 15px;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .sidebar-nav {
+    display: flex;
+    padding: 0;
+  }
+
+  .nav-link {
+    flex: 1;
+    justify-content: center;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+  }
+
+  .nav-link.active,
+  .nav-link:hover {
+    border-left: none;
+    border-bottom-color: var(--accent-cyan);
+  }
+
+  .nav-icon {
+    margin-right: 0.5rem;
+  }
+}
