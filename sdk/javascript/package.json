@@ -1,0 +1,60 @@
+{
+  "name": "@ragamuffin/sdk",
+  "version": "1.0.0",
+  "description": "Official JavaScript/TypeScript SDK for the Ragamuffin AI platform",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ragamuffin",
+    "ai",
+    "rag",
+    "langflow",
+    "vector-search",
+    "embeddings",
+    "llm",
+    "sdk"
+  ],
+  "author": "Ragamuffin Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Stacey77/rag7"
+  },
+  "homepage": "https://github.com/Stacey77/rag7#readme",
+  "bugs": {
+    "url": "https://github.com/Stacey77/rag7/issues"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "eslint": "^8.55.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0"
+  }
+}
