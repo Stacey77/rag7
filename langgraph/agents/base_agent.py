@@ -40,7 +40,7 @@ class BaseAgent(ABC):
                 model=settings.model_name,
                 temperature=settings.temperature,
                 max_tokens=settings.max_tokens,
-                api_key=settings.openai_api_key or None,
+                api_key=settings.openai_api_key if settings.openai_api_key else None,
             )
         else:
             self.model = model

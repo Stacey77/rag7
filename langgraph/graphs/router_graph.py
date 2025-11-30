@@ -93,7 +93,7 @@ def create_router_graph():
     ]:
         """Determine which handler to route to based on router decision."""
         route = state.get("route", "research")
-        if route not in ["research", "writing", "technical", "creative", "analysis"]:
+        if route not in RouterAgent.VALID_ROUTES:
             return "research"
         return route
 

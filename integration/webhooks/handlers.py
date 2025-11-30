@@ -144,6 +144,9 @@ class WebhookHandler:
             True if callback was successful, False otherwise.
         """
         import httpx
+        import logging
+
+        logger = logging.getLogger(__name__)
 
         try:
             async with httpx.AsyncClient() as client:
@@ -154,5 +157,12 @@ class WebhookHandler:
                     timeout=30.0,
                 )
                 return response.status_code == 200
-        except httpx.RequestError:
+        except httpx.ConnectError as e:
+            logger.error(f"Connection error sending callback to {url}: {e}")
+            return False
+        except httpx.TimeoutException as e:
+            logger.error(f"Timeout sending callback to {url}: {e}")
+            return False
+        except httpx.RequestError as e:
+            logger.error(f"Request error sending callback to {url}: {e}")
             return False
