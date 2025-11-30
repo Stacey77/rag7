@@ -1,0 +1,136 @@
+# Prometheus alert rules for Ragamuffin platform
+groups:
+  - name: service_alerts
+    rules:
+      # Service down alerts
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."
+
+      # High error rate
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m])) by (job)
+          /
+          sum(rate(http_requests_total[5m])) by (job)
+          > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on {{ $labels.job }}"
+          description: "Error rate is {{ $value | humanizePercentage }} on {{ $labels.job }}"
+
+      # High latency
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, job))
+          > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency on {{ $labels.job }}"
+          description: "95th percentile latency is {{ $value }}s on {{ $labels.job }}"
+
+  - name: rag_alerts
+    rules:
+      # RAG query failures
+      - alert: RAGQueryFailures
+        expr: |
+          sum(rate(rag_queries_total{status="error"}[5m])) by (job)
+          /
+          sum(rate(rag_queries_total[5m])) by (job)
+          > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High RAG query failure rate"
+          description: "RAG query failure rate is {{ $value | humanizePercentage }}"
+
+      # Slow embeddings
+      - alert: SlowEmbeddings
+        expr: |
+          histogram_quantile(0.95, sum(rate(rag_operation_duration_seconds_bucket{operation="embed"}[5m])) by (le))
+          > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow embedding generation"
+          description: "95th percentile embedding time is {{ $value }}s"
+
+      # Large collection warning
+      - alert: LargeCollection
+        expr: rag_collection_size > 1000000
+        for: 1h
+        labels:
+          severity: info
+        annotations:
+          summary: "Large collection detected"
+          description: "Collection {{ $labels.collection }} has {{ $value }} documents"
+
+  - name: resource_alerts
+    rules:
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: |
+          (container_memory_usage_bytes / container_spec_memory_limit_bytes) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.name }}"
+          description: "Memory usage is {{ $value | humanize }}% on {{ $labels.name }}"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: |
+          rate(container_cpu_usage_seconds_total[5m]) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.name }}"
+          description: "CPU usage is {{ $value | humanize }}% on {{ $labels.name }}"
+
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: |
+          (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 20
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space"
+          description: "Only {{ $value | humanize }}% disk space remaining"
+
+  - name: milvus_alerts
+    rules:
+      # Milvus connection issues
+      - alert: MilvusConnectionIssues
+        expr: milvus_connection_errors_total > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Milvus connection issues"
+          description: "{{ $value }} Milvus connection errors in the last 5 minutes"
+
+      # Milvus high query latency
+      - alert: MilvusHighLatency
+        expr: |
+          histogram_quantile(0.95, sum(rate(milvus_query_duration_seconds_bucket[5m])) by (le))
+          > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Milvus query latency"
+          description: "95th percentile Milvus query latency is {{ $value }}s"
