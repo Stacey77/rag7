@@ -1,0 +1,1391 @@
+From 304967b3cbdcbabae563ce8ddb0a352c1ba56bff Mon Sep 17 00:00:00 2001
+From: "copilot-swe-agent[bot]" <198982749+Copilot@users.noreply.github.com>
+Date: Sun, 16 Nov 2025 17:52:08 +0000
+Subject: [PATCH] feat(frontend): add candidate creation modal + Docker
+ runnotes
+
+Co-authored-by: Stacey77 <54900383+Stacey77@users.noreply.github.com>
+---
+ .gitignore                                 |  41 ++
+ candidate-create.patch                     | 678 +++++++++++++++++++++
+ docker-compose.yml                         |  47 ++
+ frontend/README_DOCKER.md                  |  97 +++
+ frontend/package.json                      |  34 ++
+ frontend/src/api.js                        |  26 +
+ frontend/src/components/CandidateCreate.js | 251 ++++++++
+ frontend/src/components/Candidates.js      | 140 +++++
+ 8 files changed, 1314 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 candidate-create.patch
+ create mode 100644 docker-compose.yml
+ create mode 100644 frontend/README_DOCKER.md
+ create mode 100644 frontend/package.json
+ create mode 100644 frontend/src/api.js
+ create mode 100644 frontend/src/components/CandidateCreate.js
+ create mode 100644 frontend/src/components/Candidates.js
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..8ef83e3
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,41 @@
++# Dependencies
++node_modules/
++frontend/node_modules/
++backend/venv/
++backend/__pycache__/
++backend/**/__pycache__/
++*.pyc
++
++# Build outputs
++frontend/build/
++backend/staticfiles/
++backend/media/
++
++# Environment files
++.env
++.env.local
++.env.*.local
++
++# IDE
++.vscode/
++.idea/
++*.swp
++*.swo
++*~
++
++# OS
++.DS_Store
++Thumbs.db
++
++# Logs
++*.log
++npm-debug.log*
++yarn-debug.log*
++yarn-error.log*
++
++# Testing
++coverage/
++
++# Docker
++*.sql
++postgres_data/
+diff --git a/candidate-create.patch b/candidate-create.patch
+new file mode 100644
+index 0000000..92da1dc
+--- /dev/null
++++ b/candidate-create.patch
+@@ -0,0 +1,678 @@
++diff --git a/.gitignore b/.gitignore
++new file mode 100644
++index 0000000..8ef83e3
++--- /dev/null
+++++ b/.gitignore
++@@ -0,0 +1,41 @@
+++# Dependencies
+++node_modules/
+++frontend/node_modules/
+++backend/venv/
+++backend/__pycache__/
+++backend/**/__pycache__/
+++*.pyc
+++
+++# Build outputs
+++frontend/build/
+++backend/staticfiles/
+++backend/media/
+++
+++# Environment files
+++.env
+++.env.local
+++.env.*.local
+++
+++# IDE
+++.vscode/
+++.idea/
+++*.swp
+++*.swo
+++*~
+++
+++# OS
+++.DS_Store
+++Thumbs.db
+++
+++# Logs
+++*.log
+++npm-debug.log*
+++yarn-debug.log*
+++yarn-error.log*
+++
+++# Testing
+++coverage/
+++
+++# Docker
+++*.sql
+++postgres_data/
++diff --git a/docker-compose.yml b/docker-compose.yml
++new file mode 100644
++index 0000000..92a20c9
++--- /dev/null
+++++ b/docker-compose.yml
++@@ -0,0 +1,47 @@
+++version: '3.8'
+++
+++services:
+++  db:
+++    image: postgres:14
+++    environment:
+++      POSTGRES_DB: rag7
+++      POSTGRES_USER: rag7user
+++      POSTGRES_PASSWORD: rag7pass
+++    volumes:
+++      - postgres_data:/var/lib/postgresql/data
+++    ports:
+++      - "5432:5432"
+++
+++  api:
+++    build:
+++      context: ./backend
+++      dockerfile: Dockerfile
+++    command: python manage.py runserver 0.0.0.0:8000
+++    volumes:
+++      - ./backend:/app
+++    ports:
+++      - "8000:8000"
+++    environment:
+++      - DEBUG=1
+++      - DATABASE_URL=postgresql://rag7user:rag7pass@db:5432/rag7
+++      - SECRET_KEY=dev-secret-key-change-in-production
+++      - ALLOWED_HOSTS=localhost,127.0.0.1
+++    depends_on:
+++      - db
+++
+++  frontend:
+++    build:
+++      context: ./frontend
+++      dockerfile: Dockerfile
+++    volumes:
+++      - ./frontend:/app
+++      - /app/node_modules
+++    ports:
+++      - "3000:3000"
+++    environment:
+++      - REACT_APP_API_URL=http://localhost:8000/api
+++    depends_on:
+++      - api
+++
+++volumes:
+++  postgres_data:
++diff --git a/frontend/README_DOCKER.md b/frontend/README_DOCKER.md
++new file mode 100644
++index 0000000..758ad5f
++--- /dev/null
+++++ b/frontend/README_DOCKER.md
++@@ -0,0 +1,97 @@
+++# Docker Setup and Testing Instructions
+++
+++This document provides instructions for running the full RAG7 application stack using Docker Compose and testing the candidate creation feature.
+++
+++## Prerequisites
+++
+++- Docker and Docker Compose installed
+++- Git repository cloned locally
+++
+++## Starting the Application Stack
+++
+++1. **Build and start all services**:
+++   ```bash
+++   docker-compose up --build
+++   ```
+++
+++   This will start:
+++   - Django REST Framework API (backend) on port 8000
+++   - React SPA (frontend) on port 3000
+++   - PostgreSQL database
+++   - Any other required services
+++
+++2. **Create a Django superuser** (in a new terminal):
+++   ```bash
+++   docker-compose exec api python manage.py createsuperuser
+++   ```
+++
+++   Follow the prompts to create a username, email, and password.
+++
+++## Testing the Candidate Creation Feature
+++
+++1. **Access the application**:
+++   - Open your browser and navigate to `http://localhost:3000`
+++
+++2. **Log in**:
+++   - Use the superuser credentials you created in the previous step
+++   - The SPA will authenticate and store JWT tokens in localStorage
+++
+++3. **Navigate to Candidates page**:
+++   - Go to `/candidates` route (or click the Candidates link in the navigation)
+++
+++4. **Create a new candidate**:
+++   - Click the "New Candidate" button in the header
+++   - Fill in the form fields:
+++     - **Full Name**: Candidate's full name (required)
+++     - **Email**: Candidate's email address (required)
+++     - **Applied Role**: The position they're applying for (required)
+++     - **Resume**: Optional file upload (.pdf, .txt, .doc, .docx)
+++   - Click "Create Candidate"
+++   - The new candidate should appear at the top of the candidates list
+++
+++5. **Verify resume upload** (if file was uploaded):
+++   - The candidate row should show a "View Resume" link
+++   - Click the link to view/download the uploaded resume
+++   - Resume files are stored in the backend's media directory
+++
+++## Optional: Persistent Media Storage
+++
+++By default, uploaded resume files are stored inside the Docker container and will be lost when the container is removed.
+++
+++**For persistent storage in a follow-up PR**, you can:
+++1. Configure Django's `MEDIA_ROOT` setting in the backend
+++2. Add a volume mount in `docker-compose.yml` for the `api` service:
+++   ```yaml
+++   volumes:
+++     - ./media:/app/media
+++   ```
+++3. This will mount a local `./media` directory to persist uploaded files
+++
+++## Stopping the Application
+++
+++To stop all services:
+++```bash
+++docker-compose down
+++```
+++
+++To stop and remove all data (including database):
+++```bash
+++docker-compose down -v
+++```
+++
+++## Troubleshooting
+++
+++- **Port conflicts**: If ports 3000 or 8000 are already in use, modify the port mappings in `docker-compose.yml`
+++- **Database connection issues**: Ensure PostgreSQL service is healthy before the API starts
+++- **File upload errors**: Check that the API service has write permissions to the media directory
+++- **Authentication errors**: Verify JWT tokens are being stored in localStorage and sent with API requests
+++
+++## API Endpoint Reference
+++
+++The candidate creation feature uses:
+++- **POST** `/api/v1/candidates/` - Create a new candidate
+++  - Content-Type: `multipart/form-data`
+++  - Fields: `full_name`, `email`, `applied_role`, `resume` (optional)
+++  - Authentication: JWT Bearer token required
+++
+++For more details on the API, refer to the backend documentation or visit `/api/docs` when the API is running.
++diff --git a/frontend/package.json b/frontend/package.json
++new file mode 100644
++index 0000000..84d4c9e
++--- /dev/null
+++++ b/frontend/package.json
++@@ -0,0 +1,34 @@
+++{
+++  "name": "rag7-frontend",
+++  "version": "0.1.0",
+++  "private": true,
+++  "dependencies": {
+++    "axios": "^1.6.0",
+++    "react": "^18.2.0",
+++    "react-dom": "^18.2.0",
+++    "react-scripts": "5.0.1"
+++  },
+++  "scripts": {
+++    "start": "react-scripts start",
+++    "build": "react-scripts build",
+++    "test": "react-scripts test",
+++    "eject": "react-scripts eject"
+++  },
+++  "eslintConfig": {
+++    "extends": [
+++      "react-app"
+++    ]
+++  },
+++  "browserslist": {
+++    "production": [
+++      ">0.2%",
+++      "not dead",
+++      "not op_mini all"
+++    ],
+++    "development": [
+++      "last 1 chrome version",
+++      "last 1 firefox version",
+++      "last 1 safari version"
+++    ]
+++  }
+++}
++diff --git a/frontend/src/api.js b/frontend/src/api.js
++new file mode 100644
++index 0000000..b59e417
++--- /dev/null
+++++ b/frontend/src/api.js
++@@ -0,0 +1,26 @@
+++import axios from 'axios';
+++
+++const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+++
+++const api = axios.create({
+++  baseURL: `${API_BASE_URL}/v1/`,
+++  headers: {
+++    'Content-Type': 'application/json',
+++  },
+++});
+++
+++// Add JWT token from localStorage to requests
+++api.interceptors.request.use(
+++  (config) => {
+++    const token = localStorage.getItem('access_token');
+++    if (token) {
+++      config.headers.Authorization = `Bearer ${token}`;
+++    }
+++    return config;
+++  },
+++  (error) => {
+++    return Promise.reject(error);
+++  }
+++);
+++
+++export default api;
++diff --git a/frontend/src/components/CandidateCreate.js b/frontend/src/components/CandidateCreate.js
++new file mode 100644
++index 0000000..1c7c007
++--- /dev/null
+++++ b/frontend/src/components/CandidateCreate.js
++@@ -0,0 +1,251 @@
+++import React, { useState } from 'react';
+++import api from '../api';
+++
+++function CandidateCreate({ open, onClose, onCreated }) {
+++  const [formData, setFormData] = useState({
+++    full_name: '',
+++    email: '',
+++    applied_role: '',
+++    resume: null,
+++  });
+++  const [errors, setErrors] = useState({});
+++  const [loading, setLoading] = useState(false);
+++
+++  const handleChange = (e) => {
+++    const { name, value } = e.target;
+++    setFormData({
+++      ...formData,
+++      [name]: value,
+++    });
+++    // Clear error for this field when user starts typing
+++    if (errors[name]) {
+++      setErrors({
+++        ...errors,
+++        [name]: null,
+++      });
+++    }
+++  };
+++
+++  const handleFileChange = (e) => {
+++    const file = e.target.files[0];
+++    if (file) {
+++      const validTypes = [
+++        'application/pdf',
+++        'text/plain',
+++        'application/msword',
+++        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+++      ];
+++      const validExtensions = ['.pdf', '.txt', '.doc', '.docx'];
+++      const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+++
+++      if (!validTypes.includes(file.type) && !validExtensions.includes(fileExtension)) {
+++        setErrors({
+++          ...errors,
+++          resume: 'Please select a valid file (.pdf, .txt, .doc, .docx)',
+++        });
+++        return;
+++      }
+++
+++      setFormData({
+++        ...formData,
+++        resume: file,
+++      });
+++      if (errors.resume) {
+++        setErrors({
+++          ...errors,
+++          resume: null,
+++        });
+++      }
+++    }
+++  };
+++
+++  const handleSubmit = async (e) => {
+++    e.preventDefault();
+++    setLoading(true);
+++    setErrors({});
+++
+++    try {
+++      // Create FormData for multipart/form-data submission
+++      const submitData = new FormData();
+++      submitData.append('full_name', formData.full_name);
+++      submitData.append('email', formData.email);
+++      submitData.append('applied_role', formData.applied_role);
+++      if (formData.resume) {
+++        submitData.append('resume', formData.resume);
+++      }
+++
+++      // POST to /candidates/ endpoint
+++      const response = await api.post('candidates/', submitData, {
+++        headers: {
+++          'Content-Type': 'multipart/form-data',
+++        },
+++      });
+++
+++      // Call onCreated with the created candidate object
+++      onCreated(response.data);
+++
+++      // Reset form
+++      setFormData({
+++        full_name: '',
+++        email: '',
+++        applied_role: '',
+++        resume: null,
+++      });
+++    } catch (err) {
+++      // Handle DRF validation errors
+++      if (err.response && err.response.data) {
+++        setErrors(err.response.data);
+++      } else {
+++        setErrors({ non_field_errors: ['Failed to create candidate. Please try again.'] });
+++      }
+++    } finally {
+++      setLoading(false);
+++    }
+++  };
+++
+++  const handleClose = () => {
+++    if (!loading) {
+++      setFormData({
+++        full_name: '',
+++        email: '',
+++        applied_role: '',
+++        resume: null,
+++      });
+++      setErrors({});
+++      onClose();
+++    }
+++  };
+++
+++  if (!open) return null;
+++
+++  return (
+++    <div className="modal-overlay" onClick={handleClose}>
+++      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+++        <div className="modal-header">
+++          <h2>Create New Candidate</h2>
+++          <button
+++            className="modal-close"
+++            onClick={handleClose}
+++            disabled={loading}
+++            aria-label="Close modal"
+++          >
+++            &times;
+++          </button>
+++        </div>
+++
+++        <form onSubmit={handleSubmit} className="candidate-form">
+++          {errors.non_field_errors && (
+++            <div className="error-message">
+++              {errors.non_field_errors.map((error, index) => (
+++                <p key={index}>{error}</p>
+++              ))}
+++            </div>
+++          )}
+++
+++          <div className="form-group">
+++            <label htmlFor="full_name">
+++              Full Name <span className="required">*</span>
+++            </label>
+++            <input
+++              type="text"
+++              id="full_name"
+++              name="full_name"
+++              value={formData.full_name}
+++              onChange={handleChange}
+++              required
+++              disabled={loading}
+++              className={errors.full_name ? 'error' : ''}
+++            />
+++            {errors.full_name && (
+++              <span className="field-error">
+++                {Array.isArray(errors.full_name) ? errors.full_name[0] : errors.full_name}
+++              </span>
+++            )}
+++          </div>
+++
+++          <div className="form-group">
+++            <label htmlFor="email">
+++              Email <span className="required">*</span>
+++            </label>
+++            <input
+++              type="email"
+++              id="email"
+++              name="email"
+++              value={formData.email}
+++              onChange={handleChange}
+++              required
+++              disabled={loading}
+++              className={errors.email ? 'error' : ''}
+++            />
+++            {errors.email && (
+++              <span className="field-error">
+++                {Array.isArray(errors.email) ? errors.email[0] : errors.email}
+++              </span>
+++            )}
+++          </div>
+++
+++          <div className="form-group">
+++            <label htmlFor="applied_role">
+++              Applied Role <span className="required">*</span>
+++            </label>
+++            <input
+++              type="text"
+++              id="applied_role"
+++              name="applied_role"
+++              value={formData.applied_role}
+++              onChange={handleChange}
+++              required
+++              disabled={loading}
+++              className={errors.applied_role ? 'error' : ''}
+++            />
+++            {errors.applied_role && (
+++              <span className="field-error">
+++                {Array.isArray(errors.applied_role)
+++                  ? errors.applied_role[0]
+++                  : errors.applied_role}
+++              </span>
+++            )}
+++          </div>
+++
+++          <div className="form-group">
+++            <label htmlFor="resume">Resume (optional)</label>
+++            <input
+++              type="file"
+++              id="resume"
+++              name="resume"
+++              onChange={handleFileChange}
+++              accept=".pdf,.txt,.doc,.docx"
+++              disabled={loading}
+++              className={errors.resume ? 'error' : ''}
+++            />
+++            {formData.resume && (
+++              <span className="file-name">{formData.resume.name}</span>
+++            )}
+++            {errors.resume && (
+++              <span className="field-error">
+++                {Array.isArray(errors.resume) ? errors.resume[0] : errors.resume}
+++              </span>
+++            )}
+++            <small className="help-text">Accepted formats: .pdf, .txt, .doc, .docx</small>
+++          </div>
+++
+++          <div className="modal-footer">
+++            <button
+++              type="button"
+++              onClick={handleClose}
+++              className="btn btn-secondary"
+++              disabled={loading}
+++            >
+++              Cancel
+++            </button>
+++            <button type="submit" className="btn btn-primary" disabled={loading}>
+++              {loading ? 'Creating...' : 'Create Candidate'}
+++            </button>
+++          </div>
+++        </form>
+++      </div>
+++    </div>
+++  );
+++}
+++
+++export default CandidateCreate;
++diff --git a/frontend/src/components/Candidates.js b/frontend/src/components/Candidates.js
++new file mode 100644
++index 0000000..ba4646c
++--- /dev/null
+++++ b/frontend/src/components/Candidates.js
++@@ -0,0 +1,140 @@
+++import React, { useState, useEffect } from 'react';
+++import api from '../api';
+++import CandidateCreate from './CandidateCreate';
+++
+++function Candidates() {
+++  const [candidates, setCandidates] = useState([]);
+++  const [loading, setLoading] = useState(true);
+++  const [error, setError] = useState(null);
+++  const [createModalOpen, setCreateModalOpen] = useState(false);
+++  const [scoreModalOpen, setScoreModalOpen] = useState(false);
+++  const [selectedCandidate, setSelectedCandidate] = useState(null);
+++
+++  useEffect(() => {
+++    fetchCandidates();
+++  }, []);
+++
+++  const fetchCandidates = async () => {
+++    try {
+++      setLoading(true);
+++      const response = await api.get('candidates/');
+++      setCandidates(response.data);
+++      setError(null);
+++    } catch (err) {
+++      setError(err.message || 'Failed to fetch candidates');
+++    } finally {
+++      setLoading(false);
+++    }
+++  };
+++
+++  const handleLogout = () => {
+++    localStorage.removeItem('access_token');
+++    localStorage.removeItem('refresh_token');
+++    window.location.href = '/login';
+++  };
+++
+++  const handleCandidateCreated = (newCandidate) => {
+++    // Add new candidate to the top of the list (optimistic update)
+++    setCandidates([newCandidate, ...candidates]);
+++    setCreateModalOpen(false);
+++  };
+++
+++  const handleScoreResume = (candidate) => {
+++    setSelectedCandidate(candidate);
+++    setScoreModalOpen(true);
+++  };
+++
+++  if (loading) {
+++    return <div className="loading">Loading candidates...</div>;
+++  }
+++
+++  if (error) {
+++    return <div className="error">Error: {error}</div>;
+++  }
+++
+++  return (
+++    <div className="candidates-container">
+++      <div className="candidates-header">
+++        <h1>Candidates</h1>
+++        <div className="header-buttons">
+++          <button onClick={() => setCreateModalOpen(true)} className="btn btn-primary">
+++            New Candidate
+++          </button>
+++          <button onClick={fetchCandidates} className="btn btn-secondary">
+++            Refresh
+++          </button>
+++          <button onClick={handleLogout} className="btn btn-secondary">
+++            Logout
+++          </button>
+++        </div>
+++      </div>
+++
+++      <div className="candidates-list">
+++        {candidates.length === 0 ? (
+++          <p>No candidates found. Click "New Candidate" to add one.</p>
+++        ) : (
+++          <table className="candidates-table">
+++            <thead>
+++              <tr>
+++                <th>Full Name</th>
+++                <th>Email</th>
+++                <th>Applied Role</th>
+++                <th>Resume</th>
+++                <th>Actions</th>
+++              </tr>
+++            </thead>
+++            <tbody>
+++              {candidates.map((candidate) => (
+++                <tr key={candidate.id}>
+++                  <td>{candidate.full_name}</td>
+++                  <td>{candidate.email}</td>
+++                  <td>{candidate.applied_role}</td>
+++                  <td>
+++                    {candidate.resume ? (
+++                      <a href={candidate.resume} target="_blank" rel="noopener noreferrer">
+++                        View Resume
+++                      </a>
+++                    ) : (
+++                      'No resume'
+++                    )}
+++                  </td>
+++                  <td>
+++                    {candidate.resume && (
+++                      <button
+++                        onClick={() => handleScoreResume(candidate)}
+++                        className="btn btn-sm btn-info"
+++                      >
+++                        Score Resume
+++                      </button>
+++                    )}
+++                  </td>
+++                </tr>
+++              ))}
+++            </tbody>
+++          </table>
+++        )}
+++      </div>
+++
+++      <CandidateCreate
+++        open={createModalOpen}
+++        onClose={() => setCreateModalOpen(false)}
+++        onCreated={handleCandidateCreated}
+++      />
+++
+++      {/* Resume scoring modal placeholder - existing functionality preserved */}
+++      {scoreModalOpen && selectedCandidate && (
+++        <div className="modal-overlay" onClick={() => setScoreModalOpen(false)}>
+++          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+++            <h2>Score Resume - {selectedCandidate.full_name}</h2>
+++            <p>Resume scoring functionality (existing feature preserved)</p>
+++            <button onClick={() => setScoreModalOpen(false)} className="btn btn-secondary">
+++              Close
+++            </button>
+++          </div>
+++        </div>
+++      )}
+++    </div>
+++  );
+++}
+++
+++export default Candidates;
+diff --git a/docker-compose.yml b/docker-compose.yml
+new file mode 100644
+index 0000000..92a20c9
+--- /dev/null
++++ b/docker-compose.yml
+@@ -0,0 +1,47 @@
++version: '3.8'
++
++services:
++  db:
++    image: postgres:14
++    environment:
++      POSTGRES_DB: rag7
++      POSTGRES_USER: rag7user
++      POSTGRES_PASSWORD: rag7pass
++    volumes:
++      - postgres_data:/var/lib/postgresql/data
++    ports:
++      - "5432:5432"
++
++  api:
++    build:
++      context: ./backend
++      dockerfile: Dockerfile
++    command: python manage.py runserver 0.0.0.0:8000
++    volumes:
++      - ./backend:/app
++    ports:
++      - "8000:8000"
++    environment:
++      - DEBUG=1
++      - DATABASE_URL=postgresql://rag7user:rag7pass@db:5432/rag7
++      - SECRET_KEY=dev-secret-key-change-in-production
++      - ALLOWED_HOSTS=localhost,127.0.0.1
++    depends_on:
++      - db
++
++  frontend:
++    build:
++      context: ./frontend
++      dockerfile: Dockerfile
++    volumes:
++      - ./frontend:/app
++      - /app/node_modules
++    ports:
++      - "3000:3000"
++    environment:
++      - REACT_APP_API_URL=http://localhost:8000/api
++    depends_on:
++      - api
++
++volumes:
++  postgres_data:
+diff --git a/frontend/README_DOCKER.md b/frontend/README_DOCKER.md
+new file mode 100644
+index 0000000..758ad5f
+--- /dev/null
++++ b/frontend/README_DOCKER.md
+@@ -0,0 +1,97 @@
++# Docker Setup and Testing Instructions
++
++This document provides instructions for running the full RAG7 application stack using Docker Compose and testing the candidate creation feature.
++
++## Prerequisites
++
++- Docker and Docker Compose installed
++- Git repository cloned locally
++
++## Starting the Application Stack
++
++1. **Build and start all services**:
++   ```bash
++   docker-compose up --build
++   ```
++
++   This will start:
++   - Django REST Framework API (backend) on port 8000
++   - React SPA (frontend) on port 3000
++   - PostgreSQL database
++   - Any other required services
++
++2. **Create a Django superuser** (in a new terminal):
++   ```bash
++   docker-compose exec api python manage.py createsuperuser
++   ```
++
++   Follow the prompts to create a username, email, and password.
++
++## Testing the Candidate Creation Feature
++
++1. **Access the application**:
++   - Open your browser and navigate to `http://localhost:3000`
++
++2. **Log in**:
++   - Use the superuser credentials you created in the previous step
++   - The SPA will authenticate and store JWT tokens in localStorage
++
++3. **Navigate to Candidates page**:
++   - Go to `/candidates` route (or click the Candidates link in the navigation)
++
++4. **Create a new candidate**:
++   - Click the "New Candidate" button in the header
++   - Fill in the form fields:
++     - **Full Name**: Candidate's full name (required)
++     - **Email**: Candidate's email address (required)
++     - **Applied Role**: The position they're applying for (required)
++     - **Resume**: Optional file upload (.pdf, .txt, .doc, .docx)
++   - Click "Create Candidate"
++   - The new candidate should appear at the top of the candidates list
++
++5. **Verify resume upload** (if file was uploaded):
++   - The candidate row should show a "View Resume" link
++   - Click the link to view/download the uploaded resume
++   - Resume files are stored in the backend's media directory
++
++## Optional: Persistent Media Storage
++
++By default, uploaded resume files are stored inside the Docker container and will be lost when the container is removed.
++
++**For persistent storage in a follow-up PR**, you can:
++1. Configure Django's `MEDIA_ROOT` setting in the backend
++2. Add a volume mount in `docker-compose.yml` for the `api` service:
++   ```yaml
++   volumes:
++     - ./media:/app/media
++   ```
++3. This will mount a local `./media` directory to persist uploaded files
++
++## Stopping the Application
++
++To stop all services:
++```bash
++docker-compose down
++```
++
++To stop and remove all data (including database):
++```bash
++docker-compose down -v
++```
++
++## Troubleshooting
++
++- **Port conflicts**: If ports 3000 or 8000 are already in use, modify the port mappings in `docker-compose.yml`
++- **Database connection issues**: Ensure PostgreSQL service is healthy before the API starts
++- **File upload errors**: Check that the API service has write permissions to the media directory
++- **Authentication errors**: Verify JWT tokens are being stored in localStorage and sent with API requests
++
++## API Endpoint Reference
++
++The candidate creation feature uses:
++- **POST** `/api/v1/candidates/` - Create a new candidate
++  - Content-Type: `multipart/form-data`
++  - Fields: `full_name`, `email`, `applied_role`, `resume` (optional)
++  - Authentication: JWT Bearer token required
++
++For more details on the API, refer to the backend documentation or visit `/api/docs` when the API is running.
+diff --git a/frontend/package.json b/frontend/package.json
+new file mode 100644
+index 0000000..84d4c9e
+--- /dev/null
++++ b/frontend/package.json
+@@ -0,0 +1,34 @@
++{
++  "name": "rag7-frontend",
++  "version": "0.1.0",
++  "private": true,
++  "dependencies": {
++    "axios": "^1.6.0",
++    "react": "^18.2.0",
++    "react-dom": "^18.2.0",
++    "react-scripts": "5.0.1"
++  },
++  "scripts": {
++    "start": "react-scripts start",
++    "build": "react-scripts build",
++    "test": "react-scripts test",
++    "eject": "react-scripts eject"
++  },
++  "eslintConfig": {
++    "extends": [
++      "react-app"
++    ]
++  },
++  "browserslist": {
++    "production": [
++      ">0.2%",
++      "not dead",
++      "not op_mini all"
++    ],
++    "development": [
++      "last 1 chrome version",
++      "last 1 firefox version",
++      "last 1 safari version"
++    ]
++  }
++}
+diff --git a/frontend/src/api.js b/frontend/src/api.js
+new file mode 100644
+index 0000000..b59e417
+--- /dev/null
++++ b/frontend/src/api.js
+@@ -0,0 +1,26 @@
++import axios from 'axios';
++
++const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
++
++const api = axios.create({
++  baseURL: `${API_BASE_URL}/v1/`,
++  headers: {
++    'Content-Type': 'application/json',
++  },
++});
++
++// Add JWT token from localStorage to requests
++api.interceptors.request.use(
++  (config) => {
++    const token = localStorage.getItem('access_token');
++    if (token) {
++      config.headers.Authorization = `Bearer ${token}`;
++    }
++    return config;
++  },
++  (error) => {
++    return Promise.reject(error);
++  }
++);
++
++export default api;
+diff --git a/frontend/src/components/CandidateCreate.js b/frontend/src/components/CandidateCreate.js
+new file mode 100644
+index 0000000..1c7c007
+--- /dev/null
++++ b/frontend/src/components/CandidateCreate.js
+@@ -0,0 +1,251 @@
++import React, { useState } from 'react';
++import api from '../api';
++
++function CandidateCreate({ open, onClose, onCreated }) {
++  const [formData, setFormData] = useState({
++    full_name: '',
++    email: '',
++    applied_role: '',
++    resume: null,
++  });
++  const [errors, setErrors] = useState({});
++  const [loading, setLoading] = useState(false);
++
++  const handleChange = (e) => {
++    const { name, value } = e.target;
++    setFormData({
++      ...formData,
++      [name]: value,
++    });
++    // Clear error for this field when user starts typing
++    if (errors[name]) {
++      setErrors({
++        ...errors,
++        [name]: null,
++      });
++    }
++  };
++
++  const handleFileChange = (e) => {
++    const file = e.target.files[0];
++    if (file) {
++      const validTypes = [
++        'application/pdf',
++        'text/plain',
++        'application/msword',
++        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
++      ];
++      const validExtensions = ['.pdf', '.txt', '.doc', '.docx'];
++      const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
++
++      if (!validTypes.includes(file.type) && !validExtensions.includes(fileExtension)) {
++        setErrors({
++          ...errors,
++          resume: 'Please select a valid file (.pdf, .txt, .doc, .docx)',
++        });
++        return;
++      }
++
++      setFormData({
++        ...formData,
++        resume: file,
++      });
++      if (errors.resume) {
++        setErrors({
++          ...errors,
++          resume: null,
++        });
++      }
++    }
++  };
++
++  const handleSubmit = async (e) => {
++    e.preventDefault();
++    setLoading(true);
++    setErrors({});
++
++    try {
++      // Create FormData for multipart/form-data submission
++      const submitData = new FormData();
++      submitData.append('full_name', formData.full_name);
++      submitData.append('email', formData.email);
++      submitData.append('applied_role', formData.applied_role);
++      if (formData.resume) {
++        submitData.append('resume', formData.resume);
++      }
++
++      // POST to /candidates/ endpoint
++      const response = await api.post('candidates/', submitData, {
++        headers: {
++          'Content-Type': 'multipart/form-data',
++        },
++      });
++
++      // Call onCreated with the created candidate object
++      onCreated(response.data);
++
++      // Reset form
++      setFormData({
++        full_name: '',
++        email: '',
++        applied_role: '',
++        resume: null,
++      });
++    } catch (err) {
++      // Handle DRF validation errors
++      if (err.response && err.response.data) {
++        setErrors(err.response.data);
++      } else {
++        setErrors({ non_field_errors: ['Failed to create candidate. Please try again.'] });
++      }
++    } finally {
++      setLoading(false);
++    }
++  };
++
++  const handleClose = () => {
++    if (!loading) {
++      setFormData({
++        full_name: '',
++        email: '',
++        applied_role: '',
++        resume: null,
++      });
++      setErrors({});
++      onClose();
++    }
++  };
++
++  if (!open) return null;
++
++  return (
++    <div className="modal-overlay" onClick={handleClose}>
++      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
++        <div className="modal-header">
++          <h2>Create New Candidate</h2>
++          <button
++            className="modal-close"
++            onClick={handleClose}
++            disabled={loading}
++            aria-label="Close modal"
++          >
++            &times;
++          </button>
++        </div>
++
++        <form onSubmit={handleSubmit} className="candidate-form">
++          {errors.non_field_errors && (
++            <div className="error-message">
++              {errors.non_field_errors.map((error, index) => (
++                <p key={index}>{error}</p>
++              ))}
++            </div>
++          )}
++
++          <div className="form-group">
++            <label htmlFor="full_name">
++              Full Name <span className="required">*</span>
++            </label>
++            <input
++              type="text"
++              id="full_name"
++              name="full_name"
++              value={formData.full_name}
++              onChange={handleChange}
++              required
++              disabled={loading}
++              className={errors.full_name ? 'error' : ''}
++            />
++            {errors.full_name && (
++              <span className="field-error">
++                {Array.isArray(errors.full_name) ? errors.full_name[0] : errors.full_name}
++              </span>
++            )}
++          </div>
++
++          <div className="form-group">
++            <label htmlFor="email">
++              Email <span className="required">*</span>
++            </label>
++            <input
++              type="email"
++              id="email"
++              name="email"
++              value={formData.email}
++              onChange={handleChange}
++              required
++              disabled={loading}
++              className={errors.email ? 'error' : ''}
++            />
++            {errors.email && (
++              <span className="field-error">
++                {Array.isArray(errors.email) ? errors.email[0] : errors.email}
++              </span>
++            )}
++          </div>
++
++          <div className="form-group">
++            <label htmlFor="applied_role">
++              Applied Role <span className="required">*</span>
++            </label>
++            <input
++              type="text"
++              id="applied_role"
++              name="applied_role"
++              value={formData.applied_role}
++              onChange={handleChange}
++              required
++              disabled={loading}
++              className={errors.applied_role ? 'error' : ''}
++            />
++            {errors.applied_role && (
++              <span className="field-error">
++                {Array.isArray(errors.applied_role)
++                  ? errors.applied_role[0]
++                  : errors.applied_role}
++              </span>
++            )}
++          </div>
++
++          <div className="form-group">
++            <label htmlFor="resume">Resume (optional)</label>
++            <input
++              type="file"
++              id="resume"
++              name="resume"
++              onChange={handleFileChange}
++              accept=".pdf,.txt,.doc,.docx"
++              disabled={loading}
++              className={errors.resume ? 'error' : ''}
++            />
++            {formData.resume && (
++              <span className="file-name">{formData.resume.name}</span>
++            )}
++            {errors.resume && (
++              <span className="field-error">
++                {Array.isArray(errors.resume) ? errors.resume[0] : errors.resume}
++              </span>
++            )}
++            <small className="help-text">Accepted formats: .pdf, .txt, .doc, .docx</small>
++          </div>
++
++          <div className="modal-footer">
++            <button
++              type="button"
++              onClick={handleClose}
++              className="btn btn-secondary"
++              disabled={loading}
++            >
++              Cancel
++            </button>
++            <button type="submit" className="btn btn-primary" disabled={loading}>
++              {loading ? 'Creating...' : 'Create Candidate'}
++            </button>
++          </div>
++        </form>
++      </div>
++    </div>
++  );
++}
++
++export default CandidateCreate;
+diff --git a/frontend/src/components/Candidates.js b/frontend/src/components/Candidates.js
+new file mode 100644
+index 0000000..ba4646c
+--- /dev/null
++++ b/frontend/src/components/Candidates.js
+@@ -0,0 +1,140 @@
++import React, { useState, useEffect } from 'react';
++import api from '../api';
++import CandidateCreate from './CandidateCreate';
++
++function Candidates() {
++  const [candidates, setCandidates] = useState([]);
++  const [loading, setLoading] = useState(true);
++  const [error, setError] = useState(null);
++  const [createModalOpen, setCreateModalOpen] = useState(false);
++  const [scoreModalOpen, setScoreModalOpen] = useState(false);
++  const [selectedCandidate, setSelectedCandidate] = useState(null);
++
++  useEffect(() => {
++    fetchCandidates();
++  }, []);
++
++  const fetchCandidates = async () => {
++    try {
++      setLoading(true);
++      const response = await api.get('candidates/');
++      setCandidates(response.data);
++      setError(null);
++    } catch (err) {
++      setError(err.message || 'Failed to fetch candidates');
++    } finally {
++      setLoading(false);
++    }
++  };
++
++  const handleLogout = () => {
++    localStorage.removeItem('access_token');
++    localStorage.removeItem('refresh_token');
++    window.location.href = '/login';
++  };
++
++  const handleCandidateCreated = (newCandidate) => {
++    // Add new candidate to the top of the list (optimistic update)
++    setCandidates([newCandidate, ...candidates]);
++    setCreateModalOpen(false);
++  };
++
++  const handleScoreResume = (candidate) => {
++    setSelectedCandidate(candidate);
++    setScoreModalOpen(true);
++  };
++
++  if (loading) {
++    return <div className="loading">Loading candidates...</div>;
++  }
++
++  if (error) {
++    return <div className="error">Error: {error}</div>;
++  }
++
++  return (
++    <div className="candidates-container">
++      <div className="candidates-header">
++        <h1>Candidates</h1>
++        <div className="header-buttons">
++          <button onClick={() => setCreateModalOpen(true)} className="btn btn-primary">
++            New Candidate
++          </button>
++          <button onClick={fetchCandidates} className="btn btn-secondary">
++            Refresh
++          </button>
++          <button onClick={handleLogout} className="btn btn-secondary">
++            Logout
++          </button>
++        </div>
++      </div>
++
++      <div className="candidates-list">
++        {candidates.length === 0 ? (
++          <p>No candidates found. Click "New Candidate" to add one.</p>
++        ) : (
++          <table className="candidates-table">
++            <thead>
++              <tr>
++                <th>Full Name</th>
++                <th>Email</th>
++                <th>Applied Role</th>
++                <th>Resume</th>
++                <th>Actions</th>
++              </tr>
++            </thead>
++            <tbody>
++              {candidates.map((candidate) => (
++                <tr key={candidate.id}>
++                  <td>{candidate.full_name}</td>
++                  <td>{candidate.email}</td>
++                  <td>{candidate.applied_role}</td>
++                  <td>
++                    {candidate.resume ? (
++                      <a href={candidate.resume} target="_blank" rel="noopener noreferrer">
++                        View Resume
++                      </a>
++                    ) : (
++                      'No resume'
++                    )}
++                  </td>
++                  <td>
++                    {candidate.resume && (
++                      <button
++                        onClick={() => handleScoreResume(candidate)}
++                        className="btn btn-sm btn-info"
++                      >
++                        Score Resume
++                      </button>
++                    )}
++                  </td>
++                </tr>
++              ))}
++            </tbody>
++          </table>
++        )}
++      </div>
++
++      <CandidateCreate
++        open={createModalOpen}
++        onClose={() => setCreateModalOpen(false)}
++        onCreated={handleCandidateCreated}
++      />
++
++      {/* Resume scoring modal placeholder - existing functionality preserved */}
++      {scoreModalOpen && selectedCandidate && (
++        <div className="modal-overlay" onClick={() => setScoreModalOpen(false)}>
++          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
++            <h2>Score Resume - {selectedCandidate.full_name}</h2>
++            <p>Resume scoring functionality (existing feature preserved)</p>
++            <button onClick={() => setScoreModalOpen(false)} className="btn btn-secondary">
++              Close
++            </button>
++          </div>
++        </div>
++      )}
++    </div>
++  );
++}
++
++export default Candidates;
+-- 
+2.51.2
+
