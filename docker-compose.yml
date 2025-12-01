@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # Django Backend API
+  api:
+    image: python:3.11-slim
+    container_name: rag7_api
+    working_dir: /app
+    command: >
+      sh -c "
+      pip install django djangorestframework django-cors-headers djangorestframework-simplejwt pillow &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./media:/app/media
+    environment:
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,api
+      - DATABASE_ENGINE=django.db.backends.sqlite3
+      - DATABASE_NAME=/app/db.sqlite3
+    networks:
+      - rag7_network
+
+  # React Frontend
+  frontend:
+    image: node:18-alpine
+    container_name: rag7_frontend
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000/api
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - api
+    networks:
+      - rag7_network
+
+networks:
+  rag7_network:
+    driver: bridge
+
+volumes:
+  node_modules:
