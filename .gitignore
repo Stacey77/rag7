@@ -1,0 +1,69 @@
+# Environment variables
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+ENV/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ChromaDB
+chroma_data/
+*.db
+
+# Credentials
+credentials.json
+token.json
+*.pem
+*.key
+
+# Logs
+*.log
+logs/
+
+# Frontend
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
