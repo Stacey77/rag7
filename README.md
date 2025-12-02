@@ -2,6 +2,19 @@
 
 A production-ready conversational AI agent platform with integrations for Slack, Gmail, and Notion. Built with FastAPI, React, and OpenAI function calling.
 
+## ✨ New: Floating Bot Widget
+
+The platform now includes a **floating bot widget** that provides real-time conversations from anywhere on the page! Click the floating button in the bottom-right corner to start chatting with the AI assistant.
+
+**Features:**
+- 💬 Real-time WebSocket communication
+- 🎨 Sleek, modern UI with animations
+- 📱 Fully responsive design
+- ⚡ Function call visualization
+- 🔄 Auto-reconnect on disconnect
+- 🗑️ Clear chat history
+- 🎯 Compact and non-intrusive
+
 ## 🏗️ Architecture
 
 ```
@@ -35,6 +48,9 @@ A production-ready conversational AI agent platform with integrations for Slack,
 
 - **Conversational AI**: Natural language interface powered by OpenAI GPT-4
 - **Function Calling**: Automatic tool execution based on user intent
+- **Dual UI Modes**: 
+  - 🖥️ Full-page chat interface
+  - 💬 Floating bot widget for real-time conversations
 - **Multi-Integration Support**: 
   - 📱 Slack: Send messages, list channels
   - 📧 Gmail: Send/read emails (OAuth2 or SMTP)
@@ -42,7 +58,7 @@ A production-ready conversational AI agent platform with integrations for Slack,
 - **Memory Management**: Conversation context with ChromaDB vector storage
 - **REST & WebSocket APIs**: Flexible communication methods
 - **Docker Compose**: One-command deployment
-- **React Frontend**: Modern chat interface
+- **React Frontend**: Modern, responsive chat interfaces
 - **CI/CD**: GitHub Actions for automated testing
 
 ## 🚀 Quick Start

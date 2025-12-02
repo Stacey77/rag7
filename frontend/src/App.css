@@ -97,6 +97,15 @@ code {
   margin: 1rem 0;
 }
 
+.floating-bot-hint {
+  margin-top: 2rem !important;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 8px;
+  font-weight: 500;
+  color: #667eea;
+}
+
 .message {
   display: flex;
   flex-direction: column;
