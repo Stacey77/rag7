@@ -137,9 +137,8 @@ class AgentMemory:
         """
         if self.use_chromadb and self.collection:
             try:
-                # Query ChromaDB
+                # Query ChromaDB - get all and filter manually since get() doesn't support limit well
                 results = self.collection.get(
-                    limit=limit,
                     where={"role": role} if role else None
                 )
                 
@@ -154,7 +153,9 @@ class AgentMemory:
                             "metadata": results["metadatas"][i]
                         })
                 
-                return messages[-limit:]  # Return most recent
+                # Sort by timestamp and return most recent up to limit
+                messages.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+                return messages[:limit]
                 
             except Exception as e:
                 logger.error(f"Failed to get messages from ChromaDB: {e}")

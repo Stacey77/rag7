@@ -23,6 +23,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Global agent instance
+# Note: In production, consider using dependency injection or a proper
+# singleton pattern with thread safety for better concurrency handling.
+# This global approach is acceptable for development/demo purposes.
 agent: Optional[ConversationalAgent] = None
 
 

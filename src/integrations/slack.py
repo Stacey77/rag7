@@ -145,12 +145,11 @@ class SlackIntegration(BaseIntegration):
         Returns:
             Result with message details
         """
-        # Remove # prefix if present
-        if channel.startswith("#"):
-            channel = channel[1:]
+        # Normalize channel name
+        normalized_channel = self._normalize_channel_name(channel)
         
         response = await self.client.chat_postMessage(
-            channel=channel,
+            channel=normalized_channel,
             text=text,
             thread_ts=thread_ts
         )
@@ -164,6 +163,20 @@ class SlackIntegration(BaseIntegration):
             },
             "error": None
         }
+    
+    def _normalize_channel_name(self, channel: str) -> str:
+        """
+        Normalize channel name by removing # prefix if present.
+        
+        Args:
+            channel: Channel name or ID
+            
+        Returns:
+            Normalized channel identifier
+        """
+        if channel.startswith("#"):
+            return channel[1:]
+        return channel
     
     async def _list_channels(self, limit: int = 100) -> Dict[str, Any]:
         """
