@@ -4,11 +4,37 @@ This guide gets you up and running with the RAG7 AI Agent Platform in minutes.
 
 ## Prerequisites
 
-- Docker & Docker Compose installed
+- Python 3.11+ and Node.js 18+ (for manual setup)
+- OR Docker & Docker Compose (for containerized setup)
 - OpenAI API key (get one at https://platform.openai.com/api-keys)
 - (Optional) Slack Bot Token for Slack integration
 
-## 5-Minute Setup
+## 🚀 Super Quick Setup (Automated)
+
+### Use the Setup Script
+
+```bash
+# Clone the repository
+git clone https://github.com/Stacey77/rag7.git
+cd rag7
+
+# Run the automated setup script
+chmod +x setup.sh
+./setup.sh
+```
+
+The script will:
+1. Check if you have the required tools
+2. Create `.env` file if needed
+3. Let you choose Docker or Manual setup
+4. Install all dependencies
+5. Start the services
+
+**Then visit http://localhost:3000 to see the dashboard!**
+
+---
+
+## 📝 Manual Setup (5 Minutes)
 
 ### 1. Clone and Configure
 
@@ -16,9 +42,6 @@ This guide gets you up and running with the RAG7 AI Agent Platform in minutes.
 # Clone the repository
 git clone https://github.com/Stacey77/rag7.git
 cd rag7
-
-# Checkout the feature branch
-git checkout copilot/featurescaffold-ai-agent-platform
 
 # Copy environment template
 cp .env.example .env
@@ -32,7 +55,9 @@ Edit `.env` and add at minimum:
 OPENAI_API_KEY=sk-your-actual-openai-key-here
 ```
 
-### 3. Start Everything
+### 3. Choose Your Setup Method
+
+#### Option A: Docker Compose (Recommended)
 
 ```bash
 docker-compose up --build
@@ -44,7 +69,22 @@ This starts:
 - 💾 ChromaDB on http://localhost:8001
 - 🔴 Redis on localhost:6379
 
-### 4. Open the Chat UI
+#### Option B: Manual (No Docker)
+
+**Terminal 1 - Backend:**
+```bash
+pip install -r requirements.txt
+uvicorn src.interfaces.web_api:app --reload
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm install
+npm start
+```
+
+### 4. Open the Platform
 
 Visit http://localhost:3000 in your browser.
 

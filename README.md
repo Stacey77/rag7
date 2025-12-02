@@ -100,34 +100,86 @@ GMAIL_CREDENTIALS_FILE=path/to/credentials.json
 NOTION_API_KEY=secret_your-key
 ```
 
-### 3. Run with Docker Compose
+### 3. Run with Docker Compose (Recommended)
 
 ```bash
 docker-compose up --build
 ```
 
 This starts:
-- Backend API: http://localhost:8000
-- Frontend: http://localhost:3000
-- ChromaDB: http://localhost:8001
-- Redis: localhost:6379
+- **Backend API**: http://localhost:8000 (with interactive docs at /docs)
+- **Frontend**: http://localhost:3000 (Full Dashboard + Floating Bot)
+- **ChromaDB**: http://localhost:8001
+- **Redis**: localhost:6379
 
-### 4. Or Run Manually
+**⚠️ First time setup**: Docker will build the images (may take 2-5 minutes).
 
-**Backend:**
+**✅ Success**: When you see:
+```
+frontend_1  | webpack compiled successfully
+api_1       | INFO: Application startup complete
+```
+
+Visit **http://localhost:3000** to see the dashboard!
+
+### 4. Or Run Manually (Alternative)
+
+If Docker isn't available or you prefer local development:
+
+**Terminal 1 - Backend:**
 ```bash
+# Install dependencies
 pip install -r requirements.txt
+
+# Start API server
 uvicorn src.interfaces.web_api:app --reload
 ```
 
-**Frontend:**
+**Terminal 2 - Frontend:**
 ```bash
+cd frontend
+
+# Install dependencies (first time only)
+npm install
+
+# Start development server
+npm start
+```
+
+**✅ Success**: 
+- Backend: http://localhost:8000
+- Frontend: http://localhost:3000
+
+### 5. Troubleshooting
+
+**404 Error on http://localhost:3000?**
+
+This means the frontend isn't running. Try:
+
+```bash
+# Option A: Using Docker (recommended)
+docker-compose up --build
+
+# Option B: Run frontend manually
 cd frontend
 npm install
 npm start
 ```
 
-### 5. Test the API
+**Backend Not Working?**
+
+```bash
+# Check if backend is running
+curl http://localhost:8000/health
+
+# If not, start it:
+pip install -r requirements.txt
+uvicorn src.interfaces.web_api:app --reload
+```
+
+**See TROUBLESHOOTING.md for detailed help with common issues.**
+
+### 6. Test the API
 
 ```bash
 # Health check
@@ -302,25 +354,40 @@ rag7/
 
 ## 🐛 Troubleshooting
 
-### Backend won't start
+### Common Issues
+
+**404 Error when visiting http://localhost:3000**
+- Frontend not running. Run: `docker-compose up --build` or `cd frontend && npm install && npm start`
+
+**Backend won't start**
 - Check `OPENAI_API_KEY` is set in `.env`
 - Verify Python version: `python --version` (requires 3.11+)
 - Install dependencies: `pip install -r requirements.txt`
 
-### ChromaDB connection fails
+**ChromaDB connection fails**
 - ChromaDB is optional; system falls back to in-memory storage
 - Check Docker: `docker-compose logs chromadb`
 - Verify port 8001 is available
 
-### Integration not working
+**Integration not working**
 - Check API keys in `.env`
 - Review logs: `docker-compose logs api`
 - Verify integration health: `curl http://localhost:8000/integrations`
 
-### Frontend can't connect
+**Frontend can't connect to backend**
 - Ensure backend is running on port 8000
 - Check CORS settings in `.env`
-- Verify `proxy` in `frontend/package.json`
+- Verify proxy configuration
+
+**📖 For detailed troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
+
+This guide includes:
+- Step-by-step solutions for 404 errors
+- Docker debugging
+- Dependency installation issues
+- WebSocket connection problems
+- Complete fresh setup procedure
+- Debug information collection
 
 ## 📄 License
 

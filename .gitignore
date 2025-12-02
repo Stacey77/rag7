@@ -67,3 +67,4 @@ Thumbs.db
 
 # Docker
 *.pid
+frontend/package-lock.json

@@ -59,11 +59,15 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://localhost:8000
+      - REACT_APP_API_URL=http://api:8000
+      - CHOKIDAR_USEPOLLING=true
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    command: npm run dev
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    depends_on:
+      - api
+    stdin_open: true
+    tty: true
     networks:
       - rag7-network
 
