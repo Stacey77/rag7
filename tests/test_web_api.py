@@ -5,7 +5,6 @@ from unittest.mock import AsyncMock, patch, MagicMock
 
 from src.interfaces.web_api import app
 from src.agent.core import ConversationalAgent
-from src.integrations.slack import SlackIntegration
 
 
 @pytest.fixture
