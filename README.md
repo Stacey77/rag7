@@ -48,9 +48,14 @@ The platform now includes a **floating bot widget** that provides real-time conv
 
 - **Conversational AI**: Natural language interface powered by OpenAI GPT-4
 - **Function Calling**: Automatic tool execution based on user intent
-- **Dual UI Modes**: 
-  - 🖥️ Full-page chat interface
-  - 💬 Floating bot widget for real-time conversations
+- **Full GUI Dashboard**: 
+  - 🖥️ Comprehensive dashboard with navigation
+  - 💬 Dedicated chat interface view
+  - 🔌 Integrations management panel
+  - 📊 Analytics and monitoring
+  - ⚙️ Settings and configuration
+- **Floating Bot Widget**: Always-available compact chat
+- **Dual UI Modes**: Use full dashboard OR floating widget independently
 - **Multi-Integration Support**: 
   - 📱 Slack: Send messages, list channels
   - 📧 Gmail: Send/read emails (OAuth2 or SMTP)
@@ -58,7 +63,7 @@ The platform now includes a **floating bot widget** that provides real-time conv
 - **Memory Management**: Conversation context with ChromaDB vector storage
 - **REST & WebSocket APIs**: Flexible communication methods
 - **Docker Compose**: One-command deployment
-- **React Frontend**: Modern, responsive chat interfaces
+- **React Frontend**: Modern, responsive interfaces
 - **CI/CD**: GitHub Actions for automated testing
 
 ## 🚀 Quick Start
