@@ -199,6 +199,135 @@ services:
       - ragamuffin-network
     restart: unless-stopped
 
+  # PostgreSQL - Persistent database for multi-tenancy
+  postgres:
+    image: postgres:15-alpine
+    container_name: ragamuffin-postgres
+    environment:
+      POSTGRES_DB: ragamuffin
+      POSTGRES_USER: ragamuffin
+      POSTGRES_PASSWORD: ragamuffin_secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ragamuffin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  # RabbitMQ - Message queue for async processing
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: ragamuffin-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  # Traefik - API Gateway
+  traefik:
+    image: traefik:v2.10
+    container_name: ragamuffin-traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/dynamic"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"       # HTTP
+      - "443:443"     # HTTPS
+      - "8090:8080"   # Dashboard (changed from 8080 to avoid conflict)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/traefik.yml:ro
+      - ./traefik/dynamic:/dynamic:ro
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+
+  # Admin Dashboard - Management UI
+  admin-dashboard:
+    build:
+      context: ./admin-dashboard
+      dockerfile: Dockerfile
+    container_name: ragamuffin-admin
+    environment:
+      REACT_APP_API_URL: http://backend:8000
+      REACT_APP_ENVIRONMENT: development
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
+      - "traefik.http.services.admin.loadbalancer.server.port=3000"
+    depends_on:
+      - backend
+
+  # Embedding Worker - Async embedding processing
+  embedding-worker:
+    build:
+      context: ./workers/embedding
+      dockerfile: Dockerfile
+    container_name: ragamuffin-embedding-worker
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      DATABASE_URL: postgresql://ragamuffin:ragamuffin_secure_password@postgres:5432/ragamuffin
+      RAG_SERVICE_URL: http://rag-service:8001
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+      - postgres
+      - rag-service
+
+  # Export Worker - Async data export/import processing
+  export-worker:
+    build:
+      context: ./workers/export
+      dockerfile: Dockerfile
+    container_name: ragamuffin-export-worker
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      DATABASE_URL: postgresql://ragamuffin:ragamuffin_secure_password@postgres:5432/ragamuffin
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    volumes:
+      - ./exports:/exports
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+      - postgres
+      - minio
+
 networks:
   ragamuffin-network:
     driver: bridge
@@ -210,3 +339,5 @@ volumes:
   n8n_data:
   prometheus_data:
   grafana_data:
+  postgres_data:
+  rabbitmq_data:

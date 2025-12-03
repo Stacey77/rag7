@@ -1,0 +1,138 @@
+{
+    "rabbit_version": "3.12",
+    "users": [
+        {
+            "name": "guest",
+            "password_hash": "QgH9YT8WDl6LXBWbHuWYsLPWuHWbHZXM9N6pWyNmVPM=",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": ["administrator"]
+        }
+    ],
+    "vhosts": [
+        {
+            "name": "/"
+        }
+    ],
+    "permissions": [
+        {
+            "user": "guest",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        }
+    ],
+    "queues": [
+        {
+            "name": "embedding_queue",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-max-length": 10000,
+                "x-message-ttl": 3600000,
+                "x-dead-letter-exchange": "dlx"
+            }
+        },
+        {
+            "name": "export_queue",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-max-length": 1000,
+                "x-message-ttl": 7200000,
+                "x-dead-letter-exchange": "dlx"
+            }
+        },
+        {
+            "name": "workflow_queue",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-max-length": 5000,
+                "x-message-ttl": 3600000,
+                "x-dead-letter-exchange": "dlx"
+            }
+        },
+        {
+            "name": "analytics_queue",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-max-length": 50000,
+                "x-message-ttl": 1800000
+            }
+        },
+        {
+            "name": "dead_letter_queue",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false
+        }
+    ],
+    "exchanges": [
+        {
+            "name": "dlx",
+            "vhost": "/",
+            "type": "fanout",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "ragamuffin",
+            "vhost": "/",
+            "type": "topic",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        }
+    ],
+    "bindings": [
+        {
+            "source": "dlx",
+            "vhost": "/",
+            "destination": "dead_letter_queue",
+            "destination_type": "queue",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "ragamuffin",
+            "vhost": "/",
+            "destination": "embedding_queue",
+            "destination_type": "queue",
+            "routing_key": "embedding.*",
+            "arguments": {}
+        },
+        {
+            "source": "ragamuffin",
+            "vhost": "/",
+            "destination": "export_queue",
+            "destination_type": "queue",
+            "routing_key": "export.*",
+            "arguments": {}
+        },
+        {
+            "source": "ragamuffin",
+            "vhost": "/",
+            "destination": "workflow_queue",
+            "destination_type": "queue",
+            "routing_key": "workflow.*",
+            "arguments": {}
+        },
+        {
+            "source": "ragamuffin",
+            "vhost": "/",
+            "destination": "analytics_queue",
+            "destination_type": "queue",
+            "routing_key": "analytics.*",
+            "arguments": {}
+        }
+    ]
+}

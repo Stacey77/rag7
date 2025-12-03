@@ -1,0 +1,79 @@
+http:
+  routers:
+    backend-api:
+      rule: "PathPrefix(`/api`)"
+      service: backend
+      middlewares:
+        - rate-limit
+        - security-headers
+      entryPoints:
+        - web
+    
+    rag-service:
+      rule: "PathPrefix(`/rag`)"
+      service: rag-service
+      middlewares:
+        - rate-limit
+        - security-headers
+      entryPoints:
+        - web
+    
+    admin-dashboard:
+      rule: "PathPrefix(`/admin`)"
+      service: admin-dashboard
+      middlewares:
+        - security-headers
+      entryPoints:
+        - web
+    
+    frontend:
+      rule: "PathPrefix(`/`)"
+      service: frontend
+      middlewares:
+        - security-headers
+      entryPoints:
+        - web
+      priority: 1
+
+  services:
+    backend:
+      loadBalancer:
+        servers:
+          - url: "http://backend:8000"
+        healthCheck:
+          path: "/health"
+          interval: "10s"
+          timeout: "3s"
+    
+    rag-service:
+      loadBalancer:
+        servers:
+          - url: "http://rag-service:8001"
+        healthCheck:
+          path: "/health"
+          interval: "10s"
+          timeout: "3s"
+    
+    admin-dashboard:
+      loadBalancer:
+        servers:
+          - url: "http://admin-dashboard:3000"
+    
+    frontend:
+      loadBalancer:
+        servers:
+          - url: "http://frontend:8080"
+
+  middlewares:
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 50
+        period: 1s
+    
+    security-headers:
+      headers:
+        browserXssFilter: true
+        contentTypeNosniff: true
+        frameDeny: false
+        customFrameOptionsValue: "SAMEORIGIN"
