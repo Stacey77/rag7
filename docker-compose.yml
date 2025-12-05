@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  langflow:
+    build:
+      context: ./langflow
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"
+    environment:
+      - LANGFLOW_HOST=0.0.0.0
+      - LANGFLOW_PORT=7860
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - epic-platform
+
+  backend:
+    build:
+      context: ./langflow-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./langflow-backend/flows:/app/flows
+    environment:
+      - LANGFLOW_URL=http://langflow:7860
+    depends_on:
+      - langflow
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - epic-platform
+
+  frontend:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - epic-platform
+
+networks:
+  epic-platform:
+    driver: bridge
+
+volumes:
+  langflow-flows:
+    driver: local
