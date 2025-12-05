@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Login from './components/Login'
 
 const API_BASE_URL = 'http://localhost:8000'
@@ -85,7 +85,7 @@ function App() {
   }
 
   // Load user info on mount if token exists
-  useState(() => {
+  useEffect(() => {
     if (token && !user) {
       fetchUserInfo(token)
     }
