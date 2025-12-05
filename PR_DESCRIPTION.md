@@ -244,6 +244,10 @@ tests/test_auth.py::TestWebSocketAuthentication::test_websocket_with_invalid_tok
 - Python security checks: PASSED
 - GitHub Actions security: PASSED
 
+✅ **Dependency Security**: All vulnerabilities patched
+- fastapi upgraded to 0.115.5 (fixes Content-Type Header ReDoS)
+- python-multipart upgraded to 0.0.18 (fixes DoS and ReDoS vulnerabilities)
+
 ## Checklist for Reviewers
 
 - [ ] Review authentication flow and JWT implementation
@@ -261,7 +265,7 @@ tests/test_auth.py::TestWebSocketAuthentication::test_websocket_with_invalid_tok
 None - this is a new feature addition.
 
 ## Dependencies Added
-- `fastapi==0.104.1` - Web framework
+- `fastapi==0.115.5` - Web framework (updated for security)
 - `uvicorn[standard]==0.24.0` - ASGI server
 - `python-jose[cryptography]==3.3.0` - JWT implementation
 - `bcrypt==4.1.2` - Password hashing
@@ -269,6 +273,7 @@ None - this is a new feature addition.
 - `pydantic==2.5.0` - Data validation
 - `pytest==7.4.3` - Testing framework
 - `httpx==0.25.2` - HTTP client for testing
+- `python-multipart==0.0.18` - Multipart form data (updated for security)
 
 ## Next Steps (Future PRs)
 1. Integrate OAuth/OIDC for production authentication
