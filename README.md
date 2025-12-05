@@ -136,9 +136,9 @@ STATIC_USERS=user1:$2b$12$hash1,user2:$2b$12$hash2
 
 Generate password hash:
 ```python
-from passlib.context import CryptContext
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-hashed = pwd_context.hash("your-password")
+import bcrypt
+password = "your-password"
+hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 print(hashed)
 ```
 

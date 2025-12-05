@@ -18,7 +18,11 @@ from jose import jwt
 os.environ["JWT_SECRET"] = "test-secret-key-for-testing-only"
 os.environ["JWT_ALGORITHM"] = "HS256"
 os.environ["ACCESS_TOKEN_EXPIRE_MINUTES"] = "30"
-os.environ["STATIC_USERS"] = "testuser:$2b$12$zTUL72EpStgcbdytol3L9eloCwzGZx4sCYA4rYC2snOdQtHYoNVp.,admin:$2b$12$zTUL72EpStgcbdytol3L9eloCwzGZx4sCYA4rYC2snOdQtHYoNVp."
+
+# Password hash for "admin123" - used for test users
+# Generated with: bcrypt.hashpw(b"admin123", bcrypt.gensalt()).decode('utf-8')
+TEST_PASSWORD_HASH = "$2b$12$zTUL72EpStgcbdytol3L9eloCwzGZx4sCYA4rYC2snOdQtHYoNVp."
+os.environ["STATIC_USERS"] = f"testuser:{TEST_PASSWORD_HASH},admin:{TEST_PASSWORD_HASH}"
 
 from src.interfaces.web_api import app
 from src.utils.auth import (

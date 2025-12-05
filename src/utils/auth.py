@@ -24,7 +24,13 @@ from pydantic import BaseModel, Field
 
 
 # Configuration from environment variables
-JWT_SECRET = os.getenv("JWT_SECRET", "your-secret-key-here-replace-in-production")
+# JWT_SECRET must be set in production - use a cryptographically secure random string
+JWT_SECRET = os.getenv("JWT_SECRET")
+if not JWT_SECRET:
+    raise ValueError(
+        "JWT_SECRET environment variable must be set. "
+        "Generate one with: openssl rand -hex 32"
+    )
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 
