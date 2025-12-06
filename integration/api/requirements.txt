@@ -1,5 +1,5 @@
 # FastAPI and ASGI server
-fastapi==0.109.0
+fastapi==0.109.1  # Updated to patch CVE-2024-24762 (ReDoS vulnerability)
 uvicorn[standard]==0.27.0
 pydantic==2.5.3
 
@@ -25,7 +25,7 @@ opentelemetry-instrumentation-fastapi==0.43b0
 # Security
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
-python-multipart==0.0.6
+python-multipart==0.0.18  # Updated to patch CVE-2024-24762 and CVE-2024-XXXXX (DoS vulnerabilities)
 
 # Environment variables
 python-dotenv==1.0.0
