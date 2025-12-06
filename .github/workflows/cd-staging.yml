@@ -12,6 +12,8 @@ env:
 jobs:
   deploy-staging:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     environment:
       name: staging
       # url: https://staging.your-domain.com  # Optional: Set actual URL when available
