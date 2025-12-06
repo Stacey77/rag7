@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
-      url: https://staging.example.com  # TODO: Update with actual staging URL
+      # url: https://staging.your-domain.com  # Optional: Set actual URL when available
     
     steps:
       - uses: actions/checkout@v4
@@ -59,9 +59,39 @@ jobs:
       
       - name: Run smoke tests
         run: |
-          # TODO: Add actual smoke test endpoints
-          # Get the service endpoint
+          # Get the service endpoint (works for LoadBalancer type)
           ENDPOINT=$(kubectl get service langgraph-api -n rag7-staging -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-          if [ -n "$ENDPOINT" ]; then
-            curl -f http://$ENDPOINT/health || echo "Health check pending..."
+          
+          # If LoadBalancer is not available, try port-forward for testing
+          if [ -z "$ENDPOINT" ]; then
+            echo "LoadBalancer IP not available, using port-forward for testing..."
+            kubectl port-forward -n rag7-staging svc/langgraph-api 8080:80 &
+            PF_PID=$!
+            sleep 5
+            ENDPOINT="localhost:8080"
           fi
+          
+          # Test health endpoint
+          echo "Testing health endpoint..."
+          if curl -f --max-time 10 http://$ENDPOINT/health; then
+            echo "✓ Health check passed"
+          else
+            echo "✗ Health check failed"
+            [ -n "$PF_PID" ] && kill $PF_PID
+            exit 1
+          fi
+          
+          # Test readiness endpoint
+          echo "Testing readiness endpoint..."
+          if curl -f --max-time 10 http://$ENDPOINT/ready; then
+            echo "✓ Readiness check passed"
+          else
+            echo "✗ Readiness check failed"
+            [ -n "$PF_PID" ] && kill $PF_PID
+            exit 1
+          fi
+          
+          # Cleanup port-forward if used
+          [ -n "$PF_PID" ] && kill $PF_PID
+          
+          echo "✓ All smoke tests passed"
