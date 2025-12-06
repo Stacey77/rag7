@@ -95,6 +95,8 @@ Ensure you have:
 
 ### 2. Create Secrets
 
+⚠️ **IMPORTANT**: These secrets MUST be created before deploying the application. The deployment will fail if these secrets don't exist.
+
 Create the application secrets:
 
 ```bash
@@ -110,6 +112,12 @@ kubectl create secret generic langgraph-secrets \
   -n rag7-staging
 ```
 
+Verify the secret was created:
+
+```bash
+kubectl get secret langgraph-secrets -n rag7-staging
+```
+
 Create Docker registry secret for pulling images:
 
 ```bash
@@ -118,6 +126,12 @@ kubectl create secret docker-registry ghcr-pull-secret \
   --docker-username=YOUR_GITHUB_USERNAME \
   --docker-password=YOUR_GITHUB_TOKEN \
   -n rag7-staging
+```
+
+Verify the secret was created:
+
+```bash
+kubectl get secret ghcr-pull-secret -n rag7-staging
 ```
 
 ### 3. Deploy Application

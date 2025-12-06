@@ -43,7 +43,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "contentType": "json",
-        "body": "={\n  \"input\": {\n    \"query\": \"{{$json.query}}\",\n    \"session_id\": \"{{$json.session_id}}\"\n  },\n  \"config\": {\n    \"recursion_limit\": 50\n  }\n}",
+        "body": "={\n  \"input\": {\n    \"query\": \"{{=$json.query}}\",\n    \"session_id\": \"{{=$json.session_id}}\"\n  },\n  \"config\": {\n    \"recursion_limit\": 50\n  }\n}",
         "options": {
           "timeout": 180000
         }

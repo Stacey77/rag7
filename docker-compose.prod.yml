@@ -71,7 +71,7 @@ services:
     environment:
       - N8N_HOST=${N8N_HOST:-localhost}
       - N8N_PORT=5678
-      - N8N_PROTOCOL=https
+      - N8N_PROTOCOL=http  # Use https only when behind SSL termination (nginx, traefik, etc.)
       - NODE_ENV=production
       - WEBHOOK_URL=${N8N_WEBHOOK_URL:?N8N_WEBHOOK_URL is required}
       - GENERIC_TIMEZONE=UTC
