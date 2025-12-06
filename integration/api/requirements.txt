@@ -11,8 +11,7 @@ asyncpg==0.29.0
 sqlalchemy==2.0.25
 
 # Cache (Redis)
-redis==5.0.1
-aioredis==2.0.1
+redis[hiredis]==5.0.1  # Includes async support, hiredis for better performance
 
 # LangChain and LangGraph (adjust versions as needed)
 langchain==0.1.4
