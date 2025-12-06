@@ -3,11 +3,22 @@ LangGraph Integration API Server
 
 This FastAPI application provides REST endpoints for LangGraph operations
 with health checks, monitoring, and production-ready features.
+
+NOTE: This is a skeleton implementation with TODO placeholders.
+Before deploying to production, you must implement:
+- Actual database connection logic (check_database_connection)
+- Actual Redis connection logic (check_redis_connection)
+- Actual external API checks (check_external_api)
+- Actual LangGraph execution logic (run_graph endpoint)
+- Any additional business logic specific to your use case
+
+The health and readiness endpoints currently return placeholder values
+for demonstration purposes. Replace these with actual checks.
 """
 
 import os
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 from contextlib import asynccontextmanager
 
@@ -119,7 +130,7 @@ async def health_check():
     """
     return HealthResponse(
         status="healthy",
-        timestamp=datetime.utcnow().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         version="1.0.0"
     )
 
@@ -149,7 +160,7 @@ async def readiness_check():
         content={
             "status": "ready" if all_ready else "not_ready",
             "checks": checks,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     )
 
@@ -241,7 +252,7 @@ async def run_graph(request: GraphInput):
         logger.info(f"Executing graph with input: {request.input}")
         
         # Stubbed response - replace with actual graph execution
-        execution_id = f"exec_{datetime.utcnow().timestamp()}"
+        execution_id = f"exec_{datetime.now(timezone.utc).timestamp()}"
         
         # Simulated graph execution
         output = {
@@ -254,7 +265,7 @@ async def run_graph(request: GraphInput):
             status="success",
             execution_id=execution_id,
             output=output,
-            timestamp=datetime.utcnow().isoformat()
+            timestamp=datetime.now(timezone.utc).isoformat()
         )
         
     except Exception as e:
@@ -281,7 +292,7 @@ async def get_execution_status(execution_id: str):
     return {
         "execution_id": execution_id,
         "status": "completed",  # or "running", "failed", "pending"
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
@@ -295,7 +306,7 @@ async def http_exception_handler(request, exc):
         content={
             "status": "error",
             "message": exc.detail,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     )
 
@@ -309,7 +320,7 @@ async def general_exception_handler(request, exc):
         content={
             "status": "error",
             "message": "Internal server error",
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     )
 
