@@ -1,0 +1,35 @@
+# FastAPI and ASGI server
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+
+# HTTP client
+httpx==0.26.0
+
+# Database (PostgreSQL)
+asyncpg==0.29.0
+sqlalchemy==2.0.25
+
+# Cache (Redis)
+redis==5.0.1
+aioredis==2.0.1
+
+# LangChain and LangGraph (adjust versions as needed)
+langchain==0.1.4
+langgraph==0.0.20
+
+# Observability
+opentelemetry-api==1.22.0
+opentelemetry-sdk==1.22.0
+opentelemetry-instrumentation-fastapi==0.43b0
+
+# Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Utilities
+python-dateutil==2.8.2

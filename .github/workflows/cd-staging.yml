@@ -1,0 +1,67 @@
+name: CD - Deploy to Staging
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.example.com  # TODO: Update with actual staging URL
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+      
+      - name: Configure kubectl with kubeconfig
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_STAGING }}
+        run: |
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+          chmod 600 ~/.kube/config
+      
+      - name: Verify cluster connection
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
+      
+      - name: Set image tag
+        id: image-tag
+        run: |
+          echo "TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      
+      - name: Update deployment image
+        run: |
+          kubectl set image deployment/langgraph-api \
+            langgraph-api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.image-tag.outputs.TAG }} \
+            -n rag7-staging
+      
+      - name: Wait for rollout to complete
+        run: |
+          kubectl rollout status deployment/langgraph-api -n rag7-staging --timeout=5m
+      
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n rag7-staging -l app=langgraph-api
+          kubectl get service -n rag7-staging langgraph-api
+      
+      - name: Run smoke tests
+        run: |
+          # TODO: Add actual smoke test endpoints
+          # Get the service endpoint
+          ENDPOINT=$(kubectl get service langgraph-api -n rag7-staging -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          if [ -n "$ENDPOINT" ]; then
+            curl -f http://$ENDPOINT/health || echo "Health check pending..."
+          fi

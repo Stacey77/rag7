@@ -1,0 +1,20 @@
+# Development and Testing Dependencies
+# For running tests, linting, and local development
+
+# Testing
+pytest==7.4.4
+pytest-cov==4.1.0
+pytest-asyncio==0.23.3
+
+# Code Quality
+black==24.1.1
+flake8==7.0.0
+pylint==3.0.3
+mypy==1.8.0
+
+# Development tools
+ipython==8.20.0
+ipdb==0.13.13
+
+# Application dependencies (install from integration/api/requirements.txt for running the app)
+# To install: pip install -r integration/api/requirements.txt
