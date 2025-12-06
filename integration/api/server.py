@@ -9,6 +9,7 @@ import os
 import logging
 from datetime import datetime
 from typing import Dict, Any, Optional
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,13 +24,32 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
+# Lifespan context manager for startup/shutdown
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifespan (startup and shutdown)"""
+    # Startup
+    logger.info("Starting LangGraph API server...")
+    # TODO: Initialize database connections, Redis client, etc.
+    logger.info("Server started successfully")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down LangGraph API server...")
+    # TODO: Close database connections, Redis client, etc.
+    logger.info("Server shutdown complete")
+
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Rag7 LangGraph API",
     description="Production-ready LangGraph integration API",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Configure CORS
@@ -292,24 +312,6 @@ async def general_exception_handler(request, exc):
             "timestamp": datetime.utcnow().isoformat()
         }
     )
-
-
-# Startup/Shutdown Events
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize resources on startup"""
-    logger.info("Starting LangGraph API server...")
-    # TODO: Initialize database connections, Redis client, etc.
-    logger.info("Server started successfully")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup resources on shutdown"""
-    logger.info("Shutting down LangGraph API server...")
-    # TODO: Close database connections, Redis client, etc.
-    logger.info("Server shutdown complete")
 
 
 # Root endpoint
