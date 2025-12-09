@@ -2158,5 +2158,159 @@
     "stream": "https://stream-placeholder.example.com/hls/channel-220/playlist.m3u8",
     "epg": "https://epg-placeholder.example.com/epg/channel-220.xml",
     "type": "live"
+  },
+  {
+    "id": 221,
+    "name": "Channel 221",
+    "country": "DE",
+    "language": "Spanish",
+    "category": "Movies",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-221.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-221/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-221.xml",
+    "type": "hybrid"
+  },
+  {
+    "id": 222,
+    "name": "Channel 222",
+    "country": "ES",
+    "language": "French",
+    "category": "Kids",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-222.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-222/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-222.xml",
+    "type": "live"
+  },
+  {
+    "id": 223,
+    "name": "Channel 223",
+    "country": "IT",
+    "language": "German",
+    "category": "Lifestyle",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-223.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-223/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-223.xml",
+    "type": "vod"
+  },
+  {
+    "id": 224,
+    "name": "Channel 224",
+    "country": "US",
+    "language": "Italian",
+    "category": "Science",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-224.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-224/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-224.xml",
+    "type": "hybrid"
+  },
+  {
+    "id": 225,
+    "name": "Channel 225",
+    "country": "UK",
+    "language": "English",
+    "category": "News",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-225.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-225/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-225.xml",
+    "type": "live"
+  },
+  {
+    "id": 226,
+    "name": "Channel 226",
+    "country": "CA",
+    "language": "Spanish",
+    "category": "Sports",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-226.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-226/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-226.xml",
+    "type": "vod"
+  },
+  {
+    "id": 227,
+    "name": "Channel 227",
+    "country": "AU",
+    "language": "French",
+    "category": "Entertainment",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-227.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-227/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-227.xml",
+    "type": "hybrid"
+  },
+  {
+    "id": 228,
+    "name": "Channel 228",
+    "country": "FR",
+    "language": "German",
+    "category": "Documentary",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-228.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-228/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-228.xml",
+    "type": "live"
+  },
+  {
+    "id": 229,
+    "name": "Channel 229",
+    "country": "DE",
+    "language": "Italian",
+    "category": "Music",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-229.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-229/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-229.xml",
+    "type": "vod"
+  },
+  {
+    "id": 230,
+    "name": "Channel 230",
+    "country": "ES",
+    "language": "English",
+    "category": "Movies",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-230.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-230/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-230.xml",
+    "type": "hybrid"
+  },
+  {
+    "id": 231,
+    "name": "Channel 231",
+    "country": "IT",
+    "language": "Spanish",
+    "category": "Kids",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-231.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-231/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-231.xml",
+    "type": "live"
+  },
+  {
+    "id": 232,
+    "name": "Channel 232",
+    "country": "US",
+    "language": "French",
+    "category": "Lifestyle",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-232.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-232/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-232.xml",
+    "type": "vod"
+  },
+  {
+    "id": 233,
+    "name": "Channel 233",
+    "country": "UK",
+    "language": "German",
+    "category": "Science",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-233.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-233/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-233.xml",
+    "type": "hybrid"
+  },
+  {
+    "id": 234,
+    "name": "Channel 234",
+    "country": "CA",
+    "language": "Italian",
+    "category": "News",
+    "logo": "https://placeholder-cdn.example.com/logos/channel-234.png",
+    "stream": "https://stream-placeholder.example.com/hls/channel-234/playlist.m3u8",
+    "epg": "https://epg-placeholder.example.com/epg/channel-234.xml",
+    "type": "live"
   }
 ]
