@@ -20,8 +20,11 @@ const bodyParser = require('body-parser');
 const app = express();
 
 // Initialize Stripe with secret key from environment
-// TODO: Ensure STRIPE_SECRET_KEY is set in Firebase functions config
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '');
+// Fail fast if STRIPE_SECRET_KEY is not configured
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('STRIPE_SECRET_KEY environment variable is required');
+}
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // IMPORTANT: Use raw body parser for Stripe webhook signature verification
 // Stripe requires the raw request body to verify webhook signatures
@@ -101,6 +104,12 @@ app.post('/webhook', async (req, res) => {
  */
 async function handleInvoicePaymentSucceeded(invoice) {
   console.log('TODO: Handle invoice.payment_succeeded', invoice.id);
+  
+  // Validate subscription ID exists (one-time payments may not have subscription)
+  if (!invoice.subscription) {
+    console.log('Invoice has no subscription (one-time payment), skipping subscription update');
+    return;
+  }
   
   // TODO Implementation:
   // const customer = await stripe.customers.retrieve(invoice.customer);

@@ -59,9 +59,12 @@ function ChannelLock({ channel, children }) {
     );
   }
 
-  // Check if channel requires gold tier and user doesn't have it
-  const requiresGold = channel.tier === 'gold';
-  const hasAccess = !requiresGold || userTier === 'gold';
+  // Check if user has sufficient tier access (hierarchy: gold > silver > free)
+  const tierHierarchy = { free: 0, silver: 1, gold: 2 };
+  const requiredTier = channel.tier || 'free';
+  const requiredLevel = tierHierarchy[requiredTier] || 0;
+  const userLevel = tierHierarchy[userTier] || 0;
+  const hasAccess = userLevel >= requiredLevel;
 
   if (!hasAccess) {
     return (
@@ -100,7 +103,10 @@ function ChannelLock({ channel, children }) {
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔒</div>
           <h2 style={{ marginBottom: '16px' }}>Premium Content</h2>
           <p style={{ marginBottom: '24px' }}>
-            This channel requires a Gold tier subscription.
+            This channel requires a {requiredTier.charAt(0).toUpperCase() + requiredTier.slice(1)} tier subscription.
+            {userTier !== 'free' && (
+              ` You currently have ${userTier.charAt(0).toUpperCase() + userTier.slice(1)} tier access.`
+            )}
           </p>
           <button
             onClick={() => {
@@ -108,7 +114,7 @@ function ChannelLock({ channel, children }) {
               // 1. Create Stripe Checkout Session via Cloud Function
               // 2. Redirect to Stripe Checkout
               // 3. Handle success/cancel redirects
-              console.log('Upgrade to Gold clicked');
+              console.log(`Upgrade to ${requiredTier} clicked`);
               alert('TODO: Implement Stripe checkout flow');
             }}
             style={{
@@ -122,7 +128,7 @@ function ChannelLock({ channel, children }) {
               cursor: 'pointer'
             }}
           >
-            Upgrade to Gold
+            Upgrade to {requiredTier.charAt(0).toUpperCase() + requiredTier.slice(1)}
           </button>
         </div>
       </div>

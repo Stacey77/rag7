@@ -1,5 +1,10 @@
 /**
  * Load channels from the full channel dataset
+ * 
+ * Note: This loads the entire JSON into memory (~196 channels, ~2KB).
+ * For much larger datasets (1000+ channels), consider implementing
+ * pagination or streaming. Current size is acceptable for most use cases.
+ * 
  * @returns {Array} Array of channel objects, or empty array on error
  */
 function loadChannels() {
