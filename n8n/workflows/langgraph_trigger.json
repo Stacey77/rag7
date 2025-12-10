@@ -1,0 +1,181 @@
+{
+  "name": "LangGraph Trigger",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Prepare LangGraph execution request\nconst executionRequest = {\n  graph_id: 'scheduled_task',\n  input: {\n    task_type: 'scheduled',\n    timestamp: new Date().toISOString(),\n    parameters: {}\n  },\n  config: {\n    timeout: 60,\n    async: true,\n    callback_url: 'http://n8n:5678/webhook/langgraph-callback'\n  }\n};\n\nreturn {\n  json: executionRequest\n};"
+      },
+      "id": "prepare-request",
+      "name": "Prepare Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "url": "http://langgraph-api:8000/v1/graph/run",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "graph_id",
+              "value": "={{ $json.graph_id }}"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.input }}"
+            },
+            {
+              "name": "config",
+              "value": "={{ $json.config }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 65000
+        }
+      },
+      "id": "trigger-langgraph",
+      "name": "Trigger LangGraph",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [650, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "RAG7 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Parse and log execution response\nconst response = $input.first().json;\n\nconsole.log('LangGraph execution triggered:', {\n  status: response.status,\n  execution_id: response.execution_id,\n  trace_id: response.trace_id\n});\n\n// Return formatted result\nreturn {\n  json: {\n    triggered: true,\n    status: response.status,\n    execution_id: response.execution_id,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "id": "log-result",
+      "name": "Log Result",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "langgraph-callback",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "callback-webhook",
+      "name": "Callback Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 500],
+      "webhookId": "langgraph-callback-webhook"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process callback from LangGraph\nconst callback = $input.first().json;\n\nconsole.log('Received LangGraph callback:', {\n  execution_id: callback.execution_id,\n  status: callback.status\n});\n\n// Store or process results\nconst result = {\n  received_at: new Date().toISOString(),\n  execution_id: callback.execution_id,\n  status: callback.status,\n  output: callback.output || {},\n  error: callback.error\n};\n\nreturn {\n  json: result\n};"
+      },
+      "id": "process-callback",
+      "name": "Process Callback",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 500]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { received: true, execution_id: $json.execution_id } }}"
+      },
+      "id": "callback-response",
+      "name": "Callback Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [650, 500]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prepare Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Request": {
+      "main": [
+        [
+          {
+            "node": "Trigger LangGraph",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger LangGraph": {
+      "main": [
+        [
+          {
+            "node": "Log Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Callback Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Callback": {
+      "main": [
+        [
+          {
+            "node": "Callback Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 2,
+  "updatedAt": "2024-12-09T18:00:00.000Z",
+  "versionId": "1"
+}
