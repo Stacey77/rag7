@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortfail-agent
+  labels:
+    app: fortfail-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortfail-agent
+  template:
+    metadata:
+      labels:
+        app: fortfail-agent
+    spec:
+      containers:
+      - name: agent
+        image: fortfail-agent:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ORCHESTRATOR_URL
+          value: "http://fortfail-orchestrator:8000"
+        - name: AGENT_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: AGENT_REG_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fortfail-secrets
+              key: agent-reg-secret
+        - name: POLL_INTERVAL
+          value: "10"
+        volumeMounts:
+        - name: backups
+          mountPath: /backups
+        - name: restore
+          mountPath: /restore
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+      volumes:
+      - name: backups
+        emptyDir: {}
+      - name: restore
+        emptyDir: {}

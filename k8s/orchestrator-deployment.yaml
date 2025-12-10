@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fortfail-secrets
+type: Opaque
+stringData:
+  jwt-secret: "change-me-in-production"
+  reg-secret: "change-me-in-production"
+  db-password: "change-me-in-production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortfail-orchestrator
+  labels:
+    app: fortfail-orchestrator
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: fortfail-orchestrator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortfail-orchestrator
+  labels:
+    app: fortfail-orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortfail-orchestrator
+  template:
+    metadata:
+      labels:
+        app: fortfail-orchestrator
+    spec:
+      containers:
+      - name: orchestrator
+        image: fortfail-orchestrator:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: ORCH_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fortfail-secrets
+              key: jwt-secret
+        - name: ORCH_REG_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fortfail-secrets
+              key: reg-secret
+        - name: DATABASE_URL
+          value: "postgresql://fortfail:$(DB_PASSWORD)@postgres:5432/fortfail"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fortfail-secrets
+              key: db-password
+        - name: S3_ENDPOINT
+          value: "http://minio:9000"
+        - name: S3_ACCESS_KEY
+          value: "minioadmin"
+        - name: S3_SECRET_KEY
+          value: "minioadmin"
+        - name: S3_BUCKET
+          value: "fortfail-snapshots"
+        - name: WAL_PATH
+          value: "/data/orchestrator_wal.log"
+        volumeMounts:
+        - name: wal
+          mountPath: /data
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "1000m"
+      volumes:
+      - name: wal
+        persistentVolumeClaim:
+          claimName: orchestrator-wal-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: orchestrator-wal-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

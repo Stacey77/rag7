@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FortFail Control Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.in_progress { background: #cce5ff; color: #004085; }
+        .status.completed { background: #d4edda; color: #155724; }
+        .status.failed { background: #f8d7da; color: #721c24; }
+        
+        .list-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .log-output {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+        
+        .log-timestamp {
+            color: #666;
+        }
+        
+        .log-event {
+            color: #007bff;
+            font-weight: bold;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .ws-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .ws-indicator.connected { background: #28a745; }
+        .ws-indicator.disconnected { background: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ FortFail Control Panel</h1>
+        <p class="subtitle">
+            <span class="ws-indicator" id="wsIndicator"></span>
+            <span id="wsStatus">Connecting...</span>
+        </p>
+        
+        <div class="grid">
+            <!-- Authentication -->
+            <div class="card">
+                <h2>🔐 Authentication</h2>
+                <div id="authAlert"></div>
+                <div class="form-group">
+                    <label>Registration Secret</label>
+                    <input type="password" id="regSecret" placeholder="Enter registration secret">
+                </div>
+                <div class="form-group">
+                    <label>Agent ID (optional)</label>
+                    <input type="text" id="agentId" placeholder="agent-001">
+                </div>
+                <button onclick="authenticate()">Get Token</button>
+            </div>
+            
+            <!-- Agents -->
+            <div class="card">
+                <h2>🤖 Agents</h2>
+                <button onclick="loadAgents()" style="margin-bottom: 10px;">Refresh Agents</button>
+                <div id="agentsList"></div>
+            </div>
+            
+            <!-- Create Restore Job -->
+            <div class="card">
+                <h2>🔄 Create Restore Job</h2>
+                <div id="restoreAlert"></div>
+                <div class="form-group">
+                    <label>Snapshot ID</label>
+                    <input type="text" id="snapshotId" placeholder="snapshot-123">
+                </div>
+                <div class="form-group">
+                    <label>Target Agent ID</label>
+                    <input type="text" id="targetAgentId" placeholder="agent-001">
+                </div>
+                <button onclick="createRestoreJob()">Create Job</button>
+            </div>
+            
+            <!-- Job Status -->
+            <div class="card">
+                <h2>📊 Job Status</h2>
+                <div class="form-group">
+                    <label>Job ID</label>
+                    <input type="text" id="jobIdLookup" placeholder="job-123">
+                </div>
+                <button onclick="checkJobStatus()">Check Status</button>
+                <div id="jobStatus" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+        
+        <!-- Event Log -->
+        <div class="card">
+            <h2>📋 Event Log (WebSocket)</h2>
+            <div class="log-output" id="eventLog"></div>
+        </div>
+    </div>
+    
+    <script>
+        let token = null;
+        let ws = null;
+        const API_BASE = window.location.origin;
+        
+        // WebSocket connection
+        function connectWebSocket() {
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${wsProtocol}//${window.location.host}/ws${token ? '?token=' + token : ''}`;
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                updateWSStatus(true);
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                logEvent(data);
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+            
+            ws.onclose = () => {
+                updateWSStatus(false);
+                // Reconnect after 5 seconds
+                setTimeout(connectWebSocket, 5000);
+            };
+        }
+        
+        function updateWSStatus(connected) {
+            const indicator = document.getElementById('wsIndicator');
+            const status = document.getElementById('wsStatus');
+            
+            if (connected) {
+                indicator.className = 'ws-indicator connected';
+                status.textContent = 'WebSocket Connected';
+            } else {
+                indicator.className = 'ws-indicator disconnected';
+                status.textContent = 'WebSocket Disconnected';
+            }
+        }
+        
+        function logEvent(data) {
+            const log = document.getElementById('eventLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const timestamp = data.timestamp || new Date().toISOString();
+            const event = data.event || 'unknown';
+            
+            entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span> <span class="log-event">${event}</span> ${JSON.stringify(data)}`;
+            
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // Authentication
+        async function authenticate() {
+            const regSecret = document.getElementById('regSecret').value;
+            const agentId = document.getElementById('agentId').value || null;
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ registration_secret: regSecret, agent_id: agentId })
+                });
+                
+                if (!response.ok) throw new Error('Authentication failed');
+                
+                const data = await response.json();
+                token = data.token;
+                
+                showAlert('authAlert', 'success', `Token obtained! Expires in ${data.expires_in}s`);
+                
+                // Reconnect WebSocket with token
+                if (ws) ws.close();
+                connectWebSocket();
+            } catch (error) {
+                showAlert('authAlert', 'error', error.message);
+            }
+        }
+        
+        // Load agents
+        async function loadAgents() {
+            if (!token) {
+                alert('Please authenticate first');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/agents`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error('Failed to load agents');
+                
+                const agents = await response.json();
+                const list = document.getElementById('agentsList');
+                
+                if (agents.length === 0) {
+                    list.innerHTML = '<p style="color: #999;">No agents found</p>';
+                } else {
+                    list.innerHTML = agents.map(agent => 
+                        `<div class="list-item">
+                            <span>${agent.id}</span>
+                        </div>`
+                    ).join('');
+                }
+            } catch (error) {
+                console.error('Error loading agents:', error);
+            }
+        }
+        
+        // Create restore job
+        async function createRestoreJob() {
+            if (!token) {
+                alert('Please authenticate first');
+                return;
+            }
+            
+            const snapshotId = document.getElementById('snapshotId').value;
+            const targetAgentId = document.getElementById('targetAgentId').value;
+            
+            if (!snapshotId || !targetAgentId) {
+                showAlert('restoreAlert', 'error', 'Please fill in all fields');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/restore-jobs`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ snapshot_id: snapshotId, target_agent_id: targetAgentId })
+                });
+                
+                if (!response.ok) throw new Error('Failed to create job');
+                
+                const job = await response.json();
+                showAlert('restoreAlert', 'success', `Job created: ${job.id}`);
+                
+                // Update job lookup field
+                document.getElementById('jobIdLookup').value = job.id;
+            } catch (error) {
+                showAlert('restoreAlert', 'error', error.message);
+            }
+        }
+        
+        // Check job status
+        async function checkJobStatus() {
+            if (!token) {
+                alert('Please authenticate first');
+                return;
+            }
+            
+            const jobId = document.getElementById('jobIdLookup').value;
+            if (!jobId) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/restore-jobs/${jobId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error('Job not found');
+                
+                const job = await response.json();
+                const statusDiv = document.getElementById('jobStatus');
+                
+                statusDiv.innerHTML = `
+                    <div class="list-item">
+                        <span>Job ID: ${job.id}</span>
+                        <span class="status ${job.status}">${job.status}</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Snapshot: ${job.snapshot_id}</span>
+                    </div>
+                    <div class="list-item">
+                        <span>Target Agent: ${job.target_agent_id}</span>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('jobStatus').innerHTML = 
+                    `<div class="alert error">${error.message}</div>`;
+            }
+        }
+        
+        function showAlert(elementId, type, message) {
+            const alert = document.getElementById(elementId);
+            alert.innerHTML = `<div class="alert ${type}">${message}</div>`;
+            setTimeout(() => { alert.innerHTML = ''; }, 5000);
+        }
+        
+        // Initialize
+        connectWebSocket();
+    </script>
+</body>
+</html>
