@@ -1,0 +1,122 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag7"
+version = "1.0.0"
+description = "RAG7 - Production-ready LangGraph-based RAG system"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "RAG7 Team", email = "team@example.com"}
+]
+keywords = ["rag", "langgraph", "langchain", "llm", "ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "langgraph>=0.0.26",
+    "langchain>=0.1.0",
+    "langchain-core>=0.1.0",
+    "langchain-community>=0.0.13",
+    "openai>=1.6.1",
+    "anthropic>=0.8.1",
+    "chromadb>=0.4.22",
+    "psycopg2-binary>=2.9.9",
+    "sqlalchemy>=2.0.23",
+    "redis>=5.0.1",
+    "fastapi>=0.104.1",
+    "uvicorn[standard]>=0.24.0",
+    "httpx>=0.25.1",
+    "numpy>=1.26.2",
+    "pandas>=2.1.4",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "tiktoken>=0.5.2",
+    "sentence-transformers>=2.2.2",
+    "python-dotenv>=1.0.0",
+    "tenacity>=8.2.3",
+    "aiofiles>=23.2.1",
+    "prometheus-client>=0.19.0",
+    "opentelemetry-api>=1.21.0",
+    "opentelemetry-sdk>=1.21.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "pytest-cov>=4.1.0",
+    "black>=23.12.1",
+    "flake8>=7.0.0",
+    "isort>=5.13.2",
+    "mypy>=1.7.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/Stacey77/rag7"
+Documentation = "https://github.com/Stacey77/rag7/blob/main/docs"
+Repository = "https://github.com/Stacey77/rag7"
+Issues = "https://github.com/Stacey77/rag7/issues"
+
+[tool.setuptools]
+packages = ["rag7"]
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip_gitignore = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["rag7"]
+omit = ["*/tests/*", "*/test_*.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
