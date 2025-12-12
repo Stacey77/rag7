@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG7 AI Agent Platform - GUI Mockup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+        /* Dashboard Container */
+        .dashboard {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Navigation */
+        .nav-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid white;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: rgba(255,255,255,0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .quick-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            background: white;
+            padding: 24px 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        /* Content Body */
+        .content-body {
+            padding: 32px;
+        }
+
+        /* Chat View */
+        .chat-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .welcome-card h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+
+        .welcome-card p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .integration-pills {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            padding: 8px 16px;
+            background: #f3f4f6;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pill.connected {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        /* Messages */
+        .messages {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .message.assistant .message-avatar {
+            background: #e5e7eb;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-text {
+            background: #f9fafb;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .message.user .message-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .function-call {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #fef3c7;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .function-call.success {
+            background: #d1fae5;
+            border-left-color: #10b981;
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Integrations View */
+        .integrations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .integration-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .integration-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .integration-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .integration-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-indicator.connected {
+            background: #10b981;
+        }
+
+        .status-indicator.not-connected {
+            background: #ef4444;
+        }
+
+        .integration-functions {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .function-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .function-item {
+            font-size: 13px;
+            color: #6b7280;
+            padding: 6px 12px;
+            background: #f9fafb;
+            border-radius: 6px;
+        }
+
+        /* Analytics View */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1f2937;
+            margin: 8px 0;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        /* Settings View */
+        .settings-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .settings-section h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle {
+            width: 48px;
+            height: 24px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: #667eea;
+        }
+
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle.active .toggle-knob {
+            transform: translateX(24px);
+        }
+
+        /* Floating Bot */
+        .floating-bot {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+        }
+
+        .bot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bot-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .bot-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 380px;
+            height: 600px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .bot-window.open {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bot-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bot-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .bot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .bot-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .bot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f9fafb;
+        }
+
+        .bot-input {
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 8px;
+        }
+
+        .bot-input input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .bot-input button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                left: -260px;
+                transition: left 0.3s;
+                height: 100vh;
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
+            }
+
+            .bot-window {
+                width: calc(100vw - 32px);
+                right: 16px;
+            }
+        }
+
+        /* View Content */
+        .view-content {
+            display: none;
+        }
+
+        .view-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span>🤖</span>
+                    <span>RAG7</span>
+                </div>
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span>Online</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="switchView('chat')">
+                    <span class="nav-icon">💬</span>
+                    <span>Chat</span>
+                </div>
+                <div class="nav-item" onclick="switchView('integrations')">
+                    <span class="nav-icon">🔌</span>
+                    <span>Integrations</span>
+                    <span class="nav-badge">3</span>
+                </div>
+                <div class="nav-item" onclick="switchView('analytics')">
+                    <span class="nav-icon">📊</span>
+                    <span>Analytics</span>
+                </div>
+                <div class="nav-item" onclick="switchView('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <span>Active Integrations</span>
+                        <strong>3</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Available Functions</span>
+                        <strong>9</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Chat View -->
+            <div id="chat-view" class="view-content active">
+                <div class="content-header">
+                    <h1 class="content-title">💬 Conversational AI Agent</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">⚡ Functions</button>
+                        <button class="btn btn-primary">+ New Chat</button>
+                    </div>
+                </div>
+
+                <div class="content-body">
+                    <div class="chat-container">
+                        <div class="welcome-card">
+                            <h2>Welcome to RAG7 AI Agent Platform</h2>
+                            <p>I'm an AI assistant with access to multiple integrations. I can help you with Slack messages, Gmail, and Notion tasks.</p>
+                            <div class="integration-pills">
+                                <div class="pill connected">
+                                    <span class="pill-dot"></span>
+                                    <span>Slack</span>
+                                </div>
+                                <div class="pill connected">
+                                    <span class="pill-dot"></span>
+                                    <span>Gmail</span>
+                                </div>
+                                <div class="pill connected">
+                                    <span class="pill-dot"></span>
+                                    <span>Notion</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="messages">
+                            <div class="message user">
+                                <div class="message-avatar">👤</div>
+                                <div class="message-content">
+                                    <div class="message-text">Send a message "Meeting at 3pm today" to #general</div>
+                                    <div class="message-time">2:45 PM</div>
+                                </div>
+                            </div>
+
+                            <div class="message assistant">
+                                <div class="message-avatar">🤖</div>
+                                <div class="message-content">
+                                    <div class="message-text">I'll send that message to the #general channel for you.</div>
+                                    <div class="function-call success">
+                                        ⚡ slack_send_message(channel="#general", text="Meeting at 3pm today") ✓
+                                    </div>
+                                    <div class="message-text" style="margin-top: 8px;">Done! I've sent the message to #general.</div>
+                                    <div class="message-time">2:45 PM</div>
+                                </div>
+                            </div>
+
+                            <div class="message user">
+                                <div class="message-avatar">👤</div>
+                                <div class="message-content">
+                                    <div class="message-text">What integrations do you have access to?</div>
+                                    <div class="message-time">2:46 PM</div>
+                                </div>
+                            </div>
+
+                            <div class="message assistant">
+                                <div class="message-avatar">🤖</div>
+                                <div class="message-content">
+                                    <div class="message-text">I have access to three integrations:<br><br>
+                                        <strong>Slack:</strong> Send messages, list channels<br>
+                                        <strong>Gmail:</strong> List, read, and send emails<br>
+                                        <strong>Notion:</strong> Create pages, query databases
+                                    </div>
+                                    <div class="message-time">2:46 PM</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-container">
+                            <div class="chat-input">
+                                <input type="text" placeholder="Type your message here..." id="chatInput">
+                                <button class="send-btn" onclick="sendMessage()">🚀</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integrations View -->
+            <div id="integrations-view" class="view-content">
+                <div class="content-header">
+                    <h1 class="content-title">🔌 Integrations</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary">+ Add Integration</button>
+                    </div>
+                </div>
+
+                <div class="content-body">
+                    <div class="integrations-grid">
+                        <div class="integration-card">
+                            <div class="integration-header">
+                                <div class="integration-title">
+                                    <span>💬</span>
+                                    <span>Slack</span>
+                                </div>
+                                <span class="status-indicator connected"></span>
+                            </div>
+                            <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">
+                                Full async implementation for workspace messaging
+                            </p>
+                            <div class="integration-functions">
+                                <strong style="font-size: 14px; color: #374151;">Available Functions</strong>
+                                <div class="function-list">
+                                    <div class="function-item">📤 Send message</div>
+                                    <div class="function-item">📋 List channels</div>
+                                    <div class="function-item">💬 Send thread reply</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="integration-card">
+                            <div class="integration-header">
+                                <div class="integration-title">
+                                    <span>📧</span>
+                                    <span>Gmail</span>
+                                </div>
+                                <span class="status-indicator connected"></span>
+                            </div>
+                            <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">
+                                OAuth2/SMTP integration for email management
+                            </p>
+                            <div class="integration-functions">
+                                <strong style="font-size: 14px; color: #374151;">Available Functions</strong>
+                                <div class="function-list">
+                                    <div class="function-item">📨 Send email</div>
+                                    <div class="function-item">📬 List messages</div>
+                                    <div class="function-item">📖 Read message</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="integration-card">
+                            <div class="integration-header">
+                                <div class="integration-title">
+                                    <span>📝</span>
+                                    <span>Notion</span>
+                                </div>
+                                <span class="status-indicator connected"></span>
+                            </div>
+                            <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">
+                                Workspace and database operations
+                            </p>
+                            <div class="integration-functions">
+                                <strong style="font-size: 14px; color: #374151;">Available Functions</strong>
+                                <div class="function-list">
+                                    <div class="function-item">📄 Create page</div>
+                                    <div class="function-item">🔍 Query database</div>
+                                    <div class="function-item">➕ Add database entry</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analytics-view" class="view-content">
+                <div class="content-header">
+                    <h1 class="content-title">📊 Analytics</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">📅 Last 7 Days</button>
+                        <button class="btn btn-primary">📊 Export</button>
+                    </div>
+                </div>
+
+                <div class="content-body">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">💬</div>
+                            <div class="stat-label">Total Messages</div>
+                            <div class="stat-value">1,247</div>
+                            <div style="color: #10b981; font-size: 12px; margin-top: 4px;">↑ 12% from last week</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-label">Active Sessions</div>
+                            <div class="stat-value">89</div>
+                            <div style="color: #10b981; font-size: 12px; margin-top: 4px;">↑ 8% from last week</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-label">Functions Executed</div>
+                            <div class="stat-value">342</div>
+                            <div style="color: #10b981; font-size: 12px; margin-top: 4px;">↑ 15% from last week</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-label">Success Rate</div>
+                            <div class="stat-value">98.5%</div>
+                            <div style="color: #10b981; font-size: 12px; margin-top: 4px;">↑ 2% from last week</div>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 32px; border-radius: 12px; text-align: center; color: #6b7280;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📈</div>
+                        <h3 style="color: #1f2937; margin-bottom: 8px;">Advanced Analytics Coming Soon</h3>
+                        <p>Detailed charts, usage trends, and performance metrics will be available here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settings-view" class="view-content">
+                <div class="content-header">
+                    <h1 class="content-title">⚙️ Settings</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary">💾 Save Changes</button>
+                    </div>
+                </div>
+
+                <div class="content-body">
+                    <div class="settings-section">
+                        <h3>🔑 API Configuration</h3>
+                        <div class="setting-item">
+                            <div>
+                                <strong>OpenAI API Key</strong>
+                                <div style="font-size: 12px; color: #6b7280;">Configure in .env file</div>
+                            </div>
+                            <span style="color: #10b981;">✓ Configured</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>🎨 Interface Options</h3>
+                        <div class="setting-item">
+                            <div>
+                                <strong>Enable Floating Bot</strong>
+                                <div style="font-size: 12px; color: #6b7280;">Show quick access chat widget</div>
+                            </div>
+                            <div class="toggle active" onclick="toggleSetting(this)">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <strong>Show Function Details</strong>
+                                <div style="font-size: 12px; color: #6b7280;">Display function calls in chat</div>
+                            </div>
+                            <div class="toggle active" onclick="toggleSetting(this)">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>📚 Documentation</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <a href="#" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                                <span>📖</span> <span>README - Platform Overview</span>
+                            </a>
+                            <a href="#" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                                <span>🚀</span> <span>Quick Start Guide</span>
+                            </a>
+                            <a href="#" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                                <span>👨‍💻</span> <span>Development Guide</span>
+                            </a>
+                            <a href="#" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                                <span>🔌</span> <span>API Documentation</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Bot -->
+    <div class="floating-bot">
+        <div class="bot-window" id="botWindow">
+            <div class="bot-header">
+                <div class="bot-title">🤖 AI Assistant</div>
+                <button class="bot-close" onclick="toggleBot()">✕</button>
+            </div>
+            <div class="bot-messages" id="botMessages">
+                <div class="message assistant">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="message-text">Hello! I'm your AI assistant. How can I help you today?</div>
+                        <div class="message-time">Now</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bot-input">
+                <input type="text" placeholder="Type a message..." id="botInput">
+                <button onclick="sendBotMessage()">🚀</button>
+            </div>
+        </div>
+        <button class="bot-button" onclick="toggleBot()">💬</button>
+    </div>
+
+    <script>
+        // View switching
+        function switchView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view-content').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected view
+            document.getElementById(viewName + '-view').classList.add('active');
+            
+            // Add active class to clicked nav item
+            event.currentTarget.classList.add('active');
+        }
+
+        // Toggle floating bot
+        function toggleBot() {
+            const botWindow = document.getElementById('botWindow');
+            botWindow.classList.toggle('open');
+        }
+
+        // Toggle settings
+        function toggleSetting(element) {
+            element.classList.toggle('active');
+        }
+
+        // Send message in main chat
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                const messagesContainer = document.querySelector('.messages');
+                const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                
+                // Add user message
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user';
+                userMsg.innerHTML = `
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-text">${message}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+                messagesContainer.appendChild(userMsg);
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    const aiMsg = document.createElement('div');
+                    aiMsg.className = 'message assistant';
+                    aiMsg.innerHTML = `
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <div class="message-text">I'm a mockup interface demonstrating the RAG7 platform. In the real application, I would process your request using OpenAI and integrations.</div>
+                            <div class="message-time">${time}</div>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(aiMsg);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1000);
+                
+                input.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        // Send message in floating bot
+        function sendBotMessage() {
+            const input = document.getElementById('botInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                const messagesContainer = document.getElementById('botMessages');
+                const time = 'Now';
+                
+                // Add user message
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user';
+                userMsg.innerHTML = `
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-text">${message}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+                messagesContainer.appendChild(userMsg);
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    const aiMsg = document.createElement('div');
+                    aiMsg.className = 'message assistant';
+                    aiMsg.innerHTML = `
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <div class="message-text">Thanks for trying the floating bot! This is a mockup demonstrating real-time chat capabilities.</div>
+                            <div class="message-time">${time}</div>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(aiMsg);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 800);
+                
+                input.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        // Enter key support
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        document.getElementById('botInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendBotMessage();
+        });
+    </script>
+</body>
+</html>
