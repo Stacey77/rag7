@@ -1,0 +1,212 @@
+{
+  "name": "Data Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "data-pipeline",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Data Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "data-pipeline-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Data Validation\nconst data = $json;\n\n// Validate required fields\nconst errors = [];\nif (!data.source) errors.push('Missing source');\nif (!data.data) errors.push('Missing data');\n\nif (errors.length > 0) {\n  return [{\n    json: {\n      valid: false,\n      errors: errors\n    }\n  }];\n}\n\n// Transform data for processing\nreturn [{\n  json: {\n    valid: true,\n    source: data.source,\n    data: data.data,\n    task: `Analyze the following data from ${data.source}: ${JSON.stringify(data.data)}`\n  }\n}];"
+      },
+      "id": "validate",
+      "name": "Validate & Transform",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.valid }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "check",
+      "name": "Is Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://langgraph-api:8000/api/v1/router",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "task",
+              "value": "={{ $json.task }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "process",
+      "name": "Process with Router",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Handle validation errors\nreturn [{\n  json: {\n    success: false,\n    errors: $json.errors,\n    message: 'Data validation failed'\n  }\n}];"
+      },
+      "id": "error",
+      "name": "Handle Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Post-process results\nconst result = $json;\n\nreturn [{\n  json: {\n    success: true,\n    source: $('Validate & Transform').first().json.source,\n    analysis: result.final_output,\n    quality_score: result.quality_score,\n    routed_to: result.metadata?.route || 'unknown',\n    processed_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "postprocess",
+      "name": "Post-Process",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {},
+      "id": "merge",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1450, 300]
+    }
+  ],
+  "connections": {
+    "Data Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate & Transform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Transform": {
+      "main": [
+        [
+          {
+            "node": "Is Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid?": {
+      "main": [
+        [
+          {
+            "node": "Process with Router",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process with Router": {
+      "main": [
+        [
+          {
+            "node": "Post-Process",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Error": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post-Process": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "langgraph",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "name": "data-pipeline",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "agentic-patterns"
+  }
+}
