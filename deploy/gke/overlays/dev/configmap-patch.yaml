@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag7-config
+data:
+  environment: "development"
+  log_level: "DEBUG"
