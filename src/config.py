@@ -1,13 +1,19 @@
 """Configuration management with environment-based loading and validation."""
-import os
 from typing import Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DatabaseConfig(BaseSettings):
     """Database configuration."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
 
     host: str = Field(default="localhost", alias="POSTGRES_HOST")
     port: int = Field(default=5432, alias="POSTGRES_PORT")
@@ -23,6 +29,13 @@ class DatabaseConfig(BaseSettings):
 
 class RedisConfig(BaseSettings):
     """Redis configuration."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
 
     host: str = Field(default="localhost", alias="REDIS_HOST")
     port: int = Field(default=6379, alias="REDIS_PORT")
@@ -40,6 +53,13 @@ class RedisConfig(BaseSettings):
 class QdrantConfig(BaseSettings):
     """Qdrant vector database configuration."""
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
     host: str = Field(default="localhost", alias="QDRANT_HOST")
     port: int = Field(default=6333, alias="QDRANT_PORT")
     api_key: Optional[str] = Field(default=None, alias="QDRANT_API_KEY")
@@ -53,6 +73,13 @@ class QdrantConfig(BaseSettings):
 class LLMConfig(BaseSettings):
     """LLM API configuration."""
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
     gemini_api_key: Optional[str] = Field(default=None, alias="GEMINI_API_KEY")
     openai_api_key: Optional[str] = Field(default=None, alias="OPENAI_API_KEY")
     anthropic_api_key: Optional[str] = Field(default=None, alias="ANTHROPIC_API_KEY")
@@ -64,6 +91,13 @@ class LLMConfig(BaseSettings):
 class GoogleCloudConfig(BaseSettings):
     """Google Cloud Platform configuration."""
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
     project_id: Optional[str] = Field(default=None, alias="GOOGLE_PROJECT_ID")
     region: str = Field(default="us-central1", alias="GOOGLE_REGION")
     credentials_path: Optional[str] = Field(
@@ -73,6 +107,13 @@ class GoogleCloudConfig(BaseSettings):
 
 class MonitoringConfig(BaseSettings):
     """Monitoring and observability configuration."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
 
     prometheus_url: str = Field(default="http://localhost:9090", alias="PROMETHEUS_URL")
     grafana_url: str = Field(default="http://localhost:3000", alias="GRAFANA_URL")
@@ -84,6 +125,13 @@ class MonitoringConfig(BaseSettings):
 class CircuitBreakerConfig(BaseSettings):
     """Circuit breaker configuration."""
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
     failure_threshold: int = Field(default=5, alias="CIRCUIT_BREAKER_FAILURE_THRESHOLD")
     timeout: int = Field(default=60, alias="CIRCUIT_BREAKER_TIMEOUT")
     recovery_timeout: int = Field(default=30, alias="CIRCUIT_BREAKER_RECOVERY_TIMEOUT")
@@ -91,6 +139,13 @@ class CircuitBreakerConfig(BaseSettings):
 
 class RateLimitConfig(BaseSettings):
     """Rate limiting configuration."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
 
     rpm: int = Field(default=60, alias="RATE_LIMIT_RPM")
     tpm: int = Field(default=100000, alias="RATE_LIMIT_TPM")
@@ -133,7 +188,8 @@ class Settings(BaseSettings):
     circuit_breaker: CircuitBreakerConfig = Field(default_factory=CircuitBreakerConfig)
     rate_limit: RateLimitConfig = Field(default_factory=RateLimitConfig)
 
-    @validator("environment")
+    @field_validator("environment")
+    @classmethod
     def validate_environment(cls, v: str) -> str:
         """Validate environment value."""
         allowed = ["development", "staging", "production"]
@@ -141,7 +197,8 @@ class Settings(BaseSettings):
             raise ValueError(f"Environment must be one of {allowed}")
         return v
 
-    @validator("log_level")
+    @field_validator("log_level")
+    @classmethod
     def validate_log_level(cls, v: str) -> str:
         """Validate log level."""
         allowed = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]

@@ -1,6 +1,6 @@
 """Base agent class for ADK multi-agent system."""
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from uuid import uuid4
 
 from ..llm import TaskComplexity, client, router
@@ -93,7 +93,6 @@ class BaseAgent(ABC):
                 return result
 
         except Exception as e:
-            status = "error"
             duration = time.time() - start_time
 
             agent_task_duration_seconds.labels(
