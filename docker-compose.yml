@@ -1,0 +1,183 @@
+# Docker Compose for Local Development
+
+version: '3.9'
+
+services:
+  # Main ADK Agent API
+  agent-api:
+    build:
+      context: .
+      target: development
+    container_name: rag7-agent-api
+    ports:
+      - "8080:8080"  # API
+      - "9090:9090"  # Metrics
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=postgres
+      - QDRANT_HOST=qdrant
+      - LITELLM_PROXY_URL=http://litellm-proxy:4000
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./.env:/app/.env
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - rag7-network
+
+  # LiteLLM Proxy - Multi-model routing
+  litellm-proxy:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm-proxy
+    ports:
+      - "4000:4000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - rag7-network
+
+  # Redis - LLM response caching
+  redis:
+    image: redis:7-alpine
+    container_name: rag7-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - rag7-network
+
+  # PostgreSQL - Persistent storage
+  postgres:
+    image: postgres:15-alpine
+    container_name: rag7-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=rag7_db
+      - POSTGRES_USER=rag7_user
+      - POSTGRES_PASSWORD=rag7_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag7_user -d rag7_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - rag7-network
+
+  # Qdrant - Vector database for RAG
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: rag7-qdrant
+    ports:
+      - "6333:6333"  # HTTP API
+      - "6334:6334"  # gRPC API
+    volumes:
+      - qdrant-data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    restart: unless-stopped
+    networks:
+      - rag7-network
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rag7-prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./monitoring/prometheus-config.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    restart: unless-stopped
+    networks:
+      - rag7-network
+
+  # Grafana - Visualization dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: rag7-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./monitoring/grafana-dashboards:/etc/grafana/provisioning/dashboards
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - rag7-network
+
+  # Jaeger - Distributed tracing
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: rag7-jaeger
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"  # UI
+      - "14268:14268"  # Collector
+      - "14250:14250"
+      - "9411:9411"
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+    restart: unless-stopped
+    networks:
+      - rag7-network
+
+networks:
+  rag7-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
+  qdrant-data:
+  prometheus-data:
+  grafana-data:
