@@ -2,7 +2,7 @@
 from typing import Optional
 
 from opentelemetry import trace
-from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -15,11 +15,14 @@ def init_tracing(
     service_name: str = "rag7-agent-api",
     jaeger_endpoint: str = "http://localhost:14268/api/traces",
 ) -> trace.Tracer:
-    """Initialize OpenTelemetry tracing with Jaeger.
+    """Initialize OpenTelemetry tracing with OTLP exporter.
+    
+    Note: For Jaeger, use the OTLP endpoint (default: localhost:4317)
+    or configure Jaeger to expose OTLP gRPC endpoint.
     
     Args:
         service_name: Name of the service
-        jaeger_endpoint: Jaeger collector endpoint
+        jaeger_endpoint: Jaeger/OTLP collector endpoint
         
     Returns:
         Configured tracer instance
@@ -29,14 +32,17 @@ def init_tracing(
     # Create a resource with service name
     resource = Resource(attributes={SERVICE_NAME: service_name})
 
-    # Create Jaeger exporter
-    jaeger_exporter = JaegerExporter(
-        collector_endpoint=jaeger_endpoint,
+    # Create OTLP exporter (more modern and widely supported)
+    # Note: Jaeger supports OTLP natively
+    otlp_endpoint = jaeger_endpoint.replace("/api/traces", "").replace("14268", "4317")
+    otlp_exporter = OTLPSpanExporter(
+        endpoint=otlp_endpoint,
+        insecure=True,  # Use False in production with proper TLS
     )
 
     # Create a TracerProvider
     provider = TracerProvider(resource=resource)
-    processor = BatchSpanProcessor(jaeger_exporter)
+    processor = BatchSpanProcessor(otlp_exporter)
     provider.add_span_processor(processor)
 
     # Set the global tracer provider

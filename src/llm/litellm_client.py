@@ -48,9 +48,46 @@ class CircuitBreaker:
         self.failure_threshold = failure_threshold
         self.timeout = timeout
         self.recovery_timeout = recovery_timeout
-        self.failures = 0
-        self.last_failure_time = 0
-        self.state = "closed"  # closed, open, half-open
+        self._lock = __import__('threading').Lock()
+        self._failures = 0
+        self._last_failure_time = 0
+        self._state = "closed"  # closed, open, half-open
+
+    @property
+    def failures(self) -> int:
+        """Get failure count thread-safely."""
+        with self._lock:
+            return self._failures
+
+    @failures.setter
+    def failures(self, value: int) -> None:
+        """Set failure count thread-safely."""
+        with self._lock:
+            self._failures = value
+
+    @property
+    def state(self) -> str:
+        """Get circuit breaker state thread-safely."""
+        with self._lock:
+            return self._state
+
+    @state.setter
+    def state(self, value: str) -> None:
+        """Set circuit breaker state thread-safely."""
+        with self._lock:
+            self._state = value
+
+    @property
+    def last_failure_time(self) -> float:
+        """Get last failure time thread-safely."""
+        with self._lock:
+            return self._last_failure_time
+
+    @last_failure_time.setter
+    def last_failure_time(self, value: float) -> None:
+        """Set last failure time thread-safely."""
+        with self._lock:
+            self._last_failure_time = value
 
     def call(self, func: Any, *args: Any, **kwargs: Any) -> Any:
         """Execute function with circuit breaker protection.

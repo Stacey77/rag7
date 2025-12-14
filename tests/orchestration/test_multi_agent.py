@@ -115,12 +115,14 @@ async def test_load_balancing_across_agents():
     """Test load balancing across multiple agents."""
     
     class CountingAgent(BaseAgent):
-        task_count = 0
+        def __init__(self, name: str):
+            super().__init__(name)
+            self._task_count = 0
         
         async def process(self, task):
-            CountingAgent.task_count += 1
+            self._task_count += 1
             await asyncio.sleep(0.01)  # Simulate work
-            return {"status": "completed", "agent": self.name}
+            return {"status": "completed", "agent": self.name, "count": self._task_count}
     
     # Create agent pool
     agent_pool = [
