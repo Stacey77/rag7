@@ -13,6 +13,7 @@ anthropic==0.7.0
 # Data and Vector Storage
 qdrant-client==1.6.4
 sqlalchemy==2.0.23
+alembic==1.13.1
 asyncpg==0.29.0
 redis==5.0.1
 psycopg2-binary==2.9.9

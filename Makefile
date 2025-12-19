@@ -1,4 +1,4 @@
-.PHONY: help install install-dev test lint format type-check security-check docker-build docker-up docker-down deploy-dev clean
+.PHONY: help install install-dev test lint format type-check security-check docker-build docker-up docker-down deploy-dev clean db-migrate db-upgrade db-downgrade terraform-init terraform-plan terraform-apply
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -90,5 +90,32 @@ run-local: ## Run application locally
 
 monitoring-up: ## Start monitoring stack (Prometheus + Grafana)
 	docker-compose up -d prometheus grafana
+
+# Database migration commands
+db-migrate: ## Create a new database migration
+	alembic revision --autogenerate -m "$(m)"
+
+db-upgrade: ## Upgrade database to latest version
+	alembic upgrade head
+
+db-downgrade: ## Downgrade database by one version
+	alembic downgrade -1
+
+db-reset: ## Reset database (WARNING: destructive)
+	alembic downgrade base
+	alembic upgrade head
+
+# Terraform commands
+terraform-init: ## Initialize Terraform
+	cd deploy/terraform && terraform init
+
+terraform-plan: ## Run Terraform plan
+	cd deploy/terraform && terraform plan -var-file=environments/$(env)/terraform.tfvars
+
+terraform-apply: ## Apply Terraform changes
+	cd deploy/terraform && terraform apply -var-file=environments/$(env)/terraform.tfvars
+
+terraform-destroy: ## Destroy Terraform resources (WARNING: destructive)
+	cd deploy/terraform && terraform destroy -var-file=environments/$(env)/terraform.tfvars
 
 all: format lint type-check test ## Run all checks and tests

@@ -1,0 +1,278 @@
+name: Deploy to GKE
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      strategy:
+        description: 'Deployment strategy'
+        required: false
+        type: choice
+        default: 'blue-green'
+        options:
+          - blue-green
+          - rolling
+  push:
+    branches:
+      - main
+    paths:
+      - 'deploy/gke/**'
+      - 'src/**'
+      - 'Dockerfile'
+
+env:
+  GKE_CLUSTER: rag7-cluster
+  GKE_ZONE: us-central1-a
+  IMAGE_NAME: gcr.io/${{ secrets.GOOGLE_PROJECT_ID }}/rag7-agent-api
+
+jobs:
+  build:
+    name: Build and Push Image
+    runs-on: ubuntu-latest
+    
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix={{branch}}-
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
+          target: runtime
+
+  deploy-dev:
+    name: Deploy to Dev GKE
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'dev'
+    environment:
+      name: gke-dev
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} \
+            --zone ${{ env.GKE_ZONE }} \
+            --project ${{ secrets.GOOGLE_PROJECT_ID }}
+
+      - name: Deploy with Kustomize
+        run: |
+          cd deploy/gke/overlays/dev
+          kustomize edit set image agent-api=${{ needs.build.outputs.image_tag }}
+          kubectl apply -k .
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/rag7-agent-api -n dev --timeout=5m
+
+      - name: Health check
+        run: |
+          kubectl wait --for=condition=ready pod -l app=rag7-agent-api -n dev --timeout=2m
+          
+          POD=$(kubectl get pod -n dev -l app=rag7-agent-api -o jsonpath='{.items[0].metadata.name}')
+          kubectl port-forward -n dev $POD 8080:8080 &
+          sleep 5
+          
+          curl -f http://localhost:8080/health || exit 1
+
+  deploy-staging:
+    name: Deploy to Staging GKE
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event.inputs.environment == 'staging'
+    environment:
+      name: gke-staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} \
+            --zone ${{ env.GKE_ZONE }} \
+            --project ${{ secrets.GOOGLE_PROJECT_ID }}
+
+      - name: Blue-Green Deployment
+        run: |
+          # Deploy green version
+          cd deploy/gke/overlays/staging
+          kustomize edit set image agent-api=${{ needs.build.outputs.image_tag }}
+          kubectl apply -k . --selector=version=green
+
+      - name: Test Green Deployment
+        run: |
+          kubectl wait --for=condition=ready pod -l app=rag7-agent-api,version=green -n staging --timeout=5m
+          
+          # Run smoke tests against green
+          GREEN_IP=$(kubectl get svc rag7-agent-api-green -n staging -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          pytest tests/e2e/test_smoke.py --endpoint-url=http://$GREEN_IP:8080
+
+      - name: Switch Traffic to Green
+        run: |
+          # Update service to point to green
+          kubectl patch svc rag7-agent-api -n staging -p '{"spec":{"selector":{"version":"green"}}}'
+          
+          # Wait and monitor
+          sleep 60
+          
+          # Check error rate
+          ERROR_RATE=$(kubectl top pods -n staging -l version=green --no-headers | awk '{sum+=$3} END {print sum}')
+          if (( $(echo "$ERROR_RATE > 5" | bc -l) )); then
+            echo "High error rate detected, rolling back"
+            kubectl patch svc rag7-agent-api -n staging -p '{"spec":{"selector":{"version":"blue"}}}'
+            exit 1
+          fi
+
+      - name: Cleanup Blue Deployment
+        run: |
+          kubectl delete deployment rag7-agent-api-blue -n staging --ignore-not-found
+
+  deploy-prod:
+    name: Deploy to Production GKE
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event.inputs.environment == 'prod'
+    environment:
+      name: gke-production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} \
+            --zone ${{ env.GKE_ZONE }} \
+            --project ${{ secrets.GOOGLE_PROJECT_ID }}
+
+      - name: Blue-Green Deployment
+        run: |
+          cd deploy/gke/overlays/prod
+          kustomize edit set image agent-api=${{ needs.build.outputs.image_tag }}
+          
+          # Deploy green version
+          kubectl apply -k . --selector=version=green
+
+      - name: Health Checks
+        run: |
+          kubectl wait --for=condition=ready pod -l app=rag7-agent-api,version=green -n prod --timeout=5m
+
+      - name: Gradual Traffic Shift
+        run: |
+          # Install service mesh for traffic splitting (Istio)
+          # Shift 10% traffic to green
+          kubectl apply -f - <<EOF
+          apiVersion: networking.istio.io/v1beta1
+          kind: VirtualService
+          metadata:
+            name: rag7-agent-api
+            namespace: prod
+          spec:
+            hosts:
+            - rag7-agent-api
+            http:
+            - match:
+              - headers:
+                  canary:
+                    exact: "true"
+              route:
+              - destination:
+                  host: rag7-agent-api
+                  subset: green
+                weight: 10
+              - destination:
+                  host: rag7-agent-api
+                  subset: blue
+                weight: 90
+          EOF
+          
+          sleep 120
+          
+          # Monitor for 2 minutes, then increase to 50%
+          ERROR_COUNT=$(kubectl logs -n prod -l version=green --since=2m | grep -c ERROR || echo "0")
+          if [ "$ERROR_COUNT" -gt "10" ]; then
+            echo "Too many errors, rolling back"
+            kubectl delete virtualservice rag7-agent-api -n prod
+            exit 1
+          fi
+          
+          # Increase to 50%
+          kubectl patch virtualservice rag7-agent-api -n prod --type merge -p '{"spec":{"http":[{"route":[{"destination":{"subset":"green"},"weight":50},{"destination":{"subset":"blue"},"weight":50}]}]}}'
+          
+          sleep 120
+          
+          # Final check before full rollout
+          ERROR_COUNT=$(kubectl logs -n prod -l version=green --since=2m | grep -c ERROR || echo "0")
+          if [ "$ERROR_COUNT" -gt "10" ]; then
+            echo "Too many errors, rolling back"
+            kubectl delete virtualservice rag7-agent-api -n prod
+            exit 1
+          fi
+          
+          # Full rollout (100%)
+          kubectl patch virtualservice rag7-agent-api -n prod --type merge -p '{"spec":{"http":[{"route":[{"destination":{"subset":"green"},"weight":100}]}]}}'
+
+      - name: Cleanup Old Version
+        run: |
+          sleep 300  # Wait 5 minutes
+          kubectl delete deployment rag7-agent-api-blue -n prod --ignore-not-found
+
+      - name: Rollback on Failure
+        if: failure()
+        run: |
+          kubectl delete virtualservice rag7-agent-api -n prod --ignore-not-found
+          kubectl patch svc rag7-agent-api -n prod -p '{"spec":{"selector":{"version":"blue"}}}'
