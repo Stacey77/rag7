@@ -1,0 +1,150 @@
+model_list:
+  # Gemini Models
+  - model_name: gemini-pro
+    litellm_params:
+      model: gemini/gemini-pro
+      api_key: os.environ/GEMINI_API_KEY
+    model_info:
+      mode: chat
+      input_cost_per_token: 0.00000025
+      output_cost_per_token: 0.0000005
+      max_tokens: 32760
+
+  # OpenAI Models
+  - model_name: gpt-4-turbo
+    litellm_params:
+      model: gpt-4-turbo-preview
+      api_key: os.environ/OPENAI_API_KEY
+    model_info:
+      mode: chat
+      input_cost_per_token: 0.00001
+      output_cost_per_token: 0.00003
+      max_tokens: 128000
+
+  - model_name: gpt-4
+    litellm_params:
+      model: gpt-4
+      api_key: os.environ/OPENAI_API_KEY
+    model_info:
+      mode: chat
+      input_cost_per_token: 0.00003
+      output_cost_per_token: 0.00006
+      max_tokens: 8192
+
+  - model_name: gpt-3.5-turbo
+    litellm_params:
+      model: gpt-3.5-turbo
+      api_key: os.environ/OPENAI_API_KEY
+    model_info:
+      mode: chat
+      input_cost_per_token: 0.0000005
+      output_cost_per_token: 0.0000015
+      max_tokens: 16385
+
+  # Anthropic Models
+  - model_name: claude-3-opus
+    litellm_params:
+      model: claude-3-opus-20240229
+      api_key: os.environ/ANTHROPIC_API_KEY
+    model_info:
+      mode: chat
+      input_cost_per_token: 0.000015
+      output_cost_per_token: 0.000075
+      max_tokens: 200000
+
+  - model_name: claude-3-sonnet
+    litellm_params:
+      model: claude-3-sonnet-20240229
+      api_key: os.environ/ANTHROPIC_API_KEY
+    model_info:
+      mode: chat
+      input_cost_per_token: 0.000003
+      output_cost_per_token: 0.000015
+      max_tokens: 200000
+
+  # Mistral Models
+  - model_name: mistral-large
+    litellm_params:
+      model: mistral/mistral-large-latest
+      api_key: os.environ/MISTRAL_API_KEY
+    model_info:
+      mode: chat
+      input_cost_per_token: 0.000004
+      output_cost_per_token: 0.000012
+      max_tokens: 32000
+
+router_settings:
+  # Fallback chain: Try primary, then fallbacks in order
+  routing_strategy: least-busy
+  num_retries: 3
+  retry_after: 10
+  timeout: 60
+  cooldown_time: 300  # 5 minutes
+  
+  # Fallback chains by use case
+  fallbacks:
+    - gemini-pro:
+      - gpt-4-turbo
+      - claude-3-sonnet
+    - gpt-4-turbo:
+      - claude-3-opus
+      - gemini-pro
+    - claude-3-opus:
+      - gpt-4-turbo
+      - gemini-pro
+
+# Caching configuration
+cache:
+  type: redis
+  host: os.environ/REDIS_HOST
+  port: os.environ/REDIS_PORT
+  password: os.environ/REDIS_PASSWORD
+  ttl: 3600  # 1 hour
+
+# Rate limiting
+litellm_settings:
+  max_parallel_requests: 100
+  max_retries: 3
+  request_timeout: 60
+  
+  # Rate limits (per model)
+  rpm: 60  # requests per minute
+  tpm: 100000  # tokens per minute
+
+# Success/Failure callbacks
+general_settings:
+  alerting:
+    - prometheus
+  callbacks:
+    - langfuse
+    - sentry
+  
+  # Success callback
+  success_callback:
+    - prometheus
+    - langfuse
+  
+  # Failure callback
+  failure_callback:
+    - prometheus
+    - sentry
+
+# Model-specific rate limits
+model_rate_limits:
+  gemini-pro:
+    rpm: 60
+    tpm: 100000
+  gpt-4-turbo:
+    rpm: 30
+    tpm: 150000
+  claude-3-opus:
+    rpm: 50
+    tpm: 100000
+  mistral-large:
+    rpm: 60
+    tpm: 100000
+
+# Load balancing
+load_balancing_settings:
+  strategy: least-busy
+  health_check_interval: 60

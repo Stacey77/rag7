@@ -1,0 +1,132 @@
+name: Deploy to Cloud Run
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      traffic_percentage:
+        description: 'Traffic percentage for canary deployment'
+        required: false
+        default: '100'
+        type: string
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1
+  SERVICE_NAME: rag7-agent-api
+
+jobs:
+  deploy:
+    name: Deploy to Cloud Run (${{ github.event.inputs.environment }})
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }}-${{ github.event.inputs.environment }} \
+            --image=us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/rag7/rag7-agent-api:latest \
+            --platform=managed \
+            --region=${{ env.REGION }} \
+            --allow-unauthenticated \
+            --min-instances=0 \
+            --max-instances=${{ github.event.inputs.environment == 'prod' && '100' || '10' }} \
+            --cpu=2 \
+            --memory=4Gi \
+            --timeout=300 \
+            --concurrency=100 \
+            --set-env-vars="ENVIRONMENT=${{ github.event.inputs.environment }}" \
+            --set-env-vars="LOG_LEVEL=INFO" \
+            --tag=${{ github.sha }} \
+            --no-traffic
+
+      - name: Route traffic (Progressive rollout)
+        run: |
+          # Route specified percentage of traffic to new revision
+          gcloud run services update-traffic ${{ env.SERVICE_NAME }}-${{ github.event.inputs.environment }} \
+            --to-revisions=${{ github.sha }}=${{ github.event.inputs.traffic_percentage }} \
+            --region=${{ env.REGION }}
+
+      - name: Health check
+        run: |
+          SERVICE_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }}-${{ github.event.inputs.environment }} \
+            --region=${{ env.REGION }} \
+            --format='value(status.url)')
+          
+          echo "Service URL: $SERVICE_URL"
+          
+          # Wait for service to be ready
+          for i in {1..30}; do
+            if curl -sf "$SERVICE_URL/health" > /dev/null; then
+              echo "Health check passed"
+              exit 0
+            fi
+            echo "Waiting for service to be ready... ($i/30)"
+            sleep 10
+          done
+          
+          echo "Health check failed"
+          exit 1
+
+      - name: Monitor error rate
+        id: monitor
+        run: |
+          # Monitor for 5 minutes
+          ERRORS=0
+          for i in {1..30}; do
+            ERROR_RATE=$(gcloud logging read \
+              "resource.type=cloud_run_revision AND resource.labels.service_name=${{ env.SERVICE_NAME }}-${{ github.event.inputs.environment }} AND severity>=ERROR" \
+              --limit=100 \
+              --format=json | jq length)
+            
+            if [ "$ERROR_RATE" -gt 50 ]; then
+              ERRORS=$((ERRORS + 1))
+            fi
+            
+            if [ "$ERRORS" -gt 2 ]; then
+              echo "Error rate too high, rolling back"
+              echo "rollback=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            
+            sleep 10
+          done
+          
+          echo "Error rate acceptable"
+          echo "rollback=false" >> $GITHUB_OUTPUT
+
+      - name: Rollback on failure
+        if: steps.monitor.outputs.rollback == 'true'
+        run: |
+          echo "Rolling back to previous revision"
+          gcloud run services update-traffic ${{ env.SERVICE_NAME }}-${{ github.event.inputs.environment }} \
+            --to-latest \
+            --region=${{ env.REGION }}
+          exit 1
+
+      - name: Complete rollout
+        if: steps.monitor.outputs.rollback == 'false' && github.event.inputs.traffic_percentage != '100'
+        run: |
+          echo "Deployment successful, completing rollout"
+          gcloud run services update-traffic ${{ env.SERVICE_NAME }}-${{ github.event.inputs.environment }} \
+            --to-revisions=${{ github.sha }}=100 \
+            --region=${{ env.REGION }}

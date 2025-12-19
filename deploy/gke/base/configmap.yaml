@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag7-config
+  labels:
+    app: rag7-agent-api
+data:
+  environment: "development"
+  log_level: "INFO"
+  redis_host: "redis-service"
+  redis_port: "6379"
+  postgres_host: "postgres-service"
+  postgres_port: "5432"
+  postgres_db: "rag7_db"
+  qdrant_host: "qdrant-service"
+  qdrant_port: "6333"
+  litellm_proxy_url: "http://litellm-proxy:4000"
+  max_agents: "10"
+  workers: "4"
+  rate_limit_rpm: "60"
+  rate_limit_tpm: "100000"

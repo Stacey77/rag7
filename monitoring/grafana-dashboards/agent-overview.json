@@ -1,0 +1,41 @@
+{
+  "dashboard": {
+    "title": "Agent Performance Overview",
+    "tags": ["agents", "performance"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Agent Task Duration (p95)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(agent_task_duration_seconds_bucket[5m])) by (le, agent_name))",
+            "legendFormat": "{{agent_name}}"
+          }
+        ]
+      },
+      {
+        "title": "Task Success Rate",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "sum(rate(agent_tasks_total{status=\"success\"}[5m])) by (agent_name) / sum(rate(agent_tasks_total[5m])) by (agent_name)",
+            "legendFormat": "{{agent_name}}"
+          }
+        ]
+      },
+      {
+        "title": "Active Agents",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "sum(active_agents)"
+          }
+        ]
+      }
+    ]
+  }
+}

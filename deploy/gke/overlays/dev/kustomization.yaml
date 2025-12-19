@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: rag7-dev
+
+bases:
+- ../../base
+
+patchesStrategicMerge:
+- deployment-patch.yaml
+- configmap-patch.yaml
+
+images:
+- name: us-central1-docker.pkg.dev/PROJECT_ID/rag7/rag7-agent-api
+  newTag: dev
+
+replicas:
+- name: rag7-agent-api
+  count: 2
+
+commonLabels:
+  environment: dev

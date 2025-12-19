@@ -1,0 +1,78 @@
+name: Chaos Testing
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday at 2 AM UTC
+  workflow_dispatch:
+
+jobs:
+  chaos-tests:
+    name: Run Chaos Engineering Tests
+    runs-on: ubuntu-latest
+    environment: staging
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: rag7_test
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run chaos tests
+        run: |
+          pytest tests/orchestration/ -v -m chaos --tb=short
+        env:
+          ENVIRONMENT: staging
+          REDIS_HOST: localhost
+          POSTGRES_HOST: localhost
+
+      - name: Generate chaos test report
+        if: always()
+        run: |
+          echo "# Chaos Testing Report" > chaos-report.md
+          echo "Date: $(date)" >> chaos-report.md
+          echo "" >> chaos-report.md
+          echo "## Test Results" >> chaos-report.md
+          pytest tests/orchestration/ -m chaos --tb=line --quiet >> chaos-report.md 2>&1 || true
+
+      - name: Upload chaos test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chaos-test-report
+          path: chaos-report.md
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Chaos Testing Failed',
+              body: 'The weekly chaos testing run has failed. Please investigate.',
+              labels: ['chaos-testing', 'needs-investigation']
+            })
