@@ -1,0 +1,99 @@
+name: CD - Deploy to Staging
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment:
+      name: staging
+      # url: https://staging.your-domain.com  # Optional: Set actual URL when available
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+      
+      - name: Configure kubectl with kubeconfig
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_STAGING }}
+        run: |
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+          chmod 600 ~/.kube/config
+      
+      - name: Verify cluster connection
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
+      
+      - name: Set image tag
+        id: image-tag
+        run: |
+          echo "TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      
+      - name: Update deployment image
+        run: |
+          kubectl set image deployment/langgraph-api \
+            langgraph-api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.image-tag.outputs.TAG }} \
+            -n rag7-staging
+      
+      - name: Wait for rollout to complete
+        run: |
+          kubectl rollout status deployment/langgraph-api -n rag7-staging --timeout=5m
+      
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n rag7-staging -l app=langgraph-api
+          kubectl get service -n rag7-staging langgraph-api
+      
+      - name: Run smoke tests
+        run: |
+          # Get the service endpoint (works for LoadBalancer type)
+          ENDPOINT=$(kubectl get service langgraph-api -n rag7-staging -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          
+          # If LoadBalancer is not available, try port-forward for testing
+          if [ -z "$ENDPOINT" ]; then
+            echo "LoadBalancer IP not available, using port-forward for testing..."
+            kubectl port-forward -n rag7-staging svc/langgraph-api 8080:80 &
+            PF_PID=$!
+            sleep 5
+            ENDPOINT="localhost:8080"
+          fi
+          
+          # Test health endpoint
+          echo "Testing health endpoint..."
+          if curl -f --max-time 10 http://$ENDPOINT/health; then
+            echo "✓ Health check passed"
+          else
+            echo "✗ Health check failed"
+            [ -n "$PF_PID" ] && kill $PF_PID
+            exit 1
+          fi
+          
+          # Test readiness endpoint
+          echo "Testing readiness endpoint..."
+          if curl -f --max-time 10 http://$ENDPOINT/ready; then
+            echo "✓ Readiness check passed"
+          else
+            echo "✗ Readiness check failed"
+            [ -n "$PF_PID" ] && kill $PF_PID
+            exit 1
+          fi
+          
+          # Cleanup port-forward if used
+          [ -n "$PF_PID" ] && kill $PF_PID
+          
+          echo "✓ All smoke tests passed"
