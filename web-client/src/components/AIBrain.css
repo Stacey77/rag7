@@ -1,0 +1,104 @@
+.ai-brain-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.brain-core {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.brain-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, transparent 70%);
+  animation: pulse-animation 2s ease-in-out infinite;
+}
+
+.brain-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid var(--accent-primary);
+  opacity: 0.6;
+}
+
+.ring-1 {
+  width: 80%;
+  height: 80%;
+  animation: rotate 8s linear infinite;
+}
+
+.ring-2 {
+  width: 100%;
+  height: 100%;
+  animation: rotate 12s linear infinite reverse;
+}
+
+.ring-3 {
+  width: 120%;
+  height: 120%;
+  animation: rotate 16s linear infinite;
+  border-color: var(--accent-secondary);
+}
+
+.brain-center {
+  position: relative;
+  z-index: 10;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent-primary);
+  text-shadow: 0 0 20px var(--accent-primary);
+}
+
+.brain-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  text-shadow: 0 0 10px var(--accent-primary);
+}
+
+@keyframes pulse-animation {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
