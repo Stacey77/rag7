@@ -1,0 +1,100 @@
+.photo-upload {
+  margin-bottom: 30px;
+}
+
+.photo-upload h2 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1.8rem;
+}
+
+.upload-instructions {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.upload-area {
+  border: 3px dashed #667eea;
+  border-radius: 15px;
+  padding: 40px;
+  text-align: center;
+  background: #f8f9ff;
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+  border-color: #764ba2;
+  background: #f0f1ff;
+}
+
+.upload-placeholder {
+  cursor: pointer;
+}
+
+.upload-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.upload-placeholder p {
+  font-size: 1.2rem;
+  color: #667eea;
+  margin: 10px 0;
+}
+
+.upload-hint {
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.preview-container {
+  position: relative;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.change-photo-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.upload-status {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.upload-status p {
+  margin-top: 10px;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fee;
+  color: #c33;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.success-message {
+  margin-top: 20px;
+  padding: 15px;
+  background: #efe;
+  color: #3a3;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
