@@ -54,6 +54,15 @@ npm install
 pip install -r requirements.txt
 ```
 
+4. **Configure Environment Variables (Optional)**
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# For development, you can enable debug mode
+echo "FLASK_DEBUG=true" > .env
+```
+
 ### Running the Application
 
 1. **Start the Backend Server**
@@ -62,6 +71,8 @@ cd backend
 python app.py
 ```
 The backend will run on `http://localhost:5000`
+
+**Note:** For development, set `FLASK_DEBUG=true` in your `.env` file. For production, always use `FLASK_DEBUG=false` and run with a production WSGI server like gunicorn.
 
 2. **Start the Frontend Development Server**
 ```bash
@@ -141,6 +152,25 @@ npm run build
 
 ```bash
 npm run lint
+```
+
+## Security Considerations
+
+### Development vs Production
+
+- **Debug Mode**: Flask debug mode is controlled by the `FLASK_DEBUG` environment variable. It is set to `false` by default for security.
+- **Production Deployment**: Always use a production WSGI server (e.g., gunicorn) instead of Flask's development server.
+- **File Uploads**: File uploads are restricted to image types (png, jpg, jpeg, gif) with a 16MB size limit.
+- **CORS**: Cross-Origin Resource Sharing is enabled for development. Configure appropriately for production.
+
+### Recommended Production Setup
+
+```bash
+# Install gunicorn
+pip install gunicorn
+
+# Run with gunicorn (from backend directory)
+gunicorn -w 4 -b 0.0.0.0:5000 app:app
 ```
 
 ## Contributing
