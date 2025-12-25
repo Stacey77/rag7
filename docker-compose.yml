@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # FastAPI Backend
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./rag7.db}
+      - REDIS_URL=redis://redis:6379/0
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - GMAIL_CREDENTIALS_FILE=${GMAIL_CREDENTIALS_FILE}
+      - NOTION_API_KEY=${NOTION_API_KEY}
+    volumes:
+      - ./src:/app/src
+      - ./credentials:/app/credentials:ro
+    depends_on:
+      - redis
+      - chromadb
+    command: uvicorn src.interfaces.web_api:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - rag7-network
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - rag7-network
+
+  # ChromaDB for vector storage
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma-data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    networks:
+      - rag7-network
+
+  # Frontend Development Server
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://api:8000
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    depends_on:
+      - api
+    stdin_open: true
+    tty: true
+    networks:
+      - rag7-network
+
+volumes:
+  redis-data:
+  chroma-data:
+
+networks:
+  rag7-network:
+    driver: bridge

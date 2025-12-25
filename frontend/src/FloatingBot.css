@@ -1,0 +1,378 @@
+/* Floating Bot Styles */
+.floating-bot-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.floating-bot-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+}
+
+.floating-bot-button.open {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.floating-bot-button svg {
+  stroke-width: 2;
+}
+
+.floating-bot-window {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 380px;
+  height: 600px;
+  max-height: 80vh;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.floating-bot-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bot-avatar {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.header-info h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.status {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.status.online {
+  color: #4ade80;
+}
+
+.status.offline {
+  color: #f87171;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.clear-button,
+.close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.clear-button:hover,
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.floating-bot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: #f9fafb;
+}
+
+.floating-bot-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.floating-bot-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.floating-bot-messages::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.floating-bot-messages::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.welcome-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+.bot-avatar-large {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.welcome-message h4 {
+  margin: 0 0 8px 0;
+  color: #1f2937;
+  font-size: 20px;
+}
+
+.welcome-message p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.message {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  animation: messageSlide 0.3s ease-out;
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.user {
+  flex-direction: row-reverse;
+}
+
+.message-avatar {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.message-content {
+  max-width: 75%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.message.user .message-content {
+  align-items: flex-end;
+}
+
+.message-text {
+  padding: 12px 16px;
+  border-radius: 16px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.message.user .message-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message.assistant .message-text {
+  background: white;
+  color: #1f2937;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message.error .message-text {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.message-time {
+  font-size: 11px;
+  color: #9ca3af;
+  padding: 0 4px;
+}
+
+.function-calls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.function-call {
+  background: #f3f4f6;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #4b5563;
+}
+
+.function-name {
+  font-weight: 500;
+}
+
+.function-call .success {
+  color: #059669;
+  font-weight: bold;
+}
+
+.function-call .error {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 12px 16px;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background-color: #9ca3af;
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+.floating-bot-input {
+  padding: 16px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0 0 16px 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.floating-bot-input input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.floating-bot-input input:focus {
+  border-color: #667eea;
+}
+
+.floating-bot-input input:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.send-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.send-button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.send-button svg {
+  stroke-width: 2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .floating-bot-window {
+    width: calc(100vw - 40px);
+    height: calc(100vh - 100px);
+    max-height: calc(100vh - 100px);
+    bottom: 80px;
+    right: 20px;
+    left: 20px;
+  }
+
+  .floating-bot-button {
+    bottom: 10px;
+    right: 10px;
+  }
+}
