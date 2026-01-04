@@ -42,6 +42,8 @@ class UserInDB(User):
 
 
 # Fake user database - Replace with real database in production
+# SECURITY: Change default password immediately!
+# In production, use a proper database and user management system
 fake_users_db = {
     "admin": {
         "username": "admin",
@@ -50,6 +52,14 @@ fake_users_db = {
         "disabled": False,
     }
 }
+
+# NOTE: For production deployment:
+# 1. Replace fake_users_db with a proper database (PostgreSQL, MongoDB, etc.)
+# 2. Implement user registration with email verification
+# 3. Force password change on first login
+# 4. Implement password complexity requirements
+# 5. Add account lockout after failed attempts
+# 6. Implement MFA (multi-factor authentication)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

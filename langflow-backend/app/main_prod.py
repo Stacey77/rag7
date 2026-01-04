@@ -278,15 +278,24 @@ async def run_flow(
     """
     Execute a flow with user input.
     
-    SECURITY WARNINGS:
-    - Running untrusted flows is a security risk
-    - Validate flows before execution in production
-    - Consider sandboxing flow execution
-    - Implement rate limiting
-    - Monitor resource usage
+    CRITICAL SECURITY WARNINGS:
+    - Running untrusted flows is a SEVERE security risk - can execute arbitrary code!
+    - In production, this endpoint should:
+      1. Be restricted to admin users only
+      2. Validate flow structure against a schema
+      3. Whitelist allowed nodes/tools
+      4. Run flows in sandboxed environment (Docker, VM, etc.)
+      5. Implement rate limiting per user
+      6. Monitor resource usage (CPU, memory, network)
+      7. Set execution timeouts
+      8. Log all executions for audit trail
     
     Requires authentication if ENABLE_AUTH=true.
     """
+    # SECURITY: In production, check if user is admin
+    # if ENABLE_AUTH and (not current_user or not current_user.is_admin):
+    #     raise HTTPException(status_code=403, detail="Admin access required")
+    
     # Validate file
     if not flow_file.filename or not flow_file.filename.endswith(".json"):
         raise HTTPException(
@@ -303,6 +312,13 @@ async def run_flow(
         except json.JSONDecodeError:
             raise HTTPException(status_code=400, detail="Invalid JSON content")
         
+        # SECURITY: Validate flow structure
+        # TODO: Implement comprehensive flow validation
+        # - Check for dangerous operations (file system access, network calls, etc.)
+        # - Validate against allowed node types
+        # - Check for infinite loops or recursive calls
+        # - Validate resource limits
+        
         # Validate input length
         if not user_input or len(user_input) > MAX_INPUT_LENGTH:
             raise HTTPException(
@@ -312,6 +328,14 @@ async def run_flow(
         
         if LANGFLOW_AVAILABLE:
             try:
+                # SECURITY: Execute in sandboxed environment in production!
+                # Consider using:
+                # - Docker containers with resource limits
+                # - Kubernetes pods with network policies
+                # - Virtual machines
+                # - AWS Lambda with IAM restrictions
+                # - Google Cloud Functions
+                
                 flow = load_flow_from_json(flow_data)
                 result = flow(user_input)
                 

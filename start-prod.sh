@@ -13,15 +13,29 @@ fi
 # Check for required environment variables
 source .env.production
 
+# Validate SECRET_KEY
 if [ -z "$SECRET_KEY" ] || [ "$SECRET_KEY" = "your-secret-key-here-change-me" ]; then
     echo "Error: SECRET_KEY not configured in .env.production"
     echo "Generate one with: openssl rand -hex 32"
     exit 1
 fi
 
+if [ ${#SECRET_KEY} -lt 32 ]; then
+    echo "Error: SECRET_KEY is too short (minimum 32 characters)"
+    echo "Generate a secure key with: openssl rand -hex 32"
+    exit 1
+fi
+
+# Validate JWT_SECRET
 if [ -z "$JWT_SECRET" ] || [ "$JWT_SECRET" = "your-jwt-secret-here-change-me" ]; then
     echo "Error: JWT_SECRET not configured in .env.production"
     echo "Generate one with: openssl rand -hex 32"
+    exit 1
+fi
+
+if [ ${#JWT_SECRET} -lt 32 ]; then
+    echo "Error: JWT_SECRET is too short (minimum 32 characters)"
+    echo "Generate a secure key with: openssl rand -hex 32"
     exit 1
 fi
 
