@@ -100,6 +100,17 @@
     
     <!-- Main Script -->
     <script>
+        // Contact Information - Centralized data
+        const contactData = {
+            phone: '+1234567890',
+            phoneDisplay: '(123) 456-7890',
+            email: 'stacey.williams@mbcollierville.com',
+            website: 'https://www.mercedesbenzofcollierville.com',
+            name: 'Stacey Williams',
+            title: 'Certified Service Technician',
+            company: 'Mercedes Benz Of Collierville'
+        };
+        
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
@@ -156,6 +167,7 @@
                         showToast('Copied to clipboard!');
                     } else {
                         // Fallback for older browsers or non-secure contexts
+                        // Note: document.execCommand is deprecated but needed for legacy browser support
                         const textarea = document.createElement('textarea');
                         textarea.value = textToCopy;
                         textarea.style.position = 'fixed';
@@ -190,15 +202,15 @@
             }, 2000);
         }
         
-        // Generate QR Code
+        // Generate QR Code with vCard data
         const vCardData = `BEGIN:VCARD
 VERSION:3.0
-FN:Stacey Williams
-TITLE:Certified Service Technician
-ORG:Mercedes Benz Of Collierville
-TEL:+1234567890
-EMAIL:stacey.williams@mbcollierville.com
-URL:https://www.mercedesbenzofcollierville.com
+FN:${contactData.name}
+TITLE:${contactData.title}
+ORG:${contactData.company}
+TEL:${contactData.phone}
+EMAIL:${contactData.email}
+URL:${contactData.website}
 END:VCARD`;
         
         new QRCode(document.getElementById('qrcode'), {
