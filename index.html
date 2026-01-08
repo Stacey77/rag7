@@ -91,21 +91,7 @@
     </div>
     
     <!-- Toast Notification -->
-    <div id="toast" style="
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%) translateY(100px);
-        background: rgba(192, 192, 192, 0.95);
-        color: #1a1a1a;
-        padding: 12px 24px;
-        border-radius: 8px;
-        font-weight: 500;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease;
-        z-index: 1000;
-        font-family: 'Inter', sans-serif;
-    ">Copied to clipboard!</div>
+    <div id="toast">Copied to clipboard!</div>
     
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -114,7 +100,7 @@
     <script>
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/rag7/sw.js')
+            navigator.serviceWorker.register('sw.js')
                 .then(registration => console.log('Service Worker registered'))
                 .catch(error => console.log('Service Worker registration failed:', error));
         }
@@ -167,16 +153,24 @@
                         await navigator.clipboard.writeText(textToCopy);
                         showToast('Copied to clipboard!');
                     } else {
-                        // Fallback for older browsers
+                        // Fallback for older browsers or non-secure contexts
                         const textarea = document.createElement('textarea');
                         textarea.value = textToCopy;
                         textarea.style.position = 'fixed';
-                        textarea.style.opacity = '0';
+                        textarea.style.left = '-9999px';
+                        textarea.style.top = '0';
+                        textarea.setAttribute('readonly', '');
                         document.body.appendChild(textarea);
                         textarea.select();
-                        document.execCommand('copy');
+                        
+                        const successful = document.execCommand('copy');
                         document.body.removeChild(textarea);
-                        showToast('Copied to clipboard!');
+                        
+                        if (successful) {
+                            showToast('Copied to clipboard!');
+                        } else {
+                            showToast('Please copy manually');
+                        }
                     }
                 } catch (err) {
                     console.error('Failed to copy:', err);

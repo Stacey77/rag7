@@ -1,9 +1,9 @@
 const CACHE_NAME = 'stacey-card-v1';
 const urlsToCache = [
-  '/rag7/',
-  '/rag7/index.html',
-  '/rag7/style.css',
-  '/rag7/manifest.json'
+  './',
+  './index.html',
+  './style.css',
+  './manifest.json'
 ];
 
 self.addEventListener('install', event => {
