@@ -2,20 +2,44 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+This digital business card PWA is maintained with security updates for the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| Latest  | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security vulnerability in this digital business card application, please report it responsibly:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+### How to Report
+
+1. **DO NOT** open a public issue for security vulnerabilities
+2. Email the repository owner directly through GitHub
+3. Provide a detailed description of the vulnerability
+4. Include steps to reproduce the issue if possible
+
+### What to Expect
+
+- **Response Time**: You can expect an initial response within 48-72 hours
+- **Updates**: You will receive updates on the status of your report weekly
+- **Resolution**: If the vulnerability is accepted, a fix will be prioritized and released as soon as possible
+- **Credit**: Security researchers who responsibly disclose vulnerabilities will be credited (unless they prefer to remain anonymous)
+
+### Security Considerations
+
+This is a static PWA application. Key security aspects include:
+
+- No sensitive data storage
+- No user authentication system
+- Contact information is intentionally public
+- Service worker operates only on cached static assets
+
+### Out of Scope
+
+The following are considered out of scope for security reports:
+
+- Issues that require physical access to a user's device
+- Social engineering attacks
+- Reports about the public nature of the contact information (this is intentional)
