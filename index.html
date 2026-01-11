@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional business card for Stacey Williams, Certified Service Technician at Mercedes Benz Of Collierville">
+    <meta name="theme-color" content="#C0C0C0">
+    <title>Stacey Williams - Digital Business Card</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+</head>
+<body>
+    <div class="card-container">
+        <div class="business-card">
+            <div class="header">
+                <div class="logo">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="35" stroke="#C0C0C0" stroke-width="3" fill="none"/>
+                        <path d="M40 15 L40 65 M15 40 L65 40" stroke="#C0C0C0" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="40" cy="40" r="8" fill="#C0C0C0"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="content">
+                <h1 class="name">Stacey Williams</h1>
+                <p class="title">Certified Service Technician</p>
+                <p class="company">Mercedes Benz Of Collierville</p>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <a href="tel:+19015551234">(901) 555-1234</a>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="22,6 12,13 2,6" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <a href="mailto:stacey.williams@mbcollierville.com">stacey.williams@mbcollierville.com</a>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="10" r="3" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <a href="https://maps.google.com/?q=Mercedes+Benz+Of+Collierville" target="_blank">Collierville, TN</a>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <a href="https://www.mbofcollierville.com" target="_blank">www.mbofcollierville.com</a>
+                    </div>
+                </div>
+                
+                <div class="qr-section">
+                    <p class="qr-label">Scan to Save Contact</p>
+                    <div class="qr-code">
+                        <canvas id="qrCanvas" width="200" height="200"></canvas>
+                    </div>
+                </div>
+                
+                <button class="install-btn" id="installBtn" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Install App
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="qr-code-generator.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/rag7/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            installBtn.style.display = 'none';
+        });
+
+        // Generate QR Code with vCard data
+        function generateQRCode() {
+            const vCard = `BEGIN:VCARD
+VERSION:3.0
+FN:Stacey Williams
+TITLE:Certified Service Technician
+ORG:Mercedes Benz Of Collierville
+TEL:+19015551234
+EMAIL:stacey.williams@mbcollierville.com
+URL:https://www.mbofcollierville.com
+ADR:;;Collierville;TN;;USA
+END:VCARD`;
+
+            const canvas = document.getElementById('qrCanvas');
+            if (canvas && typeof QRCode !== 'undefined') {
+                QRCode.toCanvas(canvas, vCard, {
+                    width: 200,
+                    margin: 1,
+                    color: {
+                        dark: '#1a1a1a',
+                        light: '#ffffff'
+                    }
+                }, function (error) {
+                    if (error) console.error('QR Code generation error:', error);
+                });
+            } else {
+                // Fallback: Simple text message if QR library not loaded
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, 200, 200);
+                ctx.fillStyle = '#1a1a1a';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('QR Code', 100, 100);
+                ctx.fillText('Loading...', 100, 115);
+            }
+        }
+
+        // Generate QR code when page loads
+        window.addEventListener('load', generateQRCode);
+    </script>
+</body>
+</html>
