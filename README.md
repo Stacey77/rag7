@@ -43,7 +43,6 @@ rag7/
 ├── manifest.json          # PWA manifest configuration
 ├── sw.js                  # Service worker for offline caching
 ├── style.css              # Styling and responsive design
-├── index.html             # Main HTML file (not in repo)
 ├── README.md              # Project documentation
 ├── SECURITY.md            # Security policy
 └── .github/

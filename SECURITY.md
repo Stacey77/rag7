@@ -16,7 +16,7 @@ If you discover a security vulnerability in this digital business card applicati
 ### How to Report
 
 1. **DO NOT** open a public issue for security vulnerabilities
-2. Email the repository owner directly through GitHub
+2. Contact the repository owner using GitHub's private vulnerability reporting feature or by opening a security advisory
 3. Provide a detailed description of the vulnerability
 4. Include steps to reproduce the issue if possible
 
