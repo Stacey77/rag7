@@ -1,10 +1,12 @@
 // Simple QR Code Generator
-// Using qrcode library from CDN or implementing a basic version
+// Using qrcode library from CDN with integrity check
 
-// Load QR Code library from CDN
+// Load QR Code library from CDN with security
 (function() {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+    script.integrity = 'sha384-EcFLdd7I0VnAzOdQKXFl4acVCgKn6pZWGwBW1QGhxRuhNMFqBcMxRMhNLYB3XvLh';
+    script.crossOrigin = 'anonymous';
     script.async = true;
     script.onerror = function() {
         console.warn('QR Code library failed to load from CDN');

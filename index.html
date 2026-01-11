@@ -93,7 +93,7 @@
         // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/rag7/sw.js')
+                navigator.serviceWorker.register('./sw.js')
                     .then(registration => {
                         console.log('Service Worker registered successfully:', registration.scope);
                     })
@@ -128,17 +128,28 @@
             installBtn.style.display = 'none';
         });
 
+        // Contact information configuration
+        const contactInfo = {
+            name: 'Stacey Williams',
+            title: 'Certified Service Technician',
+            organization: 'Mercedes Benz Of Collierville',
+            phone: '+19015551234',
+            email: 'stacey.williams@mbcollierville.com',
+            website: 'https://www.mbofcollierville.com',
+            location: 'Collierville, TN, USA'
+        };
+
         // Generate QR Code with vCard data
         function generateQRCode() {
             const vCard = `BEGIN:VCARD
 VERSION:3.0
-FN:Stacey Williams
-TITLE:Certified Service Technician
-ORG:Mercedes Benz Of Collierville
-TEL:+19015551234
-EMAIL:stacey.williams@mbcollierville.com
-URL:https://www.mbofcollierville.com
-ADR:;;Collierville;TN;;USA
+FN:${contactInfo.name}
+TITLE:${contactInfo.title}
+ORG:${contactInfo.organization}
+TEL:${contactInfo.phone}
+EMAIL:${contactInfo.email}
+URL:${contactInfo.website}
+ADR:;;${contactInfo.location.split(',')[0]};${contactInfo.location.split(',')[1].trim()};;USA
 END:VCARD`;
 
             const canvas = document.getElementById('qrCanvas');
