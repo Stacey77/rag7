@@ -1,10 +1,10 @@
 const CACHE_NAME = 'stacey-card-v1';
 const FETCH_TIMEOUT = 5000; // 5 seconds timeout for network requests
 const urlsToCache = [
-  '/rag7/',
-  '/rag7/index.html',
-  '/rag7/style.css',
-  '/rag7/manifest.json'
+  '/',
+  '/index.html',
+  '/style.css',
+  '/manifest.json'
 ];
 
 // Helper function to validate response for caching
