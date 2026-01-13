@@ -44,13 +44,16 @@ self.addEventListener('fetch', event => {
         // Clone the request for fetch
         const fetchRequest = event.request.clone();
         
-        return fetch(fetchRequest, { 
-          // Add timeout to prevent hanging requests
-          signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined 
-        })
+        // Create timeout promise for better browser compatibility
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Request timeout')), 5000);
+        });
+        
+        const fetchPromise = fetch(fetchRequest)
           .then(response => {
-            // Check if valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+            // Check if valid response (allow both basic and cors types)
+            if (!response || response.status !== 200 || 
+                (response.type !== 'basic' && response.type !== 'cors')) {
               return response;
             }
             
@@ -62,7 +65,9 @@ self.addEventListener('fetch', event => {
               .catch(error => console.error('Failed to update cache:', error));
             
             return response;
-          })
+          });
+        
+        return Promise.race([fetchPromise, timeoutPromise])
           .catch(error => {
             console.error('Fetch failed:', error);
             // Could return a custom offline page here
