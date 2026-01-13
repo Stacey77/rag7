@@ -1,10 +1,18 @@
 const CACHE_NAME = 'stacey-card-v1';
+const FETCH_TIMEOUT = 5000; // 5 seconds timeout for network requests
 const urlsToCache = [
   '/rag7/',
   '/rag7/index.html',
   '/rag7/style.css',
   '/rag7/manifest.json'
 ];
+
+// Helper function to validate response for caching
+function isValidResponse(response) {
+  return response && 
+         response.status === 200 && 
+         (response.type === 'basic' || response.type === 'cors');
+}
 
 // Install event - cache resources and activate immediately
 self.addEventListener('install', event => {
@@ -46,15 +54,14 @@ self.addEventListener('fetch', event => {
         
         // Create AbortController for timeout cleanup
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
         
         return fetch(fetchRequest, { signal: controller.signal })
           .then(response => {
             clearTimeout(timeoutId); // Clean up timeout
             
             // Check if valid response (allow both basic and cors types)
-            if (!response || response.status !== 200 || 
-                (response.type !== 'basic' && response.type !== 'cors')) {
+            if (!isValidResponse(response)) {
               return response;
             }
             
