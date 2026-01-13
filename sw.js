@@ -44,31 +44,32 @@ self.addEventListener('fetch', event => {
         // Clone the request for fetch
         const fetchRequest = event.request.clone();
         
-        // Create timeout promise for better browser compatibility
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Request timeout')), 5000);
-        });
+        // Create AbortController for timeout cleanup
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
         
-        const fetchPromise = fetch(fetchRequest)
+        return fetch(fetchRequest, { signal: controller.signal })
           .then(response => {
+            clearTimeout(timeoutId); // Clean up timeout
+            
             // Check if valid response (allow both basic and cors types)
             if (!response || response.status !== 200 || 
                 (response.type !== 'basic' && response.type !== 'cors')) {
               return response;
             }
             
-            // Clone response for cache
+            // Clone response for cache and update cache asynchronously
             const responseToCache = response.clone();
-            
-            caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, responseToCache))
-              .catch(error => console.error('Failed to update cache:', error));
+            event.waitUntil(
+              caches.open(CACHE_NAME)
+                .then(cache => cache.put(event.request, responseToCache))
+                .catch(error => console.error('Failed to update cache:', error))
+            );
             
             return response;
-          });
-        
-        return Promise.race([fetchPromise, timeoutPromise])
+          })
           .catch(error => {
+            clearTimeout(timeoutId); // Clean up timeout on error
             console.error('Fetch failed:', error);
             // Could return a custom offline page here
             throw error;
