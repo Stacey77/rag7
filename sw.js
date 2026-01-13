@@ -61,6 +61,7 @@ self.addEventListener('fetch', event => {
             clearTimeout(timeoutId); // Clean up timeout
             
             // Check if valid response (allow both basic and cors types)
+            // Return invalid responses without caching to preserve server behavior
             if (!isValidResponse(response)) {
               return response;
             }
