@@ -1,19 +1,19 @@
 # Core Framework Dependencies
 asyncio-mqtt==0.16.1
-aiohttp==3.9.1
+aiohttp==3.13.3
 pydantic==2.5.3
 python-dotenv==1.0.0
 
 # gRPC and Protocol Buffers
 grpcio==1.60.0
 grpcio-tools==1.60.0
-protobuf==4.25.1
+protobuf==4.25.8
 
 # AI/ML and NLP
 openai==1.7.1
 langchain==0.1.0
-transformers==4.36.2
-torch==2.1.2
+transformers==4.48.0
+torch==2.6.0
 
 # Policy Engine (OPA)
 opa-python-client==1.4.0
@@ -28,7 +28,7 @@ azure-mgmt-compute==30.4.0  # Azure
 google-cloud-compute==1.14.1  # GCP
 
 # API and Web Framework
-fastapi==0.108.0
+fastapi==0.109.1
 uvicorn[standard]==0.25.0
 pydantic-settings==2.1.0
 
