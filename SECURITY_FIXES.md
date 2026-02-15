@@ -19,11 +19,11 @@ All identified security vulnerabilities in dependencies have been patched by upd
 **Vulnerabilities Fixed:**
 - ✅ Content-Type Header ReDoS vulnerability
 
-### 3. protobuf (4.25.1 → 4.25.8)
+### 3. protobuf (4.25.1 → 5.29.6)
 **Previous Version:** 4.25.1  
-**Patched Version:** 4.25.8  
+**Patched Version:** 5.29.6  
 **Vulnerabilities Fixed:**
-- ✅ JSON recursion depth bypass
+- ✅ JSON recursion depth bypass (multiple instances)
 - ✅ Potential Denial of Service issues
 
 ### 4. torch (2.1.2 → 2.6.0)
@@ -45,7 +45,7 @@ All identified security vulnerabilities in dependencies have been patched by upd
 ```
 aiohttp==3.13.3        (was 3.9.1)
 fastapi==0.109.1       (was 0.108.0)
-protobuf==4.25.8       (was 4.25.1)
+protobuf==5.29.6       (was 4.25.1)
 torch==2.6.0           (was 2.1.2)
 transformers==4.48.0   (was 4.36.2)
 ```
