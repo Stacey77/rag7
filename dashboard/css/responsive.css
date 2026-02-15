@@ -1,0 +1,245 @@
+/* Responsive Styles */
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+    .stat-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .agent-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .two-column-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid rgba(123, 104, 166, 0.2);
+    }
+    
+    .logo-container {
+        padding: 20px;
+    }
+    
+    .logo-container h2 {
+        font-size: 14px;
+    }
+    
+    .nav-menu {
+        display: flex;
+        overflow-x: auto;
+        padding: 10px 0;
+    }
+    
+    .nav-item {
+        margin: 0 5px;
+    }
+    
+    .nav-item a {
+        flex-direction: column;
+        padding: 10px 15px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+    }
+    
+    .nav-item.active a,
+    .nav-item a:hover {
+        border-left: none;
+        border-bottom-color: var(--accent-orange);
+    }
+    
+    .nav-item i {
+        margin-right: 0;
+        margin-bottom: 4px;
+    }
+    
+    .connection-status {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .page-header h1 {
+        font-size: 24px;
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .stat-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: 20px;
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    .stat-value {
+        font-size: 28px;
+    }
+    
+    .agent-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .two-column-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .policy-header {
+        flex-direction: column;
+    }
+    
+    .search-box {
+        max-width: 100%;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .activity-filters {
+        overflow-x: auto;
+    }
+    
+    .filter-btn {
+        white-space: nowrap;
+    }
+    
+    .blast-radius-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .approval-workflow {
+        flex-direction: column;
+    }
+    
+    .region-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .page-header h1 {
+        font-size: 20px;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+    }
+    
+    .stat-content h3 {
+        font-size: 12px;
+    }
+    
+    .agent-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .agent-controls {
+        align-self: flex-end;
+    }
+    
+    .policy-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .policy-status {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .region-map {
+        height: 200px;
+    }
+    
+    .region-marker {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+    
+    .region-label {
+        font-size: 9px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .sidebar,
+    .header-actions,
+    .agent-controls,
+    .approval-workflow,
+    .activity-filters {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .card {
+        break-inside: avoid;
+    }
+}
+
+/* High DPI / Retina Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* Dark Mode Support (for future enhancement) */
+@media (prefers-color-scheme: dark) {
+    /* Already in dark mode by default */
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

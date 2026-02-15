@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Management - Multi-Agent Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-container">
+            <img src="assets/logo.svg" alt="Platform Logo" class="logo">
+            <h2>Multi-Agent Platform</h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a href="policies.html">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Policies</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="scripts.html">
+                    <i class="fas fa-code"></i>
+                    <span>Scripts</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="compliance.html">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Compliance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Policy Management</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i> New Policy
+                </button>
+            </div>
+        </header>
+
+        <!-- Policy Statistics -->
+        <section class="overview-section">
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Active Policies</h3>
+                        <div class="stat-value">4</div>
+                        <p class="stat-label">enforcing compliance</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Policies Enforced</h3>
+                        <div class="stat-value">648</div>
+                        <p class="stat-label">total checks today</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Violations</h3>
+                        <div class="stat-value warning">3</div>
+                        <p class="stat-label">require attention</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Success Rate</h3>
+                        <div class="stat-value success">99.5%</div>
+                        <p class="stat-label">compliance score</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Policy List -->
+        <section class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-list"></i> All Policies
+            </h2>
+            <div class="card">
+                <div class="policy-header" style="margin-bottom: 20px;">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search policies..." id="policySearch">
+                    </div>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+
+                <div class="policy-details-list">
+                    <!-- Policy 1 -->
+                    <div class="policy-detail-card">
+                        <div class="policy-detail-header">
+                            <div>
+                                <h3>Resource Quota Enforcement</h3>
+                                <span class="badge success">Active</span>
+                            </div>
+                            <div class="policy-actions">
+                                <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon" title="Test"><i class="fas fa-flask"></i></button>
+                                <button class="btn-icon" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <p class="policy-description">Ensures CPU and memory limits are not exceeded across all resources</p>
+                        <div class="policy-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">Enforced Today</span>
+                                <span class="metric-value">247</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Violations</span>
+                                <span class="metric-value warning">0</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Last Run</span>
+                                <span class="metric-value">2 min ago</span>
+                            </div>
+                        </div>
+                        <div class="policy-rules">
+                            <strong>OPA Rules:</strong>
+                            <pre><code>package kubernetes.admission
+deny[msg] {
+  input.request.kind.kind == "Pod"
+  container := input.request.object.spec.containers[_]
+  not container.resources.limits.cpu
+  msg := "CPU limit required"
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Policy 2 -->
+                    <div class="policy-detail-card">
+                        <div class="policy-detail-header">
+                            <div>
+                                <h3>Security Group Validation</h3>
+                                <span class="badge success">Active</span>
+                            </div>
+                            <div class="policy-actions">
+                                <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon" title="Test"><i class="fas fa-flask"></i></button>
+                                <button class="btn-icon" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <p class="policy-description">Validates security group rules against best practices</p>
+                        <div class="policy-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">Enforced Today</span>
+                                <span class="metric-value">89</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Violations</span>
+                                <span class="metric-value warning">0</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Last Run</span>
+                                <span class="metric-value">5 min ago</span>
+                            </div>
+                        </div>
+                        <div class="policy-rules">
+                            <strong>OPA Rules:</strong>
+                            <pre><code>package aws.security_groups
+deny[msg] {
+  rule := input.rules[_]
+  rule.from_port == 22
+  rule.cidr_blocks[_] == "0.0.0.0/0"
+  msg := "SSH should not be open to public"
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Policy 3 -->
+                    <div class="policy-detail-card">
+                        <div class="policy-detail-header">
+                            <div>
+                                <h3>Cost Threshold Alert</h3>
+                                <span class="badge warning">Warning</span>
+                            </div>
+                            <div class="policy-actions">
+                                <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon" title="Test"><i class="fas fa-flask"></i></button>
+                                <button class="btn-icon" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <p class="policy-description">Alerts when spending exceeds budget thresholds</p>
+                        <div class="policy-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">Checks Today</span>
+                                <span class="metric-value">156</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Violations</span>
+                                <span class="metric-value error">3</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Last Run</span>
+                                <span class="metric-value">10 min ago</span>
+                            </div>
+                        </div>
+                        <div class="policy-rules">
+                            <strong>OPA Rules:</strong>
+                            <pre><code>package cost.thresholds
+deny[msg] {
+  daily_cost := input.metrics.cost.daily
+  daily_cost > 500
+  msg := sprintf("Daily cost $%v exceeds threshold", [daily_cost])
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Policy 4 -->
+                    <div class="policy-detail-card">
+                        <div class="policy-detail-header">
+                            <div>
+                                <h3>Data Encryption Policy</h3>
+                                <span class="badge success">Active</span>
+                            </div>
+                            <div class="policy-actions">
+                                <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon" title="Test"><i class="fas fa-flask"></i></button>
+                                <button class="btn-icon" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <p class="policy-description">Ensures all data at rest is encrypted</p>
+                        <div class="policy-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">Enforced Today</span>
+                                <span class="metric-value">312</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Violations</span>
+                                <span class="metric-value success">0</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Last Run</span>
+                                <span class="metric-value">1 min ago</span>
+                            </div>
+                        </div>
+                        <div class="policy-rules">
+                            <strong>OPA Rules:</strong>
+                            <pre><code>package aws.encryption
+deny[msg] {
+  resource := input.resources[_]
+  resource.type == "s3_bucket"
+  not resource.encryption.enabled
+  msg := "S3 bucket must have encryption enabled"
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <style>
+        .policy-detail-card {
+            background: rgba(91, 75, 138, 0.1);
+            border: 1px solid rgba(123, 104, 166, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .policy-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .policy-detail-header h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+
+        .policy-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .policy-description {
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .policy-metrics {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(91, 75, 138, 0.05);
+            border-radius: 8px;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-item .metric-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+        }
+
+        .metric-item .metric-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .policy-rules {
+            margin-top: 20px;
+        }
+
+        .policy-rules strong {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .policy-rules pre {
+            background: rgba(46, 37, 71, 0.8);
+            border: 1px solid rgba(123, 104, 166, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        .policy-rules code {
+            color: #B8B8B8;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .policy-metrics {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</body>
+</html>

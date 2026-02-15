@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent Infrastructure Control Platform - Dashboard</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-container">
+            <img src="assets/logo.svg" alt="Platform Logo" class="logo">
+            <h2>Multi-Agent Platform</h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active">
+                <a href="index.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="policies.html">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Policies</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="scripts.html">
+                    <i class="fas fa-code"></i>
+                    <span>Scripts</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="compliance.html">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Compliance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+        <div class="connection-status">
+            <div class="status-indicator" id="wsStatus">
+                <span class="status-dot"></span>
+                <span class="status-text">Connected</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Dashboard Overview</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <div class="user-menu">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Overview Section -->
+        <section class="overview-section">
+            <div class="stat-cards">
+                <div class="stat-card platform-status">
+                    <div class="stat-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Platform Status</h3>
+                        <div class="status-badge operational" id="platformStatus">Operational</div>
+                        <p class="stat-label">All systems running</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Active Agents</h3>
+                        <div class="stat-value" id="activeAgents">4</div>
+                        <p class="stat-label">of 4 agents online</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Processing Queue</h3>
+                        <div class="stat-value" id="queueSize">12</div>
+                        <p class="stat-label">items pending</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>System Health</h3>
+                        <div class="stat-value" id="systemHealth">98%</div>
+                        <p class="stat-label">excellent condition</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agent Status Panel -->
+        <section class="agent-status-section">
+            <h2 class="section-title">
+                <i class="fas fa-robot"></i> Agent Status
+            </h2>
+            <div class="agent-grid">
+                <div class="agent-card" data-agent="policy">
+                    <div class="agent-header">
+                        <div class="agent-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h3>Policy Agent</h3>
+                            <span class="agent-status active">Active</span>
+                        </div>
+                        <div class="agent-controls">
+                            <button class="btn-icon" title="Stop Agent">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="agent-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Policies Enforced</span>
+                            <span class="metric-value">247</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Violations</span>
+                            <span class="metric-value warning">3</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Last Check</span>
+                            <span class="metric-value">2 min ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-card" data-agent="intent">
+                    <div class="agent-header">
+                        <div class="agent-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h3>Intent Agent</h3>
+                            <span class="agent-status active">Active</span>
+                        </div>
+                        <div class="agent-controls">
+                            <button class="btn-icon" title="Stop Agent">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="agent-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Active Intents</span>
+                            <span class="metric-value">8</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Scripts Generated</span>
+                            <span class="metric-value">156</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Queue Size</span>
+                            <span class="metric-value">5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-card" data-agent="deployment">
+                    <div class="agent-header">
+                        <div class="agent-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h3>Deployment Agent</h3>
+                            <span class="agent-status active">Active</span>
+                        </div>
+                        <div class="agent-controls">
+                            <button class="btn-icon" title="Stop Agent">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="agent-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Active Deployments</span>
+                            <span class="metric-value">12</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Regions</span>
+                            <span class="metric-value">5</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Success Rate</span>
+                            <span class="metric-value success">99.2%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-card" data-agent="compliance">
+                    <div class="agent-header">
+                        <div class="agent-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h3>Compliance Agent</h3>
+                            <span class="agent-status active">Active</span>
+                        </div>
+                        <div class="agent-controls">
+                            <button class="btn-icon" title="Stop Agent">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="agent-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Compliance Score</span>
+                            <span class="metric-value success">96%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Audit Events</span>
+                            <span class="metric-value">1,234</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Markers</span>
+                            <span class="metric-value">45</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two Column Layout -->
+        <div class="two-column-layout">
+            <!-- Blast Radius Visualization -->
+            <section class="blast-radius-section">
+                <h2 class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i> Blast Radius Prediction
+                </h2>
+                <div class="card">
+                    <div class="blast-radius-header">
+                        <div class="risk-indicator high">
+                            <span class="risk-label">Risk Level</span>
+                            <span class="risk-value">Medium</span>
+                        </div>
+                    </div>
+                    <div class="blast-radius-viz">
+                        <canvas id="blastRadiusChart"></canvas>
+                    </div>
+                    <div class="blast-radius-stats">
+                        <div class="stat">
+                            <i class="fas fa-server"></i>
+                            <span class="stat-num">24</span>
+                            <span class="stat-text">Affected Resources</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <span class="stat-num">156</span>
+                            <span class="stat-text">Impacted Users</span>
+                        </div>
+                    </div>
+                    <div class="approval-workflow">
+                        <button class="btn btn-success">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-danger">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Multi-Region Map -->
+            <section class="region-map-section">
+                <h2 class="section-title">
+                    <i class="fas fa-globe"></i> Multi-Region Infrastructure
+                </h2>
+                <div class="card">
+                    <div class="region-map">
+                        <div class="region" data-region="us-east" style="top: 40%; left: 25%;">
+                            <div class="region-marker healthy">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="region-label">US East</div>
+                        </div>
+                        <div class="region" data-region="us-west" style="top: 35%; left: 15%;">
+                            <div class="region-marker healthy">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="region-label">US West</div>
+                        </div>
+                        <div class="region" data-region="eu-central" style="top: 30%; left: 50%;">
+                            <div class="region-marker healthy">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="region-label">EU Central</div>
+                        </div>
+                        <div class="region" data-region="asia-pacific" style="top: 50%; left: 75%;">
+                            <div class="region-marker warning">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="region-label">Asia Pacific</div>
+                        </div>
+                        <div class="region" data-region="south-america" style="top: 65%; left: 30%;">
+                            <div class="region-marker healthy">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="region-label">South America</div>
+                        </div>
+                    </div>
+                    <div class="region-stats">
+                        <div class="region-stat">
+                            <span class="status-dot healthy"></span>
+                            <span>4 Healthy</span>
+                        </div>
+                        <div class="region-stat">
+                            <span class="status-dot warning"></span>
+                            <span>1 Warning</span>
+                        </div>
+                        <div class="region-stat">
+                            <span class="status-dot error"></span>
+                            <span>0 Down</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Policy Enforcement Dashboard -->
+        <section class="policy-section">
+            <h2 class="section-title">
+                <i class="fas fa-gavel"></i> Policy Enforcement
+            </h2>
+            <div class="card">
+                <div class="policy-header">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search policies..." id="policySearch">
+                    </div>
+                    <button class="btn btn-primary" id="simulatePolicyBtn">
+                        <i class="fas fa-flask"></i> Simulate Policy
+                    </button>
+                </div>
+                <div class="policy-list">
+                    <div class="policy-item">
+                        <div class="policy-info">
+                            <h4>Resource Quota Enforcement</h4>
+                            <p>Ensures CPU and memory limits are not exceeded</p>
+                        </div>
+                        <div class="policy-status">
+                            <span class="badge success">Active</span>
+                            <span class="policy-count">247 enforced</span>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-info">
+                            <h4>Security Group Validation</h4>
+                            <p>Validates security group rules against best practices</p>
+                        </div>
+                        <div class="policy-status">
+                            <span class="badge success">Active</span>
+                            <span class="policy-count">89 enforced</span>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-info">
+                            <h4>Cost Threshold Alert</h4>
+                            <p>Alerts when spending exceeds budget thresholds</p>
+                        </div>
+                        <div class="policy-status">
+                            <span class="badge warning">3 violations</span>
+                            <span class="policy-count">156 checks</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cost Optimization Metrics -->
+        <section class="cost-section">
+            <h2 class="section-title">
+                <i class="fas fa-dollar-sign"></i> Cost Optimization
+            </h2>
+            <div class="metrics-grid">
+                <div class="card metric-card">
+                    <h3>Bandwidth Savings</h3>
+                    <canvas id="bandwidthChart"></canvas>
+                    <div class="metric-footer">
+                        <span class="trend-up">
+                            <i class="fas fa-arrow-up"></i> 23% savings
+                        </span>
+                    </div>
+                </div>
+                <div class="card metric-card">
+                    <h3>Compute Efficiency</h3>
+                    <canvas id="computeChart"></canvas>
+                    <div class="metric-footer">
+                        <span class="trend-up">
+                            <i class="fas fa-arrow-up"></i> 89% utilized
+                        </span>
+                    </div>
+                </div>
+                <div class="card metric-card">
+                    <h3>Storage Rebalancing</h3>
+                    <canvas id="storageChart"></canvas>
+                    <div class="metric-footer">
+                        <span class="trend-neutral">
+                            <i class="fas fa-minus"></i> Stable
+                        </span>
+                    </div>
+                </div>
+                <div class="card metric-card">
+                    <h3>Cost Trends</h3>
+                    <canvas id="costTrendChart"></canvas>
+                    <div class="metric-footer">
+                        <span class="trend-down">
+                            <i class="fas fa-arrow-down"></i> 12% reduction
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activities Feed -->
+        <section class="activity-section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i> Recent Activities
+            </h2>
+            <div class="card">
+                <div class="activity-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="policy">Policy</button>
+                    <button class="filter-btn" data-filter="deployment">Deployment</button>
+                    <button class="filter-btn" data-filter="compliance">Compliance</button>
+                </div>
+                <div class="activity-feed" id="activityFeed">
+                    <!-- Activities will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/websocket.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/agents.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
