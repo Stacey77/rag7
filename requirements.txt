@@ -1,0 +1,53 @@
+# Core Framework Dependencies
+asyncio-mqtt==0.16.1
+aiohttp==3.9.1
+pydantic==2.5.3
+python-dotenv==1.0.0
+
+# gRPC and Protocol Buffers
+grpcio==1.60.0
+grpcio-tools==1.60.0
+protobuf==4.25.1
+
+# AI/ML and NLP
+openai==1.7.1
+langchain==0.1.0
+transformers==4.36.2
+torch==2.1.2
+
+# Policy Engine (OPA)
+opa-python-client==1.4.0
+requests==2.31.0
+
+# Kubernetes
+kubernetes==28.1.0
+
+# Cloud Providers
+boto3==1.34.19  # AWS
+azure-mgmt-compute==30.4.0  # Azure
+google-cloud-compute==1.14.1  # GCP
+
+# API and Web Framework
+fastapi==0.108.0
+uvicorn[standard]==0.25.0
+pydantic-settings==2.1.0
+
+# Database and Caching
+redis==5.0.1
+sqlalchemy==2.0.25
+alembic==1.13.1
+
+# Monitoring and Logging
+prometheus-client==0.19.0
+structlog==24.1.0
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+httpx==0.26.0
+
+# Utilities
+pyyaml==6.0.1
+jsonschema==4.20.0
+click==8.1.7
