@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance Reports - Multi-Agent Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-container">
+            <img src="assets/logo.svg" alt="Platform Logo" class="logo">
+            <h2>Multi-Agent Platform</h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="policies.html">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Policies</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="scripts.html">
+                    <i class="fas fa-code"></i>
+                    <span>Scripts</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a href="compliance.html">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Compliance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Compliance Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </button>
+                <button class="btn btn-primary">
+                    <i class="fas fa-file-csv"></i> Export CSV
+                </button>
+            </div>
+        </header>
+
+        <!-- Compliance Overview -->
+        <section class="overview-section">
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Overall Score</h3>
+                        <div class="stat-value success">96%</div>
+                        <p class="stat-label">compliance rating</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Audit Events</h3>
+                        <div class="stat-value">1,234</div>
+                        <p class="stat-label">logged this month</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Markers</h3>
+                        <div class="stat-value">45</div>
+                        <p class="stat-label">active compliance points</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Issues</h3>
+                        <div class="stat-value warning">11</div>
+                        <p class="stat-label">require attention</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compliance Frameworks -->
+        <section class="frameworks-section">
+            <h2 class="section-title">
+                <i class="fas fa-certificate"></i> Compliance Frameworks
+            </h2>
+            <div class="frameworks-grid">
+                <div class="framework-card">
+                    <div class="framework-header">
+                        <h3>SOC 2</h3>
+                        <div class="compliance-score success">98%</div>
+                    </div>
+                    <div class="framework-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 98%;"></div>
+                        </div>
+                    </div>
+                    <div class="framework-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Controls</span>
+                            <span class="stat-value">156</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Passed</span>
+                            <span class="stat-value success">153</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Failed</span>
+                            <span class="stat-value error">3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-header">
+                        <h3>HIPAA</h3>
+                        <div class="compliance-score warning">95%</div>
+                    </div>
+                    <div class="framework-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 95%; background: var(--status-warning);"></div>
+                        </div>
+                    </div>
+                    <div class="framework-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Controls</span>
+                            <span class="stat-value">89</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Passed</span>
+                            <span class="stat-value success">85</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Failed</span>
+                            <span class="stat-value error">4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-header">
+                        <h3>PCI DSS</h3>
+                        <div class="compliance-score warning">94%</div>
+                    </div>
+                    <div class="framework-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 94%; background: var(--status-warning);"></div>
+                        </div>
+                    </div>
+                    <div class="framework-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Controls</span>
+                            <span class="stat-value">67</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Passed</span>
+                            <span class="stat-value success">63</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Failed</span>
+                            <span class="stat-value error">4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compliance Trends -->
+        <section class="trends-section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line"></i> Compliance Trends
+            </h2>
+            <div class="card">
+                <canvas id="complianceTrendChart" style="max-height: 300px;"></canvas>
+            </div>
+        </section>
+
+        <!-- Audit Trail -->
+        <section class="audit-section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i> Recent Audit Events
+            </h2>
+            <div class="card">
+                <div class="audit-filters">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search audit events..." id="auditSearch">
+                    </div>
+                    <select class="filter-select">
+                        <option>All Events</option>
+                        <option>Configuration Changes</option>
+                        <option>Access Events</option>
+                        <option>Policy Violations</option>
+                    </select>
+                </div>
+                <div class="audit-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Event Type</th>
+                                <th>Resource</th>
+                                <th>User</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-02-15 07:30:00</td>
+                                <td>Configuration Change</td>
+                                <td>s3://production-data</td>
+                                <td>admin@example.com</td>
+                                <td><span class="badge success">Compliant</span></td>
+                                <td><button class="btn-icon"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>2024-02-15 07:25:00</td>
+                                <td>Access Event</td>
+                                <td>rds://prod-db</td>
+                                <td>user@example.com</td>
+                                <td><span class="badge success">Compliant</span></td>
+                                <td><button class="btn-icon"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>2024-02-15 07:20:00</td>
+                                <td>Policy Violation</td>
+                                <td>ec2://i-1234567</td>
+                                <td>service-account</td>
+                                <td><span class="badge warning">Warning</span></td>
+                                <td><button class="btn-icon"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>2024-02-15 07:15:00</td>
+                                <td>Configuration Change</td>
+                                <td>iam://role/admin</td>
+                                <td>admin@example.com</td>
+                                <td><span class="badge success">Compliant</span></td>
+                                <td><button class="btn-icon"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>2024-02-15 07:10:00</td>
+                                <td>Access Event</td>
+                                <td>s3://backup-storage</td>
+                                <td>backup-service</td>
+                                <td><span class="badge success">Compliant</span></td>
+                                <td><button class="btn-icon"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compliance Markers -->
+        <section class="markers-section">
+            <h2 class="section-title">
+                <i class="fas fa-map-marker-alt"></i> Compliance Markers
+            </h2>
+            <div class="markers-grid">
+                <div class="marker-card">
+                    <div class="marker-icon compliant">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="marker-content">
+                        <h4>Encryption at Rest</h4>
+                        <p class="marker-resource">s3://production-data</p>
+                        <p class="marker-timestamp">Last checked: 2 minutes ago</p>
+                    </div>
+                    <span class="badge success">Compliant</span>
+                </div>
+
+                <div class="marker-card">
+                    <div class="marker-icon compliant">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="marker-content">
+                        <h4>Automated Backups</h4>
+                        <p class="marker-resource">rds://prod-db</p>
+                        <p class="marker-timestamp">Last checked: 5 minutes ago</p>
+                    </div>
+                    <span class="badge success">Compliant</span>
+                </div>
+
+                <div class="marker-card">
+                    <div class="marker-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="marker-content">
+                        <h4>Access Logging</h4>
+                        <p class="marker-resource">lb://production-lb</p>
+                        <p class="marker-timestamp">Last checked: 10 minutes ago</p>
+                    </div>
+                    <span class="badge warning">Warning</span>
+                </div>
+
+                <div class="marker-card">
+                    <div class="marker-icon compliant">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="marker-content">
+                        <h4>Multi-Factor Auth</h4>
+                        <p class="marker-resource">iam://root-account</p>
+                        <p class="marker-timestamp">Last checked: 1 hour ago</p>
+                    </div>
+                    <span class="badge success">Compliant</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <style>
+        .frameworks-section {
+            margin-bottom: 30px;
+        }
+
+        .frameworks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .framework-card {
+            background: linear-gradient(145deg, rgba(91, 75, 138, 0.15) 0%, rgba(46, 37, 71, 0.4) 100%);
+            border: 1px solid rgba(123, 104, 166, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .framework-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .framework-header h3 {
+            font-size: 20px;
+            color: var(--text-light);
+        }
+
+        .compliance-score {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .framework-progress {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(91, 75, 138, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--status-success);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .framework-stats {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 15px;
+            border-top: 1px solid rgba(123, 104, 166, 0.2);
+        }
+
+        .framework-stats .stat-item {
+            text-align: center;
+        }
+
+        .framework-stats .stat-label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+        }
+
+        .framework-stats .stat-value {
+            display: block;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .trends-section {
+            margin-bottom: 30px;
+        }
+
+        .audit-section {
+            margin-bottom: 30px;
+        }
+
+        .audit-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            background: rgba(91, 75, 138, 0.1);
+            border: 1px solid rgba(123, 104, 166, 0.3);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .audit-table {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(123, 104, 166, 0.1);
+        }
+
+        th {
+            color: var(--text-gray);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        td {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: rgba(91, 75, 138, 0.05);
+        }
+
+        .markers-section {
+            margin-bottom: 30px;
+        }
+
+        .markers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .marker-card {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(91, 75, 138, 0.1);
+            border: 1px solid rgba(123, 104, 166, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .marker-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .marker-icon.compliant {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--status-success);
+        }
+
+        .marker-icon.warning {
+            background: rgba(255, 167, 38, 0.2);
+            color: var(--status-warning);
+        }
+
+        .marker-content {
+            flex: 1;
+        }
+
+        .marker-content h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--text-light);
+        }
+
+        .marker-resource {
+            font-size: 13px;
+            color: var(--text-gray);
+            font-family: monospace;
+            margin-bottom: 5px;
+        }
+
+        .marker-timestamp {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        @media (max-width: 768px) {
+            .audit-filters {
+                flex-direction: column;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .audit-table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+
+    <script>
+        // Initialize compliance trend chart
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('complianceTrendChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [
+                            {
+                                label: 'SOC 2',
+                                data: [95, 96, 97, 97, 98, 98],
+                                borderColor: 'rgb(76, 175, 80)',
+                                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                                tension: 0.4
+                            },
+                            {
+                                label: 'HIPAA',
+                                data: [92, 93, 94, 94, 95, 95],
+                                borderColor: 'rgb(255, 167, 38)',
+                                backgroundColor: 'rgba(255, 167, 38, 0.1)',
+                                tension: 0.4
+                            },
+                            {
+                                label: 'PCI DSS',
+                                data: [90, 91, 92, 93, 94, 94],
+                                borderColor: 'rgb(91, 75, 138)',
+                                backgroundColor: 'rgba(91, 75, 138, 0.1)',
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#B8B8B8',
+                                    font: {
+                                        family: 'Inter, sans-serif'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                min: 85,
+                                max: 100,
+                                ticks: {
+                                    color: '#B8B8B8',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(123, 104, 166, 0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#B8B8B8'
+                                },
+                                grid: {
+                                    color: 'rgba(123, 104, 166, 0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
