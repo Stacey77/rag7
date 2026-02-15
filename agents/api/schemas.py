@@ -1,7 +1,16 @@
 """
 API Schemas
 """
-from pydantic import BaseModel, Field
+try:
+    from pydantic import BaseModel, Field
+    PYDANTIC_AVAILABLE = True
+except ImportError:
+    # Fallback to dict-based schemas if pydantic not available
+    PYDANTIC_AVAILABLE = False
+    BaseModel = dict
+    def Field(*args, **kwargs):
+        return kwargs.get('default', None)
+
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 
