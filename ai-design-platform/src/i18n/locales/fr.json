@@ -1,0 +1,73 @@
+{
+  "common": {
+    "dashboard": "Tableau de Bord",
+    "models": "Modèles",
+    "analytics": "Analytique",
+    "monitoring": "Surveillance",
+    "settings": "Paramètres",
+    "home": "Accueil",
+    "profile": "Profil",
+    "help": "Aide",
+    "documentation": "Documentation",
+    "notifications": "Notifications"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "export": "Exporter",
+    "import": "Importer",
+    "create": "Créer",
+    "update": "Mettre à Jour",
+    "remove": "Retirer",
+    "download": "Télécharger",
+    "upload": "Téléverser",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "refresh": "Actualiser",
+    "back": "Retour",
+    "next": "Suivant",
+    "submit": "Soumettre",
+    "reset": "Réinitialiser",
+    "confirm": "Confirmer",
+    "close": "Fermer"
+  },
+  "messages": {
+    "success": "Opération réussie",
+    "error": "Une erreur s'est produite",
+    "warning": "Avertissement",
+    "loading": "Chargement...",
+    "noData": "Aucune donnée disponible",
+    "saved": "Enregistré avec succès",
+    "deleted": "Supprimé avec succès",
+    "updated": "Mis à jour avec succès",
+    "created": "Créé avec succès",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+    "confirmAction": "Êtes-vous sûr de vouloir continuer ?"
+  },
+  "nav": {
+    "overview": "Aperçu",
+    "projects": "Projets",
+    "team": "Équipe",
+    "reports": "Rapports",
+    "templates": "Modèles",
+    "workspace": "Espace de Travail",
+    "library": "Bibliothèque",
+    "resources": "Ressources"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion",
+    "username": "Nom d'Utilisateur",
+    "password": "Mot de Passe",
+    "email": "Email",
+    "forgotPassword": "Mot de Passe Oublié ?",
+    "rememberMe": "Se Souvenir de Moi",
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "createAccount": "Créer un Compte",
+    "welcomeBack": "Bon Retour"
+  }
+}

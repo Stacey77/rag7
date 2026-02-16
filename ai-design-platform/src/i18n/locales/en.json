@@ -1,0 +1,73 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "models": "Models",
+    "analytics": "Analytics",
+    "monitoring": "Monitoring",
+    "settings": "Settings",
+    "home": "Home",
+    "profile": "Profile",
+    "help": "Help",
+    "documentation": "Documentation",
+    "notifications": "Notifications"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "export": "Export",
+    "import": "Import",
+    "create": "Create",
+    "update": "Update",
+    "remove": "Remove",
+    "download": "Download",
+    "upload": "Upload",
+    "search": "Search",
+    "filter": "Filter",
+    "refresh": "Refresh",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "messages": {
+    "success": "Operation completed successfully",
+    "error": "An error occurred",
+    "warning": "Warning",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "saved": "Saved successfully",
+    "deleted": "Deleted successfully",
+    "updated": "Updated successfully",
+    "created": "Created successfully",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "confirmAction": "Are you sure you want to proceed?"
+  },
+  "nav": {
+    "overview": "Overview",
+    "projects": "Projects",
+    "team": "Team",
+    "reports": "Reports",
+    "templates": "Templates",
+    "workspace": "Workspace",
+    "library": "Library",
+    "resources": "Resources"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "createAccount": "Create Account",
+    "welcomeBack": "Welcome Back"
+  }
+}

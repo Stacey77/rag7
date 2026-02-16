@@ -1,0 +1,73 @@
+{
+  "common": {
+    "dashboard": "Panel de Control",
+    "models": "Modelos",
+    "analytics": "Análisis",
+    "monitoring": "Monitoreo",
+    "settings": "Configuración",
+    "home": "Inicio",
+    "profile": "Perfil",
+    "help": "Ayuda",
+    "documentation": "Documentación",
+    "notifications": "Notificaciones"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "export": "Exportar",
+    "import": "Importar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "remove": "Quitar",
+    "download": "Descargar",
+    "upload": "Subir",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "refresh": "Actualizar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "reset": "Restablecer",
+    "confirm": "Confirmar",
+    "close": "Cerrar"
+  },
+  "messages": {
+    "success": "Operación completada con éxito",
+    "error": "Ocurrió un error",
+    "warning": "Advertencia",
+    "loading": "Cargando...",
+    "noData": "No hay datos disponibles",
+    "saved": "Guardado exitosamente",
+    "deleted": "Eliminado exitosamente",
+    "updated": "Actualizado exitosamente",
+    "created": "Creado exitosamente",
+    "confirmDelete": "¿Está seguro de que desea eliminar este elemento?",
+    "confirmAction": "¿Está seguro de que desea continuar?"
+  },
+  "nav": {
+    "overview": "Resumen",
+    "projects": "Proyectos",
+    "team": "Equipo",
+    "reports": "Informes",
+    "templates": "Plantillas",
+    "workspace": "Espacio de Trabajo",
+    "library": "Biblioteca",
+    "resources": "Recursos"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión",
+    "username": "Nombre de Usuario",
+    "password": "Contraseña",
+    "email": "Correo Electrónico",
+    "forgotPassword": "¿Olvidó su Contraseña?",
+    "rememberMe": "Recuérdame",
+    "signIn": "Entrar",
+    "signUp": "Registrarse",
+    "createAccount": "Crear Cuenta",
+    "welcomeBack": "Bienvenido de Nuevo"
+  }
+}
