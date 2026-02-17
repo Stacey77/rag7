@@ -1,5 +1,5 @@
 # Core Web Framework
-fastapi==0.109.0
+fastapi==0.115.5
 uvicorn[standard]==0.27.0
 pydantic==2.5.3
 pydantic-settings==2.1.0
@@ -12,8 +12,8 @@ langchain-openai==0.0.5
 langchain-anthropic==0.0.2
 
 # Multi-Agent & RAG
-langchain-community==0.0.16
-langgraph==0.0.20
+langchain-community==0.3.27
+langgraph==0.2.58
 
 # Vector Databases
 pinecone-client==3.0.2
@@ -36,7 +36,7 @@ pyyaml==6.0.1
 # Security & Auth
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
-python-multipart==0.0.6
+python-multipart==0.0.22
 
 # Database
 sqlalchemy==2.0.25
