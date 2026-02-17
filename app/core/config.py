@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     weaviate_url: str = "http://localhost:8080"
     weaviate_api_key: Optional[str] = None
     chroma_host: str = "localhost"
-    chroma_port: int = 8000
+    chroma_port: int = 8001
     
     # Database Configuration
     database_url: str = "sqlite:///./rag7.db"

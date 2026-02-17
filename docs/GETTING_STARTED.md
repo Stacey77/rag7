@@ -233,9 +233,9 @@ docker-compose logs -f api
 
 ## Next Steps
 
-- Read the [API Documentation](docs/API.md) for detailed API reference
-- Check [Architecture](docs/ARCHITECTURE.md) to understand the system design
-- Review [Deployment Guide](docs/DEPLOYMENT.md) for production deployment
+- Read the [API Documentation](./API.md) for detailed API reference
+- Check [Architecture](./ARCHITECTURE.md) to understand the system design
+- Review [Deployment Guide](./DEPLOYMENT.md) for production deployment
 - Explore example projects in the dashboard
 
 ## Getting Help
@@ -292,7 +292,7 @@ Before deploying to production:
 6. ✅ Set up monitoring and alerting
 7. ✅ Review security settings
 
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed production deployment guide.
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed production deployment guide.
 
 ## Resources
 

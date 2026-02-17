@@ -134,7 +134,10 @@ async function generateCompletion() {
             // Show usage information
             if (data.usage) {
                 document.getElementById('token-count').textContent = data.usage.total_tokens || 0;
-                const estimatedCost = (data.usage.total_tokens || 0) * 0.00002; // Rough estimate
+                // Average cost estimate: ~$0.00002 per token for GPT-3.5/GPT-4 blended rate
+                // Note: Actual costs vary by provider and model
+                const COST_PER_TOKEN = 0.00002;
+                const estimatedCost = (data.usage.total_tokens || 0) * COST_PER_TOKEN;
                 document.getElementById('cost').textContent = estimatedCost.toFixed(4);
                 usageDiv.style.display = 'flex';
             }
