@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG7 - AI Product Platform</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🚀 RAG7 Platform</h1>
+                <nav class="nav">
+                    <a href="#overview" class="nav-link active">Overview</a>
+                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#deployments" class="nav-link">Deployments</a>
+                    <a href="#llm" class="nav-link">LLM Console</a>
+                    <a href="#agents" class="nav-link">Agents</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="section active">
+                <h2 class="section-title">Platform Overview</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🚀</div>
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Deployments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🤖</div>
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">AI Agents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">$245</div>
+                        <div class="stat-label">Monthly Cost</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>Welcome to RAG7 AI Platform</h3>
+                    <p>Design, build, and deploy LLM-powered AI products for enterprise clients with real-time iteration capabilities.</p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <h4>🧠 Multi-LLM Support</h4>
+                            <p>Integrate OpenAI, Anthropic Claude, and more through a unified API</p>
+                        </div>
+                        <div class="feature-card">
+                            <h4>🤝 Multi-Agent Systems</h4>
+                            <p>Orchestrate specialized AI agents for complex workflows</p>
+                        </div>
+                        <div class="feature-card">
+                            <h4>📚 RAG Capabilities</h4>
+                            <p>Build knowledge-driven AI with document ingestion and retrieval</p>
+                        </div>
+                        <div class="feature-card">
+                            <h4>📈 Real-Time Monitoring</h4>
+                            <p>Track performance, costs, and metrics in production</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="section">
+                <h2 class="section-title">AI Projects</h2>
+                <button class="btn btn-primary" onclick="createProject()">+ New Project</button>
+                
+                <div class="projects-list">
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>Customer Support AI</h3>
+                            <span class="badge badge-success">Active</span>
+                        </div>
+                        <p class="project-description">AI-powered customer support system with multi-turn conversations</p>
+                        <div class="project-meta">
+                            <span>🏢 Acme Corp</span>
+                            <span>🤖 OpenAI GPT-4</span>
+                            <span>📅 Started: Jan 2026</span>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-sm">View</button>
+                            <button class="btn btn-sm">Deploy</button>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>Document Analysis System</h3>
+                            <span class="badge badge-info">Deployed</span>
+                        </div>
+                        <p class="project-description">RAG-based document analysis with semantic search</p>
+                        <div class="project-meta">
+                            <span>🏢 Tech Solutions</span>
+                            <span>🤖 Anthropic Claude</span>
+                            <span>📅 Started: Dec 2025</span>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-sm">View</button>
+                            <button class="btn btn-sm">Monitor</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deployments Section -->
+            <section id="deployments" class="section">
+                <h2 class="section-title">Deployments</h2>
+                
+                <div class="deployment-list">
+                    <div class="deployment-card">
+                        <div class="deployment-header">
+                            <h3>prod-customer-support-001</h3>
+                            <span class="status-indicator status-running"></span>
+                        </div>
+                        <div class="deployment-info">
+                            <div class="info-row">
+                                <span class="label">Environment:</span>
+                                <span class="value">Production</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Replicas:</span>
+                                <span class="value">3 / 3</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Requests/min:</span>
+                                <span class="value">125.5</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Latency:</span>
+                                <span class="value">350ms</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Uptime:</span>
+                                <span class="value">99.95%</span>
+                            </div>
+                        </div>
+                        <div class="deployment-actions">
+                            <button class="btn btn-sm">Scale</button>
+                            <button class="btn btn-sm btn-danger">Stop</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LLM Console Section -->
+            <section id="llm" class="section">
+                <h2 class="section-title">LLM Console</h2>
+                
+                <div class="console-container">
+                    <div class="console-settings">
+                        <div class="form-group">
+                            <label>Provider</label>
+                            <select id="provider" class="form-control">
+                                <option value="openai">OpenAI</option>
+                                <option value="anthropic">Anthropic</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Model</label>
+                            <select id="model" class="form-control">
+                                <option value="gpt-4">GPT-4</option>
+                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Temperature: <span id="temp-value">0.7</span></label>
+                            <input type="range" id="temperature" class="slider" min="0" max="2" step="0.1" value="0.7">
+                        </div>
+                    </div>
+                    
+                    <div class="console-main">
+                        <div class="form-group">
+                            <label>Prompt</label>
+                            <textarea id="prompt" class="form-control" rows="6" placeholder="Enter your prompt here..."></textarea>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="generateCompletion()">Generate</button>
+                        
+                        <div class="form-group">
+                            <label>Response</label>
+                            <div id="response" class="response-box">Response will appear here...</div>
+                        </div>
+                        
+                        <div id="usage" class="usage-info" style="display: none;">
+                            <span>Tokens: <span id="token-count">0</span></span>
+                            <span>Cost: $<span id="cost">0.00</span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Agents Section -->
+            <section id="agents" class="section">
+                <h2 class="section-title">AI Agents</h2>
+                
+                <div class="agents-grid">
+                    <div class="agent-card">
+                        <div class="agent-icon">🔍</div>
+                        <h3>Research Agent</h3>
+                        <p>Gather and analyze information from multiple sources</p>
+                        <button class="btn btn-sm" onclick="executeAgent('research')">Execute</button>
+                    </div>
+                    
+                    <div class="agent-card">
+                        <div class="agent-icon">📊</div>
+                        <h3>Analyst Agent</h3>
+                        <p>Perform data analysis and extract insights</p>
+                        <button class="btn btn-sm" onclick="executeAgent('analyst')">Execute</button>
+                    </div>
+                    
+                    <div class="agent-card">
+                        <div class="agent-icon">✍️</div>
+                        <h3>Writer Agent</h3>
+                        <p>Generate high-quality content and documentation</p>
+                        <button class="btn btn-sm" onclick="executeAgent('writer')">Execute</button>
+                    </div>
+                    
+                    <div class="agent-card">
+                        <div class="agent-icon">💻</div>
+                        <h3>Coder Agent</h3>
+                        <p>Generate, review, and debug code</p>
+                        <button class="btn btn-sm" onclick="executeAgent('coder')">Execute</button>
+                    </div>
+                    
+                    <div class="agent-card">
+                        <div class="agent-icon">🎯</div>
+                        <h3>Orchestrator</h3>
+                        <p>Coordinate multiple agents for complex workflows</p>
+                        <button class="btn btn-sm" onclick="executeAgent('orchestrator')">Execute</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

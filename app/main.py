@@ -3,8 +3,11 @@ Main FastAPI application for RAG7 platform.
 """
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
+import os
 
 from app.core.config import settings
 from app.core.logging import app_logger
@@ -48,12 +51,28 @@ if settings.enable_metrics:
 
 @app.get("/")
 async def root():
-    """Root endpoint."""
+    """Root endpoint - serve dashboard."""
+    index_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
     return {
         "name": "RAG7 AI Platform",
         "version": "0.1.0",
         "status": "operational",
         "description": "Enterprise AI platform for LLM-powered products"
+    }
+
+
+@app.get("/api")
+async def api_info():
+    """API information endpoint."""
+    return {
+        "name": "RAG7 AI Platform",
+        "version": "0.1.0",
+        "status": "operational",
+        "description": "Enterprise AI platform for LLM-powered products",
+        "docs": "/docs",
+        "redoc": "/redoc"
     }
 
 

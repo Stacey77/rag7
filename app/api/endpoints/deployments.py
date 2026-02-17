@@ -150,11 +150,14 @@ async def get_deployment_metrics(deployment_id: str):
 
 
 @router.post("/{deployment_id}/scale")
-async def scale_deployment(deployment_id: str, replicas: int = Field(..., ge=1, le=10)):
+async def scale_deployment(deployment_id: str, replicas: int):
     """
     Scale a deployment to the specified number of replicas.
     """
     try:
+        if replicas < 1 or replicas > 10:
+            raise HTTPException(status_code=400, detail="Replicas must be between 1 and 10")
+        
         app_logger.info(f"Scaling deployment {deployment_id} to {replicas} replicas")
         
         return {
