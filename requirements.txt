@@ -1,0 +1,57 @@
+# Core AGI System Dependencies
+
+# LangChain and Agent Framework
+langchain>=0.1.0
+langchain-community>=0.0.20
+langchain-openai>=0.0.5
+openai>=1.0.0
+tiktoken>=0.5.0
+
+# Symbolic Reasoning
+sympy>=1.12
+pyDatalog>=0.17.1
+rdflib>=7.0.0
+networkx>=3.2
+
+# Emotional Reasoning & NLP
+nltk>=3.8.1
+textblob>=0.17.1
+transformers>=4.36.0
+torch>=2.1.0
+vaderSentiment>=3.3.2
+
+# Knowledge Management & RAG
+chromadb>=0.4.22
+faiss-cpu>=1.7.4
+sentence-transformers>=2.2.2
+pydantic>=2.5.0
+
+# Vector Database & Search
+numpy>=1.24.0
+pandas>=2.1.0
+
+# Java Integration
+grpcio>=1.60.0
+grpcio-tools>=1.60.0
+protobuf>=4.25.0
+
+# Web Framework & API
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.5.0
+
+# Utilities
+python-dotenv>=1.0.0
+loguru>=0.7.2
+tenacity>=8.2.3
+pyyaml>=6.0.1
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.12.0
+
+# Development
+black>=23.12.0
+flake8>=7.0.0
+mypy>=1.8.0
