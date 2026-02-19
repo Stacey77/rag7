@@ -540,7 +540,7 @@ body {
     border-radius: 12px;
     border-bottom-left-radius: 4px;
     width: fit-content;
-    margin-left: 20px;
+    margin-left: var(--message-spacing);
 }
 
 .ai-typing-indicator span {
