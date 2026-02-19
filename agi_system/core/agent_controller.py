@@ -6,6 +6,7 @@ from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 import uuid
+import time
 from loguru import logger
 
 
@@ -35,7 +36,7 @@ class Goal:
     status: TaskStatus = TaskStatus.PENDING
     sub_goals: List['Goal'] = field(default_factory=list)
     context: Dict[str, Any] = field(default_factory=dict)
-    created_at: float = field(default_factory=lambda: __import__('time').time())
+    created_at: float = field(default_factory=time.time)
     
     def add_sub_goal(self, sub_goal: 'Goal') -> None:
         """Add a sub-goal to this goal"""

@@ -5,6 +5,7 @@ Implements logic inference, knowledge graphs, and rule-based reasoning
 from typing import List, Dict, Any, Set, Optional, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
+import time
 import sympy
 from sympy.logic.boolalg import And, Or, Not, Implies, Equivalent
 from sympy import symbols
@@ -26,7 +27,7 @@ class Fact:
     statement: str
     confidence: float = 1.0
     source: str = "user"
-    timestamp: float = field(default_factory=lambda: __import__('time').time())
+    timestamp: float = field(default_factory=time.time)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 
