@@ -31,9 +31,9 @@ numpy>=1.24.0
 pandas>=2.1.0
 
 # Java Integration
-grpcio>=1.60.0
-grpcio-tools>=1.60.0
-protobuf>=4.25.0
+grpcio>=1.75.0
+grpcio-tools>=1.75.0
+protobuf>=4.28.2
 
 # Web Framework & API
 fastapi>=0.109.0
