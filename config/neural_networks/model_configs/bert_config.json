@@ -1,0 +1,50 @@
+{
+  "model_type": "bert",
+  "architectures": ["BERTModel"],
+  "vocab_size": 30522,
+  "hidden_size": 768,
+  "num_hidden_layers": 12,
+  "num_attention_heads": 12,
+  "intermediate_size": 3072,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "attention_probs_dropout_prob": 0.1,
+  "max_position_embeddings": 512,
+  "type_vocab_size": 2,
+  "initializer_range": 0.02,
+  "layer_norm_eps": 1e-12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "use_cache": true,
+  "classifier_dropout": null,
+  "simulated": true,
+  "simulation_config": {
+    "embedding_dim": 64,
+    "n_layers": 3,
+    "n_heads": 4,
+    "max_seq_length": 128,
+    "feature_output_dim": 64
+  },
+  "fine_tuning": {
+    "learning_rate": 2e-5,
+    "batch_size": 32,
+    "max_epochs": 10,
+    "warmup_steps": 500,
+    "weight_decay": 0.01,
+    "adam_epsilon": 1e-8
+  },
+  "tasks": {
+    "classification": {
+      "output_dim": "num_labels",
+      "pooling": "cls_token"
+    },
+    "token_classification": {
+      "output_dim": "num_labels",
+      "pooling": "per_token"
+    },
+    "question_answering": {
+      "output_dim": 2,
+      "pooling": "per_token"
+    }
+  }
+}

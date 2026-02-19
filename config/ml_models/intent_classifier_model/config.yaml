@@ -1,0 +1,58 @@
+model:
+  name: intent_classifier_model
+  version: "3.0.0"
+  type: multiclass_classification
+  description: "Classifies user intent from natural language queries"
+
+training:
+  algorithm: hybrid_nb_transformer
+  naive_bayes_weight: 0.4
+  pattern_matching_weight: 0.6
+  confidence_threshold: 0.65
+  ambiguity_margin: 0.1
+
+intents:
+  - greeting
+  - farewell
+  - help
+  - create
+  - delete
+  - update
+  - query
+  - deploy
+  - monitor
+  - scale
+  - debug
+  - report
+  - train
+  - predict
+  - confirm
+  - deny
+
+preprocessing:
+  tokenization: word
+  lowercase: true
+  remove_stopwords: true
+  stemming: false
+  min_token_length: 2
+
+augmentation:
+  synonym_replacement: true
+  back_translation: false
+  paraphrase_generation: false
+  augmentation_factor: 3
+
+evaluation:
+  primary_metric: accuracy
+  secondary_metrics:
+    - precision_weighted
+    - recall_weighted
+    - f1_weighted
+  cross_validation_folds: 5
+  test_split: 0.2
+
+serving:
+  max_latency_ms: 20
+  cache_enabled: true
+  cache_ttl_seconds: 600
+  fallback_intent: help

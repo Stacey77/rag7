@@ -1,0 +1,52 @@
+model:
+  name: blast_radius_model
+  version: "1.0.0"
+  type: classification
+  description: "Predicts the blast radius (affected services) of infrastructure changes"
+
+training:
+  algorithm: gradient_boosting
+  max_depth: 6
+  n_estimators: 200
+  learning_rate: 0.05
+  min_samples_leaf: 10
+  subsample: 0.8
+  feature_fraction: 0.7
+
+features:
+  - name: service_dependency_count
+    type: integer
+    description: "Number of downstream dependencies"
+  - name: change_type
+    type: categorical
+    values: [config, code, infrastructure, database, network]
+  - name: deployment_frequency
+    type: float
+    description: "Average deployments per week"
+  - name: error_rate_baseline
+    type: float
+    description: "Baseline error rate before change"
+  - name: traffic_volume
+    type: float
+    description: "Requests per second"
+  - name: team_size
+    type: integer
+  - name: test_coverage
+    type: float
+    min: 0.0
+    max: 1.0
+
+thresholds:
+  low_blast_radius: 2
+  medium_blast_radius: 5
+  high_blast_radius: 10
+
+monitoring:
+  drift_detection: true
+  retraining_trigger_accuracy: 0.82
+  evaluation_metric: f1_weighted
+
+serving:
+  batch_size: 128
+  max_latency_ms: 50
+  cache_ttl_seconds: 300

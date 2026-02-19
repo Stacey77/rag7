@@ -1,0 +1,101 @@
+{
+  "version": "1.0.0",
+  "description": "Empathy detection patterns for emotional intelligence",
+  "emotions": {
+    "joy": {
+      "keywords": ["happy", "excited", "great", "wonderful", "amazing", "love", "fantastic", "thrilled", "delighted", "overjoyed"],
+      "phrases": ["this is awesome", "i'm so happy", "feeling great", "loving this", "so excited about"],
+      "valence": 0.8,
+      "arousal": 0.7
+    },
+    "sadness": {
+      "keywords": ["sad", "unhappy", "disappointed", "miserable", "depressed", "down", "blue", "heartbroken", "sorrowful"],
+      "phrases": ["feeling down", "not doing well", "hard time", "going through a lot", "struggling with"],
+      "valence": -0.7,
+      "arousal": 0.2
+    },
+    "anger": {
+      "keywords": ["angry", "frustrated", "furious", "annoyed", "irritated", "mad", "outraged", "livid"],
+      "phrases": ["this is ridiculous", "so frustrated with", "can't believe", "fed up with", "sick of this"],
+      "valence": -0.8,
+      "arousal": 0.9
+    },
+    "fear": {
+      "keywords": ["scared", "afraid", "worried", "anxious", "nervous", "terrified", "panicked", "concerned"],
+      "phrases": ["what if", "i'm worried about", "afraid that", "not sure if", "concerned about"],
+      "valence": -0.6,
+      "arousal": 0.8
+    },
+    "frustration": {
+      "keywords": ["stuck", "blocked", "confused", "lost", "overwhelmed", "helpless", "struggling"],
+      "phrases": ["can't figure out", "doesn't work", "keeps failing", "not working", "hitting a wall"],
+      "valence": -0.5,
+      "arousal": 0.6
+    },
+    "excitement": {
+      "keywords": ["excited", "pumped", "energized", "motivated", "inspired", "eager", "enthusiastic"],
+      "phrases": ["can't wait", "so pumped", "really excited", "looking forward", "ready to"],
+      "valence": 0.7,
+      "arousal": 0.9
+    }
+  },
+  "distress_signals": {
+    "high_urgency_words": ["urgent", "emergency", "critical", "asap", "immediately", "help", "stuck"],
+    "overwhelm_indicators": ["too much", "can't handle", "overwhelmed", "breaking point", "falling apart"],
+    "isolation_signals": ["alone", "nobody", "no one", "on my own", "by myself", "unsupported"],
+    "burnout_signals": ["exhausted", "burned out", "can't anymore", "done", "giving up", "quitting"]
+  },
+  "empathy_responses": {
+    "acknowledgment": [
+      "I understand this is difficult.",
+      "I can see you're going through a challenging time.",
+      "That sounds really tough.",
+      "I hear you, and I appreciate you sharing that.",
+      "It makes complete sense that you feel this way."
+    ],
+    "validation": [
+      "Your feelings are completely valid.",
+      "It's understandable to feel this way given the circumstances.",
+      "Anyone in your situation would feel the same.",
+      "What you're experiencing is real and it matters."
+    ],
+    "support": [
+      "I'm here to help you through this.",
+      "Let's work through this together.",
+      "You don't have to figure this out alone.",
+      "I'll do my best to support you."
+    ],
+    "encouragement": [
+      "You've handled challenges before and I believe in your ability to navigate this.",
+      "Progress takes time, and you're making it.",
+      "Every step forward counts, no matter how small.",
+      "You're doing better than you think."
+    ]
+  },
+  "tone_guidelines": {
+    "stressed_user": {
+      "formality": 0.3,
+      "warmth": 0.9,
+      "directness": 0.7,
+      "empathy_level": 1.0
+    },
+    "excited_user": {
+      "formality": 0.3,
+      "warmth": 0.8,
+      "directness": 0.8,
+      "empathy_level": 0.7
+    },
+    "frustrated_user": {
+      "formality": 0.4,
+      "warmth": 0.9,
+      "directness": 0.8,
+      "empathy_level": 0.95
+    },
+    "neutral_user": {
+      "formality": 0.6,
+      "warmth": 0.6,
+      "directness": 0.7,
+      "empathy_level": 0.5
+    }
+  }
+}
