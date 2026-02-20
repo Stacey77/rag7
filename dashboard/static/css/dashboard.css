@@ -1,0 +1,84 @@
+/* Resolver Agent Health Dashboard Styles */
+
+:root {
+  --healthy: #2ecc71;
+  --degraded: #f39c12;
+  --critical: #e74c3c;
+  --unknown: #95a5a6;
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --text: #eaeaea;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+}
+
+header {
+  background: var(--surface);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #0f3460;
+}
+
+header h1 { font-size: 1.4rem; }
+#last-updated { font-size: 0.8rem; color: #aaa; }
+
+main { padding: 2rem; }
+
+section { margin-bottom: 2rem; }
+section h2 { margin-bottom: 1rem; font-size: 1.1rem; color: #aaa; }
+
+/* Status badge */
+.badge {
+  display: inline-block;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+.badge.healthy  { background: var(--healthy);  color: #fff; }
+.badge.degraded { background: var(--degraded); color: #fff; }
+.badge.critical { background: var(--critical); color: #fff; }
+.badge.unknown  { background: var(--unknown);  color: #fff; }
+
+/* Agent cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.agent-card {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 4px solid var(--unknown);
+}
+.agent-card.healthy  { border-left-color: var(--healthy); }
+.agent-card.degraded { border-left-color: var(--degraded); }
+.agent-card.critical { border-left-color: var(--critical); }
+
+.agent-card h3 { font-size: 0.95rem; margin-bottom: 0.5rem; text-transform: capitalize; }
+.agent-card .metric { font-size: 0.8rem; color: #aaa; margin: 2px 0; }
+.agent-card .metric span { color: var(--text); font-weight: bold; }
+
+/* Alerts */
+#alerts-list { list-style: none; }
+#alerts-list li {
+  background: var(--surface);
+  border-left: 4px solid var(--critical);
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+.no-alerts { border-left-color: var(--healthy) !important; color: #aaa; }

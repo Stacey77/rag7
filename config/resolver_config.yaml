@@ -1,0 +1,81 @@
+# Resolver Agent Configuration
+# ============================================================
+# Main configuration file for the Resolver Agent (6th Agent).
+# All thresholds and behaviour settings are defined here.
+
+resolver:
+  # Monitoring frequency in Hz
+  monitoring_rate: 10
+
+  # Health check frequency in Hz
+  health_check_rate: 1
+
+  # Agent priorities (higher = more important)
+  priorities:
+    perception: 5
+    planning: 4
+    control: 3
+    communication: 2
+    coordination: 1
+    resolver: 6  # Highest – can override all other agents
+
+  conflict_resolution:
+    # Default strategy when no other context is available
+    # Options: priority_based | voting | expertise | cost_based | ml_based
+    default_strategy: priority_based
+
+    # Enable ML-based conflict prediction (requires PyTorch)
+    use_ml_prediction: true
+
+    # Minimum fraction of votes required for voting strategy
+    voting_threshold: 0.6
+
+  error_recovery:
+    # Automatically attempt recovery without human intervention
+    auto_recovery: true
+
+    # Maximum number of recovery attempts before escalating
+    max_recovery_attempts: 3
+
+    # Seconds before escalating an unresolved error to a human operator
+    escalation_timeout: 30
+
+  health_monitoring:
+    # Agent response time above this (seconds) triggers a DEGRADED alert
+    response_time_threshold: 1.0
+
+    # CPU usage above this percentage triggers a CRITICAL alert
+    cpu_threshold: 80
+
+    # Memory usage above this percentage triggers a CRITICAL alert
+    memory_threshold: 85
+
+    # Error rate above this fraction (0.1 = 10 %) triggers a WARNING alert
+    error_rate_threshold: 0.1
+
+    # Seconds without a heartbeat before marking an agent as OFFLINE
+    heartbeat_timeout: 30
+
+  deadlock_detection:
+    # How often to run deadlock detection (seconds)
+    check_interval: 5
+
+    # Seconds a wait may last before being flagged as a potential deadlock
+    timeout_threshold: 30
+
+  fallback:
+    # Enable the fallback strategy system
+    enable_fallback: true
+
+    # Maximum fallback depth (0 = primary, 3 = safe shutdown)
+    max_fallback_depth: 3
+
+    # Request human help before performing a safe shutdown
+    request_human_help: true
+
+  dashboard:
+    # Default port for the health monitoring web dashboard
+    port: 8080
+
+    # How often the dashboard data is refreshed (seconds)
+    refresh_interval: 2

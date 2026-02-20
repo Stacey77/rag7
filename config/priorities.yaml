@@ -1,0 +1,28 @@
+# Agent Priority Configuration
+# ============================================================
+# Defines the priority level for each agent in the system.
+# Higher values indicate higher precedence during arbitration
+# and conflict resolution.
+#
+# The Resolver Agent has the highest priority (6) and can
+# override any decision made by lower-priority agents.
+
+agent_priorities:
+  resolver: 6       # System Mediator – highest priority
+  perception: 5     # Always needs to see the environment
+  planning: 4       # Strategic decision-making
+  control: 3        # Physical robot control
+  communication: 2  # Human interaction
+  coordination: 1   # Multi-robot team management
+
+# Context-based priority overrides
+# These rules temporarily elevate agent priority under specific conditions.
+context_overrides:
+  emergency_stop:
+    control: 10     # Control agent takes absolute precedence in emergencies
+
+  battery_critical:
+    planning: 8     # Planning must find charging route immediately
+
+  human_command:
+    communication: 7  # Human commands override normal planning

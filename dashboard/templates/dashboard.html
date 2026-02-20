@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resolver Agent – Health Dashboard</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+</head>
+<body>
+  <header>
+    <h1>🤖 Resolver Agent – System Health Dashboard</h1>
+    <span id="last-updated">Updating…</span>
+  </header>
+
+  <main>
+    <!-- Overall status banner -->
+    <section id="overall-status">
+      <h2>Overall System Status</h2>
+      <div id="status-badge" class="badge unknown">UNKNOWN</div>
+    </section>
+
+    <!-- Per-agent cards -->
+    <section id="agents-section">
+      <h2>Agent Health</h2>
+      <div id="agent-cards" class="card-grid"></div>
+    </section>
+
+    <!-- Active alerts -->
+    <section id="alerts-section">
+      <h2>Active Alerts</h2>
+      <ul id="alerts-list"><li class="no-alerts">No active alerts</li></ul>
+    </section>
+  </main>
+
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
