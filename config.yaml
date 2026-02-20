@@ -1,0 +1,46 @@
+# AGI Trading Platform Configuration
+# Override any value with TRADING_<SECTION>_<KEY> environment variables
+
+environment: development
+service_name: agi-trading-platform
+debug: false
+
+database:
+  host: localhost
+  port: 5432
+  name: trading
+  user: trading_user
+  pool_size: 10
+  pool_max_overflow: 20
+
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  max_connections: 50
+
+exchange:
+  name: alpaca
+  testnet: true
+  rest_base_url: "https://paper-api.alpaca.markets"
+  ws_base_url: "wss://stream.data.alpaca.markets/v2"
+  rate_limit_rps: 10
+
+risk:
+  max_position_size_usd: 100000.0
+  max_portfolio_drawdown_pct: 10.0
+  max_order_size_usd: 50000.0
+  daily_loss_limit_usd: 20000.0
+
+logging:
+  level: INFO
+  log_dir: ./logs
+  rotation: "100 MB"
+  retention: "30 days"
+  serialize: false
+
+agi:
+  enabled: true
+  model_endpoint: "http://localhost:8080"
+  timeout_seconds: 5.0
+  confidence_threshold: 0.7
