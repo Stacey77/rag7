@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS ohlcv (
     close       NUMERIC(20, 8)  NOT NULL,
     volume      NUMERIC(30, 8)  NOT NULL,
     vwap        NUMERIC(20, 8),
-    num_trades  INTEGER
+    num_trades  INTEGER,
+    UNIQUE (time, symbol, interval)
 );
 """
 
@@ -122,7 +123,7 @@ class TimeSeriesDB:
                     INSERT INTO ohlcv
                         (time, symbol, interval, open, high, low, close, volume, vwap, num_trades)
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-                    ON CONFLICT DO NOTHING
+                    ON CONFLICT (time, symbol, interval) DO NOTHING
                     """,
                     bar.timestamp,
                     bar.symbol,

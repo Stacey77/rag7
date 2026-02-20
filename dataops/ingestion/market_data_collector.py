@@ -41,7 +41,7 @@ class MarketDataCollector:
         self._symbols: List[str] = []
         self._latest: Dict[str, MarketSnapshot] = {}
         self._running = False
-        self._tasks: List[asyncio.Task] = []  # type: ignore[type-arg]
+        self._tasks: List[asyncio.Task[None]] = []
         self._log = logger.bind(component="market_data_collector")
 
     # ── Public API ─────────────────────────────────────────────────────────

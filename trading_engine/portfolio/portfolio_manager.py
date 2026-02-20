@@ -73,10 +73,10 @@ class PortfolioManager:
             cash = self._portfolio.cash_balance
             realised_pnl = self._portfolio.realised_pnl
 
-            fill_value = fill.quantity * fill.price + fill.commission
+            gross_value = fill.quantity * fill.price
 
             if fill.side is Side.BUY:
-                cash -= fill_value
+                cash -= gross_value + fill.commission  # pay price plus commission
                 existing = positions.get(fill.symbol)
                 if existing is None:
                     positions[fill.symbol] = Position(
@@ -100,7 +100,7 @@ class PortfolioManager:
                         }
                     )
             else:  # SELL
-                cash += fill_value
+                cash += gross_value - fill.commission  # receive proceeds minus commission
                 existing = positions.get(fill.symbol)
                 if existing is not None:
                     pnl = (fill.price - existing.average_entry_price) * fill.quantity

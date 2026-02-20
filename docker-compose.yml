@@ -41,6 +41,9 @@ services:
     restart: unless-stopped
 
   zookeeper:
+    # ZooKeeper is used here for broad image compatibility.
+    # Kafka 3.3+ supports KRaft (ZooKeeper-free) mode; migrate when
+    # upgrading to a KRaft-native Confluent image.
     image: confluentinc/cp-zookeeper:7.5.0
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181

@@ -47,6 +47,15 @@ class RiskEngine:
 
         # ── Estimate notional value ────────────────────────────────────────
         price_estimate = order.price or self._estimate_price(order.symbol, portfolio)
+        if price_estimate is None:
+            self._log.warning(
+                "Cannot estimate price for market order; risk notional will be zero",
+                symbol=order.symbol,
+            )
+            warnings.append(
+                f"No price estimate available for {order.symbol}; "
+                "risk notional computed as zero – ensure position size limits are enforced."
+            )
         proposed_notional = order.quantity * price_estimate if price_estimate else Decimal("0")
 
         # ── Check 1: max order size ────────────────────────────────────────

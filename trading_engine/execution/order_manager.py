@@ -186,5 +186,9 @@ class OrderManager:
             return list(self._orders.values())
 
     def order_count(self) -> int:
-        """Return the number of tracked orders."""
+        """Return the number of tracked orders.
+
+        ``len()`` on a dict is atomic under the GIL, so this is safe to call
+        from any async task without acquiring the lock.
+        """
         return len(self._orders)

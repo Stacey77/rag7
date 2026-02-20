@@ -40,7 +40,7 @@ class StreamProcessor:
         self._consumer = None
         self._handlers: Dict[str, List[Callable]] = {}
         self._running = False
-        self._consumer_task: Optional[asyncio.Task] = None  # type: ignore[type-arg]
+        self._consumer_task: Optional[asyncio.Task[None]] = None
         self._log = logger.bind(component="stream_processor")
 
     # ── Lifecycle ──────────────────────────────────────────────────────────
