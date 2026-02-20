@@ -1,0 +1,43 @@
+robot_name: rag7_robot
+robot_type: mobile_manipulator
+
+dimensions:
+  width: 0.5
+  length: 0.7
+  height: 1.2
+
+sensors:
+  camera:
+    type: rgb_depth
+    topic: /camera/image_raw
+    resolution: [640, 480]
+    fps: 30
+  lidar:
+    type: 2d
+    topic: /scan
+    range_max: 10.0
+  imu:
+    topic: /imu/data
+
+actuators:
+  wheels:
+    type: differential_drive
+    max_velocity: 1.0
+    wheel_radius: 0.1
+    wheel_base: 0.5
+  arm:
+    type: 6dof
+    max_payload: 5.0
+
+workspace:
+  max_x: 10.0
+  max_y: 10.0
+  max_z: 10.0
+  min_x: -10.0
+  min_y: -10.0
+  min_z: 0.0
+
+safety:
+  emergency_stop_topic: /emergency_stop
+  collision_threshold: 0.3
+  human_safety_distance: 1.0

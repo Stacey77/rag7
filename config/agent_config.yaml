@@ -1,0 +1,27 @@
+perception_agent:
+  update_rate: 10
+  confidence_threshold: 0.7
+  model_path: models/detection_model.pt
+
+planning_agent:
+  planning_horizon: 10
+  max_replanning_attempts: 3
+  timeout: 30.0
+
+control_agent:
+  control_frequency: 50
+  position_tolerance: 0.05
+  orientation_tolerance: 0.1
+
+communication_agent:
+  max_dialog_history: 10
+  response_timeout: 5.0
+
+coordination_agent:
+  task_allocation_strategy: capability_based
+  max_robots: 10
+
+memory:
+  short_term_capacity: 100
+  long_term_enabled: true
+  vector_store_type: faiss

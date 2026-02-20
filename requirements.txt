@@ -1,0 +1,18 @@
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+scipy>=1.10.0
+opencv-python>=4.7.0
+langchain>=0.1.0
+langchain-openai>=0.0.5
+langchain-community>=0.0.20
+openai>=1.0.0
+transformers>=4.30.0
+pyyaml>=6.0
+rclpy  # ROS2 Python client
+geometry_msgs
+sensor_msgs
+nav_msgs
+action_msgs
+pytest>=7.0.0
+pytest-cov>=4.0.0
