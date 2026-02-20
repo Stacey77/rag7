@@ -1,5 +1,5 @@
 """
-DQN (Deep Q-Network) agent for the rag7 learning module.
+DQN (Deep Q-Network) agent for the RAG7 learning module.
 
 Implements experience-replay DQN with epsilon-greedy exploration.
 """

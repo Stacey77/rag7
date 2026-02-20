@@ -1,5 +1,5 @@
 """
-SLAM sub-package for the rag7 perception module.
+SLAM sub-package for the RAG7 perception module.
 """
 
 from perception.slam.mapping import SLAMMapper

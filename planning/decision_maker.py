@@ -1,5 +1,5 @@
 """
-Decision maker module for the rag7 planning system.
+Decision maker module for the RAG7 planning system.
 
 Implements rule-based decision making with safety checks to select
 the optimal action from a set of candidates.

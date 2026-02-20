@@ -1,5 +1,5 @@
 """
-Perception package for the rag7 AGI Robotics Framework.
+Perception package for the RAG7 AGI Robotics Framework.
 
 Provides vision, SLAM, and sensor fusion capabilities.
 """

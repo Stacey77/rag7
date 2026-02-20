@@ -1,5 +1,5 @@
 """
-Sensor fusion module for the rag7 perception system.
+Sensor fusion module for the RAG7 perception system.
 
 Fuses data from RGB-D camera, 2-D LiDAR, and IMU into a unified
 robot state estimate.

@@ -1,5 +1,5 @@
 """
-ROS2 ControlNode for the rag7 AGI Robotics Framework.
+ROS2 ControlNode for the RAG7 AGI Robotics Framework.
 
 Wraps the ControlAgent with ROS2 topic wiring.
 Degrades gracefully when rclpy is not installed.

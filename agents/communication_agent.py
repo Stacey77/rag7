@@ -1,5 +1,5 @@
 """
-Communication agent module for the rag7 AGI Robotics Framework.
+Communication agent module for the RAG7 AGI Robotics Framework.
 
 Handles natural language understanding and generation to enable
 human-robot interaction through text-based commands.

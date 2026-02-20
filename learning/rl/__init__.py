@@ -1,5 +1,5 @@
 """
-RL sub-package for the rag7 learning module.
+RL sub-package for the RAG7 learning module.
 """
 
 from learning.rl.dqn_agent import DQNAgent

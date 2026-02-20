@@ -1,5 +1,5 @@
 """
-Learning package for the rag7 AGI Robotics Framework.
+Learning package for the RAG7 AGI Robotics Framework.
 """
 
 from learning.rl.dqn_agent import DQNAgent

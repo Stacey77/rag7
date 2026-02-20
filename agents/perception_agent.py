@@ -1,5 +1,5 @@
 """
-Perception agent module for the rag7 AGI Robotics Framework.
+Perception agent module for the RAG7 AGI Robotics Framework.
 
 Handles processing of multi-modal sensor data including RGB-D camera,
 2-D LiDAR, and IMU readings.

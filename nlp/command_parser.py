@@ -1,5 +1,5 @@
 """
-Command parser module for the rag7 NLP system.
+Command parser module for the RAG7 NLP system.
 
 Converts natural language operator commands into structured action
 dictionaries using LLM-based or rule-based parsing.

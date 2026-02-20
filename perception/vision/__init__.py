@@ -1,5 +1,5 @@
 """
-Vision sub-package for the rag7 perception module.
+Vision sub-package for the RAG7 perception module.
 """
 
 from perception.vision.object_detection import ObjectDetector

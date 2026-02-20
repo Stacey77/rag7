@@ -1,5 +1,5 @@
 """
-Intent classifier module for the rag7 NLP system.
+Intent classifier module for the RAG7 NLP system.
 
 Classifies operator commands into predefined intent categories using
 keyword matching with confidence scoring.

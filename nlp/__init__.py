@@ -1,5 +1,5 @@
 """
-NLP package for the rag7 AGI Robotics Framework.
+NLP package for the RAG7 AGI Robotics Framework.
 """
 
 from nlp.command_parser import CommandParser

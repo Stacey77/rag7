@@ -1,5 +1,5 @@
 """
-Base agent module for the rag7 AGI Robotics Framework.
+Base agent module for the RAG7 AGI Robotics Framework.
 
 Provides the abstract base class and supporting data structures
 for all agents in the system.
@@ -32,7 +32,7 @@ class AgentState:
 class BaseAgent(ABC):
     """Abstract base class for all AGI robotic agents.
 
-    All agents in the rag7 framework inherit from this class and must
+    All agents in the RAG7 framework inherit from this class and must
     implement the perceive-reason-act loop methods.
 
     Args:

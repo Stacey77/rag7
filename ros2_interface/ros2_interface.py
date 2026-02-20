@@ -1,5 +1,5 @@
 """
-ROS2 interface module for the rag7 AGI Robotics Framework.
+ROS2 interface module for the RAG7 AGI Robotics Framework.
 
 Provides a thin wrapper around rclpy for publish/subscribe and
 service-call operations.

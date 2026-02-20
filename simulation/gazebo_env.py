@@ -1,5 +1,5 @@
 """
-Gazebo simulation environment for the rag7 AGI Robotics Framework.
+Gazebo simulation environment for the RAG7 AGI Robotics Framework.
 
 Provides an OpenAI Gym-compatible interface for simulated robot
 environments.  When Gazebo is not installed, the environment runs in

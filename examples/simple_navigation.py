@@ -1,5 +1,5 @@
 """
-Simple navigation example for the rag7 AGI Robotics Framework.
+Simple navigation example for the RAG7 AGI Robotics Framework.
 
 Demonstrates how to use the RoboticsAGI system to navigate a robot
 to a target location using a natural language command.
@@ -22,7 +22,7 @@ def main() -> None:
     config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config")
     agi = RoboticsAGI(config_path=config_path)
 
-    print("\n=== rag7 AGI – Simple Navigation Demo ===\n")
+    print("\n=== RAG7 AGI – Simple Navigation Demo ===\n")
     print("System status:", agi.get_status()["system"])
 
     # Navigate via task API

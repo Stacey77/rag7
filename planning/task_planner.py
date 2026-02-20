@@ -1,5 +1,5 @@
 """
-Task planner module for the rag7 planning system.
+Task planner module for the RAG7 planning system.
 
 Decomposes high-level goals into ordered sequences of primitive actions,
 using an LLM when available and falling back to rule-based planning.

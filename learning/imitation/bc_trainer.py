@@ -1,5 +1,5 @@
 """
-Behavioural Cloning trainer for the rag7 learning module.
+Behavioural Cloning trainer for the RAG7 learning module.
 
 Trains a policy network to imitate expert demonstrations via
 supervised learning on state-action pairs.

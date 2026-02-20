@@ -1,5 +1,5 @@
 """
-PPO (Proximal Policy Optimisation) agent for the rag7 learning module.
+PPO (Proximal Policy Optimisation) agent for the RAG7 learning module.
 
 Implements the PPO-Clip algorithm for continuous and discrete action
 spaces using actor-critic networks.

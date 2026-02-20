@@ -1,5 +1,5 @@
 """
-Planning package for the rag7 AGI Robotics Framework.
+Planning package for the RAG7 AGI Robotics Framework.
 """
 
 from planning.task_planner import TaskPlanner

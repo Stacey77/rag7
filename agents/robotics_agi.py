@@ -1,5 +1,5 @@
 """
-Main RoboticsAGI orchestrator for the rag7 AGI Robotics Framework.
+Main RoboticsAGI orchestrator for the RAG7 AGI Robotics Framework.
 
 Integrates all agents into a unified system capable of executing
 natural language commands and complex multi-step robotic tasks.
@@ -20,7 +20,7 @@ from agents.planning_agent import PlanningAgent
 
 
 class RoboticsAGI:
-    """Top-level orchestrator for the rag7 AGI robotics system.
+    """Top-level orchestrator for the RAG7 AGI robotics system.
 
     Composes all specialised agents and exposes a high-level API for
     natural language command execution and task management.

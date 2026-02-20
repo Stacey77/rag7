@@ -1,5 +1,5 @@
 """
-Agents package for the rag7 AGI Robotics Framework.
+Agents package for the RAG7 AGI Robotics Framework.
 
 This package provides the core agent classes that implement
 perceive-reason-act loops for autonomous robot control.

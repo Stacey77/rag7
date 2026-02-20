@@ -1,5 +1,5 @@
 """
-Natural language control example for the rag7 AGI Robotics Framework.
+Natural language control example for the RAG7 AGI Robotics Framework.
 
 Demonstrates the NLP pipeline: command parsing, intent classification,
 dialog management, and NL-driven robot control.
@@ -27,7 +27,7 @@ def main() -> None:
     classifier = IntentClassifier()
     parser = CommandParser()
 
-    print("\n=== rag7 AGI – NLP Control Demo ===\n")
+    print("\n=== RAG7 AGI – NLP Control Demo ===\n")
 
     commands = [
         "What is the current system status?",

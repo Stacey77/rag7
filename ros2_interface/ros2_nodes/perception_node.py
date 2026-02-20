@@ -1,5 +1,5 @@
 """
-ROS2 PerceptionNode for the rag7 AGI Robotics Framework.
+ROS2 PerceptionNode for the RAG7 AGI Robotics Framework.
 
 Wraps the PerceptionAgent with ROS2 subscriber/publisher wiring.
 Degrades gracefully when rclpy is not installed.

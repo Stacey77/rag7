@@ -1,5 +1,5 @@
 """
-Coordination agent module for the rag7 AGI Robotics Framework.
+Coordination agent module for the RAG7 AGI Robotics Framework.
 
 Manages multi-agent task allocation and coordination across a fleet
 of robotic agents.

@@ -1,5 +1,5 @@
 """
-Object detection module for the rag7 perception system.
+Object detection module for the RAG7 perception system.
 
 Provides a PyTorch-based object detector that gracefully falls back to
 mock detections when no pre-trained model is available.

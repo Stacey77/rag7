@@ -1,5 +1,5 @@
 """
-Unit tests for the planning module of the rag7 AGI Robotics Framework.
+Unit tests for the planning module of the RAG7 AGI Robotics Framework.
 """
 
 import sys

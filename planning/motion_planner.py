@@ -1,5 +1,5 @@
 """
-Motion planner module for the rag7 planning system.
+Motion planner module for the RAG7 planning system.
 
 Provides trajectory planning and kinematic computations for
 multi-DOF robot arms.

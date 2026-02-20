@@ -1,5 +1,5 @@
 """
-Replay buffer module for the rag7 learning module.
+Replay buffer module for the RAG7 learning module.
 
 Provides an efficient circular experience replay buffer for
 off-policy reinforcement learning algorithms.

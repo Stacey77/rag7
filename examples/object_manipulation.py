@@ -1,5 +1,5 @@
 """
-Object manipulation example for the rag7 AGI Robotics Framework.
+Object manipulation example for the RAG7 AGI Robotics Framework.
 
 Demonstrates how to use the RoboticsAGI system to pick up and place
 an object using task-level commands.
@@ -22,7 +22,7 @@ def main() -> None:
     config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config")
     agi = RoboticsAGI(config_path=config_path)
 
-    print("\n=== rag7 AGI – Object Manipulation Demo ===\n")
+    print("\n=== RAG7 AGI – Object Manipulation Demo ===\n")
 
     # Step 1: Navigate near the object
     nav_task = agi.create_task("navigate", location={"x": 2.0, "y": 1.5})

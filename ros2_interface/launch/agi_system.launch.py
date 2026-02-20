@@ -1,5 +1,5 @@
 """
-ROS2 launch file for the rag7 AGI system.
+ROS2 launch file for the RAG7 AGI system.
 
 Launches the perception, planning, and control nodes together.
 """
@@ -9,7 +9,7 @@ try:
     from launch_ros.actions import Node
 
     def generate_launch_description() -> LaunchDescription:
-        """Generate the ROS2 launch description for the rag7 AGI system.
+        """Generate the ROS2 launch description for the RAG7 AGI system.
 
         Returns:
             LaunchDescription with all three AGI nodes.

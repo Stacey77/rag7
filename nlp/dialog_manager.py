@@ -1,5 +1,5 @@
 """
-Dialog manager module for the rag7 NLP system.
+Dialog manager module for the RAG7 NLP system.
 
 Manages multi-turn conversations between human operators and the robot,
 maintaining dialog history and generating contextually appropriate

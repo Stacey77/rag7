@@ -1,5 +1,5 @@
 """
-Planning agent module for the rag7 AGI Robotics Framework.
+Planning agent module for the RAG7 AGI Robotics Framework.
 
 Provides high-level task planning, decomposition, and replanning using
 LangChain-based LLMs with a rule-based fallback.

@@ -1,5 +1,5 @@
 """
-Control agent module for the rag7 AGI Robotics Framework.
+Control agent module for the RAG7 AGI Robotics Framework.
 
 Handles low-level robot control including navigation, manipulation,
 and emergency stop functionality.

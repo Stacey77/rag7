@@ -1,5 +1,5 @@
 """
-SLAM mapping module for the rag7 perception system.
+SLAM mapping module for the RAG7 perception system.
 
 Provides an occupancy-grid-based mapping and localisation system
 suitable for 2-D LiDAR data.

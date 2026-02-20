@@ -1,5 +1,5 @@
 """
-ROS2 interface package for the rag7 AGI Robotics Framework.
+ROS2 interface package for the RAG7 AGI Robotics Framework.
 
 Provides ROS2 node wrappers and the ROS2Interface communication layer.
 """

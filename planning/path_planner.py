@@ -1,5 +1,5 @@
 """
-Path planner module for the rag7 planning system.
+Path planner module for the RAG7 planning system.
 
 Implements A* search on a 2-D occupancy grid to compute
 collision-free paths between two poses.

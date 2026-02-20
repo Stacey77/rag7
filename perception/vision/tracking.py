@@ -1,5 +1,5 @@
 """
-Multi-object tracking module for the rag7 perception system.
+Multi-object tracking module for the RAG7 perception system.
 
 Implements IoU-based multi-object tracking using a simple
 Hungarian-style greedy matching algorithm.

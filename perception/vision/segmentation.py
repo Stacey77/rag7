@@ -1,5 +1,5 @@
 """
-Image segmentation module for the rag7 perception system.
+Image segmentation module for the RAG7 perception system.
 
 Provides semantic segmentation with a graceful mock fallback.
 """
