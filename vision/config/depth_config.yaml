@@ -1,0 +1,5 @@
+model: midas
+device: cuda
+input_size: [384, 384]
+normalize: true
+metric_depth: false
