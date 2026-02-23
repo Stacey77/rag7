@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# production build
+dist/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# local env
+.env
+.env.local
+.env.*.local
+
+# editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# vitest coverage
+coverage/
