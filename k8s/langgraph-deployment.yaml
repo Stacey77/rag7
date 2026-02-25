@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: langgraph-api
+  namespace: rag7-staging
+  labels:
+    app: langgraph-api
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: langgraph-api
+  template:
+    metadata:
+      labels:
+        app: langgraph-api
+        version: v1
+    spec:
+      containers:
+      - name: langgraph-api
+        image: ghcr.io/stacey77/rag7:latest  # Updated by CI/CD
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        env:
+        - name: APP_ENV
+          value: "production"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: API_HOST
+          value: "0.0.0.0"
+        - name: API_PORT
+          value: "8000"
+        # Database configuration from secrets
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: langgraph-secrets
+              key: postgres-host
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: langgraph-secrets
+              key: postgres-db
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: langgraph-secrets
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: langgraph-secrets
+              key: postgres-password
+        # Redis configuration
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: langgraph-secrets
+              key: redis-host
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: langgraph-secrets
+              key: redis-password
+        # API Keys
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: langgraph-secrets
+              key: openai-api-key
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: langgraph-secrets
+              key: secret-key
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 0
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 30
+      imagePullSecrets:
+      - name: ghcr-pull-secret  # Create using instructions in comments below
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: langgraph-api
+  namespace: rag7-staging
+  labels:
+    app: langgraph-api
+spec:
+  type: LoadBalancer  # Change to ClusterIP if using Ingress
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: langgraph-api
+  sessionAffinity: None
+
+---
+# IMPORTANT: Before applying this manifest, create the required secrets:
+#
+# 1. Application secrets:
+# kubectl create secret generic langgraph-secrets \
+#   --from-literal=postgres-host=YOUR_POSTGRES_HOST \
+#   --from-literal=postgres-db=rag7_prod \
+#   --from-literal=postgres-user=rag7user \
+#   --from-literal=postgres-password=YOUR_POSTGRES_PASSWORD \
+#   --from-literal=redis-host=YOUR_REDIS_HOST \
+#   --from-literal=redis-password=YOUR_REDIS_PASSWORD \
+#   --from-literal=openai-api-key=YOUR_OPENAI_API_KEY \
+#   --from-literal=secret-key=YOUR_SECRET_KEY \
+#   -n rag7-staging
+#
+# 2. Container registry pull secret:
+# kubectl create secret docker-registry ghcr-pull-secret \
+#   --docker-server=ghcr.io \
+#   --docker-username=YOUR_GITHUB_USERNAME \
+#   --docker-password=YOUR_GITHUB_TOKEN \
+#   -n rag7-staging
+#
+# For detailed instructions, see docs/deployment.md
