@@ -1,0 +1,190 @@
+{
+  "name": "Main Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "langgraph",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "langgraph-webhook"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Pre-process incoming data\nconst input = $input.first().json;\n\n// Extract and validate required fields\nconst processedData = {\n  graph_id: input.graph_id || 'main_graph',\n  input: input.input || {},\n  user_id: input.user_id || 'anonymous',\n  timestamp: new Date().toISOString(),\n  trace_id: `trace_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`\n};\n\n// Add metadata\nprocessedData.metadata = {\n  source: 'n8n',\n  workflow: 'main_orchestrator',\n  version: '1.0'\n};\n\nreturn {\n  json: processedData\n};"
+      },
+      "id": "preprocess-data",
+      "name": "Pre-process Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "url": "=http://langgraph-api:8000/v1/graph/run",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "graph_id",
+              "value": "={{ $json.graph_id }}"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.input }}"
+            },
+            {
+              "name": "config",
+              "value": "={{ $json.metadata }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "call-langgraph",
+      "name": "Call LangGraph API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [650, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "RAG7 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Post-process LangGraph results\nconst response = $input.first().json;\n\n// Extract key information\nconst result = {\n  status: response.status || 'unknown',\n  output: response.output || {},\n  execution_time_ms: response.execution_time_ms || 0,\n  trace_id: response.trace_id,\n  processed_at: new Date().toISOString()\n};\n\n// Add success indicator\nresult.success = response.status === 'success';\n\n// Format for downstream processing\nif (result.success) {\n  result.data = response.output;\n} else {\n  result.error = response.error || 'Unknown error';\n}\n\nreturn {\n  json: result\n};"
+      },
+      "id": "postprocess-results",
+      "name": "Post-process Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.success }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "check-success",
+      "name": "Check Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 500,
+        "responseBody": "={{ { error: $json.error, trace_id: $json.trace_id } }}"
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Pre-process Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pre-process Data": {
+      "main": [
+        [
+          {
+            "node": "Call LangGraph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call LangGraph API": {
+      "main": [
+        [
+          {
+            "node": "Post-process Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post-process Results": {
+      "main": [
+        [
+          {
+            "node": "Check Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Success": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-12-09T18:00:00.000Z",
+  "versionId": "1"
+}
