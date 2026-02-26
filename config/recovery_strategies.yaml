@@ -1,0 +1,87 @@
+# Recovery Strategies Configuration
+# ============================================================
+# Defines the automatic recovery strategies for each error type
+# and the fallback hierarchy for each subsystem.
+
+recovery_strategies:
+
+  sensor_failure:
+    primary: switch_to_backup_sensor
+    secondary: degrade_gracefully
+    tertiary: request_manual_sensor_check
+    max_attempts: 3
+    timeout_seconds: 10
+
+  agent_crash:
+    primary: restart_agent
+    secondary: redistribute_tasks
+    tertiary: request_human_intervention
+    max_attempts: 3
+    timeout_seconds: 15
+
+  planning_failure:
+    primary: retry_with_different_algorithm
+    secondary: use_default_safe_plan
+    tertiary: request_human_plan
+    max_attempts: 5
+    timeout_seconds: 20
+
+  execution_failure:
+    primary: replan_trajectory
+    secondary: try_alternative_path
+    tertiary: stop_and_wait
+    max_attempts: 3
+    timeout_seconds: 30
+
+  communication_failure:
+    primary: retry_connection
+    secondary: switch_to_backup_channel
+    tertiary: failsafe_autonomous_mode
+    max_attempts: 5
+    timeout_seconds: 5
+
+  hardware_failure:
+    primary: emergency_stop
+    secondary: limp_mode
+    tertiary: request_maintenance
+    max_attempts: 1
+    timeout_seconds: 2
+
+# Fallback hierarchy for each subsystem (ordered by preference)
+fallback_hierarchy:
+
+  navigation:
+    - retry_primary_navigation
+    - try_alternative_path
+    - try_simple_straight_line
+    - try_manual_waypoints
+    - request_human_guidance
+    - stop_safely
+
+  manipulation:
+    - retry_primary_grasp
+    - try_alternative_grasp_approach
+    - try_different_grasp_point
+    - request_human_demonstration
+    - skip_object
+
+  perception:
+    - retry_primary_perception
+    - switch_to_backup_sensor
+    - use_cached_perception_data
+    - request_human_visual_confirmation
+    - degrade_gracefully
+
+  planning:
+    - retry_primary_planner
+    - try_alternative_planner
+    - use_default_safe_plan
+    - request_human_plan
+    - halt_and_wait
+
+  communication:
+    - retry_primary_channel
+    - switch_to_backup_channel
+    - use_cached_commands
+    - request_local_mode
+    - failsafe_autonomous_mode
