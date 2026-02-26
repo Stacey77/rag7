@@ -1,0 +1,69 @@
+name: Model Cost Report
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  cost-report:
+    name: Generate Model Cost Report
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt pandas matplotlib
+
+      - name: Generate cost report
+        run: |
+          python scripts/generate_cost_report.py
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Upload cost report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-report-${{ github.run_number }}
+          path: |
+            cost-report.md
+            cost-report.csv
+            cost-chart.png
+
+      - name: Create issue if costs are high
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Read cost report
+            let report = '';
+            try {
+              report = fs.readFileSync('cost-report.md', 'utf8');
+            } catch (error) {
+              console.log('No cost report found');
+              return;
+            }
+            
+            // Check if costs exceed threshold (example: $100/day)
+            const costMatch = report.match(/Total Daily Cost: \$(\d+\.\d+)/);
+            if (costMatch && parseFloat(costMatch[1]) > 100) {
+              github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'High LLM API Costs Detected',
+                body: `Daily LLM costs have exceeded $100.\n\n${report}`,
+                labels: ['cost-optimization', 'needs-review']
+              });
+            }

@@ -1,0 +1,36 @@
+# Code Owners
+# These owners will be requested for review when someone opens a pull request.
+
+# Default owners for everything in the repo
+*                       @Stacey77
+
+# Source code
+/src/                   @Stacey77
+
+# Tests
+/tests/                 @Stacey77
+
+# CI/CD workflows
+/.github/workflows/     @Stacey77
+
+# Deployment configurations
+/deploy/                @Stacey77
+
+# Documentation
+/docs/                  @Stacey77
+*.md                    @Stacey77
+
+# Infrastructure as Code
+/deploy/terraform/      @Stacey77
+
+# Kubernetes manifests
+/deploy/gke/            @Stacey77
+
+# Monitoring and observability
+/monitoring/            @Stacey77
+
+# Dependencies
+requirements*.txt       @Stacey77
+pyproject.toml          @Stacey77
+Dockerfile              @Stacey77
+docker-compose*.yml     @Stacey77

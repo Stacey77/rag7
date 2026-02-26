@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rag7-agent-api-monitor
+  labels:
+    app: rag7-agent-api
+    prometheus: kube-prometheus
+spec:
+  selector:
+    matchLabels:
+      app: rag7-agent-api
+  endpoints:
+  - port: metrics
+    path: /metrics
+    interval: 30s
+    scrapeTimeout: 10s

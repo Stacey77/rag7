@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "title": "LLM Costs and Usage",
+    "tags": ["llm", "costs"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Total Cost (24h)",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "sum(increase(llm_cost_usd_total[24h]))"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD"
+          }
+        }
+      },
+      {
+        "title": "Cost by Model",
+        "type": "piechart",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+        "targets": [
+          {
+            "expr": "sum(increase(llm_cost_usd_total[1h])) by (model)"
+          }
+        ]
+      },
+      {
+        "title": "Token Usage",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+        "targets": [
+          {
+            "expr": "sum(rate(llm_token_usage_total[5m])) by (model, token_type)",
+            "legendFormat": "{{model}} - {{token_type}}"
+          }
+        ]
+      },
+      {
+        "title": "API Calls per Model",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+        "targets": [
+          {
+            "expr": "sum(rate(llm_api_calls_total[5m])) by (model, status)",
+            "legendFormat": "{{model}} - {{status}}"
+          }
+        ]
+      }
+    ]
+  }
+}

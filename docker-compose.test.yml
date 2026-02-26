@@ -1,0 +1,86 @@
+# Docker Compose for Testing
+
+version: '3.9'
+
+services:
+  # Test database
+  test-postgres:
+    image: postgres:15-alpine
+    container_name: rag7-test-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=rag7_test
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d rag7_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-network
+
+  # Test Redis
+  test-redis:
+    image: redis:7-alpine
+    container_name: rag7-test-redis
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-network
+
+  # Mock LLM service (for testing without API keys)
+  mock-llm:
+    image: mockserver/mockserver:latest
+    container_name: rag7-mock-llm
+    ports:
+      - "1080:1080"
+    environment:
+      - MOCKSERVER_INITIALIZATION_JSON_PATH=/config/mockserver-expectations.json
+    volumes:
+      - ./tests/mocks:/config
+    networks:
+      - test-network
+
+  # Run tests
+  test-runner:
+    build:
+      context: .
+      target: development
+    container_name: rag7-test-runner
+    environment:
+      - ENVIRONMENT=test
+      - POSTGRES_HOST=test-postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=rag7_test
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+      - REDIS_HOST=test-redis
+      - REDIS_PORT=6379
+      - LITELLM_PROXY_URL=http://mock-llm:1080
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./coverage:/app/coverage
+    command: >
+      sh -c "
+        pip install -r requirements-dev.txt &&
+        pytest tests/ -v --cov=src --cov-report=html --cov-report=term-missing
+      "
+    depends_on:
+      test-postgres:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

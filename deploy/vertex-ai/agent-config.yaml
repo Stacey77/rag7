@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: VertexAIAgent
+metadata:
+  name: rag7-multi-agent-system
+  version: "1.0.0"
+  
+spec:
+  displayName: "RAG7 Multi-Agent System"
+  description: "Production ADK multi-agent system with LiteLLM integration"
+  
+  # Model configuration
+  model:
+    name: "gemini-pro"
+    provider: "vertex-ai"
+    region: "us-central1"
+    parameters:
+      temperature: 0.7
+      topP: 0.95
+      topK: 40
+      maxOutputTokens: 2048
+  
+  # Agent orchestration
+  agents:
+    - name: "research-agent"
+      role: "Research and information gathering"
+      tools:
+        - search
+        - document_retrieval
+      systemInstruction: |
+        You are a research agent specialized in gathering and synthesizing information.
+        Use the search and document retrieval tools to find relevant information.
+        Always cite your sources.
+      
+    - name: "analysis-agent"
+      role: "Data analysis and insights"
+      tools:
+        - data_analysis
+        - visualization
+      systemInstruction: |
+        You are an analysis agent that processes data and provides insights.
+        Use statistical methods and visualizations to support your findings.
+      
+    - name: "synthesis-agent"
+      role: "Information synthesis and reporting"
+      tools:
+        - summarization
+        - report_generation
+      systemInstruction: |
+        You are a synthesis agent that combines information from other agents.
+        Create comprehensive reports that integrate multiple perspectives.
+  
+  # Deployment settings
+  deployment:
+    replicaCount: 3
+    resources:
+      requests:
+        cpu: "2"
+        memory: "4Gi"
+      limits:
+        cpu: "4"
+        memory: "8Gi"
+    
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 20
+      metrics:
+        - type: cpu
+          target: 70
+        - type: memory
+          target: 80
+  
+  # Environment-specific overrides
+  environments:
+    dev:
+      model:
+        parameters:
+          temperature: 0.9
+      deployment:
+        replicaCount: 1
+        autoscaling:
+          minReplicas: 1
+          maxReplicas: 3
+    
+    staging:
+      deployment:
+        replicaCount: 2
+        autoscaling:
+          minReplicas: 2
+          maxReplicas: 10
+    
+    prod:
+      model:
+        parameters:
+          temperature: 0.7
+      deployment:
+        replicaCount: 3
+        autoscaling:
+          minReplicas: 3
+          maxReplicas: 20
