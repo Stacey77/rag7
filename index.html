@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional business card for Stacey Williams, Certified Service Technician at Mercedes Benz Of Collierville">
+    <title>Stacey Williams - Digital Business Card</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#C0C0C0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Stacey Card">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="card-container">
+        <div class="business-card">
+            <!-- Header with Logo -->
+            <div class="header">
+                <div class="logo">
+                    <svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" fill="none" stroke="#C0C0C0" stroke-width="2"/>
+                        <path d="M15 20 L20 25 L30 15" stroke="#C0C0C0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        <text x="45" y="25" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#C0C0C0">Mercedes</text>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="content">
+                <h1 class="name">Stacey Williams</h1>
+                <p class="title">Certified Service Technician</p>
+                <p class="company">Mercedes Benz Of Collierville</p>
+                
+                <!-- Contact Information -->
+                <div class="contact-info">
+                    <div class="contact-item" data-copy="tel:+1234567890">
+                        <div class="icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <a href="tel:+1234567890">(123) 456-7890</a>
+                    </div>
+                    
+                    <div class="contact-item" data-copy="mailto:stacey.williams@mbcollierville.com">
+                        <div class="icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="22,6 12,13 2,6" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <a href="mailto:stacey.williams@mbcollierville.com">stacey.williams@mbcollierville.com</a>
+                    </div>
+                    
+                    <div class="contact-item" data-copy="https://www.mercedesbenzofcollierville.com">
+                        <div class="icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="10" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="2" y1="12" x2="22" y2="12" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <a href="https://www.mercedesbenzofcollierville.com" target="_blank">www.mercedesbenzofcollierville.com</a>
+                    </div>
+                </div>
+                
+                <!-- QR Code Section -->
+                <div class="qr-section">
+                    <p class="qr-label">Scan to Save Contact</p>
+                    <div class="qr-code" id="qrcode"></div>
+                </div>
+                
+                <!-- Install PWA Button -->
+                <button class="install-btn" id="installBtn" style="display: none;">
+                    <span id="btnText">Add to Home Screen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast">Copied to clipboard!</div>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" 
+            integrity="sha384-OLBgp1GsljhM2TJ+sbHjaiH9txEUvgdDTAzHv2P24donTt6/529l+9Ua0vFImLlb" 
+            crossorigin="anonymous"></script>
+    
+    <!-- Main Script -->
+    <script>
+        // Contact Information - Centralized data
+        const contactData = {
+            phone: '+1234567890',
+            phoneDisplay: '(123) 456-7890',
+            email: 'stacey.williams@mbcollierville.com',
+            website: 'https://www.mercedesbenzofcollierville.com',
+            name: 'Stacey Williams',
+            title: 'Certified Service Technician',
+            company: 'Mercedes Benz Of Collierville'
+        };
+        
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('Service Worker registered'))
+                .catch(error => console.log('Service Worker registration failed:', error));
+        }
+        
+        // PWA Install Prompt
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+        
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('PWA installed');
+            }
+            
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        });
+        
+        // Hide install button if already installed
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+            deferredPrompt = null;
+        });
+        
+        // Click to Copy Functionality
+        const contactItems = document.querySelectorAll('.contact-item[data-copy]');
+        const toast = document.getElementById('toast');
+        
+        contactItems.forEach(item => {
+            item.style.cursor = 'pointer';
+            
+            item.addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                const textToCopy = item.getAttribute('data-copy');
+                
+                try {
+                    // Try modern clipboard API first
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(textToCopy);
+                        showToast('Copied to clipboard!');
+                    } else {
+                        // Fallback for older browsers or non-secure contexts
+                        // Note: document.execCommand is deprecated but needed for legacy browser support
+                        const textarea = document.createElement('textarea');
+                        textarea.value = textToCopy;
+                        textarea.style.position = 'fixed';
+                        textarea.style.left = '-9999px';
+                        textarea.style.top = '0';
+                        textarea.setAttribute('readonly', '');
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        
+                        if (successful) {
+                            showToast('Copied to clipboard!');
+                        } else {
+                            showToast('Please copy manually');
+                        }
+                    }
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                    showToast('Failed to copy');
+                }
+            });
+        });
+        
+        function showToast(message) {
+            toast.textContent = message;
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(-50%) translateY(100px)';
+            }, 2000);
+        }
+        
+        // Generate QR Code with vCard data
+        const vCardData = `BEGIN:VCARD
+VERSION:3.0
+FN:${contactData.name}
+TITLE:${contactData.title}
+ORG:${contactData.company}
+TEL:${contactData.phone}
+EMAIL:${contactData.email}
+URL:${contactData.website}
+END:VCARD`;
+        
+        new QRCode(document.getElementById('qrcode'), {
+            text: vCardData,
+            width: 150,
+            height: 150,
+            colorDark: '#1a1a1a',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>
