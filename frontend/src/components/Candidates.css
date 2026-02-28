@@ -1,0 +1,180 @@
+.candidates-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.candidates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.candidates-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #2c3e50;
+}
+
+.btn-new-candidate {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-new-candidate:hover {
+  background-color: #229954;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+}
+
+.error-banner {
+  background-color: #fee;
+  color: #c33;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.retry-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.retry-button:hover {
+  background-color: #c0392b;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  color: #666;
+}
+
+.empty-state p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.candidates-list {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.candidates-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.candidates-table thead {
+  background-color: #34495e;
+  color: white;
+}
+
+.candidates-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.candidates-table tbody tr {
+  border-bottom: 1px solid #e5e5e5;
+  transition: background-color 0.2s;
+}
+
+.candidates-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.candidates-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.candidates-table td {
+  padding: 15px;
+  font-size: 14px;
+  color: #333;
+}
+
+.resume-link {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.resume-link:hover {
+  text-decoration: underline;
+}
+
+.no-resume {
+  color: #999;
+  font-style: italic;
+}
+
+.score {
+  font-weight: 600;
+  color: #27ae60;
+  font-size: 16px;
+}
+
+.no-score {
+  color: #999;
+  font-style: italic;
+}
+
+.btn-score {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn-score:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+.btn-score:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-body p {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  color: #333;
+}
