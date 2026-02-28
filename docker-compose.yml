@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # LangFlow visual builder
+  langflow:
+    build:
+      context: ./langflow
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"
+    environment:
+      - LANGFLOW_HOST=0.0.0.0
+      - LANGFLOW_PORT=7860
+    volumes:
+      - langflow_data:/root/.langflow
+    networks:
+      - epic-platform
+
+  # FastAPI backend for LangFlow operations
+  backend:
+    build:
+      context: ./langflow-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - LANGFLOW_URL=http://langflow:7860
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+    volumes:
+      - ./langflow-backend/app:/app/app
+      - backend_flows:/app/flows
+    depends_on:
+      - langflow
+    networks:
+      - epic-platform
+
+  # React + Vite frontend
+  frontend:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - epic-platform
+
+networks:
+  epic-platform:
+    driver: bridge
+
+volumes:
+  langflow_data:
+  backend_flows:

@@ -1,0 +1,73 @@
+.section-agent {
+  background: var(--dark-card);
+  border: 2px solid var(--dark-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.section-agent:hover {
+  border-color: var(--neon-blue);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 217, 255, 0.2);
+}
+
+.section-agent.active {
+  border-color: var(--neon-green);
+}
+
+.section-agent.processing {
+  border-color: var(--neon-blue);
+}
+
+.agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.agent-title {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.agent-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.agent-indicator {
+  height: 4px;
+  background: var(--dark-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.indicator-bar {
+  height: 100%;
+  background: var(--gradient-main);
+  width: 0;
+  transition: width 0.5s ease;
+}
+
+.section-agent.active .indicator-bar {
+  width: 100%;
+}
+
+.section-agent.processing .indicator-bar {
+  width: 60%;
+  animation: processingPulse 2s ease-in-out infinite;
+}
+
+@keyframes processingPulse {
+  0%, 100% {
+    width: 60%;
+  }
+  50% {
+    width: 80%;
+  }
+}
