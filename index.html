@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional business card for Stacey Williams, Certified Service Technician at Mercedes Benz Of Collierville">
+    <meta name="theme-color" content="#C0C0C0">
+    <title>Stacey Williams - Digital Business Card</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="card-container">
+        <div class="business-card">
+            <div class="header">
+                <div class="logo">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="38" stroke="#C0C0C0" stroke-width="4"/>
+                        <path d="M40 15 L50 30 L65 30 L52 42 L57 57 L40 47 L23 57 L28 42 L15 30 L30 30 Z" fill="#C0C0C0"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="content">
+                <h1 class="name">Stacey Williams</h1>
+                <p class="title">Certified Service Technician</p>
+                <p class="company">Mercedes Benz Of Collierville</p>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="icon">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 4L10 11L18 4M2 4H18V16H2V4Z" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <a href="mailto:stacey.williams@example.com">stacey.williams@example.com</a>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="icon">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 5C2 3.89543 2.89543 3 4 3H6.5C7.05228 3 7.5 3.44772 7.5 4V7C7.5 7.55228 7.05228 8 6.5 8H4V9C4 13.4183 7.58172 17 12 17H13V14.5C13 13.9477 13.4477 13.5 14 13.5H17C17.5523 13.5 18 13.9477 18 14.5V17C18 18.1046 17.1046 19 16 19H12C6.47715 19 2 14.5228 2 9V5Z" stroke="#C0C0C0" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <a href="tel:+1234567890">+1 (234) 567-8890</a>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="icon">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 2C6.13401 2 3 5.13401 3 9C3 13.5 10 18 10 18C10 18 17 13.5 17 9C17 5.13401 13.866 2 10 2Z" stroke="#C0C0C0" stroke-width="2"/>
+                                <circle cx="10" cy="9" r="2" fill="#C0C0C0"/>
+                            </svg>
+                        </div>
+                        <span style="color: #C0C0C0;">Collierville, TN</span>
+                    </div>
+                </div>
+                
+                <div class="qr-section">
+                    <p class="qr-label">Scan to Save Contact</p>
+                    <div class="qr-code">
+                        <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="120" height="120" fill="white"/>
+                            <!-- Simple QR code placeholder pattern -->
+                            <g fill="black">
+                                <rect x="10" y="10" width="30" height="30"/>
+                                <rect x="80" y="10" width="30" height="30"/>
+                                <rect x="10" y="80" width="30" height="30"/>
+                                <rect x="15" y="15" width="20" height="20" fill="white"/>
+                                <rect x="85" y="15" width="20" height="20" fill="white"/>
+                                <rect x="15" y="85" width="20" height="20" fill="white"/>
+                                <rect x="20" y="20" width="10" height="10" fill="black"/>
+                                <rect x="90" y="20" width="10" height="10" fill="black"/>
+                                <rect x="20" y="90" width="10" height="10" fill="black"/>
+                                <!-- Data pattern -->
+                                <rect x="50" y="50" width="20" height="5"/>
+                                <rect x="45" y="60" width="10" height="5"/>
+                                <rect x="60" y="60" width="15" height="5"/>
+                                <rect x="50" y="70" width="25" height="5"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                
+                <button class="install-btn" id="installBtn" style="display: none;">
+                    Add to Home Screen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // PWA install prompt
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            deferredPrompt = null;
+        });
+    </script>
+</body>
+</html>

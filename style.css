@@ -28,6 +28,8 @@ body {
         0 0 0 1px rgba(192, 192, 192, 0.1);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform; /* Optimize hover animation */
+    contain: layout style paint; /* Optimize rendering performance */
 }
 
 .business-card:hover {
@@ -47,6 +49,7 @@ body {
 .logo svg {
     filter: drop-shadow(0 4px 8px rgba(192, 192, 192, 0.3));
     animation: pulse 2s ease-in-out infinite;
+    will-change: opacity; /* Optimize animation performance */
 }
 
 @keyframes pulse {
@@ -151,6 +154,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
+    will-change: transform; /* Optimize hover animation */
 }
 
 .install-btn:hover {
