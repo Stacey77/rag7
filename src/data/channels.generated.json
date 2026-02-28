@@ -1,0 +1,5002 @@
+[
+  {
+    "id": 1000,
+    "name": "Design",
+    "type": "iptv",
+    "category": "lifestyle",
+    "country": "Netherlands",
+    "language": "it",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1000/stream"
+  },
+  {
+    "id": 1001,
+    "name": "Top Docs",
+    "type": "iptv",
+    "category": "documentary",
+    "country": "Australia",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1001/stream"
+  },
+  {
+    "id": 1002,
+    "name": "Super Taste",
+    "type": "satellite",
+    "category": "food",
+    "country": "Mexico",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1002/stream"
+  },
+  {
+    "id": 1003,
+    "name": "First Trends",
+    "type": "iptv",
+    "category": "fashion",
+    "country": "Brazil",
+    "language": "no",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1003/stream"
+  },
+  {
+    "id": 1004,
+    "name": "Best Arcade",
+    "type": "radio",
+    "category": "gaming",
+    "country": "France",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1004/stream"
+  },
+  {
+    "id": 1005,
+    "name": "Life",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "USA",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1005/stream"
+  },
+  {
+    "id": 1006,
+    "name": "Comedy",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "Poland",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1006/stream"
+  },
+  {
+    "id": 1007,
+    "name": "Sky Fashion",
+    "type": "radio",
+    "category": "fashion",
+    "country": "Switzerland",
+    "language": "da",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1007/stream"
+  },
+  {
+    "id": 1008,
+    "name": "24/7 Cartoon",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Netherlands",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1008/stream"
+  },
+  {
+    "id": 1009,
+    "name": "Pro Game HD",
+    "type": "satellite",
+    "category": "sports",
+    "country": "USA",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1009/stream"
+  },
+  {
+    "id": 1010,
+    "name": "Trends Channel",
+    "type": "satellite",
+    "category": "fashion",
+    "country": "Denmark",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1010/stream"
+  },
+  {
+    "id": 1011,
+    "name": "Global Rock",
+    "type": "iptv",
+    "category": "music",
+    "country": "Australia",
+    "language": "da",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1011/stream"
+  },
+  {
+    "id": 1012,
+    "name": "Mega Animation",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Netherlands",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1012/stream"
+  },
+  {
+    "id": 1013,
+    "name": "One Children",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Switzerland",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1013/stream"
+  },
+  {
+    "id": 1014,
+    "name": "Live Motor",
+    "type": "radio",
+    "category": "auto",
+    "country": "Canada",
+    "language": "zh",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1014/stream"
+  },
+  {
+    "id": 1015,
+    "name": "Plus Fashion",
+    "type": "iptv",
+    "category": "fashion",
+    "country": "Japan",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1015/stream"
+  },
+  {
+    "id": 1016,
+    "name": "Prime TV Channel",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "Belgium",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1016/stream"
+  },
+  {
+    "id": 1017,
+    "name": "National Classical Zone",
+    "type": "iptv",
+    "category": "music",
+    "country": "Europe",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1017/stream"
+  },
+  {
+    "id": 1018,
+    "name": "World News TV",
+    "type": "radio",
+    "category": "news",
+    "country": "Switzerland",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1018/stream"
+  },
+  {
+    "id": 1019,
+    "name": "Global Style",
+    "type": "satellite",
+    "category": "fashion",
+    "country": "Spain",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1019/stream"
+  },
+  {
+    "id": 1020,
+    "name": "Games",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Canada",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1020/stream"
+  },
+  {
+    "id": 1021,
+    "name": "Max Chef 4K",
+    "type": "iptv",
+    "category": "food",
+    "country": "Poland",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1021/stream"
+  },
+  {
+    "id": 1022,
+    "name": "Drive",
+    "type": "radio",
+    "category": "auto",
+    "country": "France",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1022/stream"
+  },
+  {
+    "id": 1023,
+    "name": "Mega Junior 4K",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Norway",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1023/stream"
+  },
+  {
+    "id": 1024,
+    "name": "Mega Fun",
+    "type": "radio",
+    "category": "entertainment",
+    "country": "Brazil",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1024/stream"
+  },
+  {
+    "id": 1025,
+    "name": "Arcade",
+    "type": "satellite",
+    "category": "gaming",
+    "country": "Belgium",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1025/stream"
+  },
+  {
+    "id": 1026,
+    "name": "Fashion",
+    "type": "radio",
+    "category": "fashion",
+    "country": "Canada",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1026/stream"
+  },
+  {
+    "id": 1027,
+    "name": "Premium Jazz",
+    "type": "satellite",
+    "category": "music",
+    "country": "Switzerland",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1027/stream"
+  },
+  {
+    "id": 1028,
+    "name": "Max Flavor World",
+    "type": "digital",
+    "category": "food",
+    "country": "Italy",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1028/stream"
+  },
+  {
+    "id": 1029,
+    "name": "Plus Breaking",
+    "type": "iptv",
+    "category": "news",
+    "country": "Europe",
+    "language": "es",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1029/stream"
+  },
+  {
+    "id": 1030,
+    "name": "Live Future",
+    "type": "digital",
+    "category": "technology",
+    "country": "Spain",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1030/stream"
+  },
+  {
+    "id": 1031,
+    "name": "Star Fashion",
+    "type": "radio",
+    "category": "lifestyle",
+    "country": "Germany",
+    "language": "fr",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1031/stream"
+  },
+  {
+    "id": 1032,
+    "name": "Game Central",
+    "type": "iptv",
+    "category": "sports",
+    "country": "Switzerland",
+    "language": "ru",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1032/stream"
+  },
+  {
+    "id": 1033,
+    "name": "Design Zone",
+    "type": "radio",
+    "category": "fashion",
+    "country": "Australia",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1033/stream"
+  },
+  {
+    "id": 1034,
+    "name": "History",
+    "type": "iptv",
+    "category": "documentary",
+    "country": "USA",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1034/stream"
+  },
+  {
+    "id": 1035,
+    "name": "Global Fashion",
+    "type": "radio",
+    "category": "lifestyle",
+    "country": "Netherlands",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1035/stream"
+  },
+  {
+    "id": 1036,
+    "name": "Entertainment Pro",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "Sweden",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1036/stream"
+  },
+  {
+    "id": 1037,
+    "name": "24/7 Nature Direct",
+    "type": "iptv",
+    "category": "documentary",
+    "country": "Netherlands",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1037/stream"
+  },
+  {
+    "id": 1038,
+    "name": "First Game International",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Finland",
+    "language": "it",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1038/stream"
+  },
+  {
+    "id": 1039,
+    "name": "One Discovery World",
+    "type": "digital",
+    "category": "documentary",
+    "country": "USA",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1039/stream"
+  },
+  {
+    "id": 1040,
+    "name": "Live Learning",
+    "type": "satellite",
+    "category": "education",
+    "country": "Poland",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1040/stream"
+  },
+  {
+    "id": 1041,
+    "name": "Pro Style",
+    "type": "radio",
+    "category": "lifestyle",
+    "country": "Italy",
+    "language": "ja",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1041/stream"
+  },
+  {
+    "id": 1042,
+    "name": "Nature",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "France",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1042/stream"
+  },
+  {
+    "id": 1043,
+    "name": "Premium Living",
+    "type": "radio",
+    "category": "lifestyle",
+    "country": "Canada",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1043/stream"
+  },
+  {
+    "id": 1044,
+    "name": "24/7 Match",
+    "type": "digital",
+    "category": "sports",
+    "country": "Poland",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1044/stream"
+  },
+  {
+    "id": 1045,
+    "name": "Star Home",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "India",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1045/stream"
+  },
+  {
+    "id": 1046,
+    "name": "Pro Cinema Hub",
+    "type": "radio",
+    "category": "movies",
+    "country": "Netherlands",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1046/stream"
+  },
+  {
+    "id": 1047,
+    "name": "League",
+    "type": "iptv",
+    "category": "sports",
+    "country": "Ireland",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1047/stream"
+  },
+  {
+    "id": 1048,
+    "name": "Max Entertainment International",
+    "type": "iptv",
+    "category": "entertainment",
+    "country": "Austria",
+    "language": "no",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1048/stream"
+  },
+  {
+    "id": 1049,
+    "name": "Sky Beats Express",
+    "type": "iptv",
+    "category": "music",
+    "country": "Asia",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1049/stream"
+  },
+  {
+    "id": 1050,
+    "name": "Knowledge",
+    "type": "digital",
+    "category": "education",
+    "country": "Sweden",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1050/stream"
+  },
+  {
+    "id": 1051,
+    "name": "Auto Express",
+    "type": "radio",
+    "category": "auto",
+    "country": "Asia",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1051/stream"
+  },
+  {
+    "id": 1052,
+    "name": "Live League",
+    "type": "radio",
+    "category": "sports",
+    "country": "UK",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1052/stream"
+  },
+  {
+    "id": 1053,
+    "name": "Best Chef",
+    "type": "iptv",
+    "category": "food",
+    "country": "Germany",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1053/stream"
+  },
+  {
+    "id": 1054,
+    "name": "Play",
+    "type": "digital",
+    "category": "gaming",
+    "country": "Belgium",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1054/stream"
+  },
+  {
+    "id": 1055,
+    "name": "Elite Digital Stream",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Finland",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1055/stream"
+  },
+  {
+    "id": 1056,
+    "name": "One Future Live",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Netherlands",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1056/stream"
+  },
+  {
+    "id": 1057,
+    "name": "Drama",
+    "type": "iptv",
+    "category": "entertainment",
+    "country": "Brazil",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1057/stream"
+  },
+  {
+    "id": 1058,
+    "name": "National Game",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Germany",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1058/stream"
+  },
+  {
+    "id": 1059,
+    "name": "Top Junior",
+    "type": "digital",
+    "category": "kids",
+    "country": "France",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1059/stream"
+  },
+  {
+    "id": 1060,
+    "name": "Max Nature Pro",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "Netherlands",
+    "language": "sv",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1060/stream"
+  },
+  {
+    "id": 1061,
+    "name": "Taste Direct",
+    "type": "radio",
+    "category": "food",
+    "country": "Mexico",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1061/stream"
+  },
+  {
+    "id": 1062,
+    "name": "Premium Family 4K",
+    "type": "digital",
+    "category": "kids",
+    "country": "Switzerland",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1062/stream"
+  },
+  {
+    "id": 1063,
+    "name": "One Learning",
+    "type": "iptv",
+    "category": "education",
+    "country": "UK",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1063/stream"
+  },
+  {
+    "id": 1064,
+    "name": "Super Journey Hub",
+    "type": "digital",
+    "category": "travel",
+    "country": "Netherlands",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1064/stream"
+  },
+  {
+    "id": 1065,
+    "name": "Top Knowledge 4K",
+    "type": "satellite",
+    "category": "education",
+    "country": "Spain",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1065/stream"
+  },
+  {
+    "id": 1066,
+    "name": "Pro Family Plus",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Canada",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1066/stream"
+  },
+  {
+    "id": 1067,
+    "name": "Pictures TV",
+    "type": "digital",
+    "category": "movies",
+    "country": "Europe",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1067/stream"
+  },
+  {
+    "id": 1068,
+    "name": "First Pictures",
+    "type": "iptv",
+    "category": "movies",
+    "country": "Europe",
+    "language": "no",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1068/stream"
+  },
+  {
+    "id": 1069,
+    "name": "World Racing Central",
+    "type": "satellite",
+    "category": "auto",
+    "country": "UK",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1069/stream"
+  },
+  {
+    "id": 1070,
+    "name": "Global Style Direct",
+    "type": "radio",
+    "category": "fashion",
+    "country": "UK",
+    "language": "ja",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1070/stream"
+  },
+  {
+    "id": 1071,
+    "name": "Live Entertainment Live",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "Finland",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1071/stream"
+  },
+  {
+    "id": 1072,
+    "name": "Ultra Beats",
+    "type": "iptv",
+    "category": "music",
+    "country": "Netherlands",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1072/stream"
+  },
+  {
+    "id": 1073,
+    "name": "Web Adventure",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Canada",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1073/stream"
+  },
+  {
+    "id": 1074,
+    "name": "Pro Learning",
+    "type": "satellite",
+    "category": "education",
+    "country": "Mexico",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1074/stream"
+  },
+  {
+    "id": 1075,
+    "name": "Movies",
+    "type": "iptv",
+    "category": "movies",
+    "country": "Netherlands",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1075/stream"
+  },
+  {
+    "id": 1076,
+    "name": "National School World",
+    "type": "radio",
+    "category": "education",
+    "country": "Spain",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1076/stream"
+  },
+  {
+    "id": 1077,
+    "name": "National Future International",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Denmark",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1077/stream"
+  },
+  {
+    "id": 1078,
+    "name": "Ultra Show Stream",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "India",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1078/stream"
+  },
+  {
+    "id": 1079,
+    "name": "Mega Pictures 4K",
+    "type": "digital",
+    "category": "movies",
+    "country": "Asia",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1079/stream"
+  },
+  {
+    "id": 1080,
+    "name": "National Arcade Live",
+    "type": "radio",
+    "category": "gaming",
+    "country": "Netherlands",
+    "language": "es",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1080/stream"
+  },
+  {
+    "id": 1081,
+    "name": "Films",
+    "type": "radio",
+    "category": "movies",
+    "country": "Australia",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1081/stream"
+  },
+  {
+    "id": 1082,
+    "name": "Elite Play Channel",
+    "type": "digital",
+    "category": "gaming",
+    "country": "France",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1082/stream"
+  },
+  {
+    "id": 1083,
+    "name": "Junior TV",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Brazil",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1083/stream"
+  },
+  {
+    "id": 1084,
+    "name": "Stadium",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Australia",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1084/stream"
+  },
+  {
+    "id": 1085,
+    "name": "Sky Family",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Mexico",
+    "language": "es",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1085/stream"
+  },
+  {
+    "id": 1086,
+    "name": "Gaming TV",
+    "type": "satellite",
+    "category": "gaming",
+    "country": "France",
+    "language": "pl",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1086/stream"
+  },
+  {
+    "id": 1087,
+    "name": "24/7 Play",
+    "type": "digital",
+    "category": "gaming",
+    "country": "Sweden",
+    "language": "da",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1087/stream"
+  },
+  {
+    "id": 1088,
+    "name": "Ultra Food",
+    "type": "iptv",
+    "category": "food",
+    "country": "Netherlands",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1088/stream"
+  },
+  {
+    "id": 1089,
+    "name": "Top Action",
+    "type": "digital",
+    "category": "sports",
+    "country": "Norway",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1089/stream"
+  },
+  {
+    "id": 1090,
+    "name": "Adventure",
+    "type": "digital",
+    "category": "travel",
+    "country": "Belgium",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1090/stream"
+  },
+  {
+    "id": 1091,
+    "name": "Discovery",
+    "type": "iptv",
+    "category": "documentary",
+    "country": "Germany",
+    "language": "es",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1091/stream"
+  },
+  {
+    "id": 1092,
+    "name": "Pictures Plus",
+    "type": "iptv",
+    "category": "movies",
+    "country": "Asia",
+    "language": "pl",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1092/stream"
+  },
+  {
+    "id": 1093,
+    "name": "International Action",
+    "type": "radio",
+    "category": "sports",
+    "country": "France",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1093/stream"
+  },
+  {
+    "id": 1094,
+    "name": "Elite Food",
+    "type": "digital",
+    "category": "food",
+    "country": "Australia",
+    "language": "fr",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1094/stream"
+  },
+  {
+    "id": 1095,
+    "name": "Global Match Online",
+    "type": "iptv",
+    "category": "sports",
+    "country": "Ireland",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1095/stream"
+  },
+  {
+    "id": 1096,
+    "name": "Global Future",
+    "type": "iptv",
+    "category": "technology",
+    "country": "Ireland",
+    "language": "multi",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1096/stream"
+  },
+  {
+    "id": 1097,
+    "name": "Sky Game Pro",
+    "type": "digital",
+    "category": "sports",
+    "country": "Spain",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1097/stream"
+  },
+  {
+    "id": 1098,
+    "name": "Cooking",
+    "type": "iptv",
+    "category": "food",
+    "country": "Austria",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1098/stream"
+  },
+  {
+    "id": 1099,
+    "name": "Music International",
+    "type": "digital",
+    "category": "music",
+    "country": "Sweden",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1099/stream"
+  },
+  {
+    "id": 1100,
+    "name": "Max Planet",
+    "type": "radio",
+    "category": "documentary",
+    "country": "UK",
+    "language": "hi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1100/stream"
+  },
+  {
+    "id": 1101,
+    "name": "Local Life",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "Austria",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1101/stream"
+  },
+  {
+    "id": 1102,
+    "name": "Tech",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Canada",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1102/stream"
+  },
+  {
+    "id": 1103,
+    "name": "Live Game",
+    "type": "iptv",
+    "category": "sports",
+    "country": "Ireland",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1103/stream"
+  },
+  {
+    "id": 1104,
+    "name": "Sky Classical Live",
+    "type": "radio",
+    "category": "music",
+    "country": "Norway",
+    "language": "hi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1104/stream"
+  },
+  {
+    "id": 1105,
+    "name": "Star Arena",
+    "type": "iptv",
+    "category": "sports",
+    "country": "Spain",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1105/stream"
+  },
+  {
+    "id": 1106,
+    "name": "Top Junior Hub",
+    "type": "radio",
+    "category": "kids",
+    "country": "Netherlands",
+    "language": "ru",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1106/stream"
+  },
+  {
+    "id": 1107,
+    "name": "Global Live",
+    "type": "satellite",
+    "category": "news",
+    "country": "Netherlands",
+    "language": "ru",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1107/stream"
+  },
+  {
+    "id": 1108,
+    "name": "Journey Channel",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Austria",
+    "language": "en",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1108/stream"
+  },
+  {
+    "id": 1109,
+    "name": "Style",
+    "type": "digital",
+    "category": "fashion",
+    "country": "Ireland",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1109/stream"
+  },
+  {
+    "id": 1110,
+    "name": "Max Junior Plus",
+    "type": "digital",
+    "category": "kids",
+    "country": "Spain",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1110/stream"
+  },
+  {
+    "id": 1111,
+    "name": "Music",
+    "type": "digital",
+    "category": "music",
+    "country": "Italy",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1111/stream"
+  },
+  {
+    "id": 1112,
+    "name": "Arcade Live",
+    "type": "radio",
+    "category": "gaming",
+    "country": "Europe",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1112/stream"
+  },
+  {
+    "id": 1113,
+    "name": "Top Alert",
+    "type": "radio",
+    "category": "news",
+    "country": "Canada",
+    "language": "hi",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1113/stream"
+  },
+  {
+    "id": 1114,
+    "name": "Learning",
+    "type": "iptv",
+    "category": "education",
+    "country": "France",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1114/stream"
+  },
+  {
+    "id": 1115,
+    "name": "First Stadium",
+    "type": "radio",
+    "category": "sports",
+    "country": "USA",
+    "language": "pt",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1115/stream"
+  },
+  {
+    "id": 1116,
+    "name": "Pro Fashion Channel",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "Japan",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1116/stream"
+  },
+  {
+    "id": 1117,
+    "name": "24/7 Comedy",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "Germany",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1117/stream"
+  },
+  {
+    "id": 1118,
+    "name": "Jazz Express",
+    "type": "iptv",
+    "category": "music",
+    "country": "UK",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1118/stream"
+  },
+  {
+    "id": 1119,
+    "name": "News TV",
+    "type": "iptv",
+    "category": "news",
+    "country": "UK",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1119/stream"
+  },
+  {
+    "id": 1120,
+    "name": "Web News Online",
+    "type": "satellite",
+    "category": "news",
+    "country": "Canada",
+    "language": "ja",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1120/stream"
+  },
+  {
+    "id": 1121,
+    "name": "World Runway",
+    "type": "satellite",
+    "category": "fashion",
+    "country": "Netherlands",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1121/stream"
+  },
+  {
+    "id": 1122,
+    "name": "Pro Adventure",
+    "type": "radio",
+    "category": "travel",
+    "country": "Germany",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1122/stream"
+  },
+  {
+    "id": 1123,
+    "name": "Living International",
+    "type": "radio",
+    "category": "lifestyle",
+    "country": "Germany",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1123/stream"
+  },
+  {
+    "id": 1124,
+    "name": "Pro Tech",
+    "type": "digital",
+    "category": "technology",
+    "country": "Mexico",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1124/stream"
+  },
+  {
+    "id": 1125,
+    "name": "Mega Classical",
+    "type": "digital",
+    "category": "music",
+    "country": "Mexico",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1125/stream"
+  },
+  {
+    "id": 1126,
+    "name": "Trends 4K",
+    "type": "iptv",
+    "category": "fashion",
+    "country": "USA",
+    "language": "pt",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1126/stream"
+  },
+  {
+    "id": 1127,
+    "name": "First Adventure",
+    "type": "iptv",
+    "category": "travel",
+    "country": "UK",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1127/stream"
+  },
+  {
+    "id": 1128,
+    "name": "Mega Adventure",
+    "type": "digital",
+    "category": "travel",
+    "country": "Europe",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1128/stream"
+  },
+  {
+    "id": 1129,
+    "name": "Cartoon",
+    "type": "digital",
+    "category": "kids",
+    "country": "Finland",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1129/stream"
+  },
+  {
+    "id": 1130,
+    "name": "International Today",
+    "type": "digital",
+    "category": "news",
+    "country": "Switzerland",
+    "language": "multi",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1130/stream"
+  },
+  {
+    "id": 1131,
+    "name": "Elite Beats",
+    "type": "radio",
+    "category": "music",
+    "country": "Denmark",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1131/stream"
+  },
+  {
+    "id": 1132,
+    "name": "World Stream",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Switzerland",
+    "language": "ja",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1132/stream"
+  },
+  {
+    "id": 1133,
+    "name": "Gadgets",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Belgium",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1133/stream"
+  },
+  {
+    "id": 1134,
+    "name": "Show",
+    "type": "iptv",
+    "category": "entertainment",
+    "country": "Austria",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1134/stream"
+  },
+  {
+    "id": 1135,
+    "name": "National Cartoon HD",
+    "type": "radio",
+    "category": "kids",
+    "country": "Japan",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1135/stream"
+  },
+  {
+    "id": 1136,
+    "name": "Travel Direct",
+    "type": "digital",
+    "category": "travel",
+    "country": "UK",
+    "language": "ar",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1136/stream"
+  },
+  {
+    "id": 1137,
+    "name": "Kitchen",
+    "type": "iptv",
+    "category": "food",
+    "country": "UK",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1137/stream"
+  },
+  {
+    "id": 1138,
+    "name": "Regional Gaming Online",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Netherlands",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1138/stream"
+  },
+  {
+    "id": 1139,
+    "name": "Ultra Nature",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "Netherlands",
+    "language": "ru",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1139/stream"
+  },
+  {
+    "id": 1140,
+    "name": "Global Travel",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Netherlands",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1140/stream"
+  },
+  {
+    "id": 1141,
+    "name": "Top TV 4K",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "Ireland",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1141/stream"
+  },
+  {
+    "id": 1142,
+    "name": "First Junior Pro",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Asia",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1142/stream"
+  },
+  {
+    "id": 1143,
+    "name": "Family International",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Germany",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1143/stream"
+  },
+  {
+    "id": 1144,
+    "name": "Super Show",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "Netherlands",
+    "language": "ar",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1144/stream"
+  },
+  {
+    "id": 1145,
+    "name": "National Children Network",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Finland",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1145/stream"
+  },
+  {
+    "id": 1146,
+    "name": "Sky Rock World",
+    "type": "satellite",
+    "category": "music",
+    "country": "International",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1146/stream"
+  },
+  {
+    "id": 1147,
+    "name": "Education",
+    "type": "iptv",
+    "category": "education",
+    "country": "UK",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1147/stream"
+  },
+  {
+    "id": 1148,
+    "name": "Max Chef",
+    "type": "iptv",
+    "category": "food",
+    "country": "Japan",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1148/stream"
+  },
+  {
+    "id": 1149,
+    "name": "Drama Plus",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "Ireland",
+    "language": "zh",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1149/stream"
+  },
+  {
+    "id": 1150,
+    "name": "Ultra Pictures International",
+    "type": "iptv",
+    "category": "movies",
+    "country": "Italy",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1150/stream"
+  },
+  {
+    "id": 1151,
+    "name": "Style Online",
+    "type": "iptv",
+    "category": "lifestyle",
+    "country": "Mexico",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1151/stream"
+  },
+  {
+    "id": 1152,
+    "name": "Max History",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "Brazil",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1152/stream"
+  },
+  {
+    "id": 1153,
+    "name": "Prime Gaming",
+    "type": "digital",
+    "category": "gaming",
+    "country": "Belgium",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1153/stream"
+  },
+  {
+    "id": 1154,
+    "name": "Web Games TV",
+    "type": "satellite",
+    "category": "gaming",
+    "country": "Italy",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1154/stream"
+  },
+  {
+    "id": 1155,
+    "name": "World Discovery",
+    "type": "radio",
+    "category": "documentary",
+    "country": "Netherlands",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1155/stream"
+  },
+  {
+    "id": 1156,
+    "name": "Live Flavor International",
+    "type": "iptv",
+    "category": "food",
+    "country": "Europe",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1156/stream"
+  },
+  {
+    "id": 1157,
+    "name": "Regional Arcade",
+    "type": "digital",
+    "category": "gaming",
+    "country": "Switzerland",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1157/stream"
+  },
+  {
+    "id": 1158,
+    "name": "Wheels",
+    "type": "digital",
+    "category": "auto",
+    "country": "Spain",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1158/stream"
+  },
+  {
+    "id": 1159,
+    "name": "League International",
+    "type": "iptv",
+    "category": "sports",
+    "country": "Norway",
+    "language": "ar",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1159/stream"
+  },
+  {
+    "id": 1160,
+    "name": "Gadgets Direct",
+    "type": "digital",
+    "category": "technology",
+    "country": "Belgium",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1160/stream"
+  },
+  {
+    "id": 1161,
+    "name": "One Cartoon",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Norway",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1161/stream"
+  },
+  {
+    "id": 1162,
+    "name": "World",
+    "type": "iptv",
+    "category": "travel",
+    "country": "France",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1162/stream"
+  },
+  {
+    "id": 1163,
+    "name": "World School Central",
+    "type": "iptv",
+    "category": "education",
+    "country": "USA",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1163/stream"
+  },
+  {
+    "id": 1164,
+    "name": "Flavor Stream",
+    "type": "satellite",
+    "category": "food",
+    "country": "Japan",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1164/stream"
+  },
+  {
+    "id": 1165,
+    "name": "Global Journey Plus",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Denmark",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1165/stream"
+  },
+  {
+    "id": 1166,
+    "name": "Global Flavor",
+    "type": "satellite",
+    "category": "food",
+    "country": "Denmark",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1166/stream"
+  },
+  {
+    "id": 1167,
+    "name": "Plus Junior Zone",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Norway",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1167/stream"
+  },
+  {
+    "id": 1168,
+    "name": "Best Runway",
+    "type": "radio",
+    "category": "fashion",
+    "country": "India",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1168/stream"
+  },
+  {
+    "id": 1169,
+    "name": "Live Innovation Zone",
+    "type": "iptv",
+    "category": "technology",
+    "country": "Poland",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1169/stream"
+  },
+  {
+    "id": 1170,
+    "name": "Elite Digital Express",
+    "type": "iptv",
+    "category": "technology",
+    "country": "Norway",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1170/stream"
+  },
+  {
+    "id": 1171,
+    "name": "Max Films",
+    "type": "iptv",
+    "category": "movies",
+    "country": "Netherlands",
+    "language": "no",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1171/stream"
+  },
+  {
+    "id": 1172,
+    "name": "Cinema",
+    "type": "iptv",
+    "category": "movies",
+    "country": "Italy",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1172/stream"
+  },
+  {
+    "id": 1173,
+    "name": "Pro Headlines",
+    "type": "iptv",
+    "category": "news",
+    "country": "Netherlands",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1173/stream"
+  },
+  {
+    "id": 1174,
+    "name": "One Tech Live",
+    "type": "radio",
+    "category": "technology",
+    "country": "USA",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1174/stream"
+  },
+  {
+    "id": 1175,
+    "name": "Planet Network",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "USA",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1175/stream"
+  },
+  {
+    "id": 1176,
+    "name": "Digital Docs TV",
+    "type": "digital",
+    "category": "documentary",
+    "country": "USA",
+    "language": "it",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1176/stream"
+  },
+  {
+    "id": 1177,
+    "name": "Local Tech",
+    "type": "iptv",
+    "category": "technology",
+    "country": "Australia",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1177/stream"
+  },
+  {
+    "id": 1178,
+    "name": "Global Films",
+    "type": "digital",
+    "category": "movies",
+    "country": "Spain",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1178/stream"
+  },
+  {
+    "id": 1179,
+    "name": "Elite Cartoon",
+    "type": "radio",
+    "category": "kids",
+    "country": "Ireland",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1179/stream"
+  },
+  {
+    "id": 1180,
+    "name": "Sky Education",
+    "type": "iptv",
+    "category": "education",
+    "country": "USA",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1180/stream"
+  },
+  {
+    "id": 1181,
+    "name": "Regional Today",
+    "type": "satellite",
+    "category": "news",
+    "country": "International",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1181/stream"
+  },
+  {
+    "id": 1182,
+    "name": "Taste",
+    "type": "iptv",
+    "category": "food",
+    "country": "India",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1182/stream"
+  },
+  {
+    "id": 1183,
+    "name": "Max Knowledge",
+    "type": "radio",
+    "category": "education",
+    "country": "Europe",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1183/stream"
+  },
+  {
+    "id": 1184,
+    "name": "World Animation",
+    "type": "radio",
+    "category": "kids",
+    "country": "Ireland",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1184/stream"
+  },
+  {
+    "id": 1185,
+    "name": "Ultra Screen",
+    "type": "satellite",
+    "category": "movies",
+    "country": "Poland",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1185/stream"
+  },
+  {
+    "id": 1186,
+    "name": "Travel",
+    "type": "radio",
+    "category": "travel",
+    "country": "Mexico",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1186/stream"
+  },
+  {
+    "id": 1187,
+    "name": "Pro Movies",
+    "type": "radio",
+    "category": "movies",
+    "country": "International",
+    "language": "it",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1187/stream"
+  },
+  {
+    "id": 1188,
+    "name": "Racing",
+    "type": "satellite",
+    "category": "auto",
+    "country": "Finland",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1188/stream"
+  },
+  {
+    "id": 1189,
+    "name": "Pro Family",
+    "type": "radio",
+    "category": "kids",
+    "country": "Austria",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1189/stream"
+  },
+  {
+    "id": 1190,
+    "name": "Max Wheels",
+    "type": "digital",
+    "category": "auto",
+    "country": "Austria",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1190/stream"
+  },
+  {
+    "id": 1191,
+    "name": "Stream Kids",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Denmark",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1191/stream"
+  },
+  {
+    "id": 1192,
+    "name": "Prime Movies",
+    "type": "satellite",
+    "category": "movies",
+    "country": "Europe",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1192/stream"
+  },
+  {
+    "id": 1193,
+    "name": "Best Education",
+    "type": "iptv",
+    "category": "education",
+    "country": "Switzerland",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1193/stream"
+  },
+  {
+    "id": 1194,
+    "name": "Mega Flavor",
+    "type": "radio",
+    "category": "food",
+    "country": "Poland",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1194/stream"
+  },
+  {
+    "id": 1195,
+    "name": "Premium Gadgets",
+    "type": "radio",
+    "category": "technology",
+    "country": "Italy",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1195/stream"
+  },
+  {
+    "id": 1196,
+    "name": "Prime Show 4K",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "Poland",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1196/stream"
+  },
+  {
+    "id": 1197,
+    "name": "Live Music",
+    "type": "digital",
+    "category": "music",
+    "country": "Norway",
+    "language": "nl",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1197/stream"
+  },
+  {
+    "id": 1198,
+    "name": "eSports",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "USA",
+    "language": "ar",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1198/stream"
+  },
+  {
+    "id": 1199,
+    "name": "Super Kids",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Japan",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1199/stream"
+  },
+  {
+    "id": 1200,
+    "name": "News",
+    "type": "satellite",
+    "category": "news",
+    "country": "Europe",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1200/stream"
+  },
+  {
+    "id": 1201,
+    "name": "Digital Cinema",
+    "type": "iptv",
+    "category": "movies",
+    "country": "Canada",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1201/stream"
+  },
+  {
+    "id": 1202,
+    "name": "Gaming",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Italy",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1202/stream"
+  },
+  {
+    "id": 1203,
+    "name": "Star Style",
+    "type": "satellite",
+    "category": "fashion",
+    "country": "France",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1203/stream"
+  },
+  {
+    "id": 1204,
+    "name": "World History Zone",
+    "type": "digital",
+    "category": "documentary",
+    "country": "Austria",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1204/stream"
+  },
+  {
+    "id": 1205,
+    "name": "Digital Hits",
+    "type": "iptv",
+    "category": "music",
+    "country": "Italy",
+    "language": "nl",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1205/stream"
+  },
+  {
+    "id": 1206,
+    "name": "Arena Express",
+    "type": "radio",
+    "category": "sports",
+    "country": "International",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1206/stream"
+  },
+  {
+    "id": 1207,
+    "name": "Ultra Cooking",
+    "type": "iptv",
+    "category": "food",
+    "country": "Finland",
+    "language": "sv",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1207/stream"
+  },
+  {
+    "id": 1208,
+    "name": "Top Docs Hub",
+    "type": "digital",
+    "category": "documentary",
+    "country": "USA",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1208/stream"
+  },
+  {
+    "id": 1209,
+    "name": "Junior",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Asia",
+    "language": "hi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1209/stream"
+  },
+  {
+    "id": 1210,
+    "name": "Sky eSports 4K",
+    "type": "radio",
+    "category": "gaming",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1210/stream"
+  },
+  {
+    "id": 1211,
+    "name": "Web Reel Channel",
+    "type": "satellite",
+    "category": "movies",
+    "country": "Mexico",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1211/stream"
+  },
+  {
+    "id": 1212,
+    "name": "Reel",
+    "type": "iptv",
+    "category": "movies",
+    "country": "Poland",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1212/stream"
+  },
+  {
+    "id": 1213,
+    "name": "Premium Family",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Spain",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1213/stream"
+  },
+  {
+    "id": 1214,
+    "name": "Star Pictures",
+    "type": "digital",
+    "category": "movies",
+    "country": "UK",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1214/stream"
+  },
+  {
+    "id": 1215,
+    "name": "Game International",
+    "type": "satellite",
+    "category": "sports",
+    "country": "France",
+    "language": "ja",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1215/stream"
+  },
+  {
+    "id": 1216,
+    "name": "One Hits Pro",
+    "type": "iptv",
+    "category": "music",
+    "country": "Finland",
+    "language": "nl",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1216/stream"
+  },
+  {
+    "id": 1217,
+    "name": "Top eSports 24/7",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Finland",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1217/stream"
+  },
+  {
+    "id": 1218,
+    "name": "Breaking Online",
+    "type": "radio",
+    "category": "news",
+    "country": "Norway",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1218/stream"
+  },
+  {
+    "id": 1219,
+    "name": "Show Network",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "Canada",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1219/stream"
+  },
+  {
+    "id": 1220,
+    "name": "Plus Movies",
+    "type": "satellite",
+    "category": "movies",
+    "country": "Sweden",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1220/stream"
+  },
+  {
+    "id": 1221,
+    "name": "Max Family Pro",
+    "type": "iptv",
+    "category": "kids",
+    "country": "Austria",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1221/stream"
+  },
+  {
+    "id": 1222,
+    "name": "Super Chef",
+    "type": "digital",
+    "category": "food",
+    "country": "Norway",
+    "language": "ru",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1222/stream"
+  },
+  {
+    "id": 1223,
+    "name": "International Play",
+    "type": "radio",
+    "category": "gaming",
+    "country": "Italy",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1223/stream"
+  },
+  {
+    "id": 1224,
+    "name": "Top Digital",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Finland",
+    "language": "pl",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1224/stream"
+  },
+  {
+    "id": 1225,
+    "name": "Max Cartoon Express",
+    "type": "digital",
+    "category": "kids",
+    "country": "International",
+    "language": "pl",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1225/stream"
+  },
+  {
+    "id": 1226,
+    "name": "Drama Network",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "India",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1226/stream"
+  },
+  {
+    "id": 1227,
+    "name": "Animation",
+    "type": "satellite",
+    "category": "kids",
+    "country": "France",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1227/stream"
+  },
+  {
+    "id": 1228,
+    "name": "Premium League",
+    "type": "digital",
+    "category": "sports",
+    "country": "India",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1228/stream"
+  },
+  {
+    "id": 1229,
+    "name": "Action",
+    "type": "radio",
+    "category": "sports",
+    "country": "France",
+    "language": "ja",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1229/stream"
+  },
+  {
+    "id": 1230,
+    "name": "Prime Home Plus",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "Poland",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1230/stream"
+  },
+  {
+    "id": 1231,
+    "name": "Classical Online",
+    "type": "digital",
+    "category": "music",
+    "country": "Japan",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1231/stream"
+  },
+  {
+    "id": 1232,
+    "name": "Global Trends",
+    "type": "digital",
+    "category": "fashion",
+    "country": "Norway",
+    "language": "sv",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1232/stream"
+  },
+  {
+    "id": 1233,
+    "name": "Digital Style",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "Sweden",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1233/stream"
+  },
+  {
+    "id": 1234,
+    "name": "Top Learning",
+    "type": "radio",
+    "category": "education",
+    "country": "Australia",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1234/stream"
+  },
+  {
+    "id": 1235,
+    "name": "Pro Junior",
+    "type": "radio",
+    "category": "kids",
+    "country": "Mexico",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1235/stream"
+  },
+  {
+    "id": 1236,
+    "name": "Rock",
+    "type": "iptv",
+    "category": "music",
+    "country": "France",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1236/stream"
+  },
+  {
+    "id": 1237,
+    "name": "Fun",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "Japan",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1237/stream"
+  },
+  {
+    "id": 1238,
+    "name": "National Travel",
+    "type": "radio",
+    "category": "travel",
+    "country": "Switzerland",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1238/stream"
+  },
+  {
+    "id": 1239,
+    "name": "Taste Live",
+    "type": "satellite",
+    "category": "food",
+    "country": "Japan",
+    "language": "pt",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1239/stream"
+  },
+  {
+    "id": 1240,
+    "name": "Max Explore Zone",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Brazil",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1240/stream"
+  },
+  {
+    "id": 1241,
+    "name": "Stream Design Online",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "Germany",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1241/stream"
+  },
+  {
+    "id": 1242,
+    "name": "Style 4K",
+    "type": "digital",
+    "category": "fashion",
+    "country": "Poland",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1242/stream"
+  },
+  {
+    "id": 1243,
+    "name": "Beats",
+    "type": "iptv",
+    "category": "music",
+    "country": "Asia",
+    "language": "ar",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1243/stream"
+  },
+  {
+    "id": 1244,
+    "name": "Ultra Headlines HD",
+    "type": "digital",
+    "category": "news",
+    "country": "Ireland",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1244/stream"
+  },
+  {
+    "id": 1245,
+    "name": "Chef",
+    "type": "satellite",
+    "category": "food",
+    "country": "Ireland",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1245/stream"
+  },
+  {
+    "id": 1246,
+    "name": "Star Films",
+    "type": "satellite",
+    "category": "movies",
+    "country": "International",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1246/stream"
+  },
+  {
+    "id": 1247,
+    "name": "Top Science",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "Poland",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1247/stream"
+  },
+  {
+    "id": 1248,
+    "name": "Elite News",
+    "type": "digital",
+    "category": "news",
+    "country": "Australia",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1248/stream"
+  },
+  {
+    "id": 1249,
+    "name": "Plus Films",
+    "type": "satellite",
+    "category": "movies",
+    "country": "India",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1249/stream"
+  },
+  {
+    "id": 1250,
+    "name": "Children",
+    "type": "iptv",
+    "category": "kids",
+    "country": "UK",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1250/stream"
+  },
+  {
+    "id": 1251,
+    "name": "National Live Express",
+    "type": "radio",
+    "category": "news",
+    "country": "Europe",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1251/stream"
+  },
+  {
+    "id": 1252,
+    "name": "World Sports",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Finland",
+    "language": "pl",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1252/stream"
+  },
+  {
+    "id": 1253,
+    "name": "Sports",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Spain",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1253/stream"
+  },
+  {
+    "id": 1254,
+    "name": "International Auto",
+    "type": "digital",
+    "category": "auto",
+    "country": "Mexico",
+    "language": "sv",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1254/stream"
+  },
+  {
+    "id": 1255,
+    "name": "One Stadium Central",
+    "type": "radio",
+    "category": "sports",
+    "country": "France",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1255/stream"
+  },
+  {
+    "id": 1256,
+    "name": "Discovery 4K",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "Poland",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1256/stream"
+  },
+  {
+    "id": 1257,
+    "name": "Match Express",
+    "type": "radio",
+    "category": "sports",
+    "country": "International",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1257/stream"
+  },
+  {
+    "id": 1258,
+    "name": "World Motor Online",
+    "type": "radio",
+    "category": "auto",
+    "country": "Asia",
+    "language": "ru",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1258/stream"
+  },
+  {
+    "id": 1259,
+    "name": "Arena",
+    "type": "iptv",
+    "category": "sports",
+    "country": "Mexico",
+    "language": "no",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1259/stream"
+  },
+  {
+    "id": 1260,
+    "name": "Super Animation Online",
+    "type": "radio",
+    "category": "kids",
+    "country": "Ireland",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1260/stream"
+  },
+  {
+    "id": 1261,
+    "name": "Global Cartoon Direct",
+    "type": "digital",
+    "category": "kids",
+    "country": "Netherlands",
+    "language": "zh",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1261/stream"
+  },
+  {
+    "id": 1262,
+    "name": "Plus Wheels Online",
+    "type": "iptv",
+    "category": "auto",
+    "country": "Germany",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1262/stream"
+  },
+  {
+    "id": 1263,
+    "name": "Top Gaming Stream",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Italy",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1263/stream"
+  },
+  {
+    "id": 1264,
+    "name": "24/7 World 24/7",
+    "type": "radio",
+    "category": "travel",
+    "country": "International",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1264/stream"
+  },
+  {
+    "id": 1265,
+    "name": "Plus Flavor",
+    "type": "iptv",
+    "category": "food",
+    "country": "Brazil",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1265/stream"
+  },
+  {
+    "id": 1266,
+    "name": "Web Explore Channel",
+    "type": "satellite",
+    "category": "travel",
+    "country": "Norway",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1266/stream"
+  },
+  {
+    "id": 1267,
+    "name": "Super Knowledge",
+    "type": "digital",
+    "category": "education",
+    "country": "Denmark",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1267/stream"
+  },
+  {
+    "id": 1268,
+    "name": "Regional Fashion Express",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "Italy",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1268/stream"
+  },
+  {
+    "id": 1269,
+    "name": "Premium Life",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "International",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1269/stream"
+  },
+  {
+    "id": 1270,
+    "name": "World Show",
+    "type": "iptv",
+    "category": "entertainment",
+    "country": "Germany",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1270/stream"
+  },
+  {
+    "id": 1271,
+    "name": "Local Food",
+    "type": "digital",
+    "category": "food",
+    "country": "Ireland",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1271/stream"
+  },
+  {
+    "id": 1272,
+    "name": "Ultra Adventure",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Netherlands",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1272/stream"
+  },
+  {
+    "id": 1273,
+    "name": "One Innovation World",
+    "type": "digital",
+    "category": "technology",
+    "country": "Poland",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1273/stream"
+  },
+  {
+    "id": 1274,
+    "name": "Pro Runway International",
+    "type": "radio",
+    "category": "fashion",
+    "country": "Brazil",
+    "language": "fi",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1274/stream"
+  },
+  {
+    "id": 1275,
+    "name": "Mega Arcade",
+    "type": "digital",
+    "category": "gaming",
+    "country": "Asia",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1275/stream"
+  },
+  {
+    "id": 1276,
+    "name": "Regional News",
+    "type": "radio",
+    "category": "news",
+    "country": "Germany",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1276/stream"
+  },
+  {
+    "id": 1277,
+    "name": "Live Digital Online",
+    "type": "digital",
+    "category": "technology",
+    "country": "India",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1277/stream"
+  },
+  {
+    "id": 1278,
+    "name": "24/7 Junior",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Netherlands",
+    "language": "fi",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1278/stream"
+  },
+  {
+    "id": 1279,
+    "name": "Auto",
+    "type": "radio",
+    "category": "auto",
+    "country": "Poland",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1279/stream"
+  },
+  {
+    "id": 1280,
+    "name": "Flavor",
+    "type": "radio",
+    "category": "food",
+    "country": "International",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1280/stream"
+  },
+  {
+    "id": 1281,
+    "name": "International Today Online",
+    "type": "radio",
+    "category": "news",
+    "country": "Asia",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1281/stream"
+  },
+  {
+    "id": 1282,
+    "name": "Live",
+    "type": "iptv",
+    "category": "news",
+    "country": "Ireland",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1282/stream"
+  },
+  {
+    "id": 1283,
+    "name": "Pro Drive",
+    "type": "radio",
+    "category": "auto",
+    "country": "UK",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1283/stream"
+  },
+  {
+    "id": 1284,
+    "name": "Pro Chef Zone",
+    "type": "radio",
+    "category": "food",
+    "country": "Japan",
+    "language": "hi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1284/stream"
+  },
+  {
+    "id": 1285,
+    "name": "Food TV",
+    "type": "radio",
+    "category": "food",
+    "country": "Spain",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1285/stream"
+  },
+  {
+    "id": 1286,
+    "name": "Best Journey",
+    "type": "digital",
+    "category": "travel",
+    "country": "Finland",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1286/stream"
+  },
+  {
+    "id": 1287,
+    "name": "Racing TV",
+    "type": "digital",
+    "category": "auto",
+    "country": "Austria",
+    "language": "multi",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1287/stream"
+  },
+  {
+    "id": 1288,
+    "name": "Ultra News Zone",
+    "type": "satellite",
+    "category": "news",
+    "country": "UK",
+    "language": "de",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1288/stream"
+  },
+  {
+    "id": 1289,
+    "name": "Kids Online",
+    "type": "iptv",
+    "category": "kids",
+    "country": "International",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1289/stream"
+  },
+  {
+    "id": 1290,
+    "name": "First Life Online",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "Canada",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1290/stream"
+  },
+  {
+    "id": 1291,
+    "name": "Premium Breaking",
+    "type": "iptv",
+    "category": "news",
+    "country": "Brazil",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1291/stream"
+  },
+  {
+    "id": 1292,
+    "name": "World Nature",
+    "type": "radio",
+    "category": "documentary",
+    "country": "Denmark",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1292/stream"
+  },
+  {
+    "id": 1293,
+    "name": "International Fun",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "Italy",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1293/stream"
+  },
+  {
+    "id": 1294,
+    "name": "World Games 4K",
+    "type": "radio",
+    "category": "gaming",
+    "country": "Italy",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1294/stream"
+  },
+  {
+    "id": 1295,
+    "name": "Local Explore",
+    "type": "radio",
+    "category": "travel",
+    "country": "USA",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1295/stream"
+  },
+  {
+    "id": 1296,
+    "name": "Motor World",
+    "type": "iptv",
+    "category": "auto",
+    "country": "Norway",
+    "language": "ja",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1296/stream"
+  },
+  {
+    "id": 1297,
+    "name": "Best Speed",
+    "type": "digital",
+    "category": "auto",
+    "country": "Italy",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1297/stream"
+  },
+  {
+    "id": 1298,
+    "name": "Sky Drive",
+    "type": "radio",
+    "category": "auto",
+    "country": "Brazil",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1298/stream"
+  },
+  {
+    "id": 1299,
+    "name": "Plus Design World",
+    "type": "radio",
+    "category": "fashion",
+    "country": "Asia",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1299/stream"
+  },
+  {
+    "id": 1300,
+    "name": "Prime Gaming Express",
+    "type": "satellite",
+    "category": "gaming",
+    "country": "Australia",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1300/stream"
+  },
+  {
+    "id": 1301,
+    "name": "First Gadgets",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Sweden",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1301/stream"
+  },
+  {
+    "id": 1302,
+    "name": "Max Motor",
+    "type": "digital",
+    "category": "auto",
+    "country": "Switzerland",
+    "language": "ja",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1302/stream"
+  },
+  {
+    "id": 1303,
+    "name": "Global Digital",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Sweden",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1303/stream"
+  },
+  {
+    "id": 1304,
+    "name": "Digital Knowledge",
+    "type": "digital",
+    "category": "education",
+    "country": "Australia",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1304/stream"
+  },
+  {
+    "id": 1305,
+    "name": "Regional Science 24/7",
+    "type": "digital",
+    "category": "documentary",
+    "country": "Spain",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1305/stream"
+  },
+  {
+    "id": 1306,
+    "name": "Planet Direct",
+    "type": "iptv",
+    "category": "documentary",
+    "country": "Norway",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1306/stream"
+  },
+  {
+    "id": 1307,
+    "name": "World Tech Express",
+    "type": "radio",
+    "category": "technology",
+    "country": "Ireland",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1307/stream"
+  },
+  {
+    "id": 1308,
+    "name": "Headlines",
+    "type": "satellite",
+    "category": "news",
+    "country": "Norway",
+    "language": "ja",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1308/stream"
+  },
+  {
+    "id": 1309,
+    "name": "Elite Home",
+    "type": "iptv",
+    "category": "lifestyle",
+    "country": "Canada",
+    "language": "no",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1309/stream"
+  },
+  {
+    "id": 1310,
+    "name": "Global Alert Pro",
+    "type": "satellite",
+    "category": "news",
+    "country": "Germany",
+    "language": "pl",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1310/stream"
+  },
+  {
+    "id": 1311,
+    "name": "Live Tech Network",
+    "type": "digital",
+    "category": "technology",
+    "country": "Ireland",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1311/stream"
+  },
+  {
+    "id": 1312,
+    "name": "Local Classical",
+    "type": "satellite",
+    "category": "music",
+    "country": "Norway",
+    "language": "fr",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1312/stream"
+  },
+  {
+    "id": 1313,
+    "name": "Ultra Innovation HD",
+    "type": "satellite",
+    "category": "technology",
+    "country": "Brazil",
+    "language": "no",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1313/stream"
+  },
+  {
+    "id": 1314,
+    "name": "Digital World",
+    "type": "radio",
+    "category": "technology",
+    "country": "Switzerland",
+    "language": "no",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1314/stream"
+  },
+  {
+    "id": 1315,
+    "name": "Kids Channel",
+    "type": "digital",
+    "category": "kids",
+    "country": "Mexico",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1315/stream"
+  },
+  {
+    "id": 1316,
+    "name": "Global News 4K",
+    "type": "digital",
+    "category": "news",
+    "country": "Japan",
+    "language": "pt",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1316/stream"
+  },
+  {
+    "id": 1317,
+    "name": "First Wheels",
+    "type": "radio",
+    "category": "auto",
+    "country": "Austria",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1317/stream"
+  },
+  {
+    "id": 1318,
+    "name": "Regional Pop",
+    "type": "digital",
+    "category": "music",
+    "country": "Sweden",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1318/stream"
+  },
+  {
+    "id": 1319,
+    "name": "Classical Zone",
+    "type": "iptv",
+    "category": "music",
+    "country": "Belgium",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1319/stream"
+  },
+  {
+    "id": 1320,
+    "name": "Stream Action",
+    "type": "digital",
+    "category": "sports",
+    "country": "Australia",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1320/stream"
+  },
+  {
+    "id": 1321,
+    "name": "First Pop Online",
+    "type": "iptv",
+    "category": "music",
+    "country": "France",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1321/stream"
+  },
+  {
+    "id": 1322,
+    "name": "Regional Junior",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Australia",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1322/stream"
+  },
+  {
+    "id": 1323,
+    "name": "Food Plus",
+    "type": "satellite",
+    "category": "food",
+    "country": "India",
+    "language": "sv",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1323/stream"
+  },
+  {
+    "id": 1324,
+    "name": "First eSports",
+    "type": "radio",
+    "category": "gaming",
+    "country": "France",
+    "language": "ru",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1324/stream"
+  },
+  {
+    "id": 1325,
+    "name": "Stream Speed Express",
+    "type": "iptv",
+    "category": "auto",
+    "country": "Poland",
+    "language": "it",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1325/stream"
+  },
+  {
+    "id": 1326,
+    "name": "Prime Tech",
+    "type": "digital",
+    "category": "technology",
+    "country": "Germany",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1326/stream"
+  },
+  {
+    "id": 1327,
+    "name": "Sky Racing",
+    "type": "digital",
+    "category": "auto",
+    "country": "Sweden",
+    "language": "nl",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1327/stream"
+  },
+  {
+    "id": 1328,
+    "name": "Sky Pop",
+    "type": "radio",
+    "category": "music",
+    "country": "Europe",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1328/stream"
+  },
+  {
+    "id": 1329,
+    "name": "Max Rock",
+    "type": "digital",
+    "category": "music",
+    "country": "Asia",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1329/stream"
+  },
+  {
+    "id": 1330,
+    "name": "Elite Rock Online",
+    "type": "iptv",
+    "category": "music",
+    "country": "Brazil",
+    "language": "da",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1330/stream"
+  },
+  {
+    "id": 1331,
+    "name": "Prime World",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Ireland",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1331/stream"
+  },
+  {
+    "id": 1332,
+    "name": "Mega Speed Hub",
+    "type": "iptv",
+    "category": "auto",
+    "country": "Sweden",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1332/stream"
+  },
+  {
+    "id": 1333,
+    "name": "Max Today",
+    "type": "digital",
+    "category": "news",
+    "country": "Mexico",
+    "language": "multi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1333/stream"
+  },
+  {
+    "id": 1334,
+    "name": "National Discovery",
+    "type": "digital",
+    "category": "documentary",
+    "country": "Australia",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1334/stream"
+  },
+  {
+    "id": 1335,
+    "name": "Prime Kids",
+    "type": "radio",
+    "category": "kids",
+    "country": "Denmark",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1335/stream"
+  },
+  {
+    "id": 1336,
+    "name": "International Arcade Stream",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "International",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1336/stream"
+  },
+  {
+    "id": 1337,
+    "name": "Kids",
+    "type": "iptv",
+    "category": "kids",
+    "country": "UK",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1337/stream"
+  },
+  {
+    "id": 1338,
+    "name": "Elite Discovery",
+    "type": "iptv",
+    "category": "documentary",
+    "country": "Poland",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1338/stream"
+  },
+  {
+    "id": 1339,
+    "name": "Family Pro",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Mexico",
+    "language": "multi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1339/stream"
+  },
+  {
+    "id": 1340,
+    "name": "Game TV",
+    "type": "digital",
+    "category": "sports",
+    "country": "Japan",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1340/stream"
+  },
+  {
+    "id": 1341,
+    "name": "Sky Beats",
+    "type": "radio",
+    "category": "music",
+    "country": "Australia",
+    "language": "es",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1341/stream"
+  },
+  {
+    "id": 1342,
+    "name": "Star Future Stream",
+    "type": "digital",
+    "category": "technology",
+    "country": "Germany",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1342/stream"
+  },
+  {
+    "id": 1343,
+    "name": "International Arcade International",
+    "type": "radio",
+    "category": "gaming",
+    "country": "Europe",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1343/stream"
+  },
+  {
+    "id": 1344,
+    "name": "Today 4K",
+    "type": "iptv",
+    "category": "news",
+    "country": "France",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1344/stream"
+  },
+  {
+    "id": 1345,
+    "name": "Sky Taste",
+    "type": "digital",
+    "category": "food",
+    "country": "International",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1345/stream"
+  },
+  {
+    "id": 1346,
+    "name": "Planet",
+    "type": "digital",
+    "category": "documentary",
+    "country": "Spain",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1346/stream"
+  },
+  {
+    "id": 1347,
+    "name": "Music 4K",
+    "type": "satellite",
+    "category": "music",
+    "country": "France",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1347/stream"
+  },
+  {
+    "id": 1348,
+    "name": "Ultra TV Zone",
+    "type": "iptv",
+    "category": "entertainment",
+    "country": "Belgium",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1348/stream"
+  },
+  {
+    "id": 1349,
+    "name": "Classical Live",
+    "type": "iptv",
+    "category": "music",
+    "country": "Japan",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1349/stream"
+  },
+  {
+    "id": 1350,
+    "name": "National Sports Pro",
+    "type": "radio",
+    "category": "sports",
+    "country": "Australia",
+    "language": "nl",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1350/stream"
+  },
+  {
+    "id": 1351,
+    "name": "Future",
+    "type": "digital",
+    "category": "technology",
+    "country": "Japan",
+    "language": "ru",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1351/stream"
+  },
+  {
+    "id": 1352,
+    "name": "Play International",
+    "type": "satellite",
+    "category": "gaming",
+    "country": "USA",
+    "language": "nl",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1352/stream"
+  },
+  {
+    "id": 1353,
+    "name": "Mega Design Pro",
+    "type": "digital",
+    "category": "fashion",
+    "country": "Australia",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1353/stream"
+  },
+  {
+    "id": 1354,
+    "name": "Regional Trends",
+    "type": "radio",
+    "category": "fashion",
+    "country": "Italy",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1354/stream"
+  },
+  {
+    "id": 1355,
+    "name": "World Learning",
+    "type": "digital",
+    "category": "education",
+    "country": "India",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1355/stream"
+  },
+  {
+    "id": 1356,
+    "name": "Innovation",
+    "type": "iptv",
+    "category": "technology",
+    "country": "Belgium",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1356/stream"
+  },
+  {
+    "id": 1357,
+    "name": "School",
+    "type": "digital",
+    "category": "education",
+    "country": "USA",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1357/stream"
+  },
+  {
+    "id": 1358,
+    "name": "One Stadium Pro",
+    "type": "satellite",
+    "category": "sports",
+    "country": "India",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1358/stream"
+  },
+  {
+    "id": 1359,
+    "name": "Star Knowledge",
+    "type": "radio",
+    "category": "education",
+    "country": "Ireland",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1359/stream"
+  },
+  {
+    "id": 1360,
+    "name": "Mega Style Direct",
+    "type": "digital",
+    "category": "fashion",
+    "country": "International",
+    "language": "pt",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1360/stream"
+  },
+  {
+    "id": 1361,
+    "name": "Star Learning",
+    "type": "iptv",
+    "category": "education",
+    "country": "UK",
+    "language": "it",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1361/stream"
+  },
+  {
+    "id": 1362,
+    "name": "Max Pictures",
+    "type": "radio",
+    "category": "movies",
+    "country": "Asia",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1362/stream"
+  },
+  {
+    "id": 1363,
+    "name": "Stream Rock",
+    "type": "iptv",
+    "category": "music",
+    "country": "International",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1363/stream"
+  },
+  {
+    "id": 1364,
+    "name": "Pro World",
+    "type": "radio",
+    "category": "travel",
+    "country": "Brazil",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1364/stream"
+  },
+  {
+    "id": 1365,
+    "name": "News Hub",
+    "type": "satellite",
+    "category": "news",
+    "country": "Sweden",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1365/stream"
+  },
+  {
+    "id": 1366,
+    "name": "Web Home",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "Finland",
+    "language": "es",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1366/stream"
+  },
+  {
+    "id": 1367,
+    "name": "National Match Network",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Australia",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1367/stream"
+  },
+  {
+    "id": 1368,
+    "name": "Live Food",
+    "type": "digital",
+    "category": "food",
+    "country": "Spain",
+    "language": "sv",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1368/stream"
+  },
+  {
+    "id": 1369,
+    "name": "World Beats",
+    "type": "iptv",
+    "category": "music",
+    "country": "Spain",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1369/stream"
+  },
+  {
+    "id": 1370,
+    "name": "Sky Nature",
+    "type": "digital",
+    "category": "documentary",
+    "country": "Belgium",
+    "language": "it",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1370/stream"
+  },
+  {
+    "id": 1371,
+    "name": "Sky Planet",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "Poland",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1371/stream"
+  },
+  {
+    "id": 1372,
+    "name": "Web News",
+    "type": "digital",
+    "category": "news",
+    "country": "India",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1372/stream"
+  },
+  {
+    "id": 1373,
+    "name": "International Chef",
+    "type": "digital",
+    "category": "food",
+    "country": "Norway",
+    "language": "multi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1373/stream"
+  },
+  {
+    "id": 1374,
+    "name": "Global Explore",
+    "type": "digital",
+    "category": "travel",
+    "country": "Asia",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1374/stream"
+  },
+  {
+    "id": 1375,
+    "name": "Star Design Central",
+    "type": "digital",
+    "category": "fashion",
+    "country": "Japan",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1375/stream"
+  },
+  {
+    "id": 1376,
+    "name": "Pro Trends",
+    "type": "iptv",
+    "category": "fashion",
+    "country": "Netherlands",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1376/stream"
+  },
+  {
+    "id": 1377,
+    "name": "Sky Racing 24/7",
+    "type": "digital",
+    "category": "auto",
+    "country": "Austria",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1377/stream"
+  },
+  {
+    "id": 1378,
+    "name": "Show Pro",
+    "type": "iptv",
+    "category": "entertainment",
+    "country": "Japan",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1378/stream"
+  },
+  {
+    "id": 1379,
+    "name": "League Plus",
+    "type": "radio",
+    "category": "sports",
+    "country": "Sweden",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1379/stream"
+  },
+  {
+    "id": 1380,
+    "name": "Sky eSports",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Brazil",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1380/stream"
+  },
+  {
+    "id": 1381,
+    "name": "Chef 4K",
+    "type": "radio",
+    "category": "food",
+    "country": "Switzerland",
+    "language": "it",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1381/stream"
+  },
+  {
+    "id": 1382,
+    "name": "24/7 Action",
+    "type": "digital",
+    "category": "sports",
+    "country": "UK",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1382/stream"
+  },
+  {
+    "id": 1383,
+    "name": "Prime Taste",
+    "type": "radio",
+    "category": "food",
+    "country": "Mexico",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1383/stream"
+  },
+  {
+    "id": 1384,
+    "name": "Digital Design",
+    "type": "iptv",
+    "category": "lifestyle",
+    "country": "International",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1384/stream"
+  },
+  {
+    "id": 1385,
+    "name": "Entertainment TV",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "Spain",
+    "language": "sv",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1385/stream"
+  },
+  {
+    "id": 1386,
+    "name": "Max Screen",
+    "type": "radio",
+    "category": "movies",
+    "country": "Asia",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1386/stream"
+  },
+  {
+    "id": 1387,
+    "name": "Top Gadgets",
+    "type": "digital",
+    "category": "technology",
+    "country": "Brazil",
+    "language": "fr",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1387/stream"
+  },
+  {
+    "id": 1388,
+    "name": "Star News Live",
+    "type": "digital",
+    "category": "news",
+    "country": "Canada",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1388/stream"
+  },
+  {
+    "id": 1389,
+    "name": "Prime Arcade",
+    "type": "radio",
+    "category": "gaming",
+    "country": "Germany",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1389/stream"
+  },
+  {
+    "id": 1390,
+    "name": "Top Sports Stream",
+    "type": "digital",
+    "category": "sports",
+    "country": "Netherlands",
+    "language": "pt",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1390/stream"
+  },
+  {
+    "id": 1391,
+    "name": "Local Family",
+    "type": "iptv",
+    "category": "kids",
+    "country": "India",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1391/stream"
+  },
+  {
+    "id": 1392,
+    "name": "Fun Network",
+    "type": "iptv",
+    "category": "entertainment",
+    "country": "Belgium",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1392/stream"
+  },
+  {
+    "id": 1393,
+    "name": "World Trends Channel",
+    "type": "iptv",
+    "category": "fashion",
+    "country": "Mexico",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1393/stream"
+  },
+  {
+    "id": 1394,
+    "name": "Global Hits",
+    "type": "satellite",
+    "category": "music",
+    "country": "Switzerland",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1394/stream"
+  },
+  {
+    "id": 1395,
+    "name": "Fashion Hub",
+    "type": "radio",
+    "category": "fashion",
+    "country": "Austria",
+    "language": "no",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1395/stream"
+  },
+  {
+    "id": 1396,
+    "name": "National Design Central",
+    "type": "satellite",
+    "category": "fashion",
+    "country": "Canada",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1396/stream"
+  },
+  {
+    "id": 1397,
+    "name": "National Nature Central",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "Germany",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1397/stream"
+  },
+  {
+    "id": 1398,
+    "name": "24/7 Discovery Zone",
+    "type": "radio",
+    "category": "documentary",
+    "country": "Poland",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1398/stream"
+  },
+  {
+    "id": 1399,
+    "name": "Web Game Plus",
+    "type": "iptv",
+    "category": "sports",
+    "country": "International",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1399/stream"
+  },
+  {
+    "id": 1400,
+    "name": "Digital Design Online",
+    "type": "radio",
+    "category": "fashion",
+    "country": "Germany",
+    "language": "da",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1400/stream"
+  },
+  {
+    "id": 1401,
+    "name": "Web Alert Zone",
+    "type": "digital",
+    "category": "news",
+    "country": "Italy",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1401/stream"
+  },
+  {
+    "id": 1402,
+    "name": "Prime Trends",
+    "type": "satellite",
+    "category": "fashion",
+    "country": "Canada",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1402/stream"
+  },
+  {
+    "id": 1403,
+    "name": "24/7 Gadgets",
+    "type": "digital",
+    "category": "technology",
+    "country": "Belgium",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1403/stream"
+  },
+  {
+    "id": 1404,
+    "name": "Super Adventure HD",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Brazil",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1404/stream"
+  },
+  {
+    "id": 1405,
+    "name": "Plus Flavor Online",
+    "type": "digital",
+    "category": "food",
+    "country": "Austria",
+    "language": "no",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1405/stream"
+  },
+  {
+    "id": 1406,
+    "name": "Digital Central",
+    "type": "iptv",
+    "category": "technology",
+    "country": "Australia",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1406/stream"
+  },
+  {
+    "id": 1407,
+    "name": "Max Entertainment Live",
+    "type": "radio",
+    "category": "entertainment",
+    "country": "Poland",
+    "language": "ar",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1407/stream"
+  },
+  {
+    "id": 1408,
+    "name": "Super Explore Plus",
+    "type": "radio",
+    "category": "travel",
+    "country": "Ireland",
+    "language": "es",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1408/stream"
+  },
+  {
+    "id": 1409,
+    "name": "Prime School",
+    "type": "radio",
+    "category": "education",
+    "country": "Netherlands",
+    "language": "en",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1409/stream"
+  },
+  {
+    "id": 1410,
+    "name": "Pro Academy Stream",
+    "type": "digital",
+    "category": "education",
+    "country": "France",
+    "language": "sv",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1410/stream"
+  },
+  {
+    "id": 1411,
+    "name": "Best Show",
+    "type": "radio",
+    "category": "entertainment",
+    "country": "Ireland",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1411/stream"
+  },
+  {
+    "id": 1412,
+    "name": "Ultra Drive Hub",
+    "type": "radio",
+    "category": "auto",
+    "country": "Germany",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1412/stream"
+  },
+  {
+    "id": 1413,
+    "name": "One World",
+    "type": "radio",
+    "category": "travel",
+    "country": "Switzerland",
+    "language": "fr",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1413/stream"
+  },
+  {
+    "id": 1414,
+    "name": "One Travel",
+    "type": "digital",
+    "category": "travel",
+    "country": "Netherlands",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1414/stream"
+  },
+  {
+    "id": 1415,
+    "name": "Prime Academy",
+    "type": "iptv",
+    "category": "education",
+    "country": "Germany",
+    "language": "multi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1415/stream"
+  },
+  {
+    "id": 1416,
+    "name": "Drive Channel",
+    "type": "iptv",
+    "category": "auto",
+    "country": "Poland",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1416/stream"
+  },
+  {
+    "id": 1417,
+    "name": "Pictures",
+    "type": "satellite",
+    "category": "movies",
+    "country": "Poland",
+    "language": "ar",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1417/stream"
+  },
+  {
+    "id": 1418,
+    "name": "Sky Knowledge",
+    "type": "iptv",
+    "category": "education",
+    "country": "Spain",
+    "language": "ru",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1418/stream"
+  },
+  {
+    "id": 1419,
+    "name": "School Live",
+    "type": "radio",
+    "category": "education",
+    "country": "Australia",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1419/stream"
+  },
+  {
+    "id": 1420,
+    "name": "Prime Games",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Sweden",
+    "language": "nl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1420/stream"
+  },
+  {
+    "id": 1421,
+    "name": "eSports Online",
+    "type": "satellite",
+    "category": "gaming",
+    "country": "Brazil",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1421/stream"
+  },
+  {
+    "id": 1422,
+    "name": "Music Zone",
+    "type": "radio",
+    "category": "music",
+    "country": "Japan",
+    "language": "pl",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1422/stream"
+  },
+  {
+    "id": 1423,
+    "name": "TV TV",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "Austria",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1423/stream"
+  },
+  {
+    "id": 1424,
+    "name": "Best Game",
+    "type": "radio",
+    "category": "sports",
+    "country": "Poland",
+    "language": "fr",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1424/stream"
+  },
+  {
+    "id": 1425,
+    "name": "Regional World Stream",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Finland",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1425/stream"
+  },
+  {
+    "id": 1426,
+    "name": "Regional Cartoon",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Belgium",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1426/stream"
+  },
+  {
+    "id": 1427,
+    "name": "Design Live",
+    "type": "iptv",
+    "category": "fashion",
+    "country": "Germany",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1427/stream"
+  },
+  {
+    "id": 1428,
+    "name": "Star Sports",
+    "type": "iptv",
+    "category": "sports",
+    "country": "Canada",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1428/stream"
+  },
+  {
+    "id": 1429,
+    "name": "Mega Kitchen",
+    "type": "satellite",
+    "category": "food",
+    "country": "UK",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1429/stream"
+  },
+  {
+    "id": 1430,
+    "name": "Top Kitchen Online",
+    "type": "iptv",
+    "category": "food",
+    "country": "Canada",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1430/stream"
+  },
+  {
+    "id": 1431,
+    "name": "Top League",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Norway",
+    "language": "da",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1431/stream"
+  },
+  {
+    "id": 1432,
+    "name": "24/7 Journey",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Denmark",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1432/stream"
+  },
+  {
+    "id": 1433,
+    "name": "Global Music",
+    "type": "iptv",
+    "category": "music",
+    "country": "UK",
+    "language": "nl",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1433/stream"
+  },
+  {
+    "id": 1434,
+    "name": "Stream Reel 4K",
+    "type": "satellite",
+    "category": "movies",
+    "country": "Australia",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1434/stream"
+  },
+  {
+    "id": 1435,
+    "name": "First Animation Direct",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Canada",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1435/stream"
+  },
+  {
+    "id": 1436,
+    "name": "Prime Innovation Network",
+    "type": "iptv",
+    "category": "technology",
+    "country": "International",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1436/stream"
+  },
+  {
+    "id": 1437,
+    "name": "Plus Beats Stream",
+    "type": "radio",
+    "category": "music",
+    "country": "Europe",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1437/stream"
+  },
+  {
+    "id": 1438,
+    "name": "24/7 Taste",
+    "type": "iptv",
+    "category": "food",
+    "country": "Mexico",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1438/stream"
+  },
+  {
+    "id": 1439,
+    "name": "National Knowledge",
+    "type": "iptv",
+    "category": "education",
+    "country": "Denmark",
+    "language": "es",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1439/stream"
+  },
+  {
+    "id": 1440,
+    "name": "Mega Trends",
+    "type": "digital",
+    "category": "fashion",
+    "country": "Spain",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1440/stream"
+  },
+  {
+    "id": 1441,
+    "name": "Star Explore",
+    "type": "satellite",
+    "category": "travel",
+    "country": "Switzerland",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1441/stream"
+  },
+  {
+    "id": 1442,
+    "name": "24/7 School TV",
+    "type": "iptv",
+    "category": "education",
+    "country": "Poland",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1442/stream"
+  },
+  {
+    "id": 1443,
+    "name": "National Home 24/7",
+    "type": "radio",
+    "category": "lifestyle",
+    "country": "Germany",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1443/stream"
+  },
+  {
+    "id": 1444,
+    "name": "24/7 Comedy Central",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "USA",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1444/stream"
+  },
+  {
+    "id": 1445,
+    "name": "National Children",
+    "type": "radio",
+    "category": "kids",
+    "country": "Europe",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1445/stream"
+  },
+  {
+    "id": 1446,
+    "name": "Super Games",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Europe",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1446/stream"
+  },
+  {
+    "id": 1447,
+    "name": "Children Hub",
+    "type": "digital",
+    "category": "kids",
+    "country": "Sweden",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1447/stream"
+  },
+  {
+    "id": 1448,
+    "name": "Alert",
+    "type": "digital",
+    "category": "news",
+    "country": "Italy",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1448/stream"
+  },
+  {
+    "id": 1449,
+    "name": "Style Stream",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "India",
+    "language": "da",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1449/stream"
+  },
+  {
+    "id": 1450,
+    "name": "Children Central",
+    "type": "radio",
+    "category": "kids",
+    "country": "Belgium",
+    "language": "pt",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1450/stream"
+  },
+  {
+    "id": 1451,
+    "name": "World TV",
+    "type": "digital",
+    "category": "travel",
+    "country": "Norway",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1451/stream"
+  },
+  {
+    "id": 1452,
+    "name": "Family",
+    "type": "digital",
+    "category": "kids",
+    "country": "Poland",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1452/stream"
+  },
+  {
+    "id": 1453,
+    "name": "Living",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "Mexico",
+    "language": "sv",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1453/stream"
+  },
+  {
+    "id": 1454,
+    "name": "Regional Cooking HD",
+    "type": "satellite",
+    "category": "food",
+    "country": "Mexico",
+    "language": "zh",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1454/stream"
+  },
+  {
+    "id": 1455,
+    "name": "National Screen",
+    "type": "satellite",
+    "category": "movies",
+    "country": "International",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1455/stream"
+  },
+  {
+    "id": 1456,
+    "name": "Digital Academy",
+    "type": "iptv",
+    "category": "education",
+    "country": "Brazil",
+    "language": "de",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1456/stream"
+  },
+  {
+    "id": 1457,
+    "name": "Top Kids Express",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Asia",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1457/stream"
+  },
+  {
+    "id": 1458,
+    "name": "Live Fashion",
+    "type": "iptv",
+    "category": "fashion",
+    "country": "Netherlands",
+    "language": "ru",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1458/stream"
+  },
+  {
+    "id": 1459,
+    "name": "Motor",
+    "type": "digital",
+    "category": "auto",
+    "country": "Sweden",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1459/stream"
+  },
+  {
+    "id": 1460,
+    "name": "Plus Trends",
+    "type": "digital",
+    "category": "fashion",
+    "country": "France",
+    "language": "pt",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1460/stream"
+  },
+  {
+    "id": 1461,
+    "name": "Rock Hub",
+    "type": "radio",
+    "category": "music",
+    "country": "Germany",
+    "language": "ja",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1461/stream"
+  },
+  {
+    "id": 1462,
+    "name": "Star Speed",
+    "type": "satellite",
+    "category": "auto",
+    "country": "Netherlands",
+    "language": "no",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1462/stream"
+  },
+  {
+    "id": 1463,
+    "name": "Best Taste",
+    "type": "radio",
+    "category": "food",
+    "country": "Denmark",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1463/stream"
+  },
+  {
+    "id": 1464,
+    "name": "24/7 Knowledge",
+    "type": "digital",
+    "category": "education",
+    "country": "Italy",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1464/stream"
+  },
+  {
+    "id": 1465,
+    "name": "Food Live",
+    "type": "digital",
+    "category": "food",
+    "country": "Denmark",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1465/stream"
+  },
+  {
+    "id": 1466,
+    "name": "Classical",
+    "type": "radio",
+    "category": "music",
+    "country": "Austria",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1466/stream"
+  },
+  {
+    "id": 1467,
+    "name": "Web 24 Pro",
+    "type": "digital",
+    "category": "news",
+    "country": "Finland",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1467/stream"
+  },
+  {
+    "id": 1468,
+    "name": "Chef Plus",
+    "type": "radio",
+    "category": "food",
+    "country": "Spain",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1468/stream"
+  },
+  {
+    "id": 1469,
+    "name": "Games Plus",
+    "type": "digital",
+    "category": "gaming",
+    "country": "Netherlands",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1469/stream"
+  },
+  {
+    "id": 1470,
+    "name": "Ultra Cartoon Pro",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Brazil",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1470/stream"
+  },
+  {
+    "id": 1471,
+    "name": "24/7 Adventure Plus",
+    "type": "iptv",
+    "category": "travel",
+    "country": "Switzerland",
+    "language": "fi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1471/stream"
+  },
+  {
+    "id": 1472,
+    "name": "Beats Direct",
+    "type": "digital",
+    "category": "music",
+    "country": "Canada",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1472/stream"
+  },
+  {
+    "id": 1473,
+    "name": "Journey World",
+    "type": "digital",
+    "category": "travel",
+    "country": "UK",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1473/stream"
+  },
+  {
+    "id": 1474,
+    "name": "Journey",
+    "type": "digital",
+    "category": "travel",
+    "country": "International",
+    "language": "pl",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1474/stream"
+  },
+  {
+    "id": 1475,
+    "name": "First Junior Hub",
+    "type": "digital",
+    "category": "kids",
+    "country": "Japan",
+    "language": "ru",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1475/stream"
+  },
+  {
+    "id": 1476,
+    "name": "Runway Network",
+    "type": "digital",
+    "category": "fashion",
+    "country": "Sweden",
+    "language": "hi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1476/stream"
+  },
+  {
+    "id": 1477,
+    "name": "Plus Arcade",
+    "type": "radio",
+    "category": "gaming",
+    "country": "Finland",
+    "language": "pt",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1477/stream"
+  },
+  {
+    "id": 1478,
+    "name": "24 Central",
+    "type": "digital",
+    "category": "news",
+    "country": "Finland",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1478/stream"
+  },
+  {
+    "id": 1479,
+    "name": "Web Flavor",
+    "type": "digital",
+    "category": "food",
+    "country": "Switzerland",
+    "language": "da",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1479/stream"
+  },
+  {
+    "id": 1480,
+    "name": "First Beats",
+    "type": "digital",
+    "category": "music",
+    "country": "Belgium",
+    "language": "ja",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1480/stream"
+  },
+  {
+    "id": 1481,
+    "name": "Regional Arcade HD",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Ireland",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1481/stream"
+  },
+  {
+    "id": 1482,
+    "name": "Home",
+    "type": "iptv",
+    "category": "lifestyle",
+    "country": "Canada",
+    "language": "fi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1482/stream"
+  },
+  {
+    "id": 1483,
+    "name": "Digital eSports Central",
+    "type": "satellite",
+    "category": "gaming",
+    "country": "Japan",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1483/stream"
+  },
+  {
+    "id": 1484,
+    "name": "Trends",
+    "type": "iptv",
+    "category": "fashion",
+    "country": "Switzerland",
+    "language": "de",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1484/stream"
+  },
+  {
+    "id": 1485,
+    "name": "Best Trends Plus",
+    "type": "satellite",
+    "category": "fashion",
+    "country": "Poland",
+    "language": "multi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1485/stream"
+  },
+  {
+    "id": 1486,
+    "name": "eSports Plus",
+    "type": "satellite",
+    "category": "gaming",
+    "country": "Brazil",
+    "language": "sv",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1486/stream"
+  },
+  {
+    "id": 1487,
+    "name": "School 4K",
+    "type": "digital",
+    "category": "education",
+    "country": "UK",
+    "language": "nl",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/generated/channel_1487/stream"
+  },
+  {
+    "id": 1488,
+    "name": "Live Reel Express",
+    "type": "radio",
+    "category": "movies",
+    "country": "Germany",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1488/stream"
+  },
+  {
+    "id": 1489,
+    "name": "Mega Sports",
+    "type": "radio",
+    "category": "sports",
+    "country": "Norway",
+    "language": "ar",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1489/stream"
+  },
+  {
+    "id": 1490,
+    "name": "Stream Arcade",
+    "type": "radio",
+    "category": "gaming",
+    "country": "Austria",
+    "language": "es",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1490/stream"
+  },
+  {
+    "id": 1491,
+    "name": "Digital",
+    "type": "iptv",
+    "category": "technology",
+    "country": "Japan",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1491/stream"
+  },
+  {
+    "id": 1492,
+    "name": "International Comedy World",
+    "type": "iptv",
+    "category": "entertainment",
+    "country": "India",
+    "language": "de",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1492/stream"
+  },
+  {
+    "id": 1493,
+    "name": "Plus Design",
+    "type": "radio",
+    "category": "fashion",
+    "country": "India",
+    "language": "ru",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/generated/channel_1493/stream"
+  },
+  {
+    "id": 1494,
+    "name": "Pro Classical",
+    "type": "digital",
+    "category": "music",
+    "country": "Sweden",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1494/stream"
+  },
+  {
+    "id": 1495,
+    "name": "Star eSports",
+    "type": "iptv",
+    "category": "gaming",
+    "country": "Denmark",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1495/stream"
+  },
+  {
+    "id": 1496,
+    "name": "Prime Docs",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "USA",
+    "language": "da",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1496/stream"
+  },
+  {
+    "id": 1497,
+    "name": "First Travel",
+    "type": "satellite",
+    "category": "travel",
+    "country": "Belgium",
+    "language": "zh",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1497/stream"
+  },
+  {
+    "id": 1498,
+    "name": "Cartoon Hub",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Europe",
+    "language": "it",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1498/stream"
+  },
+  {
+    "id": 1499,
+    "name": "Style TV",
+    "type": "iptv",
+    "category": "lifestyle",
+    "country": "Mexico",
+    "language": "hi",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/generated/channel_1499/stream"
+  }
+]

@@ -1,0 +1,602 @@
+[
+  {
+    "id": 1,
+    "name": "Global News Network",
+    "type": "satellite",
+    "category": "news",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/gnews/live"
+  },
+  {
+    "id": 2,
+    "name": "Sports Channel HD",
+    "type": "satellite",
+    "category": "sports",
+    "country": "UK",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/sports/hd"
+  },
+  {
+    "id": 3,
+    "name": "Movie Central",
+    "type": "satellite",
+    "category": "movies",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/movies/central"
+  },
+  {
+    "id": 4,
+    "name": "Kids Universe",
+    "type": "satellite",
+    "category": "kids",
+    "country": "Canada",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/kids/universe"
+  },
+  {
+    "id": 5,
+    "name": "Discovery Science",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/discovery/science"
+  },
+  {
+    "id": 6,
+    "name": "Music TV 24/7",
+    "type": "satellite",
+    "category": "music",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/music/247"
+  },
+  {
+    "id": 7,
+    "name": "World News Today",
+    "type": "satellite",
+    "category": "news",
+    "country": "International",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/world/news"
+  },
+  {
+    "id": 8,
+    "name": "Comedy Central Plus",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/comedy/plus"
+  },
+  {
+    "id": 9,
+    "name": "Nature & Wildlife",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "UK",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/nature/wildlife"
+  },
+  {
+    "id": 10,
+    "name": "Premier League TV",
+    "type": "satellite",
+    "category": "sports",
+    "country": "UK",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/football/premier"
+  },
+  {
+    "id": 11,
+    "name": "Fashion & Lifestyle",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "France",
+    "language": "fr",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/fashion/style"
+  },
+  {
+    "id": 12,
+    "name": "Cooking Masters",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/cooking/masters"
+  },
+  {
+    "id": 13,
+    "name": "Tech Today",
+    "type": "satellite",
+    "category": "technology",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/tech/today"
+  },
+  {
+    "id": 14,
+    "name": "Classic Movies HD",
+    "type": "satellite",
+    "category": "movies",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/classic/movies"
+  },
+  {
+    "id": 15,
+    "name": "History Channel",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/history/channel"
+  },
+  {
+    "id": 16,
+    "name": "Adventure Sports",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Australia",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/adventure/sports"
+  },
+  {
+    "id": 17,
+    "name": "International Business",
+    "type": "satellite",
+    "category": "news",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/business/intl"
+  },
+  {
+    "id": 18,
+    "name": "Travel & Explore",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "International",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/travel/explore"
+  },
+  {
+    "id": 19,
+    "name": "Reality TV Network",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/reality/network"
+  },
+  {
+    "id": 20,
+    "name": "Bollywood Cinema",
+    "type": "satellite",
+    "category": "movies",
+    "country": "India",
+    "language": "hi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/bollywood/cinema"
+  },
+  {
+    "id": 21,
+    "name": "Euro Sports 1",
+    "type": "satellite",
+    "category": "sports",
+    "country": "Europe",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/euro/sports1"
+  },
+  {
+    "id": 22,
+    "name": "Kids Animation",
+    "type": "satellite",
+    "category": "kids",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/kids/animation"
+  },
+  {
+    "id": 23,
+    "name": "Jazz & Blues",
+    "type": "satellite",
+    "category": "music",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/jazz/blues"
+  },
+  {
+    "id": 24,
+    "name": "Drama Series HD",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/drama/series"
+  },
+  {
+    "id": 25,
+    "name": "Science & Discovery",
+    "type": "satellite",
+    "category": "documentary",
+    "country": "UK",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/science/discovery"
+  },
+  {
+    "id": 26,
+    "name": "Premium Cinema 4K",
+    "type": "satellite",
+    "category": "movies",
+    "country": "USA",
+    "language": "en",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/premium/cinema4k"
+  },
+  {
+    "id": 27,
+    "name": "Regional News 24",
+    "type": "satellite",
+    "category": "news",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/regional/news24"
+  },
+  {
+    "id": 28,
+    "name": "Fitness & Health",
+    "type": "satellite",
+    "category": "lifestyle",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/fitness/health"
+  },
+  {
+    "id": 29,
+    "name": "Anime Network",
+    "type": "satellite",
+    "category": "entertainment",
+    "country": "Japan",
+    "language": "ja",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/anime/network"
+  },
+  {
+    "id": 30,
+    "name": "Weather Channel",
+    "type": "satellite",
+    "category": "news",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/weather/channel"
+  },
+  {
+    "id": 31,
+    "name": "Digital News Live",
+    "type": "digital",
+    "category": "news",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/digital/news"
+  },
+  {
+    "id": 32,
+    "name": "Online Sports Hub",
+    "type": "digital",
+    "category": "sports",
+    "country": "International",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/online/sports"
+  },
+  {
+    "id": 33,
+    "name": "Elite Entertainment Plus",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "USA",
+    "language": "en",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/elite/entertainment"
+  },
+  {
+    "id": 34,
+    "name": "Web Cinema Classics",
+    "type": "digital",
+    "category": "movies",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/web/classics"
+  },
+  {
+    "id": 35,
+    "name": "Kids Digital Fun",
+    "type": "digital",
+    "category": "kids",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/kids/digital"
+  },
+  {
+    "id": 36,
+    "name": "Premium Sports 4K",
+    "type": "digital",
+    "category": "sports",
+    "country": "UK",
+    "language": "en",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/premium/sports4k"
+  },
+  {
+    "id": 37,
+    "name": "Digital Music Lounge",
+    "type": "digital",
+    "category": "music",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/digital/music"
+  },
+  {
+    "id": 38,
+    "name": "Streaming Doc Channel",
+    "type": "digital",
+    "category": "documentary",
+    "country": "International",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/streaming/docs"
+  },
+  {
+    "id": 39,
+    "name": "E-Learning Network",
+    "type": "digital",
+    "category": "education",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/elearning/network"
+  },
+  {
+    "id": 40,
+    "name": "Gold Cinema Collection",
+    "type": "digital",
+    "category": "movies",
+    "country": "USA",
+    "language": "en",
+    "tier": "gold",
+    "streamUrl": "https://cdn.example.com/gold/cinema"
+  },
+  {
+    "id": 41,
+    "name": "Tech Reviews Digital",
+    "type": "digital",
+    "category": "technology",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/tech/reviews"
+  },
+  {
+    "id": 42,
+    "name": "Gaming Stream TV",
+    "type": "digital",
+    "category": "gaming",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/gaming/stream"
+  },
+  {
+    "id": 43,
+    "name": "Fashion Digital TV",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "International",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/fashion/digital"
+  },
+  {
+    "id": 44,
+    "name": "Food Network Online",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/food/online"
+  },
+  {
+    "id": 45,
+    "name": "Indie Films Digital",
+    "type": "digital",
+    "category": "movies",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/indie/films"
+  },
+  {
+    "id": 46,
+    "name": "Comedy Web TV",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/comedy/web"
+  },
+  {
+    "id": 47,
+    "name": "Business News Digital",
+    "type": "digital",
+    "category": "news",
+    "country": "International",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/business/digital"
+  },
+  {
+    "id": 48,
+    "name": "Yoga & Wellness TV",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/yoga/wellness"
+  },
+  {
+    "id": 49,
+    "name": "DIY Home Channel",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/diy/home"
+  },
+  {
+    "id": 50,
+    "name": "World Music Digital",
+    "type": "digital",
+    "category": "music",
+    "country": "International",
+    "language": "multi",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/world/music"
+  },
+  {
+    "id": 51,
+    "name": "Auto & Motor Sports",
+    "type": "digital",
+    "category": "sports",
+    "country": "International",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/auto/motor"
+  },
+  {
+    "id": 52,
+    "name": "Pet Lovers TV",
+    "type": "digital",
+    "category": "lifestyle",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/pets/lovers"
+  },
+  {
+    "id": 53,
+    "name": "Action Movies HD",
+    "type": "digital",
+    "category": "movies",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/action/movies"
+  },
+  {
+    "id": 54,
+    "name": "Kids Education Plus",
+    "type": "digital",
+    "category": "kids",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/kids/education"
+  },
+  {
+    "id": 55,
+    "name": "Horror Movie Channel",
+    "type": "digital",
+    "category": "movies",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/horror/movies"
+  },
+  {
+    "id": 56,
+    "name": "True Crime Digital",
+    "type": "digital",
+    "category": "documentary",
+    "country": "USA",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/truecrime/digital"
+  },
+  {
+    "id": 57,
+    "name": "Art & Culture TV",
+    "type": "digital",
+    "category": "education",
+    "country": "International",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/art/culture"
+  },
+  {
+    "id": 58,
+    "name": "Stand-up Comedy Live",
+    "type": "digital",
+    "category": "entertainment",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/standup/live"
+  },
+  {
+    "id": 59,
+    "name": "Extreme Sports Web",
+    "type": "digital",
+    "category": "sports",
+    "country": "International",
+    "language": "en",
+    "tier": "silver",
+    "streamUrl": "https://cdn.example.com/extreme/sports"
+  },
+  {
+    "id": 60,
+    "name": "Local News Network",
+    "type": "digital",
+    "category": "news",
+    "country": "USA",
+    "language": "en",
+    "tier": "free",
+    "streamUrl": "https://cdn.example.com/local/news"
+  }
+]
