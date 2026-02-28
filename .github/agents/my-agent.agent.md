@@ -4,10 +4,10 @@
 # To make this agent available, merge this file into the default repository branch.
 # For format details, see: https://gh.io/customagents/config
 
-name:IAM7
-description:COMPLETION
+name: IAM7 Agent
+description: Custom agent for code interpretation, completion, execution, and production setup from prototypes
 ---
 
 # My Agent
 
-Describe what your agent does here... code interpeter, code completer, code executer,production setup from prototype.
+This agent assists with code interpretation, code completion, code execution, and production setup from prototypes. It helps streamline development workflows and automate common coding tasks.
