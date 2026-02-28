@@ -1,0 +1,49 @@
+{
+  "model_type": "gpt",
+  "architectures": ["GPTModel"],
+  "vocab_size": 50257,
+  "n_positions": 1024,
+  "n_embd": 768,
+  "n_layer": 12,
+  "n_head": 12,
+  "n_inner": 3072,
+  "activation_function": "gelu_new",
+  "resid_pdrop": 0.1,
+  "embd_pdrop": 0.1,
+  "attn_pdrop": 0.1,
+  "layer_norm_epsilon": 1e-5,
+  "initializer_range": 0.02,
+  "summary_type": "cls_index",
+  "summary_use_proj": true,
+  "summary_activation": null,
+  "summary_proj_to_labels": true,
+  "summary_first_dropout": 0.1,
+  "bos_token_id": 50256,
+  "eos_token_id": 50256,
+  "simulated": true,
+  "simulation_config": {
+    "embedding_dim": 64,
+    "n_layers": 3,
+    "n_heads": 4,
+    "context_length": 256,
+    "ngram_order": 3,
+    "temperature_default": 0.7
+  },
+  "generation": {
+    "max_new_tokens": 200,
+    "temperature": 0.7,
+    "top_k": 50,
+    "top_p": 0.9,
+    "repetition_penalty": 1.2,
+    "do_sample": true,
+    "num_beams": 1,
+    "early_stopping": false
+  },
+  "fine_tuning": {
+    "learning_rate": 5e-5,
+    "batch_size": 8,
+    "gradient_accumulation_steps": 4,
+    "max_grad_norm": 1.0,
+    "num_train_epochs": 3
+  }
+}

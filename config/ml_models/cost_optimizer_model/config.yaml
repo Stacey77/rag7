@@ -1,0 +1,54 @@
+model:
+  name: cost_optimizer_model
+  version: "2.1.0"
+  type: regression
+  description: "Predicts and optimizes cloud infrastructure costs"
+
+training:
+  algorithm: random_forest_regression
+  n_estimators: 300
+  max_depth: 10
+  min_samples_split: 5
+  n_jobs: -1
+  random_state: 42
+
+features:
+  - name: cpu_utilization_avg
+    type: float
+    unit: percent
+  - name: memory_utilization_avg
+    type: float
+    unit: percent
+  - name: storage_gb
+    type: float
+  - name: network_egress_gb
+    type: float
+  - name: instance_type
+    type: categorical
+  - name: region
+    type: categorical
+  - name: reserved_capacity_ratio
+    type: float
+  - name: spot_eligible
+    type: boolean
+  - name: idle_hours_per_day
+    type: float
+
+optimization_targets:
+  primary: minimize_cost
+  constraints:
+    - min_availability: 0.999
+    - max_latency_p99_ms: 200
+    - min_throughput_rps: 1000
+
+savings_strategies:
+  - right_sizing
+  - reserved_instances
+  - spot_instances
+  - scheduled_scaling
+  - storage_tiering
+
+monitoring:
+  alert_threshold_overspend_percent: 15
+  forecast_horizon_days: 30
+  retraining_schedule: weekly
