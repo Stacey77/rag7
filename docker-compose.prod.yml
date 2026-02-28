@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  langflow:
+    build:
+      context: ./langflow
+      dockerfile: Dockerfile
+    ports:
+      - "${LANGFLOW_PORT:-7860}:7860"
+    restart: always
+    environment:
+      - LANGFLOW_HOST=0.0.0.0
+      - LANGFLOW_PORT=7860
+    networks:
+      - ragamuffin-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    build:
+      context: ./langflow-backend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - flows-data:/app/flows
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - FLOWS_DIR=/app/flows
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URL=${DATABASE_URL:-}
+      - MAX_INPUT_LENGTH=${MAX_INPUT_LENGTH:-10000}
+      - ENABLE_AUTH=${ENABLE_AUTH:-true}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+      - JWT_EXPIRE_MINUTES=${JWT_EXPIRE_MINUTES:-30}
+    depends_on:
+      - langflow
+    networks:
+      - ragamuffin-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - ragamuffin-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  langgraph:
+    build:
+      context: ./langgraph
+      dockerfile: Dockerfile
+    ports:
+      - "${LANGGRAPH_PORT:-7878}:7878"
+    restart: always
+    networks:
+      - ragamuffin-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7878"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  ragamuffin-network:
+    driver: bridge
+
+volumes:
+  flows-data:
+    driver: local
