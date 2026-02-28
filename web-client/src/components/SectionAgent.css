@@ -1,0 +1,70 @@
+.section-agent {
+  cursor: pointer;
+  user-select: none;
+}
+
+.agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.agent-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.agent-status {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.agent-title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.agent-toggle {
+  color: var(--accent-primary);
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.agent-content {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.agent-description {
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.agent-metrics {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.metric-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
