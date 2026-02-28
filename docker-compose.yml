@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  langflow:
+    build:
+      context: ./langflow
+      dockerfile: Dockerfile
+    container_name: ragamuffin-langflow
+    ports:
+      - "7860:7860"
+    environment:
+      - LANGFLOW_DATABASE_URL=sqlite:///langflow.db
+    volumes:
+      - langflow-data:/root/.langflow
+    networks:
+      - ragamuffin-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./langflow-backend
+      dockerfile: Dockerfile
+    container_name: ragamuffin-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - LANGFLOW_HOST=langflow
+      - LANGFLOW_PORT=7860
+    volumes:
+      - ./langflow-backend/flows:/app/flows
+    networks:
+      - ragamuffin-network
+    depends_on:
+      - langflow
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    container_name: ragamuffin-frontend
+    ports:
+      - "8080:80"
+    networks:
+      - ragamuffin-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  langflow-data:
+
+networks:
+  ragamuffin-network:
+    driver: bridge
