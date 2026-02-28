@@ -1,0 +1,184 @@
+{
+  "name": "LangGraph Trigger",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "langgraph-trigger",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "id": "webhook",
+      "name": "LangGraph Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "langgraph-trigger-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse and validate incoming request\nconst body = JSON.parse($json.body);\n\nconst validPatterns = [\n  'sequential',\n  'parallel', \n  'loop',\n  'router',\n  'aggregator',\n  'hierarchical',\n  'network'\n];\n\nconst pattern = body.pattern || 'sequential';\nconst task = body.task;\n\nif (!task) {\n  return [{\n    json: {\n      error: true,\n      message: 'Task is required'\n    }\n  }];\n}\n\nif (!validPatterns.includes(pattern)) {\n  return [{\n    json: {\n      error: true,\n      message: `Invalid pattern. Valid patterns: ${validPatterns.join(', ')}`\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    error: false,\n    pattern: pattern,\n    task: task,\n    quality_threshold: body.quality_threshold || 0.8,\n    max_iterations: body.max_iterations || 5,\n    metadata: body.metadata || {}\n  }\n}];"
+      },
+      "id": "parse",
+      "name": "Parse Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.error }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "check",
+      "name": "Has Error?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { error: true, message: $json.message } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://langgraph-api:8000/api/v1/run",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"task\": \"{{ $json.task }}\",\n  \"pattern\": \"{{ $json.pattern }}\",\n  \"quality_threshold\": {{ $json.quality_threshold }},\n  \"max_iterations\": {{ $json.max_iterations }}\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "langgraph",
+      "name": "Call LangGraph API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format the response\nconst result = $json;\n\nreturn [{\n  json: {\n    success: result.success,\n    pattern: result.pattern,\n    task: result.task,\n    output: result.final_output,\n    quality_score: result.quality_score,\n    iterations: result.iteration_count,\n    executed_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "format",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "respond",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 200]
+    }
+  ],
+  "connections": {
+    "LangGraph Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Request": {
+      "main": [
+        [
+          {
+            "node": "Has Error?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Error?": {
+      "main": [
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call LangGraph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call LangGraph API": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "langgraph",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "name": "trigger",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "agentic-patterns"
+  }
+}
