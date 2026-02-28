@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Interview {
+  id          String   @id @default(cuid())
+  userId      String?
+  title       String
+  responses   String   // JSON string for interview Q&A responses
+  status      String   // "draft", "completed"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  analyses    Analysis[]
+}
+
+model Analysis {
+  id            String   @id @default(cuid())
+  interviewId   String
+  interview     Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  bottlenecks   String   // JSON string for top 3-5 bottlenecks with severity
+  opportunities String   // JSON string for AI agent opportunities matrix
+  roadmap       String   // JSON string for implementation phases
+  createdAt     DateTime @default(now())
+}
+
+model SecurityScan {
+  id              String   @id @default(cuid())
+  codeSnippet     String
+  language        String
+  vulnerabilities String   // JSON string for array of findings
+  severity        String
+  owaspMappings   String   // JSON string
+  createdAt       DateTime @default(now())
+}
+
+model ContextTemplate {
+  id          String   @id @default(cuid())
+  userId      String?
+  name        String
+  description String?
+  role        String
+  domain      String
+  context     String
+  tone        String
+  constraints String
+  createdAt   DateTime @default(now())
+}
