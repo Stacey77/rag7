@@ -1,0 +1,57 @@
+fusion:
+  default_strategy: voting
+  enable_quality_ranking: true
+  min_agreement_threshold: 0.6
+  weights:
+    anthropic: 1.0
+    google: 1.0
+    openai: 1.0
+monitoring:
+  enable_cost_tracking: true
+  enable_latency_tracking: true
+  enable_prometheus: true
+  log_level: INFO
+  metrics_port: 9090
+providers:
+  anthropic:
+    cost_per_1k_tokens:
+      claude-3-opus-20240229: 0.015
+      claude-3-sonnet-20240229: 0.003
+    default_model: claude-3-opus-20240229
+    enabled: true
+    max_retries: 3
+    max_tokens: 1000
+    temperature: 0.7
+    timeout: 30
+  google:
+    cost_per_1k_tokens:
+      gemini-pro: 0.001
+    default_model: gemini-pro
+    enabled: true
+    max_retries: 3
+    max_tokens: 1000
+    temperature: 0.7
+    timeout: 30
+  openai:
+    cost_per_1k_tokens:
+      gpt-3.5-turbo: 0.002
+      gpt-4: 0.03
+    default_model: gpt-4
+    enabled: true
+    max_retries: 3
+    max_tokens: 1000
+    temperature: 0.7
+    timeout: 30
+router:
+  cost_optimization: true
+  default_provider: openai
+  enable_fallback: true
+  fallback_chain:
+  - openai
+  - anthropic
+  - google
+  latency_optimization: false
+  task_complexity_routing:
+    complex: google
+    medium: anthropic
+    simple: openai
