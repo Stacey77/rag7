@@ -1,0 +1,19 @@
+{
+  "name": "fortfail-dashboard",
+  "version": "0.1.0",
+  "description": "FortFail Dashboard - PoC UI for orchestrator",
+  "main": "index.jsx",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@parcel/transformer-react-refresh-wrap": "^2.10.0",
+    "parcel": "^2.10.0",
+    "process": "^0.11.10"
+  }
+}

@@ -1,0 +1,284 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, copilot/** ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME_ORCHESTRATOR: ${{ github.repository }}/orchestrator
+  IMAGE_NAME_AGENT: ${{ github.repository }}/agent
+
+jobs:
+  lint-and-test:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install orchestrator dependencies
+      run: |
+        cd orchestrator
+        pip install -r requirements.txt
+        pip install flake8 black mypy
+    
+    - name: Lint orchestrator
+      run: |
+        cd orchestrator
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Check code formatting
+      run: |
+        cd orchestrator
+        black --check .
+    
+    - name: Install agent dependencies
+      run: |
+        cd agent
+        pip install -r requirements.txt
+    
+    - name: Lint agent
+      run: |
+        cd agent
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Validate Python syntax
+      run: |
+        python -m py_compile orchestrator/main.py orchestrator/ws.py orchestrator/secrets.py orchestrator/tls_config.py
+        python -m py_compile agent/agent.py
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Cache npm packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('dashboard/package.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    
+    - name: Install dashboard dependencies
+      run: |
+        cd dashboard
+        npm ci
+    
+    - name: Build dashboard
+      run: |
+        cd dashboard
+        npm run build
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+    
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  build-images:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [lint-and-test, security-scan]
+    if: github.event_name == 'push'
+    
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Extract metadata for orchestrator
+      id: meta-orchestrator
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_ORCHESTRATOR }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+    
+    - name: Build and push orchestrator image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./orchestrator
+        push: true
+        tags: ${{ steps.meta-orchestrator.outputs.tags }}
+        labels: ${{ steps.meta-orchestrator.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    - name: Extract metadata for agent
+      id: meta-agent
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_AGENT }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+    
+    - name: Build and push agent image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./agent
+        push: true
+        tags: ${{ steps.meta-agent.outputs.tags }}
+        labels: ${{ steps.meta-agent.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set environment variables
+      run: |
+        echo "ORCH_JWT_SECRET=test-jwt-secret-for-ci" >> $GITHUB_ENV
+        echo "ORCH_REG_SECRET=test-reg-secret-for-ci" >> $GITHUB_ENV
+    
+    - name: Start services with Docker Compose
+      run: |
+        docker-compose up -d
+        sleep 30
+    
+    - name: Wait for orchestrator
+      run: |
+        timeout 60 bash -c 'until curl -f http://localhost:8000/health/live; do sleep 2; done'
+    
+    - name: Install jq
+      run: sudo apt-get update && sudo apt-get install -y jq
+    
+    - name: Run smoke test
+      run: |
+        chmod +x scripts/smoke.sh
+        ./scripts/smoke.sh
+    
+    - name: Show logs on failure
+      if: failure()
+      run: |
+        docker-compose logs orchestrator
+        docker-compose logs agent
+    
+    - name: Stop services
+      if: always()
+      run: docker-compose down -v
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-images, integration-test]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://staging.fortfail.example.com
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Configure kubectl
+      uses: azure/k8s-set-context@v3
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
+    
+    - name: Deploy to staging
+      run: |
+        kubectl apply -f k8s/orchestrator-deployment.yaml
+        kubectl rollout status deployment/fortfail-orchestrator -n staging
+    
+    - name: Verify deployment
+      run: |
+        kubectl get pods -n staging
+        kubectl get services -n staging
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-images, integration-test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://fortfail.example.com
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Configure kubectl
+      uses: azure/k8s-set-context@v3
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG_PROD }}
+    
+    - name: Deploy to production
+      run: |
+        kubectl apply -f k8s/orchestrator-deployment.yaml
+        kubectl rollout status deployment/fortfail-orchestrator -n production
+    
+    - name: Verify deployment
+      run: |
+        kubectl get pods -n production
+        kubectl get services -n production
+    
+    - name: Run health check
+      run: |
+        sleep 10
+        curl -f https://fortfail.example.com/health/ready || exit 1
