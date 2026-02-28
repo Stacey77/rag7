@@ -1,0 +1,158 @@
+.ai-brain-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.ai-brain {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+.brain-core {
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, var(--primary-color), transparent);
+  border-radius: 50%;
+  animation: coreGlow 2s ease-in-out infinite;
+  box-shadow: 0 0 40px var(--primary-color);
+}
+
+.brain-ring {
+  position: absolute;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+.ring-1 {
+  width: 80px;
+  height: 80px;
+  animation: rotate 4s linear infinite;
+}
+
+.ring-2 {
+  width: 120px;
+  height: 120px;
+  animation: rotate 6s linear infinite reverse;
+  border-color: var(--secondary-color);
+}
+
+.ring-3 {
+  width: 160px;
+  height: 160px;
+  animation: rotate 8s linear infinite;
+  border-color: var(--accent-color);
+}
+
+.brain-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--primary-color);
+}
+
+.particle-1 {
+  top: 20%;
+  left: 50%;
+  animation: float1 3s ease-in-out infinite;
+}
+
+.particle-2 {
+  top: 50%;
+  left: 20%;
+  animation: float2 4s ease-in-out infinite;
+}
+
+.particle-3 {
+  top: 80%;
+  left: 50%;
+  animation: float3 3.5s ease-in-out infinite;
+}
+
+.particle-4 {
+  top: 50%;
+  right: 20%;
+  animation: float4 4.5s ease-in-out infinite;
+}
+
+.ai-brain.active .brain-core {
+  animation: coreGlowActive 1s ease-in-out infinite;
+  box-shadow: 0 0 60px var(--primary-color);
+}
+
+@keyframes coreGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes coreGlowActive {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float1 {
+  0%, 100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-50%, -70%);
+  }
+}
+
+@keyframes float2 {
+  0%, 100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-70%, -50%);
+  }
+}
+
+@keyframes float3 {
+  0%, 100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-50%, -30%);
+  }
+}
+
+@keyframes float4 {
+  0%, 100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-30%, -50%);
+  }
+}
