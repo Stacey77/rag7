@@ -58,25 +58,39 @@ Copy `.env.example` to `.env` and configure:
 - `kubectl` configured against your cluster
 - Container registry credentials
 
-### Create namespace and secrets
+### One-time cluster setup
+
+Create the secrets that hold sensitive values (these are **not** committed to the
+repository — they must be created in each target cluster):
 
 ```bash
-kubectl create namespace trading
+# Create namespace (also applied automatically by the CD pipeline)
+kubectl apply -f infrastructure/kubernetes/namespace.yaml
 
+# Exchange API keys
 kubectl create secret generic trading-engine-secrets \
   --namespace trading \
   --from-literal=ALPACA_API_KEY=<key> \
   --from-literal=ALPACA_SECRET_KEY=<secret>
 
+# Database password
 kubectl create secret generic postgres-secret \
   --namespace trading \
   --from-literal=password=<db-password>
 ```
 
-### Deploy
+### Deploy manually
 
 ```bash
+# Apply namespace + non-sensitive config
+kubectl apply -f infrastructure/kubernetes/namespace.yaml
+kubectl apply -f infrastructure/kubernetes/configmap-production.yaml
+
+# Apply workload manifests
 kubectl apply -f infrastructure/kubernetes/deployments/
+
+# Monitor rollout
+kubectl rollout status deployment/trading-engine --namespace trading
 ```
 
 ### Verify
@@ -84,6 +98,55 @@ kubectl apply -f infrastructure/kubernetes/deployments/
 ```bash
 kubectl get pods -n trading
 kubectl logs -n trading deployment/trading-engine
+```
+
+---
+
+## CI/CD — Automated Deployment
+
+The GitHub Actions CD pipeline (`.github/workflows/cd.yml`) deploys automatically:
+
+| Trigger | Target | Job |
+|---------|--------|-----|
+| Push to `main` | Staging | `deploy-staging` |
+| Push a `v*` tag | Production | `deploy-production` |
+
+Both jobs share a **`build`** job that builds and pushes the Docker image to the
+container registry before any deployment runs.
+
+### Release to production
+
+```bash
+# Tag the commit you want to ship
+git tag v1.2.3
+
+# Push the tag — this triggers the CD pipeline's production deploy
+git push origin v1.2.3
+```
+
+The pipeline will:
+1. Build the `trading-engine` image and push it tagged as `v1.2.3` (and `1.2`)
+2. Apply the Kubernetes namespace and ConfigMap
+3. Apply all workload manifests
+4. Roll out the new image (`kubectl set image …`)
+5. Wait up to 3 minutes for the rollout to complete (`kubectl rollout status`)
+
+### Required repository secrets
+
+Configure these in **Settings → Secrets and variables → Actions**:
+
+| Secret | Description |
+|--------|-------------|
+| `REGISTRY_URL` | Container registry hostname (e.g. `ghcr.io/your-org`) |
+| `REGISTRY_USERNAME` | Registry login username |
+| `REGISTRY_PASSWORD` | Registry login password / token |
+| `STAGING_KUBECONFIG` | Base64-encoded kubeconfig for the staging cluster |
+| `PRODUCTION_KUBECONFIG` | Base64-encoded kubeconfig for the production cluster |
+
+Encode a kubeconfig file:
+
+```bash
+base64 -w 0 ~/.kube/staging-config
 ```
 
 ---
