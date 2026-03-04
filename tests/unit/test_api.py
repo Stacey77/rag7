@@ -191,6 +191,41 @@ class TestPlaceOrder:
         assert resp.status_code == 422
 
 
+class TestMeta:
+    """GET /api/v1/meta"""
+
+    @pytest.fixture
+    def client(self):
+        pm = AsyncMock(spec=PortfolioManager)
+        re = AsyncMock(spec=RiskEngine)
+        om = AsyncMock()
+        return TestClient(_make_app(pm, re, om))
+
+    def test_meta_returns_open_statuses(self, client):
+        """Meta endpoint returns the list of open order statuses."""
+        resp = client.get("/api/v1/meta")
+        assert resp.status_code == 200
+        body = resp.json()
+        assert "open_order_statuses" in body
+        assert isinstance(body["open_order_statuses"], list)
+        assert len(body["open_order_statuses"]) > 0
+
+    def test_meta_open_statuses_match_backend_constant(self, client):
+        """Statuses returned match the canonical OPEN_STATUSES constant."""
+        from trading_engine.api.router import OPEN_STATUSES
+
+        resp = client.get("/api/v1/meta")
+        returned = set(resp.json()["open_order_statuses"])
+        assert returned == OPEN_STATUSES
+
+    def test_meta_does_not_include_terminal_statuses(self, client):
+        """Terminal statuses (FILLED, CANCELLED, REJECTED) are not in open list."""
+        resp = client.get("/api/v1/meta")
+        returned = set(resp.json()["open_order_statuses"])
+        for terminal in ("FILLED", "CANCELLED", "REJECTED", "EXPIRED"):
+            assert terminal not in returned
+
+
 class TestListOrders:
     """GET /api/v1/orders"""
 
@@ -222,6 +257,65 @@ class TestListOrders:
         resp = client_empty.get("/api/v1/orders")
         assert resp.status_code == 200
         assert resp.json() == []
+
+
+class TestListAllOrders:
+    """GET /api/v1/orders/all"""
+
+    @pytest.fixture
+    def client_mixed(self):
+        """Two orders: one open (ACCEPTED), one closed (FILLED)."""
+        from datetime import datetime, timezone
+
+        open_order = _sample_order("BTCUSDT")  # status=ACCEPTED
+        filled_order = Order(
+            symbol="ETHUSDT",
+            side=Side.SELL,
+            order_type=OrderType.MARKET,
+            quantity=Decimal("0.1"),
+            status=OrderStatus.FILLED,
+            exchange_order_id="paper-filled-001",
+        )
+        pm = AsyncMock(spec=PortfolioManager)
+        re = AsyncMock(spec=RiskEngine)
+        om = AsyncMock()
+        om.get_all_orders = AsyncMock(return_value=[open_order, filled_order])
+        return TestClient(_make_app(pm, re, om))
+
+    @pytest.fixture
+    def client_empty(self):
+        pm = AsyncMock(spec=PortfolioManager)
+        re = AsyncMock(spec=RiskEngine)
+        om = AsyncMock()
+        om.get_all_orders = AsyncMock(return_value=[])
+        return TestClient(_make_app(pm, re, om))
+
+    def test_list_all_orders_returns_both(self, client_mixed):
+        """Returns open and closed orders."""
+        resp = client_mixed.get("/api/v1/orders/all")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert isinstance(data, list)
+        assert len(data) == 2
+
+    def test_list_all_orders_contains_filled(self, client_mixed):
+        """Filled orders appear in history even though they are not 'open'."""
+        resp = client_mixed.get("/api/v1/orders/all")
+        statuses = {o["status"] for o in resp.json()}
+        assert "FILLED" in statuses
+
+    def test_list_all_orders_empty(self, client_empty):
+        """Returns empty list when no orders have been placed."""
+        resp = client_empty.get("/api/v1/orders/all")
+        assert resp.status_code == 200
+        assert resp.json() == []
+
+    def test_list_all_orders_includes_all_symbols(self, client_mixed):
+        """All symbols are present in the history response."""
+        resp = client_mixed.get("/api/v1/orders/all")
+        symbols = {o["symbol"] for o in resp.json()}
+        assert "BTCUSDT" in symbols
+        assert "ETHUSDT" in symbols
 
 
 class TestGetOrder:

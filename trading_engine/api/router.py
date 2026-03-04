@@ -18,6 +18,7 @@ from shared.common.exceptions import OrderNotFoundError, OrderRejectedError
 from shared.models.ai_models import RiskAssessment
 from shared.models.trading_models import (
     Order,
+    OrderStatus,
     OrderType,
     Portfolio,
     Position,
@@ -26,6 +27,36 @@ from shared.models.trading_models import (
 )
 
 router = APIRouter(prefix="/api/v1", tags=["trading"])
+
+# Canonical set of open (non-terminal) order statuses — single source of truth
+# shared between the backend logic and the /api/v1/meta response consumed by
+# the frontend, so both sides never drift out of sync.
+OPEN_STATUSES: frozenset[str] = frozenset(
+    s.value
+    for s in (
+        OrderStatus.PENDING,
+        OrderStatus.SUBMITTED,
+        OrderStatus.ACCEPTED,
+        OrderStatus.PARTIALLY_FILLED,
+    )
+)
+
+
+# ── Meta endpoint ─────────────────────────────────────────────────────────
+
+
+@router.get("/meta", summary="Platform metadata", tags=["system"])
+async def get_meta() -> dict:
+    """Return static metadata consumed by the dashboard.
+
+    Currently exposes the list of order statuses that are considered
+    *open* (i.e. eligible for cancellation) so the UI never needs to
+    hard-code them.
+
+    Returns:
+        dict with key ``open_order_statuses``.
+    """
+    return {"open_order_statuses": sorted(OPEN_STATUSES)}
 
 
 # ── Dependency helpers ────────────────────────────────────────────────────
@@ -178,6 +209,27 @@ async def list_open_orders(request: Request) -> List[dict]:
     """
     om = _order_manager(request)
     orders = await om.get_open_orders()
+    return [_order_to_dict(o) for o in orders]
+
+
+@router.get(
+    "/orders/all",
+    summary="List all orders (open and closed)",
+)
+async def list_all_orders(request: Request) -> List[dict]:
+    """Return every order tracked by the order manager, regardless of status.
+
+    This includes filled, cancelled, rejected, and expired orders, making it
+    the full order history for the current session.
+
+    Returns:
+        List of all :class:`Order` objects serialised as dicts, most-recently
+        updated first.
+    """
+    om = _order_manager(request)
+    orders = await om.get_all_orders()
+    # Sort by updated_at descending so newest activity is at the top
+    orders.sort(key=lambda o: o.updated_at, reverse=True)
     return [_order_to_dict(o) for o in orders]
 
 

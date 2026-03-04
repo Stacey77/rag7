@@ -336,8 +336,12 @@
     <div id="section-orders" style="display:none">
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">Open Orders</span>
+          <span class="panel-title">Orders</span>
           <span id="orders-count" style="font-size:11px;color:var(--muted)"></span>
+        </div>
+        <div class="tabs">
+          <div class="tab active" id="tab-open"    onclick="switchOrderTab('open')">Open</div>
+          <div class="tab"        id="tab-history" onclick="switchOrderTab('history')">History</div>
         </div>
         <div id="orders-wrap"></div>
       </div>
@@ -550,40 +554,65 @@ async function loadPositions() {
 }
 
 /* ── Orders table ────────────────────────────────────────────────────── */
-function renderOrdersTable(orders) {
+// Populated from GET /api/v1/meta on init — avoids hard-coding status names
+let _OPEN_STATUSES = new Set(['PENDING','SUBMITTED','ACCEPTED','PARTIALLY_FILLED']);
+
+function renderOrdersTable(orders, showAll=false) {
   if (!orders || orders.length === 0) {
     return `<div class="empty-state">
       <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/></svg>
-      <div>No open orders</div>
+      <div>${showAll ? 'No order history' : 'No open orders'}</div>
     </div>`;
   }
+  const avgFillCol = showAll ? '<th>Avg Fill</th>' : '';
   return `<table class="data-table">
     <thead><tr>
       <th>Symbol</th><th>Side</th><th>Type</th>
-      <th>Qty</th><th>Price</th><th>Status</th><th>Action</th>
+      <th>Qty</th><th>Price</th>${avgFillCol}<th>Status</th><th>Action</th>
     </tr></thead>
     <tbody>
-    ${orders.map(o => `<tr>
-      <td><strong>${o.symbol}</strong></td>
-      <td><span class="badge-side ${o.side.toLowerCase()}">${o.side}</span></td>
-      <td>${o.order_type}</td>
-      <td>${fmt(o.quantity, 6)}</td>
-      <td>${o.price ? fmtUSD(o.price) : 'MKT'}</td>
-      <td><span class="badge-status ${o.status.toLowerCase()}">${o.status}</span></td>
-      <td><button class="btn btn-danger" style="padding:3px 10px;font-size:11px"
-          onclick="cancelOrder('${o.order_id}')">Cancel</button></td>
-    </tr>`).join('')}
+    ${orders.map(o => {
+      const isOpen = _OPEN_STATUSES.has(o.status);
+      const avgFillCell = showAll
+        ? `<td>${o.average_fill_price ? fmtUSD(o.average_fill_price) : '—'}</td>`
+        : '';
+      const actionCell = isOpen
+        ? `<button class="btn btn-danger" style="padding:3px 10px;font-size:11px"
+               onclick="cancelOrder('${o.order_id}')">Cancel</button>`
+        : `<span style="color:var(--muted);font-size:11px">—</span>`;
+      return `<tr>
+        <td><strong>${o.symbol}</strong></td>
+        <td><span class="badge-side ${o.side.toLowerCase()}">${o.side}</span></td>
+        <td>${o.order_type}</td>
+        <td>${fmt(o.quantity, 6)}</td>
+        <td>${o.price ? fmtUSD(o.price) : 'MKT'}</td>
+        ${avgFillCell}
+        <td><span class="badge-status ${o.status.toLowerCase()}">${o.status}</span></td>
+        <td>${actionCell}</td>
+      </tr>`;
+    }).join('')}
     </tbody>
   </table>`;
+}
+
+/* ── Orders tab state ────────────────────────────────────────────────── */
+let _activeOrderTab = 'open';
+
+function switchOrderTab(tab) {
+  _activeOrderTab = tab;
+  $('tab-open').classList.toggle('active', tab === 'open');
+  $('tab-history').classList.toggle('active', tab === 'history');
+  loadOrders();
 }
 
 async function loadOrders() {
   const wrap = $('orders-wrap');
   wrap.innerHTML = '<div class="empty-state"><span class="spinner"></span>Loading…</div>';
+  const endpoint = _activeOrderTab === 'history' ? '/orders/all' : '/orders';
   try {
-    const data = await apiFetch('/orders');
+    const data = await apiFetch(endpoint);
     $('orders-count').textContent = data.length + ' order(s)';
-    wrap.innerHTML = renderOrdersTable(data);
+    wrap.innerHTML = renderOrdersTable(data, _activeOrderTab === 'history');
   } catch(e) { wrap.innerHTML = `<div class="empty-state" style="color:var(--red)">Error: ${e.message}</div>`; }
 }
 
@@ -735,6 +764,13 @@ function refreshAll() {
 /* ── Init ────────────────────────────────────────────────────────────── */
 (async function init() {
   await checkHealth();
+  // Load open-status list from the API so the frontend never hard-codes them
+  try {
+    const meta = await apiFetch('/meta');
+    if (Array.isArray(meta.open_order_statuses)) {
+      _OPEN_STATUSES = new Set(meta.open_order_statuses);
+    }
+  } catch { /* fall back to the default set defined above */ }
   await loadDashboard();
   // Auto-refresh every 30 s; paused when the tab is hidden (Page Visibility API)
   let timer = setInterval(refreshAll, 30_000);
