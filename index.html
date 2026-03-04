@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGI Trading Platform</title>
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0d0d;
+      --surface:   #161616;
+      --surface2:  #1e1e1e;
+      --border:    rgba(255,255,255,.07);
+      --text:      #e8e8e8;
+      --muted:     #777;
+      --green:     #00d084;
+      --red:       #ff4d4d;
+      --blue:      #4fa3ff;
+      --accent:    #C0C0C0;
+      --font:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --radius:    10px;
+    }
+
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
+
+    /* ── Layout ───────────────────────────────────────────────────── */
+    .shell {
+      display: grid;
+      grid-template-rows: 56px 1fr;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── Top bar ──────────────────────────────────────────────────── */
+    .topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar .logo-mark {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, var(--accent) 0%, #888 100%);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 15px; color: #111;
+      flex-shrink: 0;
+    }
+    .topbar h1 { font-size: 15px; font-weight: 600; letter-spacing: .3px; }
+    .topbar .badge {
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(0,208,132,.12);
+      color: var(--green);
+    }
+    .topbar .spacer { flex: 1; }
+    .topbar .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .topbar .status-label { font-size: 12px; color: var(--muted); }
+    .topbar .refresh-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); border-radius: 6px; padding: 5px 12px;
+      cursor: pointer; font-size: 12px; transition: all .15s;
+    }
+    .topbar .refresh-btn:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Sidebar ──────────────────────────────────────────────────── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all .15s; color: var(--muted); font-size: 13px;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { border-left-color: var(--accent); color: var(--text); background: var(--surface2); }
+    .nav-item svg { width:16px; height:16px; flex-shrink:0; }
+    .nav-section { padding: 16px 20px 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #444; }
+
+    /* ── Main content ─────────────────────────────────────────────── */
+    .main {
+      overflow-y: auto; padding: 24px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+
+    /* ── Panels / cards ───────────────────────────────────────────── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+    }
+    .panel-title { font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .6px; }
+    .panel-body { padding: 18px; }
+
+    /* ── Stat grid ────────────────────────────────────────────────── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+    }
+    .stat-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
+    .stat-value { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    .neutral { color: var(--text); }
+
+    /* ── Table ────────────────────────────────────────────────────── */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      text-align: left; font-size: 11px; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--muted); padding: 8px 12px;
+      border-bottom: 1px solid var(--border); font-weight: 500;
+    }
+    .data-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.03); font-size: 13px; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(255,255,255,.02); }
+    .badge-side {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 11px; font-weight: 700; letter-spacing: .5px;
+    }
+    .badge-side.buy  { background: rgba(0,208,132,.15); color: var(--green); }
+    .badge-side.sell { background: rgba(255,77,77,.15);  color: var(--red); }
+    .badge-status {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 11px; font-weight: 600;
+    }
+    .badge-status.accepted  { background: rgba(79,163,255,.12); color: var(--blue); }
+    .badge-status.submitted { background: rgba(192,192,192,.12); color: var(--accent); }
+    .badge-status.filled    { background: rgba(0,208,132,.12);  color: var(--green); }
+    .badge-status.cancelled { background: rgba(255,77,77,.12);  color: var(--red); }
+    .badge-status.pending   { background: rgba(255,200,60,.12); color: #ffc83c; }
+
+    /* ── Empty state ──────────────────────────────────────────────── */
+    .empty-state { text-align: center; padding: 32px; color: var(--muted); font-size: 13px; }
+    .empty-state svg { margin-bottom: 10px; opacity: .3; }
+
+    /* ── Order form ───────────────────────────────────────────────── */
+    .order-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+    .form-group input, .form-group select {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); border-radius: 6px; padding: 8px 10px;
+      font-size: 13px; font-family: var(--font); outline: none; width: 100%;
+      transition: border-color .15s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+    .form-group select option { background: #1e1e1e; }
+
+    .btn {
+      padding: 9px 20px; border-radius: 6px; border: none;
+      cursor: pointer; font-size: 13px; font-weight: 600;
+      font-family: var(--font); transition: all .15s;
+    }
+    .btn-primary { background: var(--accent); color: #111; }
+    .btn-primary:hover { background: #d0d0d0; }
+    .btn-danger  { background: rgba(255,77,77,.15); color: var(--red); border: 1px solid rgba(255,77,77,.3); }
+    .btn-danger:hover { background: rgba(255,77,77,.25); }
+
+    .form-actions { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+
+    /* ── Toast notifications ──────────────────────────────────────── */
+    #toast-container {
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; flex-direction: column; gap: 8px; z-index: 9999;
+    }
+    .toast {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 16px; min-width: 260px;
+      font-size: 13px; opacity: 0; transform: translateY(10px);
+      transition: all .25s; box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { border-left: 3px solid var(--green); }
+    .toast.error   { border-left: 3px solid var(--red); }
+    .toast.info    { border-left: 3px solid var(--blue); }
+
+    /* ── Loading spinner ──────────────────────────────────────────── */
+    .spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin .7s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Tabs ─────────────────────────────────────────────────────── */
+    .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); padding: 0 18px; }
+    .tab {
+      padding: 10px 14px; cursor: pointer; font-size: 13px; color: var(--muted);
+      border-bottom: 2px solid transparent; transition: all .15s;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--text); border-bottom-color: var(--accent); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* ── Confirm modal ────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.6); z-index: 10000;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px; max-width: 380px; width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    }
+    .modal-title { font-weight: 600; margin-bottom: 10px; }
+    .modal-body  { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-actions button:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ── Responsive ───────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .stat-value { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Top bar ────────────────────────────────────────────────── -->
+  <header class="topbar">
+    <div class="logo-mark">A</div>
+    <h1>AGI Trading Platform</h1>
+    <span class="badge" id="mode-badge">PAPER</span>
+    <div class="spacer"></div>
+    <div class="status-dot" id="status-dot"></div>
+    <span class="status-label" id="status-label">Connecting…</span>
+    <button class="refresh-btn" onclick="refreshAll()">↻ Refresh</button>
+  </header>
+
+  <!-- ── Sidebar ────────────────────────────────────────────────── -->
+  <nav class="sidebar">
+    <div class="nav-section">Platform</div>
+    <div class="nav-item active" onclick="showSection('dashboard')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" onclick="showSection('orders')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Orders
+    </div>
+    <div class="nav-item" onclick="showSection('positions')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      Positions
+    </div>
+    <div class="nav-section">Tools</div>
+    <div class="nav-item" onclick="showSection('place')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Place Order
+    </div>
+    <div class="nav-item" onclick="window.open('/docs','_blank')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      API Docs ↗
+    </div>
+  </nav>
+
+  <!-- ── Main content ───────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Dashboard section -->
+    <div id="section-dashboard">
+
+      <!-- Portfolio stats -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Portfolio Summary</span>
+          <span id="portfolio-updated" style="font-size:11px;color:var(--muted)"></span>
+        </div>
+        <div class="panel-body">
+          <div class="stat-grid" id="stat-grid">
+            <div class="stat-card"><div class="stat-label">Total Equity</div><div class="stat-value neutral" id="s-equity">—</div></div>
+            <div class="stat-card"><div class="stat-label">Cash Balance</div><div class="stat-value neutral" id="s-cash">—</div></div>
+            <div class="stat-card"><div class="stat-label">Unrealised P&L</div><div class="stat-value" id="s-upnl">—</div></div>
+            <div class="stat-card"><div class="stat-label">Realised P&L</div><div class="stat-value" id="s-rpnl">—</div></div>
+            <div class="stat-card"><div class="stat-label">Drawdown</div><div class="stat-value" id="s-dd">—</div><div class="stat-sub">from peak equity</div></div>
+            <div class="stat-card"><div class="stat-label">Open Positions</div><div class="stat-value neutral" id="s-pos-count">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent positions inline -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Open Positions</span>
+          <button class="btn btn-primary" style="padding:5px 12px;font-size:12px" onclick="showSection('place')">+ New Order</button>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <div id="dashboard-positions-wrap"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Orders section -->
+    <div id="section-orders" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Orders</span>
+          <span id="orders-count" style="font-size:11px;color:var(--muted)"></span>
+        </div>
+        <div class="tabs">
+          <div class="tab active" id="tab-open"    onclick="switchOrderTab('open')">Open</div>
+          <div class="tab"        id="tab-history" onclick="switchOrderTab('history')">History</div>
+        </div>
+        <div id="orders-wrap"></div>
+      </div>
+    </div>
+
+    <!-- Positions section -->
+    <div id="section-positions" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">All Positions</span>
+        </div>
+        <div id="positions-wrap"></div>
+      </div>
+    </div>
+
+    <!-- Place Order section -->
+    <div id="section-place" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Place Order</span>
+          <span id="risk-label" style="font-size:12px;color:var(--muted)"></span>
+        </div>
+        <div class="panel-body">
+          <form class="order-form" id="order-form" onsubmit="submitOrder(event)">
+            <div class="form-group">
+              <label>Symbol</label>
+              <input id="f-symbol" type="text" placeholder="BTCUSDT" value="BTCUSDT" required />
+            </div>
+            <div class="form-group">
+              <label>Side</label>
+              <select id="f-side">
+                <option value="BUY">BUY</option>
+                <option value="SELL">SELL</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Order Type</label>
+              <select id="f-type" onchange="togglePrice()">
+                <option value="MARKET">MARKET</option>
+                <option value="LIMIT">LIMIT</option>
+                <option value="STOP">STOP</option>
+                <option value="STOP_LIMIT">STOP_LIMIT</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quantity</label>
+              <input id="f-qty" type="number" step="any" placeholder="0.01" min="0.000001" required />
+            </div>
+            <div class="form-group" id="price-group">
+              <label>Limit Price (USD)</label>
+              <input id="f-price" type="number" step="any" placeholder="optional" min="0" />
+            </div>
+            <div class="form-group">
+              <label>Time In Force</label>
+              <select id="f-tif">
+                <option value="GTC">GTC</option>
+                <option value="IOC">IOC</option>
+                <option value="FOK">FOK</option>
+                <option value="DAY">DAY</option>
+              </select>
+            </div>
+            <div class="form-actions" style="grid-column:1/-1">
+              <button class="btn btn-primary" type="submit" id="submit-btn">Submit Order</button>
+              <button class="btn" type="button" onclick="document.getElementById('order-form').reset();document.getElementById('result-box').innerHTML=''" style="background:var(--surface2);border:1px solid var(--border)">Clear</button>
+            </div>
+          </form>
+          <div id="result-box" style="margin-top:16px"></div>
+        </div>
+      </div>
+
+      <!-- Risk assessment result -->
+      <div class="panel" id="risk-panel" style="display:none">
+        <div class="panel-header"><span class="panel-title">Risk Assessment</span></div>
+        <div class="panel-body" id="risk-body"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast container -->
+<!-- Confirm modal -->
+<div class="modal-overlay" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <div class="modal-box">
+    <div class="modal-title" id="confirm-title">Confirm action</div>
+    <div class="modal-body"  id="confirm-body"></div>
+    <div class="modal-actions">
+      <button class="btn" id="confirm-cancel" style="background:var(--surface2);border:1px solid var(--border)">Cancel</button>
+      <button class="btn btn-danger" id="confirm-ok">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script>
+/* ── Helpers ──────────────────────────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+const fmt = (n, decimals=2) => {
+  const v = parseFloat(n);
+  if (isNaN(v)) return '—';
+  return v.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+};
+const fmtUSD = n => '$' + fmt(n, 2);
+const pnlClass = n => parseFloat(n) >= 0 ? 'pos' : 'neg';
+
+function toast(msg, type='info', duration=4000) {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  $('toast-container').appendChild(el);
+  requestAnimationFrame(() => { el.classList.add('show'); });
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, duration);
+}
+
+/* ── Navigation ───────────────────────────────────────────────────────── */
+const sections = ['dashboard','orders','positions','place'];
+function showSection(name) {
+  sections.forEach(s => {
+    $('section-' + s).style.display = s === name ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.textContent.trim().toLowerCase().startsWith(name === 'place' ? 'place' : name));
+  });
+  if (name === 'orders')    loadOrders();
+  if (name === 'positions') loadPositions();
+  if (name === 'dashboard') loadDashboard();
+}
+
+/* ── API calls ────────────────────────────────────────────────────────── */
+async function apiFetch(path, opts={}) {
+  const r = await fetch('/api/v1' + path, {
+    headers: {'Content-Type':'application/json'},
+    ...opts
+  });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({detail: r.statusText}));
+    throw new Error(JSON.stringify(err.detail || err));
+  }
+  return r.json();
+}
+
+/* ── Portfolio / stats ────────────────────────────────────────────────── */
+async function loadPortfolio() {
+  const p = await apiFetch('/portfolio');
+  $('s-equity').textContent  = fmtUSD(p.total_equity);
+  $('s-equity').className    = 'stat-value neutral';
+  $('s-cash').textContent    = fmtUSD(p.cash_balance);
+  const upnl = parseFloat(p.unrealised_pnl || 0);
+  $('s-upnl').textContent = fmtUSD(upnl);
+  $('s-upnl').className = 'stat-value ' + (upnl >= 0 ? 'pos' : 'neg');
+  const rpnl = parseFloat(p.realised_pnl || 0);
+  $('s-rpnl').textContent = fmtUSD(rpnl);
+  $('s-rpnl').className = 'stat-value ' + (rpnl >= 0 ? 'pos' : 'neg');
+  const dd = parseFloat(p.drawdown_pct || 0);
+  $('s-dd').textContent = fmt(dd, 2) + '%';
+  $('s-dd').className = 'stat-value ' + (dd > 5 ? 'neg' : dd > 0 ? 'neutral' : 'pos');
+  $('s-pos-count').textContent = Object.keys(p.positions || {}).length;
+  $('portfolio-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+  return p;
+}
+
+/* ── Positions table ─────────────────────────────────────────────────── */
+function renderPositionsTable(positions) {
+  if (!positions || positions.length === 0) {
+    return `<div class="empty-state">
+      <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+      <div>No open positions</div>
+    </div>`;
+  }
+  return `<table class="data-table">
+    <thead><tr>
+      <th>Symbol</th><th>Side</th><th>Qty</th>
+      <th>Avg Entry</th><th>Current</th><th>Unrealised P&L</th>
+    </tr></thead>
+    <tbody>
+    ${positions.map(p => `<tr>
+      <td><strong>${p.symbol}</strong></td>
+      <td><span class="badge-side ${p.side.toLowerCase()}">${p.side}</span></td>
+      <td>${fmt(p.quantity, 6)}</td>
+      <td>${fmtUSD(p.average_entry_price)}</td>
+      <td>${p.current_price ? fmtUSD(p.current_price) : '—'}</td>
+      <td class="${pnlClass(p.unrealised_pnl)}">${fmtUSD(p.unrealised_pnl)}</td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+async function loadPositions() {
+  const wrap = $('positions-wrap');
+  if (wrap) {
+    wrap.innerHTML = '<div class="empty-state"><span class="spinner"></span>Loading…</div>';
+    try {
+      const data = await apiFetch('/portfolio/positions');
+      wrap.innerHTML = renderPositionsTable(data);
+    } catch(e) { wrap.innerHTML = `<div class="empty-state" style="color:var(--red)">Error: ${e.message}</div>`; }
+  }
+  // Dashboard inline
+  const dw = $('dashboard-positions-wrap');
+  if (dw) {
+    try {
+      const data = await apiFetch('/portfolio/positions');
+      dw.innerHTML = renderPositionsTable(data);
+    } catch(e) { /* already shown in stats */ }
+  }
+}
+
+/* ── Orders table ────────────────────────────────────────────────────── */
+// Populated from GET /api/v1/meta on init — avoids hard-coding status names
+let _OPEN_STATUSES = new Set(['PENDING','SUBMITTED','ACCEPTED','PARTIALLY_FILLED']);
+
+function renderOrdersTable(orders, showAll=false) {
+  if (!orders || orders.length === 0) {
+    return `<div class="empty-state">
+      <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/></svg>
+      <div>${showAll ? 'No order history' : 'No open orders'}</div>
+    </div>`;
+  }
+  const avgFillCol = showAll ? '<th>Avg Fill</th>' : '';
+  return `<table class="data-table">
+    <thead><tr>
+      <th>Symbol</th><th>Side</th><th>Type</th>
+      <th>Qty</th><th>Price</th>${avgFillCol}<th>Status</th><th>Action</th>
+    </tr></thead>
+    <tbody>
+    ${orders.map(o => {
+      const isOpen = _OPEN_STATUSES.has(o.status);
+      const avgFillCell = showAll
+        ? `<td>${o.average_fill_price ? fmtUSD(o.average_fill_price) : '—'}</td>`
+        : '';
+      const actionCell = isOpen
+        ? `<button class="btn btn-danger" style="padding:3px 10px;font-size:11px"
+               onclick="cancelOrder('${o.order_id}')">Cancel</button>`
+        : `<span style="color:var(--muted);font-size:11px">—</span>`;
+      return `<tr>
+        <td><strong>${o.symbol}</strong></td>
+        <td><span class="badge-side ${o.side.toLowerCase()}">${o.side}</span></td>
+        <td>${o.order_type}</td>
+        <td>${fmt(o.quantity, 6)}</td>
+        <td>${o.price ? fmtUSD(o.price) : 'MKT'}</td>
+        ${avgFillCell}
+        <td><span class="badge-status ${o.status.toLowerCase()}">${o.status}</span></td>
+        <td>${actionCell}</td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table>`;
+}
+
+/* ── Orders tab state ────────────────────────────────────────────────── */
+let _activeOrderTab = 'open';
+
+function switchOrderTab(tab) {
+  _activeOrderTab = tab;
+  $('tab-open').classList.toggle('active', tab === 'open');
+  $('tab-history').classList.toggle('active', tab === 'history');
+  loadOrders();
+}
+
+async function loadOrders() {
+  const wrap = $('orders-wrap');
+  wrap.innerHTML = '<div class="empty-state"><span class="spinner"></span>Loading…</div>';
+  const endpoint = _activeOrderTab === 'history' ? '/orders/all' : '/orders';
+  try {
+    const data = await apiFetch(endpoint);
+    $('orders-count').textContent = data.length + ' order(s)';
+    wrap.innerHTML = renderOrdersTable(data, _activeOrderTab === 'history');
+  } catch(e) { wrap.innerHTML = `<div class="empty-state" style="color:var(--red)">Error: ${e.message}</div>`; }
+}
+
+/* ── Accessible confirm modal ────────────────────────────────────────── */
+function modalConfirm(message) {
+  return new Promise(resolve => {
+    $('confirm-body').textContent = message;
+    const overlay = $('confirm-modal');
+    overlay.classList.add('open');
+    // Move focus to the Cancel button for keyboard users
+    $('confirm-cancel').focus();
+    function cleanup(result) {
+      overlay.classList.remove('open');
+      $('confirm-ok').removeEventListener('click', onOk);
+      $('confirm-cancel').removeEventListener('click', onCancel);
+      overlay.removeEventListener('keydown', onKey);
+      resolve(result);
+    }
+    function onOk()     { cleanup(true);  }
+    function onCancel() { cleanup(false); }
+    function onKey(e)   { if (e.key === 'Escape') cleanup(false); }
+    $('confirm-ok').addEventListener('click', onOk);
+    $('confirm-cancel').addEventListener('click', onCancel);
+    overlay.addEventListener('keydown', onKey);
+  });
+}
+
+async function cancelOrder(id) {
+  const ok = await modalConfirm('Cancel order ' + id.slice(0,8) + '…?');
+  if (!ok) return;
+  try {
+    await apiFetch('/orders/' + id, {method:'DELETE'});
+    toast('Order cancelled', 'success');
+    loadOrders();
+  } catch(e) { toast('Cancel failed: ' + e.message, 'error'); }
+}
+
+/* ── Dashboard loader ────────────────────────────────────────────────── */
+async function loadDashboard() {
+  try {
+    await Promise.all([loadPortfolio(), loadPositions()]);
+    setConnected(true);
+  } catch(e) {
+    setConnected(false);
+    toast('Failed to load data: ' + e.message, 'error');
+  }
+}
+
+function setConnected(ok) {
+  const dot   = $('status-dot');
+  const label = $('status-label');
+  dot.style.background = ok ? 'var(--green)' : 'var(--red)';
+  dot.style.boxShadow  = ok ? '0 0 6px var(--green)' : '0 0 6px var(--red)';
+  label.textContent = ok ? 'Connected' : 'Offline';
+}
+
+/* ── Place order form ────────────────────────────────────────────────── */
+function togglePrice() {
+  const t = $('f-type').value;
+  $('price-group').style.opacity = (t === 'MARKET') ? '0.4' : '1';
+}
+
+async function submitOrder(e) {
+  e.preventDefault();
+  const btn = $('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+  const body = {
+    symbol:       $('f-symbol').value.trim().toUpperCase(),
+    side:         $('f-side').value,
+    order_type:   $('f-type').value,
+    quantity:     $('f-qty').value,
+    time_in_force:$('f-tif').value,
+  };
+  const price = $('f-price').value;
+  if (price) body.price = price;
+
+  try {
+    const res = await fetch('/api/v1/orders', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    showRiskPanel(data.risk_assessment);
+
+    if (data.risk_assessment && !data.risk_assessment.is_approved) {
+      toast('⚠ Order blocked by risk engine', 'error', 6000);
+      $('result-box').innerHTML = `<div style="color:var(--red);font-size:13px">
+        ⚠ Risk check failed: ${data.risk_assessment.rejection_reasons.join('; ')}
+      </div>`;
+    } else if (res.status === 201) {
+      toast('✓ Order submitted — ' + data.exchange_order_id, 'success');
+      $('result-box').innerHTML = `<div style="color:var(--green);font-size:13px">
+        ✓ Accepted | Exchange ID: ${data.exchange_order_id || '—'} | Status: ${data.order?.status || '—'}
+      </div>`;
+    } else {
+      toast('Order rejected: ' + JSON.stringify(data.detail || data), 'error');
+    }
+  } catch(err) {
+    toast('Network error: ' + err.message, 'error');
+    $('result-box').innerHTML = `<div style="color:var(--red);font-size:13px">Network error: ${err.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Order';
+  }
+}
+
+function showRiskPanel(assessment) {
+  if (!assessment) { $('risk-panel').style.display='none'; return; }
+  $('risk-panel').style.display = '';
+  const approved = assessment.is_approved;
+  $('risk-body').innerHTML = `
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">
+      <span style="font-size:20px">${approved ? '✅' : '❌'}</span>
+      <span style="font-weight:600;color:${approved?'var(--green)':'var(--red)'}">${approved ? 'APPROVED' : 'REJECTED'}</span>
+      <span style="margin-left:auto;font-size:12px;color:var(--muted)">Risk score: ${(assessment.risk_score*100).toFixed(1)}%</span>
+    </div>
+    ${assessment.rejection_reasons?.length ? `<div style="color:var(--red);font-size:13px;margin-bottom:8px">
+      ${assessment.rejection_reasons.map(r=>`<div>• ${r}</div>`).join('')}
+    </div>` : ''}
+    ${assessment.warnings?.length ? `<div style="color:#ffc83c;font-size:13px">
+      ${assessment.warnings.map(w=>`<div>⚠ ${w}</div>`).join('')}
+    </div>` : ''}
+    <div style="margin-top:10px;font-size:12px;color:var(--muted)">
+      Notional: ${fmtUSD(assessment.proposed_notional_usd)} &nbsp;|&nbsp;
+      Drawdown: ${fmt(assessment.current_drawdown_pct,2)}%
+    </div>`;
+}
+
+/* ── Health check ────────────────────────────────────────────────────── */
+async function checkHealth() {
+  try {
+    const r = await fetch('/health');
+    const d = await r.json();
+    setConnected(d.status === 'healthy');
+  } catch { setConnected(false); }
+}
+
+/* ── Refresh all ─────────────────────────────────────────────────────── */
+function refreshAll() {
+  const active = sections.find(s => $('section-' + s).style.display !== 'none');
+  if (active === 'orders')    loadOrders();
+  else if (active === 'positions') loadPositions();
+  else loadDashboard();
+}
+
+/* ── Init ────────────────────────────────────────────────────────────── */
+(async function init() {
+  await checkHealth();
+  // Load open-status list from the API so the frontend never hard-codes them
+  try {
+    const meta = await apiFetch('/meta');
+    if (Array.isArray(meta.open_order_statuses)) {
+      _OPEN_STATUSES = new Set(meta.open_order_statuses);
+    }
+  } catch { /* fall back to the default set defined above */ }
+  await loadDashboard();
+  // Auto-refresh every 30 s; paused when the tab is hidden (Page Visibility API)
+  let timer = setInterval(refreshAll, 30_000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      clearInterval(timer);
+    } else {
+      timer = setInterval(refreshAll, 30_000);
+      refreshAll(); // catch up immediately when tab becomes visible
+    }
+  });
+  togglePrice();
+})();
+</script>
+</body>
+</html>
