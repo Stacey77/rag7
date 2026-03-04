@@ -5,10 +5,13 @@ from __future__ import annotations
 import os
 from contextlib import asynccontextmanager
 from decimal import Decimal
+from pathlib import Path
 from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from prometheus_client import make_asgi_app
 
 from shared.common.config import get_config
@@ -114,13 +117,10 @@ async def health_check() -> dict:
     return {"status": "healthy", "service": "agi-trading-platform", "version": "0.1.0"}
 
 
-@app.get("/", tags=["system"])
-async def root() -> dict:
-    """Root endpoint with platform information."""
-    return {
-        "service": "AGI Trading Platform",
-        "version": "0.1.0",
-        "docs": "/docs",
-        "health": "/health",
-        "metrics": "/metrics",
-    }
+_DASHBOARD_HTML = Path(__file__).parent / "index.html"
+
+
+@app.get("/", tags=["system"], include_in_schema=False)
+async def root() -> FileResponse:
+    """Serve the trading platform HTML dashboard."""
+    return FileResponse(_DASHBOARD_HTML, media_type="text/html")
