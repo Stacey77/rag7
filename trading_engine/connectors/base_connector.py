@@ -91,3 +91,11 @@ class BaseConnector(ABC):
     @abstractmethod
     def exchange_name(self) -> str:
         """Return the name of the exchange this connector targets."""
+
+    @property
+    def is_paper_mode(self) -> bool:
+        """Return True when the connector is operating in paper/simulation mode.
+
+        Defaults to False.  Override in paper-trading connectors.
+        """
+        return False
