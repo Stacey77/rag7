@@ -1,0 +1,30 @@
+# vision_node_params.yaml
+# ROS2 parameter file for the VisionNode.
+# Load at runtime with:
+#   ros2 run ros2_interface vision_node --ros-args --params-file vision_node_params.yaml
+
+vision_node:
+  ros__parameters:
+    # Compute device: "cpu" or "cuda"
+    device: "cpu"
+
+    # Module toggles
+    enable_detection: true
+    enable_depth: true
+    enable_tracking: true
+
+    # Detection settings
+    confidence_threshold: 0.5
+    detection_model: "yolov8n"
+
+    # Segmentation settings
+    segmentation_model: "deeplabv3plus"
+
+    # Depth settings
+    depth_model: "midas"
+
+    # Camera topic
+    image_topic: "/camera/image_raw"
+
+    # Output topic QoS depth
+    queue_size: 10

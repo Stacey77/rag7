@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.tox/
+htmlcov/
+.coverage
+*.cover
+*.log
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Model weights / cache
+*.pth
+*.pt
+*.onnx
+*.engine
+*.weights
+models/weights/
+.cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
