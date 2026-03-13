@@ -268,7 +268,7 @@ class VisionNode(Node):
         try:
             # Re-use the last frame stored in result if available
             result_dict = {"found": False, "bbox": [], "confidence": 0.0}
-            if hasattr(self, "_last_image") and self._last_image is not None:
+            if self._last_image is not None:
                 from vision.vision_pipeline import VisionPipeline
 
                 obj = self.pipeline.find_object(self._last_image, query)
@@ -296,7 +296,7 @@ class VisionNode(Node):
         """
         try:
             result_dict: dict = {"description": "", "objects": [], "spatial_map": {}}
-            if hasattr(self, "_last_image") and self._last_image is not None:
+            if self._last_image is not None:
                 scene = self.pipeline.analyze_scene(self._last_image)
                 det_dicts = [
                     d.to_dict() if hasattr(d, "to_dict") else str(d)

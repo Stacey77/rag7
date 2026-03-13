@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 def make_synthetic_image(height: int = 224, width: int = 224) -> np.ndarray:
     """Return a small random RGB numpy image suitable for VLM inference."""
-    rng = np.random.default_rng(55)
+    rng = np.random.default_rng(42)  # same seed used across all demo scripts
     return rng.integers(0, 256, (height, width, 3), dtype=np.uint8)
 
 

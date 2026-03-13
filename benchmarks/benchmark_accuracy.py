@@ -239,6 +239,11 @@ def compute_pck(
     ground-truth is within ``threshold × bbox_size`` (or simply
     ``threshold`` if ``bbox_size`` is ``None``).
 
+    Only the X and Y coordinates (columns 0 and 1) are used when keypoints
+    have 3 columns (e.g. ``(N, 3)`` with a visibility/depth channel); the
+    third coordinate is ignored so that 2D and 3D keypoint arrays are both
+    accepted without modification.
+
     Args:
         predicted_kpts: Predicted keypoints of shape ``(N, 2)`` or ``(N, 3)``.
         gt_kpts: Ground-truth keypoints of the same shape.

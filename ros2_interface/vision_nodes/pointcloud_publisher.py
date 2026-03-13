@@ -109,8 +109,10 @@ class PointCloudPublisher:
         cloud.row_step = row_step
         cloud.is_dense = bool(np.isfinite(points).all())
 
-        # Pack as little-endian float32 triples
-        pts_float32 = points.astype(np.float32)
+        # Pack as little-endian float32 triples (explicitly enforce '<f4' to
+        # ensure correct byte order regardless of system endianness, matching
+        # is_bigendian=False set above).
+        pts_float32 = points.astype("<f4")
         cloud.data = pts_float32.tobytes()
 
         return cloud
@@ -134,7 +136,8 @@ class PointCloudPublisher:
                 "environment to use PointCloudPublisher."
             )
 
-        raw = np.frombuffer(bytes(msg.data), dtype=np.float32)
-        num_fields = msg.point_step // 4  # bytes per point / bytes per float32
+        raw = np.frombuffer(bytes(msg.data), dtype="<f4")
+        # Each point contains point_step / 4 float32 fields; keep only X, Y, Z.
+        num_fields = msg.point_step // 4  # bytes per point ÷ bytes per float32
         points = raw.reshape((-1, num_fields))[:, :3]
         return points

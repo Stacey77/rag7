@@ -154,12 +154,13 @@ def _bench_pipeline(device: str, iterations: int) -> float:
         enable_tracking=False,
     )
     img = _make_image()
-    # Pre-load the lazy detector with a stub
-    from unittest.mock import MagicMock
-
-    mock_det = MagicMock()
-    mock_det.detect.return_value = []
-    pipeline._detector = mock_det
+    # Warm-up call: initialises the lazy detector; if ultralytics is absent the
+    # pipeline catches the ImportError internally and the pipeline runs in
+    # detection-disabled mode, which is the correct graceful-degradation path.
+    try:
+        pipeline.process_frame(img)
+    except Exception:
+        pass
 
     start = time.perf_counter()
     for _ in range(iterations):
