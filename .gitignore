@@ -17,3 +17,7 @@ Thumbs.db
 # Build output
 dist/
 build/
+
+# Python caches
+__pycache__/
+*.py[cod]
