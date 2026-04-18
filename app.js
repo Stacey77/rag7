@@ -1,6 +1,10 @@
 'use strict';
 
 const THEME_KEY = 'preferred-theme';
+const CANVAS_CENTER_OFFSET = 0.52;
+const NUCLEUS_FONT_SCALE = 0.35;
+const METHANE_WOBBLE_FREQUENCY = 0.8;
+const METHANE_WOBBLE_AMPLITUDE = 0.22;
 
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -115,14 +119,14 @@ function drawNucleus(ctx, x, y, radius, protonCount, neutronCount) {
   ctx.fill();
 
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.font = `${Math.max(12, Math.floor(radius * 0.35))}px Inter, sans-serif`;
+  ctx.font = `${Math.max(12, Math.floor(radius * NUCLEUS_FONT_SCALE))}px Inter, sans-serif`;
   ctx.textAlign = 'center';
   ctx.fillText(`${protonCount}p ${neutronCount}n`, x, y + 5);
 }
 
 function drawAtom(ctx, w, h, time, neutronCount) {
-  const centerX = w * 0.52;
-  const centerY = h * 0.52;
+  const centerX = w * CANVAS_CENTER_OFFSET;
+  const centerY = h * CANVAS_CENTER_OFFSET;
   const ratio = canvas.width / w;
 
   drawNucleus(ctx, centerX, centerY, 34 * ratio, 6, neutronCount);
@@ -152,11 +156,11 @@ function drawAtom(ctx, w, h, time, neutronCount) {
 }
 
 function drawMethane(ctx, w, h, time) {
-  const cx = w * 0.52;
-  const cy = h * 0.52;
+  const cx = w * CANVAS_CENTER_OFFSET;
+  const cy = h * CANVAS_CENTER_OFFSET;
   const ratio = canvas.width / w;
   const r = 120 * ratio;
-  const wobble = Math.sin(time * 0.8) * 0.22;
+  const wobble = Math.sin(time * METHANE_WOBBLE_FREQUENCY) * METHANE_WOBBLE_AMPLITUDE;
 
   const points = [
     [Math.cos(time) * r * 0.2, -r * 0.65],
@@ -214,8 +218,8 @@ function drawGear(ctx, x, y, radius, teeth, angle, color, inner = radius * 0.38)
 }
 
 function drawGearTrain(ctx, w, h, time) {
-  const cx = w * 0.52;
-  const cy = h * 0.52;
+  const cx = w * CANVAS_CENTER_OFFSET;
+  const cy = h * CANVAS_CENTER_OFFSET;
   const ratio = canvas.width / w;
   const big = 86 * ratio;
   const medium = 58 * ratio;
@@ -227,8 +231,8 @@ function drawGearTrain(ctx, w, h, time) {
 }
 
 function drawTurbine(ctx, w, h, time) {
-  const cx = w * 0.52;
-  const cy = h * 0.52;
+  const cx = w * CANVAS_CENTER_OFFSET;
+  const cy = h * CANVAS_CENTER_OFFSET;
   const ratio = canvas.width / w;
 
   ctx.strokeStyle = 'rgba(166, 210, 255, 0.4)';

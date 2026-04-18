@@ -15,7 +15,7 @@ This project is a browser-based scientific dashboard featuring interactive 3D-st
 No build step is required.
 
 ```bash
-cd /home/runner/work/rag7/rag7
+cd <repository-root>
 python3 -m http.server 8080
 ```
 
@@ -26,6 +26,6 @@ Open:
 
 ## Files
 
-- `/home/runner/work/rag7/rag7/index.html` – dashboard layout
-- `/home/runner/work/rag7/rag7/style.css` – visual design and themes
-- `/home/runner/work/rag7/rag7/app.js` – model rendering and interaction logic
+- `./index.html` – dashboard layout
+- `./style.css` – visual design and themes
+- `./app.js` – model rendering and interaction logic
