@@ -10,22 +10,54 @@ This project is a browser-based scientific dashboard featuring interactive 3D-st
 - Planetary gear train model
 - Axial turbine stage model
 
-## Run locally
+## Prerequisites
 
-No build step is required.
+- Node.js ≥ 20
+
+## Install dependencies
 
 ```bash
-cd <repository-root>
-python3 -m http.server 8080
+npm install
 ```
 
-Open:
+## Develop
 
-- `http://localhost:8080/` (local)
-- `https://<username>.github.io/rag7/` (GitHub Pages project path)
+```bash
+npm run dev
+```
 
-## Files
+Opens a local dev server at `http://localhost:5173/rag7/` with hot-module replacement.
 
-- `./index.html` – dashboard layout
-- `./style.css` – visual design and themes
-- `./app.js` – model rendering and interaction logic
+## Build
+
+```bash
+npm run build
+```
+
+Produces an optimised, hashed bundle in `dist/`. Serve `dist/` for production or
+deploy it to GitHub Pages at `https://<username>.github.io/rag7/`.
+
+## Preview production build locally
+
+```bash
+npm run preview
+```
+
+Serves `dist/` at `http://localhost:4173/rag7/`.
+
+## Project structure
+
+```
+rag7/
+├── index.html           # Dashboard HTML (Vite entry point)
+├── src/
+│   ├── app.js           # Model rendering + interaction (ES module)
+│   └── style.css        # Dashboard styles with dark/light themes
+├── public/
+│   ├── manifest.json    # PWA manifest
+│   └── sw.js            # Service worker (lazy-cache strategy)
+├── dist/                # Production build output (git-ignored)
+├── vite.config.js       # Vite configuration (base: /rag7/)
+└── package.json
+```
+

@@ -1,0 +1,24 @@
+{
+  "name": "Scientific Dashboard",
+  "short_name": "SciDash",
+  "description": "Interactive chemistry and mechanical engineering model explorer",
+  "start_url": "/rag7/",
+  "display": "standalone",
+  "background_color": "#08111f",
+  "theme_color": "#0b1220",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
