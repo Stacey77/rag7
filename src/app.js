@@ -1,3 +1,5 @@
+import './style.css';
+
 'use strict';
 
 const THEME_KEY = 'preferred-theme';
