@@ -27,7 +27,7 @@ function initTheme() {
   applyTheme(saved || (prefersDark ? 'dark' : 'light'));
 }
 
-document.getElementById('theme-toggle').addEventListener('click', () => {
+document.getElementById('theme-toggle')?.addEventListener('click', () => {
   const current = document.documentElement.getAttribute('data-theme') || 'dark';
   applyTheme(current === 'dark' ? 'light' : 'dark');
 });
@@ -38,6 +38,7 @@ let toastTimer = null;
 
 function showToast(message, durationMs = 2500) {
   const toast = document.getElementById('toast');
+  if (!toast) return;
   toast.textContent = message;
   toast.classList.add('toast--visible');
   if (toastTimer) clearTimeout(toastTimer);
@@ -77,7 +78,7 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 
 // ─── Share ────────────────────────────────────────────────────────────────────
 
-document.getElementById('btn-share').addEventListener('click', async () => {
+document.getElementById('btn-share')?.addEventListener('click', async () => {
   const shareData = {
     title: 'Stacey Williams – Certified Service Technician',
     text: 'Mercedes-Benz of Collierville – Certified Service Technician',
@@ -97,7 +98,7 @@ document.getElementById('btn-share').addEventListener('click', async () => {
 
 // ─── vCard Download ───────────────────────────────────────────────────────────
 
-document.getElementById('btn-vcard').addEventListener('click', () => {
+document.getElementById('btn-vcard')?.addEventListener('click', () => {
   if (typeof generateVCard === 'function') {
     generateVCard();
   } else {
@@ -133,8 +134,8 @@ async function triggerInstall() {
   }
 }
 
-document.getElementById('btn-install').addEventListener('click', triggerInstall);
-document.getElementById('btn-install-bottom').addEventListener('click', triggerInstall);
+document.getElementById('btn-install')?.addEventListener('click', triggerInstall);
+document.getElementById('btn-install-bottom')?.addEventListener('click', triggerInstall);
 
 window.addEventListener('appinstalled', () => {
   showToast('✅ App installed!');
