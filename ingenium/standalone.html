@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ingenium</title>
+<style>
+:root{
+  --bg:#f7f7f9;--panel:#fff;--text:#1a1d24;--muted:#5b6270;--border:#e2e4ea;
+  --accent:#5b5bf0;--accent-2:#17a673;--warn:#c98a1d;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1115;--panel:#1a1d24;--text:#eceef2;--muted:#9aa1b2;--border:#2a2e38;
+    --accent:#8b8bff;--accent-2:#35d399;--warn:#e0aa3e;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);padding:1.5rem;max-width:1100px;margin-inline:auto}
+header h1{margin-bottom:.25rem}
+header p{color:var(--muted);margin-top:0}
+.integrations{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 1.5rem}
+.integration{padding:.35rem .75rem;border-radius:999px;border:1px solid var(--border);
+  background:var(--panel);font-size:.85rem;color:var(--muted)}
+.integration.connected{border-color:var(--accent-2);color:var(--accent-2)}
+.integration.connected::before{content:"\25CF";margin-right:.4rem}
+.hemispheres{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media (max-width:720px){.hemispheres{grid-template-columns:1fr}}
+.hemisphere h2{font-size:1rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.75rem}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;margin-bottom:.75rem}
+.card h3{margin:0 0 .4rem;font-size:.95rem}
+.card .body{font-size:.85rem;color:var(--muted);white-space:pre-wrap;word-break:break-word}
+.card.stage.done{border-color:var(--accent)}
+.card.stage.done .body{color:var(--text)}
+.card .body input,.card .body textarea{width:100%;font:inherit;color:var(--text);background:transparent;
+  border:1px solid var(--border);border-radius:6px;padding:.3rem .4rem;margin-top:.25rem}
+.card .body textarea{resize:vertical;min-height:2.4rem}
+.card .body label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;margin-top:.5rem;color:var(--muted)}
+.run{display:flex;gap:.5rem;margin:1.5rem 0}
+.run input{flex:1;padding:.6rem .8rem;border-radius:8px;border:1px solid var(--border);
+  background:var(--panel);color:var(--text);font-size:.95rem}
+.run button{padding:.6rem 1.1rem;border-radius:8px;border:none;background:var(--accent);
+  color:#fff;font-size:.95rem;cursor:pointer}
+.chip{display:inline-block;padding:.1rem .5rem;border-radius:999px;background:var(--border);
+  font-size:.75rem;margin:.1rem .2rem .1rem 0}
+.recommendation.scale{color:var(--accent-2);font-weight:600}
+.recommendation.insufficient_data{color:var(--warn);font-weight:600}
+.hint{font-size:.78rem;color:var(--muted);margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Ingenium</h1>
+  <p>Company Intelligence + Agent, connected by CRM &middot; Web Builder &middot; Email &middot; Finance &middot; Analytics &middot; Calendar</p>
+</header>
+
+<section class="integrations" id="integrations">
+  <div class="integration" data-name="crm">CRM</div>
+  <div class="integration" data-name="web_builder">Web Builder</div>
+  <div class="integration" data-name="email">Email</div>
+  <div class="integration" data-name="finance">Finance</div>
+  <div class="integration" data-name="analytics">Analytics</div>
+  <div class="integration" data-name="calendar">Calendar</div>
+</section>
+
+<main class="hemispheres">
+  <section class="hemisphere">
+    <h2>Company Intelligence</h2>
+    <article class="card"><h3>Strategy</h3><div class="body">
+      <label>Positioning</label>
+      <input id="in-positioning" value="AI ops partner for local service businesses">
+      <label>Top priority</label>
+      <input id="in-priority" value="book more jobs">
+    </div></article>
+    <article class="card"><h3>Customer Data</h3><div class="body">
+      <label>Customer emails (one per line)</label>
+      <textarea id="in-customers" rows="2">lead@example.com</textarea>
+    </div></article>
+    <article class="card"><h3>Goals</h3><div class="body">
+      <label>Goal</label><input id="in-goal-name" value="Q3 new clients">
+      <label>Current / Target</label>
+      <input id="in-goal-current" value="3" style="width:40%;display:inline-block">
+      <input id="in-goal-target" value="10" style="width:40%;display:inline-block">
+    </div></article>
+    <article class="card"><h3>Knowledge</h3><div class="body">
+      <label>Offer / note</label>
+      <input id="in-knowledge" value="Fall tune-up special: $99">
+    </div></article>
+    <article class="card"><h3>Brand</h3><div class="body">
+      <label>Voice</label><input id="in-voice" value="direct, confident, no fluff">
+      <label>Tone words (comma-separated)</label>
+      <input id="in-tone" value="clear, bold">
+    </div></article>
+  </section>
+
+  <section class="hemisphere">
+    <h2>Agent</h2>
+    <article class="card stage" id="stage-research"><h3>Research</h3><div class="body">Not run yet</div></article>
+    <article class="card stage" id="stage-create"><h3>Create</h3><div class="body">Not run yet</div></article>
+    <article class="card stage" id="stage-outreach"><h3>Outreach</h3><div class="body">Not run yet</div></article>
+    <article class="card stage" id="stage-follow_up"><h3>Follow-up</h3><div class="body">Not run yet</div></article>
+    <article class="card stage" id="stage-optimize"><h3>Optimize</h3><div class="body">Not run yet</div></article>
+  </section>
+</main>
+
+<section class="run">
+  <input id="objective" type="text" placeholder="e.g. Launch fall tune-up campaign" value="Launch fall tune-up campaign" autocomplete="off">
+  <button id="run-btn">Think, connect, execute</button>
+</section>
+
+<p class="hint">Standalone build &mdash; the whole Ingenium loop runs in your browser, no server needed. Edit any Company Intelligence field, then run an objective to watch the Agent side execute against it. The integration adapters are in-memory stubs, same as the Python package.</p>
+
+<script>
+// --- Ingenium, ported to run entirely in the browser -------------------------
+function buildEdge(){
+  const emails = document.getElementById("in-customers").value
+    .split("\n").map(s=>s.trim()).filter(Boolean);
+  const records = emails.map((email,i)=>({id:"cust-"+(i+1),email,stage:"new"}));
+  const target = parseFloat(document.getElementById("in-goal-target").value)||0;
+  const current = parseFloat(document.getElementById("in-goal-current").value)||0;
+  return {
+    strategy:{
+      positioning:document.getElementById("in-positioning").value.trim(),
+      priorities:[{name:document.getElementById("in-priority").value.trim(),rank:1}]
+        .filter(p=>p.name)
+    },
+    customer_data:{total:records.length,records},
+    goals:{[document.getElementById("in-goal-name").value.trim()]:{
+      goal:{current,target},completion_ratio:target?current/target:0}},
+    knowledge:{offers:[document.getElementById("in-knowledge").value.trim()].filter(Boolean)},
+    brand:{
+      voice:document.getElementById("in-voice").value.trim(),
+      tone_words:document.getElementById("in-tone").value.split(",").map(s=>s.trim()).filter(Boolean),
+      taboo_words:[]
+    }
+  };
+}
+
+// Fresh in-memory integrations per run (mirrors IntegrationHub + adapters).
+function makeHub(){
+  return {
+    _connected:{},
+    connectAll(){["crm","web_builder","email","finance","analytics","calendar"]
+      .forEach(n=>this._connected[n]=true);return {...this._connected};},
+    analyticsEvents:[], sentEmails:[], scheduled:[], pages:[], crmLog:[]
+  };
+}
+
+function execute(objective){
+  const edge = buildEdge();
+  const hub = makeHub();
+  const integrations = hub.connectAll();
+
+  // research
+  const research = {
+    target_segment:edge.customer_data.total,
+    priorities:edge.strategy.priorities
+  };
+  // create
+  const slug = objective.toLowerCase().replace(/\s+/g,"-").slice(0,60);
+  const asset = {slug,title:objective,status:"published"};
+  hub.pages.push(asset);
+  // outreach
+  const sent = [];
+  edge.customer_data.records.forEach(r=>{
+    if(!r.email) return;
+    hub.sentEmails.push({to:r.email,subject:objective});
+    hub.crmLog.push({id:r.id,activity:"outreach: "+objective,stage:"contacted"});
+    sent.push({to:r.email,subject:objective});
+  });
+  if(sent.length) hub.analyticsEvents.push({name:"outreach_sent",count:sent.length});
+  // follow-up
+  const scheduled = sent.map(m=>({title:"Follow up: "+objective,when:"+3d",attendees:[m.to]}));
+  scheduled.forEach(e=>hub.scheduled.push(e));
+  // optimize
+  const outreachSent = hub.analyticsEvents.filter(e=>e.name==="outreach_sent").length;
+  const optimize = {
+    report:{outreach_sent:outreachSent},
+    recommendation: outreachSent>0 ? "scale" : "insufficient_data"
+  };
+
+  return {objective,edge,integrations,pipeline:{
+    research:{findings:research},
+    create:{asset},
+    outreach:{sent},
+    follow_up:{scheduled},
+    optimize
+  }};
+}
+
+// --- rendering ---------------------------------------------------------------
+function setBody(id,html){document.querySelector("#"+id+" .body").innerHTML=html;}
+function markDone(id,html){document.getElementById(id).classList.add("done");setBody(id,html);}
+
+function updateIntegrations(integrations){
+  document.querySelectorAll(".integration").forEach(el=>{
+    el.classList.toggle("connected", !!integrations[el.dataset.name]);
+  });
+}
+
+function renderPipeline(p){
+  markDone("stage-research",
+    "<p>Target segment: "+p.research.findings.target_segment+" customer(s)</p>"+
+    "<p>Priorities considered: "+p.research.findings.priorities.length+"</p>");
+  markDone("stage-create",
+    "<p>Published \""+p.create.asset.title+"\"</p><span class='chip'>"+p.create.asset.slug+"</span>");
+  markDone("stage-outreach",
+    p.outreach.sent.length
+      ? p.outreach.sent.map(m=>"<span class='chip'>"+m.to+"</span>").join("")+"<p>"+p.outreach.sent.length+" email(s) sent</p>"
+      : "No customers to reach yet.");
+  markDone("stage-follow_up",
+    p.follow_up.scheduled.length
+      ? "<p>"+p.follow_up.scheduled.length+" follow-up(s) scheduled ("+p.follow_up.scheduled[0].when+")</p>"
+      : "Nothing scheduled.");
+  markDone("stage-optimize",
+    "<p class='recommendation "+p.optimize.recommendation+"'>"+p.optimize.recommendation.replace("_"," ")+"</p>"+
+    "<p>Outreach events tracked: "+(p.optimize.report.outreach_sent||0)+"</p>");
+}
+
+function run(){
+  const objective=document.getElementById("objective").value.trim();
+  if(!objective) return;
+  const report=execute(objective);
+  updateIntegrations(report.integrations);
+  renderPipeline(report.pipeline);
+}
+
+document.getElementById("run-btn").addEventListener("click",run);
+document.getElementById("objective").addEventListener("keydown",e=>{if(e.key==="Enter")run();});
+</script>
+</body>
+</html>

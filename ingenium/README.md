@@ -127,8 +127,19 @@ python3 -m unittest discover -s ingenium/tests -v
 
 ## HTML dashboard
 
-`ingenium/web/` is a stdlib-only HTTP server (no new dependencies) that
-serves an HTML dashboard for the brain:
+There are two ways to use the dashboard.
+
+**Standalone file (no server, no Python).** `ingenium/standalone.html` is a
+single self-contained file — the entire think → connect → execute loop is
+ported to in-browser JavaScript. Just open it in any browser (double-click
+it). The Company Intelligence fields are editable, so you can change the
+strategy, customers, goal, knowledge, and brand, type an objective, and
+watch the Agent side run against it. Nothing is installed and nothing leaves
+the page.
+
+**Served dashboard (backed by the real Python package).** `ingenium/web/` is
+a stdlib-only HTTP server (no new dependencies) that serves the same
+dashboard but runs the actual `Ingenium` package server-side:
 
 ```bash
 python3 -m ingenium.web.server
