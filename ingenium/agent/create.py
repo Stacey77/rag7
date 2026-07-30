@@ -13,7 +13,7 @@ class Create:
         """Draft copy for the objective and publish it through the web builder.
 
         Args:
-            objective: The goal the Super Brain is executing toward.
+            objective: The goal Ingenium is executing toward.
             edge: The company intelligence snapshot (strategy, brand, knowledge).
             hub: The IntegrationHub providing connected integrations.
             findings: The Research stage's output.

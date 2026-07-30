@@ -25,7 +25,7 @@ class AgentSide:
         """Run research through optimize for a single objective.
 
         Args:
-            objective: The goal the Super Brain is executing toward.
+            objective: The goal Ingenium is executing toward.
             edge: The company intelligence snapshot from the other hemisphere.
             hub: The connected IntegrationHub both hemispheres share.
 

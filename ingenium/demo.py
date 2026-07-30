@@ -1,12 +1,12 @@
-"""Demo entrypoint: run one full Super Brain think/connect/execute cycle."""
+"""Demo entrypoint: run one full Ingenium think/connect/execute cycle."""
 import json
 
-from super_brain import SuperBrain
+from ingenium import Ingenium
 
 
 def main() -> None:
     """Populate a sample company edge and execute one objective end to end."""
-    brain = SuperBrain()
+    brain = Ingenium()
     ci = brain.company_intelligence
     ci.strategy.set_positioning("AI ops partner for local service businesses")
     ci.strategy.add_priority("book more jobs", rank=1)

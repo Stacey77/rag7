@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ingenium</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>Ingenium</h1>
+    <p>Company Intelligence + Agent, connected by CRM · Web Builder · Email · Finance · Analytics · Calendar</p>
+  </header>
+
+  <section class="integrations" id="integrations">
+    <div class="integration" data-name="crm">CRM</div>
+    <div class="integration" data-name="web_builder">Web Builder</div>
+    <div class="integration" data-name="email">Email</div>
+    <div class="integration" data-name="finance">Finance</div>
+    <div class="integration" data-name="analytics">Analytics</div>
+    <div class="integration" data-name="calendar">Calendar</div>
+  </section>
+
+  <main class="hemispheres">
+    <section class="hemisphere">
+      <h2>Company Intelligence</h2>
+      <article class="card" id="edge-strategy"><h3>Strategy</h3><div class="body">Loading&hellip;</div></article>
+      <article class="card" id="edge-customer_data"><h3>Customer Data</h3><div class="body">Loading&hellip;</div></article>
+      <article class="card" id="edge-goals"><h3>Goals</h3><div class="body">Loading&hellip;</div></article>
+      <article class="card" id="edge-knowledge"><h3>Knowledge</h3><div class="body">Loading&hellip;</div></article>
+      <article class="card" id="edge-brand"><h3>Brand</h3><div class="body">Loading&hellip;</div></article>
+    </section>
+
+    <section class="hemisphere">
+      <h2>Agent</h2>
+      <article class="card stage" id="stage-research"><h3>Research</h3><div class="body">Not run yet</div></article>
+      <article class="card stage" id="stage-create"><h3>Create</h3><div class="body">Not run yet</div></article>
+      <article class="card stage" id="stage-outreach"><h3>Outreach</h3><div class="body">Not run yet</div></article>
+      <article class="card stage" id="stage-follow_up"><h3>Follow-up</h3><div class="body">Not run yet</div></article>
+      <article class="card stage" id="stage-optimize"><h3>Optimize</h3><div class="body">Not run yet</div></article>
+    </section>
+  </main>
+
+  <section class="run">
+    <input id="objective" type="text" placeholder="e.g. Launch fall tune-up campaign" autocomplete="off">
+    <button id="run-btn">Think, connect, execute</button>
+  </section>
+
+  <p class="error" id="error" hidden></p>
+
+  <script src="/app.js"></script>
+</body>
+</html>

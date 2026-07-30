@@ -1,4 +1,4 @@
-"""SuperBrain: the orchestrator that lets the two hemispheres think, connect, and execute."""
+"""Ingenium: the orchestrator that lets the two hemispheres think, connect, and execute."""
 import logging
 
 from ..agent import AgentSide
@@ -8,7 +8,7 @@ from .integration_hub import IntegrationHub
 logger = logging.getLogger(__name__)
 
 
-class SuperBrain:
+class Ingenium:
     """Wires the company intelligence hemisphere to the agent hemisphere.
 
     Company Intelligence (strategy, customer data, goals, knowledge, brand) is

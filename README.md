@@ -125,7 +125,7 @@ robot_agi/
 
 See [`robot_agi/README.md`](robot_agi/README.md) for a full breakdown of every sub-package.
 
-### 3 · Super Brain business intelligence system (`super_brain/`)
+### 3 · Ingenium business intelligence system (`ingenium/`)
 
 A two-hemisphere system — **Company Intelligence** (strategy, customer data,
 goals, knowledge, brand) and **Agent** (research, create, outreach,
@@ -134,7 +134,7 @@ builder, email, finance, analytics, calendar) so the brain can think,
 connect, and execute. Run its tests with:
 
 ```bash
-python3 -m unittest discover -s super_brain/tests -v
+python3 -m unittest discover -s ingenium/tests -v
 ```
 
-See [`super_brain/README.md`](super_brain/README.md) for the full architecture.
+See [`ingenium/README.md`](ingenium/README.md) for the full architecture.

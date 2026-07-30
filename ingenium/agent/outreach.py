@@ -13,7 +13,7 @@ class Outreach:
         """Email the relevant customer segment and log the touch in the CRM.
 
         Args:
-            objective: The goal the Super Brain is executing toward.
+            objective: The goal Ingenium is executing toward.
             edge: The company intelligence snapshot (customer data).
             hub: The IntegrationHub providing connected integrations.
             asset: The Create stage's published asset.

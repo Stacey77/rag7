@@ -1,13 +1,18 @@
-# Standalone container for the Super Brain package (super_brain/).
+# Standalone container for the Ingenium package (ingenium/).
 # Works with Podman, Podman Desktop, Rancher Desktop, or Docker:
-#   podman build -t super-brain -f Containerfile .
-#   podman run --rm super-brain
+#   podman build -t ingenium -f Containerfile .
+#   podman run --rm -p 8000:8000 ingenium
+#   -> open http://localhost:8000 for the HTML dashboard
+#
+# For the one-shot CLI report instead of the web GUI:
+#   podman run --rm ingenium python3 -m ingenium.demo
 FROM python:3.12-slim
 
 WORKDIR /app
-COPY super_brain/ ./super_brain/
+COPY ingenium/ ./ingenium/
 
 # Fail the build if the test suite doesn't pass.
-RUN python3 -m unittest discover -s super_brain/tests -v
+RUN python3 -m unittest discover -s ingenium/tests -v
 
-CMD ["python3", "-m", "super_brain.demo"]
+EXPOSE 8000
+CMD ["python3", "-m", "ingenium.web.server"]

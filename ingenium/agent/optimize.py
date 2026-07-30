@@ -13,7 +13,7 @@ class Optimize:
         """Summarize performance so far and recommend whether to scale or adjust.
 
         Args:
-            objective: The goal the Super Brain is executing toward.
+            objective: The goal Ingenium is executing toward.
             hub: The IntegrationHub providing connected integrations.
 
         Returns:

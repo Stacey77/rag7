@@ -13,7 +13,7 @@ class FollowUp:
         """Schedule a calendar follow-up for each outreach message sent.
 
         Args:
-            objective: The goal the Super Brain is executing toward.
+            objective: The goal Ingenium is executing toward.
             hub: The IntegrationHub providing connected integrations.
             sent: The Outreach stage's list of sent messages.
 

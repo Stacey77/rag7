@@ -1,4 +1,4 @@
-"""Integration adapters the Super Brain connects both hemispheres through."""
+"""Integration adapters connecting Ingenium's two hemispheres to the outside world."""
 from .analytics import Analytics
 from .base import Integration
 from .calendar import Calendar

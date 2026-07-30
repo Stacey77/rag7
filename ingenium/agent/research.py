@@ -13,7 +13,7 @@ class Research:
         """Pull current pipeline and analytics data relevant to the objective.
 
         Args:
-            objective: The goal the Super Brain is executing toward.
+            objective: The goal Ingenium is executing toward.
             edge: The company intelligence snapshot (strategy, customers, etc.).
             hub: The IntegrationHub providing connected integrations.
 

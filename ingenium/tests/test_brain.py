@@ -1,13 +1,13 @@
-"""Tests for the Super Brain: both hemispheres, the integration hub, and the full loop."""
+"""Tests for Ingenium: both hemispheres, the integration hub, and the full loop."""
 import os
 import sys
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from super_brain import SuperBrain
-from super_brain.company_intelligence import CompanyIntelligence
-from super_brain.core.integration_hub import IntegrationHub
+from ingenium import Ingenium
+from ingenium.company_intelligence import CompanyIntelligence
+from ingenium.core.integration_hub import IntegrationHub
 
 
 class TestCompanyIntelligence(unittest.TestCase):
@@ -42,9 +42,9 @@ class TestIntegrationHub(unittest.TestCase):
         self.assertTrue(hub.status()["crm"])
 
 
-class TestSuperBrainPipeline(unittest.TestCase):
+class TestIngeniumPipeline(unittest.TestCase):
     def setUp(self):
-        self.brain = SuperBrain()
+        self.brain = Ingenium()
         ci = self.brain.company_intelligence
         ci.strategy.set_positioning("AI ops partner for local service businesses")
         ci.strategy.add_priority("book more jobs", rank=1)
@@ -93,7 +93,7 @@ class TestSuperBrainPipeline(unittest.TestCase):
         self.assertEqual(pipeline["optimize"]["recommendation"], "scale")
 
     def test_execute_without_customer_records_yields_insufficient_data(self):
-        empty_brain = SuperBrain()
+        empty_brain = Ingenium()
         report = empty_brain.execute("Cold launch with no customers yet")
         self.assertEqual(report["pipeline"]["optimize"]["recommendation"], "insufficient_data")
 

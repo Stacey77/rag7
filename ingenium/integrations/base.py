@@ -1,11 +1,11 @@
-"""Base class every Super Brain integration adapter implements."""
+"""Base class every Ingenium integration adapter implements."""
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 class Integration:
-    """Common lifecycle for an external system the Super Brain plugs into."""
+    """Common lifecycle for an external system that Ingenium plugs into."""
 
     name = "integration"
 

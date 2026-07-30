@@ -1,4 +1,4 @@
-"""Company Intelligence hemisphere of the Super Brain."""
+"""Company Intelligence hemisphere of Ingenium."""
 from .brand import Brand
 from .customer_data import CustomerData
 from .goals import Goals

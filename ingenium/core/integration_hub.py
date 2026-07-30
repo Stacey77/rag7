@@ -10,7 +10,7 @@ class IntegrationHub:
     """Owns one instance of each external adapter and connects them on demand."""
 
     def __init__(self) -> None:
-        """Register the six integrations the Super Brain plugs into."""
+        """Register the six integrations that Ingenium plugs into."""
         self.adapters: dict[str, Integration] = {
             "crm": CRM(),
             "web_builder": WebBuilder(),

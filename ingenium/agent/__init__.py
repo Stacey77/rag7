@@ -1,4 +1,4 @@
-"""Agent hemisphere of the Super Brain."""
+"""Agent hemisphere of Ingenium."""
 from .create import Create
 from .follow_up import FollowUp
 from .hemisphere import AgentSide
