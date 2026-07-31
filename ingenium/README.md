@@ -16,14 +16,17 @@ objective end to end.
 
 - **Prototype, not production.** The architecture and control flow are
   complete and tested; the external integrations are not yet real.
-- **In-memory only.** CRM, email, calendar, etc. are stubbed adapters that
-  store data in process memory — nothing is persisted and nothing is sent.
+- **Stubbed integrations.** CRM, email, calendar, etc. are in-memory adapters
+  — nothing is actually sent to a live service.
+- **State persists to disk.** The company edge and run history serialize to
+  JSON via `save()` / `load()`; only the integration adapters are ephemeral
+  (they reconnect fresh each run).
 - **Stdlib-only.** No third-party dependencies. Runs on a plain Python 3.10+
   install (uses `str | None` union syntax and `Path.is_relative_to`).
 - **Dashboard included.** Both a zero-setup single HTML file and a served
   version backed by the real package.
-- **Tests included.** 13 unit tests covering both hemispheres, the
-  integration hub, and the web layer.
+- **Tests included.** 20 unit tests covering both hemispheres, the
+  integration hub, the web layer, and state persistence.
 
 ## Quick start
 
@@ -122,7 +125,7 @@ ingenium/
 │   └── static/               #   index.html, style.css, app.js
 ├── standalone.html           # zero-dependency, client-side-only dashboard
 ├── demo.py                   # one-shot CLI cycle
-└── tests/                    # test_brain.py, test_web.py
+└── tests/                    # test_brain.py, test_web.py, test_persistence.py
 ```
 
 Top-level responsibilities:
@@ -170,6 +173,20 @@ report = brain.execute("Launch fall tune-up campaign")
 }
 ```
 
+Every `execute()` is also appended to `brain.history`.
+
+### Persisting state
+
+The company edge and run history serialize to a JSON file, so a session
+survives a restart (the integration adapters are not persisted — they
+reconnect fresh on the next `execute()`):
+
+```python
+brain.save("state.json")            # write edge + history to disk
+brain = Ingenium.load("state.json")  # rebuild a brain from that file
+report = brain.execute("Follow-up campaign")  # history continues from where it left off
+```
+
 ## HTML dashboard
 
 There are two ways to use the dashboard.
@@ -206,6 +223,7 @@ directly:
   tests are expected to pass on a clean clone.
 - **Everything:** `python3 -m unittest discover -s ingenium/tests -v`
 - **Core only (no dashboard):** `python3 -m unittest ingenium.tests.test_brain -v`
+- **Persistence only:** `python3 -m unittest ingenium.tests.test_persistence -v`
 - **Web layer only:** `python3 -m unittest ingenium.tests.test_web -v` — this
   binds a server on an ephemeral port (`127.0.0.1:0`), so it needs local
   loopback networking.

@@ -53,3 +53,13 @@ class Brand:
             "tone_words": list(self.tone_words),
             "taboo_words": list(self.taboo_words),
         }
+
+    def restore(self, state: dict) -> None:
+        """Rebuild internal state from a snapshot dict.
+
+        Args:
+            state: A dict shaped like the output of ``snapshot()``.
+        """
+        self.voice = state.get("voice", "")
+        self.tone_words = list(state.get("tone_words", []))
+        self.taboo_words = list(state.get("taboo_words", []))

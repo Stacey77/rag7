@@ -45,3 +45,11 @@ class Knowledge:
             Dict of every topic and its facts.
         """
         return {topic: list(facts) for topic, facts in self.entries.items()}
+
+    def restore(self, state: dict) -> None:
+        """Rebuild internal state from a snapshot dict.
+
+        Args:
+            state: A dict shaped like the output of ``snapshot()``.
+        """
+        self.entries = {topic: list(facts) for topic, facts in state.items()}
