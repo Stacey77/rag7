@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ingenium Platform</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <h1>Ingenium</h1>
+    <p class="tagline">Workspaces</p>
+    <ul class="workspace-list" id="workspace-list"></ul>
+    <div class="new-workspace">
+      <input id="new-name" type="text" placeholder="New company name" autocomplete="off">
+      <label class="seed"><input type="checkbox" id="new-seed" checked> seed sample data</label>
+      <button id="create-btn">Create workspace</button>
+    </div>
+    <p class="error" id="sidebar-error" hidden></p>
+  </aside>
+
+  <main class="main" id="main" hidden>
+    <header class="main-head">
+      <h2 id="ws-name">—</h2>
+      <span class="runs" id="ws-runs"></span>
+    </header>
+
+    <div class="columns">
+      <section class="edge">
+        <div class="section-head">
+          <h3>Company Intelligence</h3>
+          <button id="save-edge-btn" class="ghost">Save edge</button>
+        </div>
+        <label>Positioning</label>
+        <input id="e-positioning" type="text">
+        <label>Top priority</label>
+        <input id="e-priority" type="text">
+        <label>Customer emails (one per line)</label>
+        <textarea id="e-customers" rows="3"></textarea>
+        <label>Goal name</label>
+        <input id="e-goal-name" type="text">
+        <div class="row">
+          <div><label>Current</label><input id="e-goal-current" type="text"></div>
+          <div><label>Target</label><input id="e-goal-target" type="text"></div>
+        </div>
+        <label>Offer / knowledge</label>
+        <input id="e-knowledge" type="text">
+        <label>Brand voice</label>
+        <input id="e-voice" type="text">
+        <label>Tone words (comma-separated)</label>
+        <input id="e-tone" type="text">
+      </section>
+
+      <section class="agent">
+        <h3>Agent</h3>
+        <div class="integrations" id="integrations">
+          <span class="integration" data-name="crm">CRM</span>
+          <span class="integration" data-name="web_builder">Web Builder</span>
+          <span class="integration" data-name="email">Email</span>
+          <span class="integration" data-name="finance">Finance</span>
+          <span class="integration" data-name="analytics">Analytics</span>
+          <span class="integration" data-name="calendar">Calendar</span>
+        </div>
+        <article class="card stage" id="stage-research"><h4>Research</h4><div class="body">Not run yet</div></article>
+        <article class="card stage" id="stage-create"><h4>Create</h4><div class="body">Not run yet</div></article>
+        <article class="card stage" id="stage-outreach"><h4>Outreach</h4><div class="body">Not run yet</div></article>
+        <article class="card stage" id="stage-follow_up"><h4>Follow-up</h4><div class="body">Not run yet</div></article>
+        <article class="card stage" id="stage-optimize"><h4>Optimize</h4><div class="body">Not run yet</div></article>
+      </section>
+    </div>
+
+    <div class="run-bar">
+      <input id="objective" type="text" placeholder="e.g. Launch fall tune-up campaign" autocomplete="off">
+      <button id="run-btn">Run</button>
+      <button id="export-btn" class="ghost">Download campaign kit</button>
+    </div>
+    <p class="error" id="main-error" hidden></p>
+
+    <section class="history" id="history-section" hidden>
+      <h3>Run history</h3>
+      <ol class="history-list" id="history-list"></ol>
+    </section>
+  </main>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

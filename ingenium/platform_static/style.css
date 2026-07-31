@@ -1,0 +1,71 @@
+:root{
+  --bg:#f7f7f9;--panel:#fff;--text:#1a1d24;--muted:#5b6270;--border:#e2e4ea;
+  --accent:#5b5bf0;--accent-2:#17a673;--warn:#c98a1d;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1115;--panel:#1a1d24;--text:#eceef2;--muted:#9aa1b2;--border:#2a2e38;
+    --accent:#8b8bff;--accent-2:#35d399;--warn:#e0aa3e;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text)}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+@media (max-width:760px){.app{grid-template-columns:1fr}}
+
+.sidebar{border-right:1px solid var(--border);padding:1.25rem;background:var(--panel)}
+.sidebar h1{margin:0;font-size:1.4rem}
+.tagline{color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-size:.72rem;margin:.75rem 0 .5rem}
+.workspace-list{list-style:none;margin:0 0 1rem;padding:0}
+.workspace-list li{padding:.5rem .6rem;border-radius:8px;cursor:pointer;font-size:.9rem;display:flex;justify-content:space-between}
+.workspace-list li:hover{background:var(--bg)}
+.workspace-list li.active{background:var(--accent);color:#fff}
+.workspace-list li .badge{font-size:.72rem;opacity:.7}
+.new-workspace{display:flex;flex-direction:column;gap:.5rem;border-top:1px solid var(--border);padding-top:1rem}
+.new-workspace input[type=text]{padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)}
+.new-workspace .seed{font-size:.78rem;color:var(--muted);display:flex;gap:.4rem;align-items:center}
+button{cursor:pointer;border:none;border-radius:8px;background:var(--accent);color:#fff;padding:.55rem .9rem;font-size:.9rem}
+button.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+button:disabled{opacity:.6;cursor:default}
+
+.main{padding:1.5rem;min-width:0}
+.main-head{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1rem}
+.main-head h2{margin:0}
+.runs{color:var(--muted);font-size:.85rem}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media (max-width:760px){.columns{grid-template-columns:1fr}}
+.section-head{display:flex;justify-content:space-between;align-items:center}
+h3{font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.edge label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:.6rem}
+.edge input,.edge textarea{width:100%;padding:.45rem .55rem;border:1px solid var(--border);border-radius:8px;
+  background:var(--panel);color:var(--text);font:inherit;margin-top:.2rem}
+.edge .row{display:flex;gap:.5rem}
+.edge .row>div{flex:1}
+
+.integrations{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem}
+.integration{padding:.25rem .6rem;border-radius:999px;border:1px solid var(--border);font-size:.78rem;color:var(--muted)}
+.integration.connected{border-color:var(--accent-2);color:var(--accent-2)}
+.integration.connected::before{content:"\25CF";margin-right:.35rem}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:.7rem .8rem;margin-bottom:.6rem}
+.card h4{margin:0 0 .3rem;font-size:.9rem}
+.card .body{font-size:.82rem;color:var(--muted);white-space:pre-wrap;word-break:break-word}
+.card.stage.done{border-color:var(--accent)}
+.card.stage.done .body{color:var(--text)}
+
+.run-bar{display:flex;gap:.5rem;margin:1.25rem 0 .5rem}
+.run-bar input{flex:1;padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);font-size:.95rem}
+
+.chip{display:inline-block;padding:.1rem .5rem;border-radius:999px;background:var(--border);font-size:.75rem;margin:.1rem .2rem .1rem 0}
+.recommendation.scale{color:var(--accent-2);font-weight:600}
+.recommendation.insufficient_data{color:var(--warn);font-weight:600}
+
+.history{margin-top:1.25rem}
+.history-list{margin:0;padding-left:1.2rem}
+.history-list li{font-size:.85rem;padding:.25rem 0;border-bottom:1px solid var(--border)}
+.history-list li:last-child{border-bottom:none}
+.history-list .rec{margin-left:.4rem;font-size:.75rem}
+.history-list .rec.scale{color:var(--accent-2)}
+.history-list .rec.insufficient_data{color:var(--warn)}
+
+.error{color:#e5484d;font-size:.85rem}

@@ -25,11 +25,14 @@ objective end to end.
   (they reconnect fresh each run).
 - **Stdlib-only.** No third-party dependencies. Runs on a plain Python 3.10+
   install (uses `str | None` union syntax and `Path.is_relative_to`).
-- **Dashboard included.** Both a zero-setup single HTML file and a served
-  version backed by the real package.
-- **Tests included.** 36 unit tests covering both hemispheres, the
-  integration hub, the web layer, state persistence, the CLI, and campaign
-  asset generation.
+- **Multi-workspace platform.** A web app (`ingenium platform`) that manages
+  several companies at once, each with its own editable edge, persisted run
+  history, and one-click campaign-kit download — all saved to disk.
+- **Dashboards included.** A zero-setup single HTML file, a single-workspace
+  served dashboard, and the multi-workspace platform.
+- **Tests included.** 48 unit tests covering both hemispheres, the
+  integration hub, the web layer, state persistence, the CLI, campaign asset
+  generation, and the platform (store + REST API).
 
 ## Quick start
 
@@ -42,8 +45,8 @@ python3 -m unittest discover -s ingenium/tests -v
 # 2. Run an objective and export a real, usable campaign kit to ./campaign
 python3 -m ingenium campaign "Launch fall tune-up campaign" --demo --out ./campaign
 
-# 3. Start the dashboard, then open http://localhost:8000
-python3 -m ingenium serve
+# 3. Or launch the multi-workspace platform web app
+python3 -m ingenium platform
 
 # 4. Or run a one-shot sample cycle that prints a JSON report
 python3 -m ingenium demo
@@ -74,8 +77,9 @@ python3 -m ingenium show --state state.json
 # Full JSON report instead of the summary
 python3 -m ingenium run "Launch fall tune-up campaign" --demo --json
 
-# Start the dashboard / print one sample cycle
-python3 -m ingenium serve --port 8000
+# Start a dashboard / the platform / print one sample cycle
+python3 -m ingenium serve --port 8000                  # single-workspace dashboard
+python3 -m ingenium platform --data-dir ./ingenium_data  # multi-workspace app
 python3 -m ingenium demo
 ```
 
@@ -111,6 +115,41 @@ client. `--state` works here too, so the edge and history carry across runs.
 The content is templated from your strategy, brand voice, and knowledge —
 swap a stubbed adapter for a real API (see [Extending](#extending-swapping-a-stub-for-a-real-api))
 when you want Ingenium to send these itself instead of handing you the files.
+
+## Platform (multi-workspace web app)
+
+`ingenium platform` runs a web application that manages **several companies at
+once** — each a separate workspace with its own company edge, run history, and
+campaign kits, all persisted to disk under a data directory:
+
+```bash
+python3 -m ingenium platform --data-dir ./ingenium_data
+# -> open http://localhost:8000
+```
+
+In the browser you can:
+
+- **Create workspaces** (optionally seeded with sample data) from the sidebar,
+  and switch between them — each keeps its own state.
+- **Edit the company edge** (positioning, customers, goal, offer, brand voice)
+  and save it per workspace.
+- **Run objectives** and watch the Agent stages execute; the run history
+  accumulates per workspace.
+- **Download a campaign kit** (the same landing page / emails / `.ics` / CSV
+  as `ingenium campaign`) as a zip, straight from the browser.
+
+Everything is stored as one JSON file per workspace in the data directory, so
+it survives restarts. The REST API underneath (used by the UI, but callable
+directly) is:
+
+| Method & path | Purpose |
+|---|---|
+| `GET /api/workspaces` | list workspaces |
+| `POST /api/workspaces` `{name, seed}` | create a workspace |
+| `GET /api/workspaces/<slug>` | edge + run history for one workspace |
+| `PUT /api/workspaces/<slug>/edge` `{edge}` | replace the company edge |
+| `POST /api/workspaces/<slug>/execute` `{objective}` | run and persist |
+| `GET /api/workspaces/<slug>/campaign.zip?objective=…` | download a kit (does not alter stored history) |
 
 ## Concept
 
@@ -186,17 +225,17 @@ ingenium/
 ├── company_intelligence/     # source-of-truth state — the company edge
 ├── agent/                    # the pipeline stages that act on the edge
 ├── integrations/             # adapters to external systems (stubbed today)
-├── web/                      # stdlib-only HTTP server + served dashboard
-│   ├── server.py
-│   └── static/               #   index.html, style.css, app.js
+├── web/                      # single-workspace dashboard (HTTP server + static)
+├── platform.py               # multi-workspace platform: store + REST server
+├── platform_static/          #   platform web app (index.html, style.css, app.js)
 ├── standalone.html           # zero-dependency, client-side-only dashboard
 ├── cli.py                    # `python3 -m ingenium` command-line interface
 ├── __main__.py               # makes the package runnable with -m
 ├── campaign.py               # renders a run into real, exportable assets
 ├── samples.py                # the shared sample company edge
 ├── demo.py                   # one-shot sample cycle
-└── tests/                    # test_brain, test_web, test_persistence,
-                              #   test_cli, test_campaign
+└── tests/                    # test_brain, test_web, test_persistence, test_cli,
+                              #   test_campaign, test_platform
 ```
 
 Top-level responsibilities:
@@ -302,6 +341,8 @@ directly:
 - **Persistence only:** `python3 -m unittest ingenium.tests.test_persistence -v`
 - **CLI only:** `python3 -m unittest ingenium.tests.test_cli -v`
 - **Campaign export only:** `python3 -m unittest ingenium.tests.test_campaign -v`
+- **Platform only:** `python3 -m unittest ingenium.tests.test_platform -v` —
+  binds a server on an ephemeral port and uses a temp data dir.
 - **Web layer only:** `python3 -m unittest ingenium.tests.test_web -v` — this
   binds a server on an ephemeral port (`127.0.0.1:0`), so it needs local
   loopback networking.

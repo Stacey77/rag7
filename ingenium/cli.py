@@ -93,6 +93,12 @@ def _cmd_serve(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_platform(args: argparse.Namespace) -> int:
+    from .platform import run as run_platform  # local import: only needed for this command
+    run_platform(host=args.host, port=args.port, data_dir=args.data_dir)
+    return 0
+
+
 def _cmd_demo(args: argparse.Namespace) -> int:
     from .demo import main as demo_main
     demo_main()
@@ -123,10 +129,16 @@ def build_parser() -> argparse.ArgumentParser:
     campaign.add_argument("--demo", action="store_true", help="seed the sample company edge (fresh brain only)")
     campaign.set_defaults(func=_cmd_campaign)
 
-    serve = sub.add_parser("serve", help="start the web dashboard")
+    serve = sub.add_parser("serve", help="start the single-workspace web dashboard")
     serve.add_argument("--host", default="0.0.0.0", help="interface to bind (default: 0.0.0.0)")
     serve.add_argument("--port", type=int, default=8000, help="port to listen on (default: 8000)")
     serve.set_defaults(func=_cmd_serve)
+
+    platform = sub.add_parser("platform", help="start the multi-workspace platform web app")
+    platform.add_argument("--host", default="0.0.0.0", help="interface to bind (default: 0.0.0.0)")
+    platform.add_argument("--port", type=int, default=8000, help="port to listen on (default: 8000)")
+    platform.add_argument("--data-dir", default="ingenium_data", help="directory to persist workspaces (default: ingenium_data)")
+    platform.set_defaults(func=_cmd_platform)
 
     demo = sub.add_parser("demo", help="run one sample cycle and print the JSON report")
     demo.set_defaults(func=_cmd_demo)
