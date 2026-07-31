@@ -25,8 +25,8 @@ objective end to end.
   install (uses `str | None` union syntax and `Path.is_relative_to`).
 - **Dashboard included.** Both a zero-setup single HTML file and a served
   version backed by the real package.
-- **Tests included.** 20 unit tests covering both hemispheres, the
-  integration hub, the web layer, and state persistence.
+- **Tests included.** 28 unit tests covering both hemispheres, the
+  integration hub, the web layer, state persistence, and the CLI.
 
 ## Quick start
 
@@ -36,15 +36,46 @@ From the repo root (no install step — it's stdlib-only):
 # 1. Run the tests (expected to pass on a clean clone)
 python3 -m unittest discover -s ingenium/tests -v
 
-# 2. Start the dashboard, then open http://localhost:8000
-python3 -m ingenium.web.server
+# 2. Run an objective from the command line
+python3 -m ingenium run "Launch fall tune-up campaign" --demo
 
-# 3. Or run a one-shot CLI cycle that prints a JSON report
-python3 -m ingenium.demo
+# 3. Start the dashboard, then open http://localhost:8000
+python3 -m ingenium serve
+
+# 4. Or run a one-shot sample cycle that prints a JSON report
+python3 -m ingenium demo
 ```
 
 Prefer no terminal at all? Open `ingenium/standalone.html` in any browser —
 the whole loop runs client-side (see [HTML dashboard](#html-dashboard)).
+
+## Command-line interface
+
+`python3 -m ingenium <command>` drives the whole loop without writing Python:
+
+```bash
+# Run an objective against the built-in sample edge, printing a summary
+python3 -m ingenium run "Launch fall tune-up campaign" --demo
+
+# Persist across runs: loads the state file if it exists, saves back after.
+# History accumulates, so the edge and past runs carry forward.
+python3 -m ingenium run "Kickoff"     --demo --state state.json
+python3 -m ingenium run "Follow-up"          --state state.json
+
+# Inspect a saved state (company edge + run history)
+python3 -m ingenium show --state state.json
+
+# Full JSON report instead of the summary
+python3 -m ingenium run "Launch fall tune-up campaign" --demo --json
+
+# Start the dashboard / print one sample cycle
+python3 -m ingenium serve --port 8000
+python3 -m ingenium demo
+```
+
+A bare `run` with no `--demo` and no existing `--state` runs against an empty
+edge, which yields the `insufficient_data` recommendation — the CLI's way of
+showing there's nothing to act on yet.
 
 ## Concept
 
@@ -124,8 +155,11 @@ ingenium/
 │   ├── server.py
 │   └── static/               #   index.html, style.css, app.js
 ├── standalone.html           # zero-dependency, client-side-only dashboard
-├── demo.py                   # one-shot CLI cycle
-└── tests/                    # test_brain.py, test_web.py, test_persistence.py
+├── cli.py                    # `python3 -m ingenium` command-line interface
+├── __main__.py               # makes the package runnable with -m
+├── samples.py                # the shared sample company edge
+├── demo.py                   # one-shot sample cycle
+└── tests/                    # test_brain, test_web, test_persistence, test_cli
 ```
 
 Top-level responsibilities:
@@ -205,8 +239,9 @@ a stdlib-only HTTP server that serves the same dashboard but runs the actual
 `Ingenium` package server-side:
 
 ```bash
-python3 -m ingenium.web.server
+python3 -m ingenium serve
 # -> open http://localhost:8000
+# (python3 -m ingenium.web.server also works)
 ```
 
 The underlying `Ingenium` instance is held in memory by the server process,
@@ -228,6 +263,7 @@ directly:
 - **Everything:** `python3 -m unittest discover -s ingenium/tests -v`
 - **Core only (no dashboard):** `python3 -m unittest ingenium.tests.test_brain -v`
 - **Persistence only:** `python3 -m unittest ingenium.tests.test_persistence -v`
+- **CLI only:** `python3 -m unittest ingenium.tests.test_cli -v`
 - **Web layer only:** `python3 -m unittest ingenium.tests.test_web -v` — this
   binds a server on an ephemeral port (`127.0.0.1:0`), so it needs local
   loopback networking.
@@ -254,7 +290,7 @@ The default command runs the served dashboard (`ingenium.web.server`) on
 port 8000. For the one-shot CLI report instead:
 
 ```bash
-podman run --rm ingenium python3 -m ingenium.demo
+podman run --rm ingenium python3 -m ingenium demo
 ```
 
 ## Extending: swapping a stub for a real API
