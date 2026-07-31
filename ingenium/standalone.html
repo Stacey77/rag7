@@ -46,6 +46,14 @@ header p{color:var(--muted);margin-top:0}
   font-size:.75rem;margin:.1rem .2rem .1rem 0}
 .recommendation.scale{color:var(--accent-2);font-weight:600}
 .recommendation.insufficient_data{color:var(--warn);font-weight:600}
+.history{margin-top:1.5rem}
+.history h2{font-size:1rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.5rem}
+.history-list{margin:0;padding-left:1.2rem}
+.history-list li{font-size:.85rem;padding:.25rem 0;border-bottom:1px solid var(--border)}
+.history-list li:last-child{border-bottom:none}
+.history-list .rec{margin-left:.4rem;font-size:.75rem}
+.history-list .rec.scale{color:var(--accent-2)}
+.history-list .rec.insufficient_data{color:var(--warn)}
 .hint{font-size:.78rem;color:var(--muted);margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem}
 </style>
 </head>
@@ -109,7 +117,12 @@ header p{color:var(--muted);margin-top:0}
   <button id="run-btn">Think, connect, execute</button>
 </section>
 
-<p class="hint">Standalone build &mdash; the whole Ingenium loop runs in your browser, no server needed. Edit any Company Intelligence field, then run an objective to watch the Agent side execute against it. The integration adapters are in-memory stubs, same as the Python package.</p>
+<section class="history" id="history-section" hidden>
+  <h2>Run history</h2>
+  <ol class="history-list" id="history-list"></ol>
+</section>
+
+<p class="hint">Standalone build &mdash; the whole Ingenium loop runs in your browser, no server needed. Edit any Company Intelligence field, then run an objective to watch the Agent side execute against it. Your edits and run history are saved in this browser (localStorage); the integration adapters are in-memory stubs, same as the Python package.</p>
 
 <script>
 // --- Ingenium, ported to run entirely in the browser -------------------------
@@ -218,16 +231,67 @@ function renderPipeline(p){
     "<p>Outreach events tracked: "+(p.optimize.report.outreach_sent||0)+"</p>");
 }
 
+// --- persistence: edit fields + run history saved to this browser -----------
+var STORE_KEY="ingenium.state.v1";
+var FIELD_IDS=["in-positioning","in-priority","in-customers","in-goal-name",
+  "in-goal-current","in-goal-target","in-knowledge","in-voice","in-tone"];
+var runHistory=[];
+
+function saveState(){
+  var fields={};
+  FIELD_IDS.forEach(function(id){fields[id]=document.getElementById(id).value;});
+  try{localStorage.setItem(STORE_KEY,JSON.stringify({fields:fields,history:runHistory}));}
+  catch(e){/* storage may be unavailable (private mode / file restrictions) */}
+}
+
+function loadState(){
+  var raw;
+  try{raw=localStorage.getItem(STORE_KEY);}catch(e){return;}
+  if(!raw) return;
+  var state;
+  try{state=JSON.parse(raw);}catch(e){return;}
+  if(state.fields){
+    FIELD_IDS.forEach(function(id){
+      if(typeof state.fields[id]==="string") document.getElementById(id).value=state.fields[id];
+    });
+  }
+  runHistory=Array.isArray(state.history)?state.history:[];
+}
+
+function renderHistory(){
+  var section=document.getElementById("history-section");
+  var list=document.getElementById("history-list");
+  if(!runHistory.length){section.hidden=true;return;}
+  list.innerHTML=runHistory.map(function(r){
+    return "<li>"+r.objective+"<span class='rec "+r.recommendation+"'>"+
+      r.recommendation.replace("_"," ")+" · "+r.reached+" reached</span></li>";
+  }).join("");
+  section.hidden=false;
+}
+
 function run(){
   const objective=document.getElementById("objective").value.trim();
   if(!objective) return;
   const report=execute(objective);
   updateIntegrations(report.integrations);
   renderPipeline(report.pipeline);
+  runHistory.push({
+    objective:objective,
+    recommendation:report.pipeline.optimize.recommendation,
+    reached:report.pipeline.outreach.sent.length
+  });
+  saveState();
+  renderHistory();
 }
 
 document.getElementById("run-btn").addEventListener("click",run);
 document.getElementById("objective").addEventListener("keydown",e=>{if(e.key==="Enter")run();});
+FIELD_IDS.forEach(function(id){
+  document.getElementById(id).addEventListener("change",saveState);
+});
+
+loadState();
+renderHistory();
 </script>
 </body>
 </html>

@@ -196,7 +196,9 @@ single self-contained file — the entire think → connect → execute loop is
 ported to in-browser JavaScript. Open it in any browser (double-click it).
 The Company Intelligence fields are editable, so you can change the strategy,
 customers, goal, knowledge, and brand, type an objective, and watch the Agent
-side run against it. Nothing is installed and nothing leaves the page.
+side run against it. Your edits and a run-history list are saved in the
+browser (localStorage), so they survive a reload. Nothing is installed and
+nothing leaves the page.
 
 **Served dashboard (backed by the real Python package).** `ingenium/web/` is
 a stdlib-only HTTP server that serves the same dashboard but runs the actual
@@ -214,6 +216,8 @@ exposes two JSON endpoints the dashboard's JS calls, which you can also hit
 directly:
 
 - `GET /api/edge` — the current company intelligence snapshot.
+- `GET /api/history` — a summary of every run so far (objective,
+  recommendation, number reached), shown as a Run history panel in the UI.
 - `POST /api/execute` with `{"objective": "..."}` — runs the full pipeline
   and returns the same report shape as `Ingenium.execute()`.
 

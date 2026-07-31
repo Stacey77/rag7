@@ -72,6 +72,16 @@ def make_handler(brain: Ingenium) -> type:
             if self.path == "/api/edge":
                 self._send_json(200, brain.company_intelligence.snapshot())
                 return
+            if self.path == "/api/history":
+                self._send_json(200, {"runs": [
+                    {
+                        "objective": r["objective"],
+                        "recommendation": r["pipeline"]["optimize"]["recommendation"],
+                        "reached": len(r["pipeline"]["outreach"]["sent"]),
+                    }
+                    for r in brain.history
+                ]})
+                return
             self._serve_static(self.path)
 
         def do_POST(self) -> None:

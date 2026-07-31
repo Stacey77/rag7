@@ -156,3 +156,22 @@ header p { color: var(--muted); margin-top: 0; }
 
 .recommendation.scale { color: var(--accent-2); font-weight: 600; }
 .recommendation.insufficient_data { color: var(--warn); font-weight: 600; }
+
+.history { margin-top: 1.5rem; }
+.history h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.history-list { margin: 0; padding-left: 1.2rem; }
+.history-list li {
+  font-size: 0.85rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.history-list li:last-child { border-bottom: none; }
+.history-list .rec { margin-left: 0.4rem; font-size: 0.75rem; }
+.history-list .rec.scale { color: var(--accent-2); }
+.history-list .rec.insufficient_data { color: var(--warn); }
