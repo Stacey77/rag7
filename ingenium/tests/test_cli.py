@@ -72,6 +72,16 @@ class TestShowCommand(unittest.TestCase):
         self.assertIn("Launch fall tune-up campaign -> scale", out)
 
 
+class TestCampaignCommand(unittest.TestCase):
+    def test_campaign_exports_assets(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out, _ = _run(["campaign", "Launch fall tune-up campaign", "--demo", "--out", tmp])
+            self.assertEqual(code, 0)
+            self.assertIn("Exported", out)
+            self.assertTrue((Path(tmp) / "landing.html").is_file())
+            self.assertTrue((Path(tmp) / "followups.ics").is_file())
+
+
 class TestDemoCommand(unittest.TestCase):
     def test_demo_prints_report(self):
         code, out, _ = _run(["demo"])

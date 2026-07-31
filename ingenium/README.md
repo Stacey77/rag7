@@ -16,8 +16,10 @@ objective end to end.
 
 - **Prototype, not production.** The architecture and control flow are
   complete and tested; the external integrations are not yet real.
-- **Stubbed integrations.** CRM, email, calendar, etc. are in-memory adapters
-  — nothing is actually sent to a live service.
+- **Stubbed integrations, real deliverables.** The CRM/email/calendar
+  adapters are in-memory (nothing is sent to a live service), but a run can
+  export **real, usable files** — a landing page, outreach email copy, an
+  importable `.ics` calendar, and an outreach CSV — via `ingenium campaign`.
 - **State persists to disk.** The company edge and run history serialize to
   JSON via `save()` / `load()`; only the integration adapters are ephemeral
   (they reconnect fresh each run).
@@ -25,8 +27,9 @@ objective end to end.
   install (uses `str | None` union syntax and `Path.is_relative_to`).
 - **Dashboard included.** Both a zero-setup single HTML file and a served
   version backed by the real package.
-- **Tests included.** 28 unit tests covering both hemispheres, the
-  integration hub, the web layer, state persistence, and the CLI.
+- **Tests included.** 36 unit tests covering both hemispheres, the
+  integration hub, the web layer, state persistence, the CLI, and campaign
+  asset generation.
 
 ## Quick start
 
@@ -36,8 +39,8 @@ From the repo root (no install step — it's stdlib-only):
 # 1. Run the tests (expected to pass on a clean clone)
 python3 -m unittest discover -s ingenium/tests -v
 
-# 2. Run an objective from the command line
-python3 -m ingenium run "Launch fall tune-up campaign" --demo
+# 2. Run an objective and export a real, usable campaign kit to ./campaign
+python3 -m ingenium campaign "Launch fall tune-up campaign" --demo --out ./campaign
 
 # 3. Start the dashboard, then open http://localhost:8000
 python3 -m ingenium serve
@@ -62,6 +65,9 @@ python3 -m ingenium run "Launch fall tune-up campaign" --demo
 python3 -m ingenium run "Kickoff"     --demo --state state.json
 python3 -m ingenium run "Follow-up"          --state state.json
 
+# Export a real campaign kit (see "Campaign export" below)
+python3 -m ingenium campaign "Launch fall tune-up campaign" --demo --out ./campaign
+
 # Inspect a saved state (company edge + run history)
 python3 -m ingenium show --state state.json
 
@@ -76,6 +82,35 @@ python3 -m ingenium demo
 A bare `run` with no `--demo` and no existing `--state` runs against an empty
 edge, which yields the `insufficient_data` recommendation — the CLI's way of
 showing there's nothing to act on yet.
+
+## Campaign export (the working MVP)
+
+`ingenium campaign` runs an objective and writes a folder of **real,
+ready-to-use marketing assets** generated locally from the company edge — no
+API keys, no external calls, nothing sent on your behalf:
+
+```bash
+python3 -m ingenium campaign "Launch fall tune-up campaign" --demo --out ./campaign
+```
+
+produces:
+
+```
+campaign/
+├── landing.html        # a real landing page (headline, positioning, offer, CTA)
+├── emails/
+│   └── 01-...txt       # outreach email copy (subject + body) per customer
+├── followups.ics       # importable calendar file — one event per follow-up
+├── outreach.csv        # every recipient, ready for a mail-merge or CRM import
+└── report.json         # the full execute() report
+```
+
+Open `landing.html` in a browser, double-click `followups.ics` to add the
+follow-ups to any calendar, and paste the email copy straight into your mail
+client. `--state` works here too, so the edge and history carry across runs.
+The content is templated from your strategy, brand voice, and knowledge —
+swap a stubbed adapter for a real API (see [Extending](#extending-swapping-a-stub-for-a-real-api))
+when you want Ingenium to send these itself instead of handing you the files.
 
 ## Concept
 
@@ -157,9 +192,11 @@ ingenium/
 ├── standalone.html           # zero-dependency, client-side-only dashboard
 ├── cli.py                    # `python3 -m ingenium` command-line interface
 ├── __main__.py               # makes the package runnable with -m
+├── campaign.py               # renders a run into real, exportable assets
 ├── samples.py                # the shared sample company edge
 ├── demo.py                   # one-shot sample cycle
-└── tests/                    # test_brain, test_web, test_persistence, test_cli
+└── tests/                    # test_brain, test_web, test_persistence,
+                              #   test_cli, test_campaign
 ```
 
 Top-level responsibilities:
@@ -264,6 +301,7 @@ directly:
 - **Core only (no dashboard):** `python3 -m unittest ingenium.tests.test_brain -v`
 - **Persistence only:** `python3 -m unittest ingenium.tests.test_persistence -v`
 - **CLI only:** `python3 -m unittest ingenium.tests.test_cli -v`
+- **Campaign export only:** `python3 -m unittest ingenium.tests.test_campaign -v`
 - **Web layer only:** `python3 -m unittest ingenium.tests.test_web -v` — this
   binds a server on an ephemeral port (`127.0.0.1:0`), so it needs local
   loopback networking.

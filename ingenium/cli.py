@@ -73,6 +73,20 @@ def _cmd_show(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_campaign(args: argparse.Namespace) -> int:
+    from .campaign import export_campaign  # local import: only needed for this command
+
+    brain = _load_brain(args.state, args.demo)
+    report = brain.execute(args.objective)
+    if args.state:
+        brain.save(args.state)
+    written = export_campaign(report, args.out)
+    print(f"Exported {len(written)} campaign asset(s) to {args.out}:")
+    for name, path in written.items():
+        print(f"  {name:12s} {path}")
+    return 0
+
+
 def _cmd_serve(args: argparse.Namespace) -> int:
     from .web.server import run as serve  # local import: only needed for this command
     serve(host=args.host, port=args.port)
@@ -101,6 +115,13 @@ def build_parser() -> argparse.ArgumentParser:
     show.add_argument("--state", metavar="PATH", required=True, help="path to a saved state file")
     show.add_argument("--json", action="store_true", help="print the raw state JSON")
     show.set_defaults(func=_cmd_show)
+
+    campaign = sub.add_parser("campaign", help="execute an objective and export real campaign assets")
+    campaign.add_argument("objective", help="the objective to run and export")
+    campaign.add_argument("--out", metavar="DIR", required=True, help="directory to write the campaign assets into")
+    campaign.add_argument("--state", metavar="PATH", help="load state from PATH if it exists, and save back after")
+    campaign.add_argument("--demo", action="store_true", help="seed the sample company edge (fresh brain only)")
+    campaign.set_defaults(func=_cmd_campaign)
 
     serve = sub.add_parser("serve", help="start the web dashboard")
     serve.add_argument("--host", default="0.0.0.0", help="interface to bind (default: 0.0.0.0)")
