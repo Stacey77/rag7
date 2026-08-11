@@ -17,7 +17,11 @@ plugged in later (see "Plug-in points").
 # Design a robot from a brief; print the report and export URDF + JSON
 python3 -m robot_agi.design_demo "6-DOF humanoid service robot arm" --out ./out
 
-# Open the 3D viewer (double-click), then "Load design.json" from ./out
+# Control UI (double-click): type a brief, watch the agents collaborate,
+# see the 3D result, download URDF — all in the browser, no server
+robot_agi/design/studio.html
+
+# Or just the 3D viewer for a design.json the demo wrote
 robot_agi/design/viewer.html
 ```
 
