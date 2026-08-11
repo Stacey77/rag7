@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Humanoid Body Studio</title>
+<style>
+:root{--bg:#0d0f15;--panel:#151822;--panel2:#1c202b;--text:#e9ebf2;--muted:#98a0b2;--border:#282d3a;--accent:#6a5bf0;--ok:#35d399}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+.wrap{max-width:1240px;margin:0 auto;padding:1.4rem}
+header{display:flex;align-items:center;gap:.7rem;margin-bottom:.15rem}
+.mark{width:30px;height:30px}
+h1{font-size:1.4rem;margin:0}
+.sub{color:var(--muted);font-size:.9rem;margin:.15rem 0 1.1rem}
+.bar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+select,.bar input[type=text]{padding:.55rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text);font-size:.92rem}
+.btn{cursor:pointer;border:none;border-radius:9px;background:var(--accent);color:#fff;padding:.55rem 1rem;font-weight:600;font-size:.9rem}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:500;padding:.45rem .8rem;font-size:.85rem}
+.stats{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem}
+.stat{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:.35rem .65rem;font-size:.82rem}
+.stat b{color:var(--accent)}
+canvas{width:100%;height:600px;background:linear-gradient(#171b24,#10131a);border:1px solid var(--border);border-radius:12px;display:block;cursor:grab;touch-action:none}
+.ctl{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-top:.7rem;font-size:.84rem;color:var(--muted)}
+.ctl input[type=range]{vertical-align:middle}
+.legend{display:flex;gap:.9rem;font-size:.78rem;margin-top:.5rem}
+.legend span::before{content:"";display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:.35rem;background:var(--c)}
+.foot{color:var(--muted);font-size:.78rem;margin-top:1.3rem;border-top:1px solid var(--border);padding-top:.8rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="24" cy="9" r="6" stroke="var(--ok)" stroke-width="2.4"/>
+      <path d="M24 15v14M24 20l-10 5M24 20l10 5M24 29l-7 12M24 29l7 12" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round"/>
+    </svg>
+    <h1>Humanoid Body Studio</h1>
+  </header>
+  <p class="sub">A full humanoid assembled from limb chains &mdash; torso, head, two arms, two legs &mdash; rendered in 3D. Drag to orbit. Runs entirely in your browser.</p>
+
+  <div class="bar">
+    <select id="preset">
+      <option value="humanoid">Humanoid robot</option>
+      <option value="service">Service robot (long reach)</option>
+      <option value="exo">Exoskeleton (heavy legs)</option>
+    </select>
+    <button class="btn" id="build">Build body</button>
+    <button class="btn ghost" id="dl-urdf">Download URDF</button>
+    <button class="btn ghost" id="dl-json">Download body.json</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <canvas id="c" width="1180" height="600"></canvas>
+  <div class="ctl">
+    <span>Pose <input type="range" id="pose" min="0" max="100" value="18"></span>
+    <span>Spin <input type="range" id="spin" min="0" max="100" value="0"></span>
+    <span>Zoom <input type="range" id="zoom" min="120" max="420" value="230"></span>
+  </div>
+  <div class="legend" id="legend"></div>
+  <p class="foot">Standalone &mdash; each limb is a kinematic chain (the same model as <code>robot_agi.design</code>); the body composes them onto a torso and runs forward kinematics for every joint. The exported URDF is a valid humanoid tree (links + joints with axes and limits).</p>
+</div>
+
+<script>
+"use strict";
+var DENSITY={steel:7850,aluminium:2700,"carbon-fibre":1600};
+var MAT_COLOR={steel:"#8d9199",aluminium:"#cdd2d9","carbon-fibre":"#4a4a58"};
+function round4(x){return Math.round(x*1e4)/1e4;}
+function cylMass(r,l,m){return round4(DENSITY[m]*Math.PI*r*r*l);}
+
+/* ---- 3D maths ---- */
+function rotAxis(a,ang){var x=a[0],y=a[1],z=a[2],n=Math.hypot(x,y,z)||1;x/=n;y/=n;z/=n;var c=Math.cos(ang),s=Math.sin(ang),t=1-c;
+  return [[t*x*x+c,t*x*y-s*z,t*x*z+s*y],[t*x*y+s*z,t*y*y+c,t*y*z-s*x],[t*x*z-s*y,t*y*z+s*x,t*z*z+c]];}
+function mm(A,B){var R=[[0,0,0],[0,0,0],[0,0,0]];for(var i=0;i<3;i++)for(var j=0;j<3;j++)for(var k=0;k<3;k++)R[i][j]+=A[i][k]*B[k][j];return R;}
+function mv(A,v){return [A[0][0]*v[0]+A[0][1]*v[1]+A[0][2]*v[2],A[1][0]*v[0]+A[1][1]*v[1]+A[1][2]*v[2],A[2][0]*v[0]+A[2][1]*v[1]+A[2][2]*v[2]];}
+function add(a,b){return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
+var I3=[[1,0,0],[0,1,0],[0,0,1]];
+function rotX(a){return rotAxis([1,0,0],a);} function rotY(a){return rotAxis([0,1,0],a);}
+
+/* ---- body model ----
+ * A body is a set of chains. Each chain: {name, basePos, baseRot, links[], jointAxes[], rest[], flex[]}
+ * link = {name,len,rad,mat}; jointAxes/rest/flex have length links.length-1.
+ */
+function chain(name, basePos, baseRot, links, jointAxes, rest, flex){
+  return {name:name, basePos:basePos, baseRot:baseRot, links:links, jointAxes:jointAxes, rest:rest||[], flex:flex||[]};
+}
+function L(name,len,rad,mat){return {name:name,len:len,rad:rad,mat:mat};}
+
+function buildBody(preset){
+  var armLen=[0.30,0.26,0.10], legR=1, reachBoost=1;
+  if(preset==="service"){ armLen=[0.36,0.34,0.12]; reachBoost=1.15; }
+  if(preset==="exo"){ legR=1.5; }
+  var chains=[];
+  var down=rotX(Math.PI);            // local +z points to world -z
+  // torso: pelvis(0,0,0.9) up to chest
+  chains.push(chain("torso",[0,0,0.90],I3,
+    [L("pelvis",0.14,0.075,"steel"),L("spine",0.22,0.060,"steel"),L("chest",0.24,0.066,"steel")],
+    [[1,0,0],[1,0,0]],[0,0.05,0],[0,0.10,0]));
+  // head: from chest top (~1.36) up
+  chains.push(chain("head",[0,0,1.36],I3,
+    [L("neck",0.10,0.032,"aluminium"),L("head",0.20,0.090,"carbon-fibre")],
+    [[1,0,0]],[0],[0.12]));
+  // arms: shoulders at ~1.33, +/-0.20 x, hanging down with slight outward splay
+  [["arm_l",-0.20,+0.14],["arm_r",0.20,-0.14]].forEach(function(a){
+    chains.push(chain(a[0],[a[1],0,1.33],mm(down,rotY(a[2])),
+      [L(a[0]+"_upper",armLen[0]*reachBoost,0.040,"steel"),
+       L(a[0]+"_fore",armLen[1]*reachBoost,0.032,"aluminium"),
+       L(a[0]+"_hand",armLen[2],0.025,"carbon-fibre")],
+      [[1,0,0],[1,0,0]],[0.1,0.15,0],[0.5,0.9,0]));
+  });
+  // legs: hips at 0.9, +/-0.10 x, straight down; ankle bends foot forward
+  [["leg_l",-0.10],["leg_r",0.10]].forEach(function(a){
+    chains.push(chain(a[0],[a[1],0,0.90],down,
+      [L(a[0]+"_thigh",0.45,0.055*legR,"steel"),
+       L(a[0]+"_shin",0.43,0.045*legR,"aluminium"),
+       L(a[0]+"_foot",0.14,0.038*legR,"carbon-fibre")],
+      [[1,0,0],[1,0,0]],[0.05,0.05,-1.35],[0.35,-0.8,0]));
+  });
+  return {name:preset+"_humanoid", preset:preset, chains:chains};
+}
+
+/* ---- forward kinematics over all chains ---- */
+function fkChain(ch, poseNorm){
+  var pos=ch.basePos.slice(), R=ch.baseRot, segs=[];
+  for(var i=0;i<ch.links.length;i++){
+    if(i>0){ var ang=(ch.rest[i-1]||0)+(ch.flex[i-1]||0)*poseNorm; R=mm(R,rotAxis(ch.jointAxes[i-1],ang)); }
+    var end=add(pos,mv(R,[0,0,ch.links[i].len]));
+    segs.push({a:pos,b:end,mat:ch.links[i].mat,rad:ch.links[i].rad});
+    pos=end;
+  }
+  return segs;
+}
+function bodySegments(body,poseNorm){
+  var all=[]; body.chains.forEach(function(ch){ fkChain(ch,poseNorm).forEach(function(s){all.push(s);}); });
+  return all;
+}
+
+/* ---- rendering ---- */
+var body=null, yaw=-0.5, pitch=-0.12, dragging=false, lx=0, ly=0;
+var canvas=document.getElementById("c"), ctx=canvas.getContext("2d");
+function project(v){
+  var extraYaw=(+document.getElementById("spin").value)/100*Math.PI*2;
+  var Y=yaw+extraYaw, cy=Math.cos(Y),sy=Math.sin(Y),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  var x=v[0]*cy-v[1]*sy, y=v[0]*sy+v[1]*cy, z=v[2];
+  var y2=y*cp - z*sp, z2=y*sp + z*cp;
+  var scale=+document.getElementById("zoom").value;
+  return {x:canvas.width/2 + x*scale, y:canvas.height*0.90 - z2*scale, depth:y2};
+}
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle="rgba(255,255,255,.05)";ctx.lineWidth=1;
+  for(var g=-6;g<=6;g++){
+    var a=project([g*0.15,-0.9,0]),b=project([g*0.15,0.9,0]);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    var c=project([-0.9,g*0.15,0]),d=project([0.9,g*0.15,0]);ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(d.x,d.y);ctx.stroke();
+  }
+  if(!body) return;
+  var segs=bodySegments(body,(+document.getElementById("pose").value)/100);
+  segs.sort(function(s1,s2){return (project(s1.a).depth+project(s1.b).depth)-(project(s2.a).depth+project(s2.b).depth);});
+  segs.forEach(function(s){
+    var a=project(s.a),b=project(s.b);
+    ctx.strokeStyle=MAT_COLOR[s.mat]||"#8a8a99";
+    ctx.lineWidth=Math.max(4,s.rad*(+document.getElementById("zoom").value)*2.1);
+    ctx.lineCap="round";ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    ctx.fillStyle="rgba(106,91,240,.9)";ctx.beginPath();ctx.arc(a.x,a.y,3.2,0,7);ctx.fill();
+  });
+}
+
+function bodyStats(body){
+  var dof=0,mass=0,top=0;
+  body.chains.forEach(function(ch){
+    dof += ch.links.length-1;
+    ch.links.forEach(function(l){ mass += cylMass(l.rad,l.len,l.mat); });
+  });
+  // height = highest world-z of any joint/tip at rest pose
+  bodySegments(body,0).forEach(function(s){ top=Math.max(top,s.a[2],s.b[2]); });
+  return {dof:dof, mass:round4(mass), height:round4(top)};
+}
+function renderStats(){
+  var s=bodyStats(body);
+  document.getElementById("stats").innerHTML=
+    '<span class="stat"><b>'+body.name+'</b></span>'+
+    '<span class="stat">Limbs <b>'+body.chains.length+'</b></span>'+
+    '<span class="stat">DOF <b>'+s.dof+'</b></span>'+
+    '<span class="stat">Mass <b>'+s.mass.toFixed(1)+' kg</b></span>'+
+    '<span class="stat">Height <b>'+s.height.toFixed(2)+' m</b></span>';
+  document.getElementById("legend").innerHTML=Object.keys(MAT_COLOR).map(function(m){
+    return '<span style="--c:'+MAT_COLOR[m]+'">'+m+'</span>';}).join("");
+}
+
+/* ---- URDF export (valid humanoid tree) ---- */
+function urdfColor(m){return {steel:"0.55 0.57 0.60 1",aluminium:"0.80 0.82 0.85 1","carbon-fibre":"0.15 0.15 0.18 1"}[m];}
+function toUrdf(body){
+  function f(x){return (+x).toFixed(4);}
+  var out=['<?xml version="1.0"?>','<robot name="'+body.name+'">'];
+  // root link
+  out.push('  <link name="root"/>');
+  body.chains.forEach(function(ch){
+    var prev="root", mountXyz=ch.basePos;
+    ch.links.forEach(function(l,i){
+      out.push('  <link name="'+l.name+'">',
+        '    <visual><origin xyz="0 0 '+f(l.len/2)+'"/><geometry><cylinder radius="'+f(l.rad)+'" length="'+f(l.len)+'"/></geometry>',
+        '      <material name="'+l.mat+'"><color rgba="'+urdfColor(l.mat)+'"/></material></visual>',
+        '    <inertial><mass value="'+f(cylMass(l.rad,l.len,l.mat))+'"/><origin xyz="0 0 '+f(l.len/2)+'"/>',
+        '      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/></inertial>',
+        '  </link>');
+      var jtype=(i===0)?"fixed":"revolute";
+      var xyz=(i===0)?(f(mountXyz[0])+" "+f(mountXyz[1])+" "+f(mountXyz[2])):("0 0 "+f(ch.links[i-1].len));
+      out.push('  <joint name="'+l.name+'_joint" type="'+jtype+'">',
+        '    <parent link="'+prev+'"/><child link="'+l.name+'"/>',
+        '    <origin xyz="'+xyz+'"/>');
+      if(jtype==="revolute"){
+        var ax=ch.jointAxes[i-1];
+        out.push('    <axis xyz="'+ax.join(" ")+'"/><limit lower="-3.1416" upper="3.1416" effort="80" velocity="2.0"/>');
+      }
+      out.push('  </joint>');
+      prev=l.name;
+    });
+  });
+  out.push('</robot>'); return out.join("\n")+"\n";
+}
+
+function download(name,text,type){var b=new Blob([text],{type:type||"text/plain"}),u=URL.createObjectURL(b),a=document.createElement("a");
+  a.href=u;a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u);},800);}
+
+function build(){ body=buildBody(document.getElementById("preset").value); renderStats(); draw(); }
+
+document.getElementById("build").addEventListener("click",build);
+document.getElementById("preset").addEventListener("change",build);
+["pose","spin","zoom"].forEach(function(id){document.getElementById(id).addEventListener("input",draw);});
+document.getElementById("dl-urdf").addEventListener("click",function(){if(body)download(body.name+".urdf",toUrdf(body),"application/xml");});
+document.getElementById("dl-json").addEventListener("click",function(){if(body)download("body.json",JSON.stringify(body,null,2),"application/json");});
+canvas.addEventListener("pointerdown",function(e){dragging=true;lx=e.clientX;ly=e.clientY;canvas.style.cursor="grabbing";});
+window.addEventListener("pointerup",function(){dragging=false;canvas.style.cursor="grab";});
+window.addEventListener("pointermove",function(e){if(!dragging)return;yaw+=(e.clientX-lx)*0.01;pitch+=(e.clientY-ly)*0.01;lx=e.clientX;ly=e.clientY;draw();});
+
+build();
+</script>
+</body>
+</html>
