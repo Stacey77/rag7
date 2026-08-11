@@ -1,5 +1,8 @@
 # Ingenium
 
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
+![Dependencies: stdlib only](https://img.shields.io/badge/dependencies-stdlib--only-brightgreen)
+
 **A two-hemisphere engine that turns what a company knows into what it does.**
 
 Ingenium pairs a company's knowledge (strategy, customers, goals, knowledge,
@@ -54,6 +57,14 @@ python3 -m ingenium demo
 
 Prefer no terminal at all? Open `ingenium/standalone.html` in any browser —
 the whole loop runs client-side (see [HTML dashboard](#html-dashboard)).
+
+### Prerequisites and setup
+
+- **Python:** 3.10 or newer (the provided container uses `python:3.12-slim`).
+- **Dependencies:** none beyond the Python standard library.
+- **Packaging:** Ingenium is stdlib-only and structured as a package, but this
+  repo ships no packaging metadata (`pyproject.toml` / `setup.py`) — run
+  commands from the repo root, or otherwise put the repo root on `PYTHONPATH`.
 
 ## Command-line interface
 
