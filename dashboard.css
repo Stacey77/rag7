@@ -595,3 +595,83 @@
     padding-bottom: calc(48px + env(safe-area-inset-bottom));
   }
 }
+
+/* ── AI Campaign Brain (Ingenium) ─────────────────────────────────────── */
+.ai-intro {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: -0.25rem 0 1rem;
+}
+.ai-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 640px) {
+  .ai-grid { grid-template-columns: 1fr; }
+}
+.ai-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-top: 0.6rem;
+}
+.ai-input {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  margin-top: 0.2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--contact-item-bg);
+  color: var(--text-primary);
+  font: inherit;
+}
+.ai-run-btn {
+  width: 100%;
+  margin-top: 0.9rem;
+  justify-content: center;
+  cursor: pointer;
+}
+.ai-output { margin-top: 1rem; }
+.ai-rec {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+.ai-rec--scale { background: rgba(23, 166, 115, 0.15); color: #17a673; }
+.ai-rec--insufficient_data { background: rgba(201, 138, 29, 0.15); color: #c98a1d; }
+.ai-stages { list-style: none; margin: 0; padding: 0; }
+.ai-stage {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.85rem;
+}
+.ai-stage:last-child { border-bottom: none; }
+.ai-stage__name { font-weight: 600; color: var(--text-primary); }
+.ai-stage__detail { color: var(--text-secondary); text-align: right; }
+.ai-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+.ai-dl-label { font-size: 0.8rem; color: var(--text-muted); }
+.ai-dl {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--contact-item-bg);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.ai-dl:hover { background: var(--contact-item-hover); }

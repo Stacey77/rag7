@@ -150,6 +150,43 @@
       </div>
     </section>
 
+    <!-- ── AI Campaign Brain (Ingenium, runs in-browser) ─────────── -->
+    <section class="dash-section dash-section--card ai-campaign" id="ai-campaign" aria-labelledby="ai-heading">
+      <h2 class="dash-section__title" id="ai-heading">AI Campaign Brain</h2>
+      <p class="ai-intro">Turn a goal into ready-to-send marketing assets. Runs entirely in your browser — nothing is sent.</p>
+
+      <div class="ai-grid">
+        <div class="ai-fields">
+          <label class="ai-label" for="ai-positioning">What you do</label>
+          <input id="ai-positioning" class="ai-input" type="text" value="Mobile key fob programming & auto diagnostics that come to you">
+          <label class="ai-label" for="ai-offer">Current offer</label>
+          <input id="ai-offer" class="ai-input" type="text" value="Fall tune-up special: $99">
+          <label class="ai-label" for="ai-voice">Brand voice</label>
+          <input id="ai-voice" class="ai-input" type="text" value="direct, confident, no fluff">
+          <label class="ai-label" for="ai-customers">Customer emails (one per line)</label>
+          <textarea id="ai-customers" class="ai-input" rows="3" placeholder="lead@example.com"></textarea>
+        </div>
+
+        <div class="ai-run-col">
+          <label class="ai-label" for="ai-objective">Campaign goal</label>
+          <input id="ai-objective" class="ai-input" type="text" value="Launch fall tune-up campaign" autocomplete="off">
+          <button id="ai-run" class="qaction-btn ai-run-btn" type="button">Generate campaign</button>
+
+          <div class="ai-output" id="ai-output" hidden>
+            <span class="ai-rec" id="ai-rec"></span>
+            <ul class="ai-stages" id="ai-stages"></ul>
+            <div class="ai-downloads" id="ai-downloads" hidden>
+              <span class="ai-dl-label">Download:</span>
+              <button id="dl-landing" class="ai-dl" type="button">Landing page</button>
+              <button id="dl-emails" class="ai-dl" type="button">Emails</button>
+              <button id="dl-ics" class="ai-dl" type="button">Calendar</button>
+              <button id="dl-csv" class="ai-dl" type="button">CSV</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Appointments + Breakdown ──────────────────────────────── -->
     <div class="dash-columns">
 
@@ -296,5 +333,6 @@
   </main>
 
   <script src="/rag7/dashboard.js"></script>
+  <script src="/rag7/ingenium-brain.js"></script>
 </body>
 </html>
