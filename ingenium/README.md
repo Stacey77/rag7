@@ -30,9 +30,9 @@ objective end to end.
   history, and one-click campaign-kit download — all saved to disk.
 - **Dashboards included.** A zero-setup single HTML file, a single-workspace
   served dashboard, and the multi-workspace platform.
-- **Tests included.** 48 unit tests covering both hemispheres, the
+- **Tests included.** 53 unit tests covering both hemispheres, the
   integration hub, the web layer, state persistence, the CLI, campaign asset
-  generation, and the platform (store + REST API).
+  generation, and the platform (store + full REST API).
 
 ## Quick start
 
@@ -129,8 +129,8 @@ python3 -m ingenium platform --data-dir ./ingenium_data
 
 In the browser you can:
 
-- **Create workspaces** (optionally seeded with sample data) from the sidebar,
-  and switch between them — each keeps its own state.
+- **Create, rename, and delete workspaces** (optionally seeded with sample
+  data) from the sidebar, and switch between them — each keeps its own state.
 - **Edit the company edge** (positioning, customers, goal, offer, brand voice)
   and save it per workspace.
 - **Run objectives** and watch the Agent stages execute; the run history
@@ -149,6 +149,8 @@ directly) is:
 | `GET /api/workspaces/<slug>` | edge + run history for one workspace |
 | `PUT /api/workspaces/<slug>/edge` `{edge}` | replace the company edge |
 | `POST /api/workspaces/<slug>/execute` `{objective}` | run and persist |
+| `POST /api/workspaces/<slug>/rename` `{name}` | rename (slug id unchanged) |
+| `DELETE /api/workspaces/<slug>` | delete a workspace |
 | `GET /api/workspaces/<slug>/campaign.zip?objective=…` | download a kit (does not alter stored history) |
 
 ## Concept

@@ -90,6 +90,46 @@ class WorkspaceStore:
         logger.info("Created workspace '%s'", slug)
         return self.meta(slug)
 
+    def delete(self, slug: str) -> None:
+        """Delete a workspace.
+
+        Args:
+            slug: Workspace id.
+
+        Raises:
+            KeyError: If the workspace does not exist.
+        """
+        path = self._path(slug)
+        if not path.is_file():
+            raise KeyError(slug)
+        path.unlink()
+        logger.info("Deleted workspace '%s'", slug)
+
+    def rename(self, slug: str, new_name: str) -> dict:
+        """Change a workspace's display name (its slug id is unchanged).
+
+        Args:
+            slug: Workspace id.
+            new_name: New display name.
+
+        Returns:
+            The workspace's updated metadata.
+
+        Raises:
+            KeyError: If the workspace does not exist.
+            ValueError: If the new name is empty.
+        """
+        if not new_name.strip():
+            raise ValueError("workspace name must not be empty")
+        path = self._path(slug)
+        if not path.is_file():
+            raise KeyError(slug)
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["name"] = new_name.strip()
+        path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        logger.info("Renamed workspace '%s' to '%s'", slug, new_name)
+        return self.meta(slug)
+
     def load(self, slug: str) -> Ingenium:
         """Load the Ingenium instance for a workspace.
 
@@ -247,6 +287,30 @@ def make_handler(store: WorkspaceStore) -> type:
                 report = brain.execute(objective)
                 store.save(slug, brain)
                 self._json(200, report)
+                return
+            if len(parts) == 4 and parts[0] == "api" and parts[1] == "workspaces" and parts[3] == "rename":
+                slug = parts[2]
+                if not store.exists(slug):
+                    self._json(404, {"error": "no such workspace"})
+                    return
+                try:
+                    meta = store.rename(slug, str(self._body().get("name", "")))
+                except ValueError as exc:
+                    self._json(400, {"error": str(exc)})
+                    return
+                self._json(200, meta)
+                return
+            self._json(404, {"error": "not found"})
+
+        def do_DELETE(self) -> None:
+            parts = [p for p in urlparse(self.path).path.split("/") if p]
+            if len(parts) == 3 and parts[0] == "api" and parts[1] == "workspaces":
+                slug = parts[2]
+                if not store.exists(slug):
+                    self._json(404, {"error": "no such workspace"})
+                    return
+                store.delete(slug)
+                self._json(200, {"deleted": slug})
                 return
             self._json(404, {"error": "not found"})
 

@@ -33,6 +33,8 @@ button:disabled{opacity:.6;cursor:default}
 .main-head{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1rem}
 .main-head h2{margin:0}
 .runs{color:var(--muted);font-size:.85rem}
+.head-actions{margin-left:auto;display:flex;gap:.5rem}
+button.danger{color:#e5484d;border-color:#e5484d}
 .columns{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
 @media (max-width:760px){.columns{grid-template-columns:1fr}}
 .section-head{display:flex;justify-content:space-between;align-items:center}

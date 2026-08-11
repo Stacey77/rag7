@@ -62,6 +62,29 @@ class TestWorkspaceStore(unittest.TestCase):
         self.store.create("Alpha Co")
         self.assertEqual([m["name"] for m in self.store.list()], ["Alpha Co", "Zeta Co"])
 
+    def test_delete_removes_workspace(self):
+        self.store.create("Fortis Auto")
+        self.store.delete("fortis-auto")
+        self.assertFalse(self.store.exists("fortis-auto"))
+        with self.assertRaises(KeyError):
+            self.store.delete("fortis-auto")
+
+    def test_rename_keeps_slug_changes_name(self):
+        self.store.create("Fortis Auto", seed=True)
+        meta = self.store.rename("fortis-auto", "Fortis Automotive")
+        self.assertEqual(meta["slug"], "fortis-auto")
+        self.assertEqual(meta["name"], "Fortis Automotive")
+        # renaming preserves the underlying state
+        self.assertEqual(
+            self.store.load("fortis-auto").company_intelligence.strategy.snapshot()["positioning"],
+            "AI ops partner for local service businesses",
+        )
+
+    def test_rename_rejects_empty(self):
+        self.store.create("Fortis Auto")
+        with self.assertRaises(ValueError):
+            self.store.rename("fortis-auto", "   ")
+
 
 class TestPlatformAPI(unittest.TestCase):
     def setUp(self):
@@ -132,6 +155,27 @@ class TestPlatformAPI(unittest.TestCase):
         # transient export must not have added to stored history
         _, ws = self._req("GET", f"/api/workspaces/{slug}")
         self.assertEqual(ws["runs"], 0)
+
+    def test_rename_then_delete_via_api(self):
+        _, meta = self._req("POST", "/api/workspaces", {"name": "Fortis Auto", "seed": True})
+        slug = meta["slug"]
+
+        status, renamed = self._req("POST", f"/api/workspaces/{slug}/rename", {"name": "Fortis Automotive"})
+        self.assertEqual(status, 200)
+        self.assertEqual(renamed["name"], "Fortis Automotive")
+        self.assertEqual(renamed["slug"], slug)  # slug unchanged
+
+        status, deleted = self._req("DELETE", f"/api/workspaces/{slug}")
+        self.assertEqual(status, 200)
+        self.assertEqual(deleted["deleted"], slug)
+
+        _, listing = self._req("GET", "/api/workspaces")
+        self.assertEqual(listing["workspaces"], [])
+
+    def test_delete_unknown_is_404(self):
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            self._req("DELETE", "/api/workspaces/nope")
+        self.assertEqual(ctx.exception.code, 404)
 
     def test_unknown_workspace_is_404(self):
         with self.assertRaises(urllib.error.HTTPError) as ctx:

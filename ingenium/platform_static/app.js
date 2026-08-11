@@ -174,6 +174,32 @@ async function exportKit() {
   window.location = "/api/workspaces/" + current + "/campaign.zip?objective=" + encodeURIComponent(objective);
 }
 
+async function renameWorkspace() {
+  if (!current) return;
+  var name = prompt("Rename workspace to:", $("ws-name").textContent);
+  if (name === null) return;
+  name = name.trim();
+  if (!name) return;
+  showError("main-error", "");
+  try {
+    await api("POST", "/api/workspaces/" + current + "/rename", { name: name });
+    $("ws-name").textContent = name;
+    await loadWorkspaces();
+  } catch (e) { showError("main-error", e.message); }
+}
+
+async function deleteWorkspace() {
+  if (!current) return;
+  if (!confirm('Delete workspace "' + $("ws-name").textContent + '"? This cannot be undone.')) return;
+  showError("main-error", "");
+  try {
+    await api("DELETE", "/api/workspaces/" + current);
+    current = null;
+    $("main").hidden = true;
+    await loadWorkspaces();
+  } catch (e) { showError("main-error", e.message); }
+}
+
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, function (c) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
@@ -183,6 +209,8 @@ function escapeHtml(s) {
 $("create-btn").addEventListener("click", createWorkspace);
 $("new-name").addEventListener("keydown", function (e) { if (e.key === "Enter") createWorkspace(); });
 $("save-edge-btn").addEventListener("click", saveEdge);
+$("rename-btn").addEventListener("click", renameWorkspace);
+$("delete-btn").addEventListener("click", deleteWorkspace);
 $("run-btn").addEventListener("click", run);
 $("export-btn").addEventListener("click", exportKit);
 $("objective").addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
