@@ -21,8 +21,9 @@ python3 -m robot_agi.design_demo "6-DOF humanoid service robot arm" --out ./out
 # see the 3D result, download URDF — all in the browser, no server
 robot_agi/design/studio.html
 
-# Full humanoid: assemble torso + head + 2 arms + 2 legs into one body,
-# pose it, and export a valid humanoid URDF tree
+# Full humanoid: describe a body in a brief (fingered hands / wheeled base /
+# headless / exoskeleton / segmented spine), animate it (walk / wave), and
+# export a valid URDF tree
 robot_agi/design/humanoid.html
 
 # Or just the 3D viewer for a design.json the demo wrote
