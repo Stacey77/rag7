@@ -12,7 +12,7 @@ import zipfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from ingenium.platform import WorkspaceStore, make_server, slugify
+from ingenium.platform import WorkspaceStore, _history_summary, make_server, slugify
 
 
 class TestSlugify(unittest.TestCase):
@@ -84,6 +84,43 @@ class TestWorkspaceStore(unittest.TestCase):
         self.store.create("Fortis Auto")
         with self.assertRaises(ValueError):
             self.store.rename("fortis-auto", "   ")
+
+    def test_load_raises_on_corrupt_workspace_file(self):
+        self.store.create("Fortis Auto")
+        path = os.path.join(self.tmp.name, "fortis-auto.json")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write("{not-json")
+        with self.assertRaises(ValueError):
+            self.store.load("fortis-auto")
+
+    def test_list_skips_corrupt_workspace_file(self):
+        self.store.create("Good Co")
+        with open(os.path.join(self.tmp.name, "bad.json"), "w", encoding="utf-8") as fh:
+            fh.write("{broken")
+        self.assertEqual([m["slug"] for m in self.store.list()], ["good-co"])
+
+    def test_write_is_atomic_and_leaves_no_temp_files(self):
+        self.store.create("Fortis Auto")
+        brain = self.store.load("fortis-auto")
+        brain.execute("Launch campaign")
+        self.store.save("fortis-auto", brain)
+        files = sorted(p for p in os.listdir(self.tmp.name) if not p.startswith("."))
+        self.assertEqual(files, ["fortis-auto.json"])
+
+
+class TestHistorySummary(unittest.TestCase):
+    def test_history_summary_tolerates_partial_records(self):
+        class Dummy:
+            history = [
+                {"objective": "A"},
+                {"pipeline": {"optimize": {"recommendation": "scale"}}},
+                {"pipeline": {"outreach": {"sent": [{"to": "x@y.com"}]}}},
+            ]
+
+        summary = _history_summary(Dummy())
+        self.assertEqual(summary[0], {"objective": "A", "recommendation": "", "reached": 0})
+        self.assertEqual(summary[1], {"objective": "", "recommendation": "scale", "reached": 0})
+        self.assertEqual(summary[2], {"objective": "", "recommendation": "", "reached": 1})
 
 
 class TestPlatformAPI(unittest.TestCase):
@@ -186,6 +223,16 @@ class TestPlatformAPI(unittest.TestCase):
         self._req("POST", "/api/workspaces", {"name": "Fortis Auto"})
         with self.assertRaises(urllib.error.HTTPError) as ctx:
             self._req("POST", "/api/workspaces", {"name": "Fortis Auto"})
+        self.assertEqual(ctx.exception.code, 400)
+
+    def test_corrupt_workspace_returns_400(self):
+        _, meta = self._req("POST", "/api/workspaces", {"name": "Fortis Auto"})
+        slug = meta["slug"]
+        path = os.path.join(self.tmp.name, f"{slug}.json")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write("{bad-json")
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            self._req("GET", f"/api/workspaces/{slug}")
         self.assertEqual(ctx.exception.code, 400)
 
 
