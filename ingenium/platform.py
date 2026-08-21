@@ -40,6 +40,14 @@ def slugify(name: str) -> str:
     return slug[:60]
 
 
+def _read_json_file(path: Path) -> dict:
+    """Read workspace JSON and normalize corruption errors."""
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"corrupt workspace file: {path.name}") from exc
+
+
 class WorkspaceStore:
     """Persists one Ingenium instance per named workspace under a data dir."""
 
@@ -124,7 +132,7 @@ class WorkspaceStore:
         path = self._path(slug)
         if not path.is_file():
             raise KeyError(slug)
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = _read_json_file(path)
         payload["name"] = new_name.strip()
         path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         logger.info("Renamed workspace '%s' to '%s'", slug, new_name)
@@ -145,7 +153,7 @@ class WorkspaceStore:
         path = self._path(slug)
         if not path.is_file():
             raise KeyError(slug)
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = _read_json_file(path)
         brain = Ingenium()
         brain.load_state(payload["state"])
         return brain
@@ -156,33 +164,41 @@ class WorkspaceStore:
         self._write(slug, name, brain)
 
     def _write(self, slug: str, name: str, brain: Ingenium) -> None:
-        self._path(slug).write_text(
-            json.dumps({"name": name, "state": brain.state()}, indent=2), encoding="utf-8"
-        )
+        path = self._path(slug)
+        payload = json.dumps({"name": name, "state": brain.state()}, indent=2)
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as tmp:
+            tmp.write(payload)
+            tmp_path = Path(tmp.name)
+        tmp_path.replace(path)
 
     def _name_of(self, slug: str) -> str:
         path = self._path(slug)
         if path.is_file():
-            return json.loads(path.read_text(encoding="utf-8")).get("name", slug)
+            return _read_json_file(path).get("name", slug)
         return slug
 
     def meta(self, slug: str) -> dict:
         """Return summary metadata for a workspace (slug, name, run count)."""
-        payload = json.loads(self._path(slug).read_text(encoding="utf-8"))
-        return {"slug": slug, "name": payload.get("name", slug), "runs": len(payload["state"].get("history", []))}
+        payload = _read_json_file(self._path(slug))
+        return {"slug": slug, "name": payload.get("name", slug), "runs": len(payload.get("state", {}).get("history", []))}
 
     def list(self) -> list[dict]:
         """Return metadata for every workspace, sorted by name."""
-        metas = [self.meta(p.stem) for p in self.dir.glob("*.json")]
+        metas = []
+        for p in self.dir.glob("*.json"):
+            try:
+                metas.append(self.meta(p.stem))
+            except ValueError:
+                logger.warning("Skipping corrupt workspace file: %s", p.name)
         return sorted(metas, key=lambda m: m["name"].lower())
 
 
 def _history_summary(brain: Ingenium) -> list[dict]:
     return [
         {
-            "objective": r["objective"],
-            "recommendation": r["pipeline"]["optimize"]["recommendation"],
-            "reached": len(r["pipeline"]["outreach"]["sent"]),
+            "objective": r.get("objective", ""),
+            "recommendation": r.get("pipeline", {}).get("optimize", {}).get("recommendation", ""),
+            "reached": len(r.get("pipeline", {}).get("outreach", {}).get("sent", [])),
         }
         for r in brain.history
     ]
@@ -247,12 +263,13 @@ def make_handler(store: WorkspaceStore) -> type:
                     self._json(404, {"error": "no such workspace"})
                     return
                 if len(parts) == 3:
-                    brain = store.load(slug)
-                    self._json(200, {
-                        **store.meta(slug),
-                        "edge": brain.company_intelligence.snapshot(),
-                        "history": _history_summary(brain),
-                    })
+                    try:
+                        brain = store.load(slug)
+                        meta = store.meta(slug)
+                    except ValueError as exc:
+                        self._json(400, {"error": str(exc)})
+                        return
+                    self._json(200, {**meta, "edge": brain.company_intelligence.snapshot(), "history": _history_summary(brain)})
                     return
                 if len(parts) == 4 and parts[3] == "campaign.zip":
                     objective = (parse_qs(parsed.query).get("objective", [""])[0]).strip()
@@ -283,9 +300,13 @@ def make_handler(store: WorkspaceStore) -> type:
                 if not objective:
                     self._json(400, {"error": "objective is required"})
                     return
-                brain = store.load(slug)
-                report = brain.execute(objective)
-                store.save(slug, brain)
+                try:
+                    brain = store.load(slug)
+                    report = brain.execute(objective)
+                    store.save(slug, brain)
+                except ValueError as exc:
+                    self._json(400, {"error": str(exc)})
+                    return
                 self._json(200, report)
                 return
             if len(parts) == 4 and parts[0] == "api" and parts[1] == "workspaces" and parts[3] == "rename":
@@ -323,19 +344,23 @@ def make_handler(store: WorkspaceStore) -> type:
                     return
                 try:
                     edge = self._body().get("edge", {})
-                except json.JSONDecodeError as exc:
+                    brain = store.load(slug)
+                    brain.company_intelligence.restore(edge)
+                    store.save(slug, brain)
+                except (json.JSONDecodeError, ValueError) as exc:
                     self._json(400, {"error": str(exc)})
                     return
-                brain = store.load(slug)
-                brain.company_intelligence.restore(edge)
-                store.save(slug, brain)
                 self._json(200, {"edge": brain.company_intelligence.snapshot()})
                 return
             self._json(404, {"error": "not found"})
 
         def _export_zip(self, slug: str, objective: str) -> None:
             # Export against a transient copy so the stored history is untouched.
-            brain = store.load(slug)
+            try:
+                brain = store.load(slug)
+            except ValueError as exc:
+                self._json(400, {"error": str(exc)})
+                return
             report = brain.execute(objective)
             with tempfile.TemporaryDirectory() as tmp:
                 written = export_campaign(report, tmp)
