@@ -11,6 +11,7 @@ locally (see ``campaign.py``).
 import io
 import json
 import logging
+import os
 import re
 import tempfile
 import zipfile
@@ -54,14 +55,17 @@ def _read_json_file(path: Path) -> dict:
 def _write_json_file(path: Path, payload: dict) -> None:
     """Write JSON via temp file and atomically replace the target."""
     temp_name = None
+    replaced = False
     try:
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False, suffix=".tmp") as tmp:
             temp_name = tmp.name
             json.dump(payload, tmp, indent=2)
             tmp.flush()
+            os.fsync(tmp.fileno())
         Path(temp_name).replace(path)
+        replaced = True
     finally:
-        if temp_name:
+        if temp_name and not replaced:
             tmp_path = Path(temp_name)
             if tmp_path.exists():
                 tmp_path.unlink()
@@ -387,8 +391,12 @@ def make_handler(store: WorkspaceStore) -> type:
                     return
                 try:
                     edge = self._body().get("edge", {})
+                except json.JSONDecodeError as exc:
+                    self._json(400, {"error": str(exc)})
+                    return
+                try:
                     brain = store.load(slug)
-                except (json.JSONDecodeError, ValueError) as exc:
+                except ValueError as exc:
                     self._json(400, {"error": str(exc)})
                     return
                 brain.company_intelligence.restore(edge)
