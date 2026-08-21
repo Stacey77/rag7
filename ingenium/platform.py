@@ -40,6 +40,33 @@ def slugify(name: str) -> str:
     return slug[:60]
 
 
+def _read_json_file(path: Path) -> dict:
+    """Read and parse a workspace JSON file."""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"workspace file '{path.name}' is corrupt") from exc
+    if not isinstance(payload, dict):
+        raise ValueError(f"workspace file '{path.name}' is corrupt")
+    return payload
+
+
+def _write_json_file(path: Path, payload: dict) -> None:
+    """Write JSON via temp file and atomically replace the target."""
+    temp_name = None
+    try:
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False, suffix=".tmp") as tmp:
+            temp_name = tmp.name
+            json.dump(payload, tmp, indent=2)
+            tmp.flush()
+        Path(temp_name).replace(path)
+    finally:
+        if temp_name:
+            tmp_path = Path(temp_name)
+            if tmp_path.exists():
+                tmp_path.unlink()
+
+
 class WorkspaceStore:
     """Persists one Ingenium instance per named workspace under a data dir."""
 
@@ -124,9 +151,9 @@ class WorkspaceStore:
         path = self._path(slug)
         if not path.is_file():
             raise KeyError(slug)
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = _read_json_file(path)
         payload["name"] = new_name.strip()
-        path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        _write_json_file(path, payload)
         logger.info("Renamed workspace '%s' to '%s'", slug, new_name)
         return self.meta(slug)
 
@@ -145,9 +172,12 @@ class WorkspaceStore:
         path = self._path(slug)
         if not path.is_file():
             raise KeyError(slug)
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = _read_json_file(path)
+        state = payload.get("state")
+        if not isinstance(state, dict):
+            raise ValueError(f"workspace file '{path.name}' is corrupt")
         brain = Ingenium()
-        brain.load_state(payload["state"])
+        brain.load_state(state)
         return brain
 
     def save(self, slug: str, brain: Ingenium) -> None:
@@ -156,20 +186,24 @@ class WorkspaceStore:
         self._write(slug, name, brain)
 
     def _write(self, slug: str, name: str, brain: Ingenium) -> None:
-        self._path(slug).write_text(
-            json.dumps({"name": name, "state": brain.state()}, indent=2), encoding="utf-8"
-        )
+        _write_json_file(self._path(slug), {"name": name, "state": brain.state()})
 
     def _name_of(self, slug: str) -> str:
         path = self._path(slug)
         if path.is_file():
-            return json.loads(path.read_text(encoding="utf-8")).get("name", slug)
+            return _read_json_file(path).get("name", slug)
         return slug
 
     def meta(self, slug: str) -> dict:
         """Return summary metadata for a workspace (slug, name, run count)."""
-        payload = json.loads(self._path(slug).read_text(encoding="utf-8"))
-        return {"slug": slug, "name": payload.get("name", slug), "runs": len(payload["state"].get("history", []))}
+        payload = _read_json_file(self._path(slug))
+        state = payload.get("state", {})
+        if not isinstance(state, dict):
+            state = {}
+        history = state.get("history", [])
+        if not isinstance(history, list):
+            history = []
+        return {"slug": slug, "name": payload.get("name", slug), "runs": len(history)}
 
     def list(self) -> list[dict]:
         """Return metadata for every workspace, sorted by name."""
@@ -178,14 +212,27 @@ class WorkspaceStore:
 
 
 def _history_summary(brain: Ingenium) -> list[dict]:
-    return [
-        {
-            "objective": r["objective"],
-            "recommendation": r["pipeline"]["optimize"]["recommendation"],
-            "reached": len(r["pipeline"]["outreach"]["sent"]),
-        }
-        for r in brain.history
-    ]
+    summary = []
+    for run in brain.history:
+        record = run if isinstance(run, dict) else {}
+        pipeline = record.get("pipeline")
+        if not isinstance(pipeline, dict):
+            pipeline = {}
+        optimize = pipeline.get("optimize")
+        if not isinstance(optimize, dict):
+            optimize = {}
+        outreach = pipeline.get("outreach")
+        if not isinstance(outreach, dict):
+            outreach = {}
+        sent = outreach.get("sent")
+        if not isinstance(sent, list):
+            sent = []
+        summary.append({
+            "objective": record.get("objective", ""),
+            "recommendation": optimize.get("recommendation", ""),
+            "reached": len(sent),
+        })
+    return summary
 
 
 def make_handler(store: WorkspaceStore) -> type:
@@ -239,7 +286,12 @@ def make_handler(store: WorkspaceStore) -> type:
             parsed = urlparse(self.path)
             parts = [p for p in parsed.path.split("/") if p]
             if parsed.path == "/api/workspaces":
-                self._json(200, {"workspaces": store.list()})
+                try:
+                    listing = store.list()
+                except ValueError as exc:
+                    self._json(400, {"error": str(exc)})
+                    return
+                self._json(200, {"workspaces": listing})
                 return
             if len(parts) >= 3 and parts[0] == "api" and parts[1] == "workspaces":
                 slug = parts[2]
@@ -247,9 +299,14 @@ def make_handler(store: WorkspaceStore) -> type:
                     self._json(404, {"error": "no such workspace"})
                     return
                 if len(parts) == 3:
-                    brain = store.load(slug)
+                    try:
+                        brain = store.load(slug)
+                        meta = store.meta(slug)
+                    except ValueError as exc:
+                        self._json(400, {"error": str(exc)})
+                        return
                     self._json(200, {
-                        **store.meta(slug),
+                        **meta,
                         "edge": brain.company_intelligence.snapshot(),
                         "history": _history_summary(brain),
                     })
@@ -259,7 +316,10 @@ def make_handler(store: WorkspaceStore) -> type:
                     if not objective:
                         self._json(400, {"error": "objective is required"})
                         return
-                    self._export_zip(slug, objective)
+                    try:
+                        self._export_zip(slug, objective)
+                    except ValueError as exc:
+                        self._json(400, {"error": str(exc)})
                     return
             self._static(parsed.path)
 
@@ -283,9 +343,13 @@ def make_handler(store: WorkspaceStore) -> type:
                 if not objective:
                     self._json(400, {"error": "objective is required"})
                     return
-                brain = store.load(slug)
-                report = brain.execute(objective)
-                store.save(slug, brain)
+                try:
+                    brain = store.load(slug)
+                    report = brain.execute(objective)
+                    store.save(slug, brain)
+                except ValueError as exc:
+                    self._json(400, {"error": str(exc)})
+                    return
                 self._json(200, report)
                 return
             if len(parts) == 4 and parts[0] == "api" and parts[1] == "workspaces" and parts[3] == "rename":
@@ -323,10 +387,10 @@ def make_handler(store: WorkspaceStore) -> type:
                     return
                 try:
                     edge = self._body().get("edge", {})
-                except json.JSONDecodeError as exc:
+                    brain = store.load(slug)
+                except (json.JSONDecodeError, ValueError) as exc:
                     self._json(400, {"error": str(exc)})
                     return
-                brain = store.load(slug)
                 brain.company_intelligence.restore(edge)
                 store.save(slug, brain)
                 self._json(200, {"edge": brain.company_intelligence.snapshot()})
