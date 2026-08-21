@@ -54,3 +54,11 @@ class Goals:
             Dict mapping goal name to goal state and completion ratio.
         """
         return {name: self._with_ratio(name) for name in self.goals}
+
+    def restore(self, state: dict) -> None:
+        """Rebuild internal state from a snapshot dict.
+
+        Args:
+            state: A dict shaped like the output of ``snapshot()``.
+        """
+        self.goals = {name: dict(entry["goal"]) for name, entry in state.items()}

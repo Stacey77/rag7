@@ -137,11 +137,35 @@ async function execute() {
     renderEdge(report.edge);
     updateIntegrations(report.integrations);
     renderPipeline(report.pipeline);
+    loadHistory();
   } catch (err) {
     showError("Execution failed: " + err.message);
   } finally {
     runBtn.disabled = false;
     runBtn.textContent = "Think, connect, execute";
+  }
+}
+
+async function loadHistory() {
+  try {
+    const response = await fetch("/api/history");
+    const data = await response.json();
+    const section = document.getElementById("history-section");
+    const list = document.getElementById("history-list");
+    if (!data.runs || !data.runs.length) {
+      section.hidden = true;
+      return;
+    }
+    list.innerHTML = data.runs
+      .map(
+        (r) =>
+          `<li>${r.objective}<span class="rec ${r.recommendation}">` +
+          `${r.recommendation.replace("_", " ")} · ${r.reached} reached</span></li>`
+      )
+      .join("");
+    section.hidden = false;
+  } catch (err) {
+    // history is non-critical; leave the panel hidden on failure
   }
 }
 
@@ -151,3 +175,4 @@ objectiveInput.addEventListener("keydown", (e) => {
 });
 
 loadEdge();
+loadHistory();

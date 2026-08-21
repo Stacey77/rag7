@@ -5,6 +5,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from ..core.brain import Ingenium
+from ..samples import sample_brain
 
 logger = logging.getLogger(__name__)
 
@@ -18,20 +19,12 @@ CONTENT_TYPES = {
 
 
 def build_demo_brain() -> Ingenium:
-    """Construct an Ingenium pre-populated with a sample company edge.
+    """Construct an Ingenium pre-populated with the shared sample company edge.
 
     Returns:
         An Ingenium instance ready to execute objectives against out of the box.
     """
-    brain = Ingenium()
-    ci = brain.company_intelligence
-    ci.strategy.set_positioning("AI ops partner for local service businesses")
-    ci.strategy.add_priority("book more jobs", rank=1)
-    ci.customer_data.upsert_record("cust-1", {"email": "lead@example.com", "stage": "new"})
-    ci.goals.set_goal("Q3 new clients", target=10, current=3)
-    ci.knowledge.add("offers", "Fall tune-up special: $99")
-    ci.brand.set_voice("direct, confident, no fluff", ["clear", "bold"])
-    return brain
+    return sample_brain()
 
 
 def make_handler(brain: Ingenium) -> type:
@@ -71,6 +64,16 @@ def make_handler(brain: Ingenium) -> type:
         def do_GET(self) -> None:
             if self.path == "/api/edge":
                 self._send_json(200, brain.company_intelligence.snapshot())
+                return
+            if self.path == "/api/history":
+                self._send_json(200, {"runs": [
+                    {
+                        "objective": r["objective"],
+                        "recommendation": r["pipeline"]["optimize"]["recommendation"],
+                        "reached": len(r["pipeline"]["outreach"]["sent"]),
+                    }
+                    for r in brain.history
+                ]})
                 return
             self._serve_static(self.path)
 

@@ -48,3 +48,12 @@ class Strategy:
             Dict with positioning and ranked priorities.
         """
         return {"positioning": self.positioning, "priorities": list(self.priorities)}
+
+    def restore(self, state: dict) -> None:
+        """Rebuild internal state from a snapshot dict.
+
+        Args:
+            state: A dict shaped like the output of ``snapshot()``.
+        """
+        self.positioning = state.get("positioning", "")
+        self.priorities = [dict(p) for p in state.get("priorities", [])]

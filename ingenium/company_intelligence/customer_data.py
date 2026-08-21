@@ -47,3 +47,11 @@ class CustomerData:
             Dict with total record count and the records themselves.
         """
         return {"total": len(self.records), "records": list(self.records.values())}
+
+    def restore(self, state: dict) -> None:
+        """Rebuild internal state from a snapshot dict.
+
+        Args:
+            state: A dict shaped like the output of ``snapshot()``.
+        """
+        self.records = {r["id"]: dict(r) for r in state.get("records", [])}

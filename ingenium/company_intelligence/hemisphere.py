@@ -36,3 +36,17 @@ class CompanyIntelligence:
             "knowledge": self.knowledge.snapshot(),
             "brand": self.brand.snapshot(),
         }
+
+    def restore(self, snapshot: dict) -> None:
+        """Rebuild every company-edge module from a snapshot.
+
+        Args:
+            snapshot: A dict shaped like the output of ``snapshot()``. Missing
+                keys leave the corresponding module at its default empty state.
+        """
+        logger.info("Restoring company edge from snapshot")
+        self.strategy.restore(snapshot.get("strategy", {}))
+        self.customer_data.restore(snapshot.get("customer_data", {}))
+        self.goals.restore(snapshot.get("goals", {}))
+        self.knowledge.restore(snapshot.get("knowledge", {}))
+        self.brand.restore(snapshot.get("brand", {}))

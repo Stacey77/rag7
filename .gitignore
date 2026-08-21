@@ -21,3 +21,6 @@ Thumbs.db
 # Build output
 dist/
 build/
+
+# Ingenium platform runtime data
+ingenium_data/

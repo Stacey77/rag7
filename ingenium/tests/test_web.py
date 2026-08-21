@@ -71,6 +71,24 @@ class TestWebGUI(unittest.TestCase):
             urllib.request.urlopen(request)
         self.assertEqual(ctx.exception.code, 400)
 
+    def test_api_history_tracks_executed_runs(self):
+        with urllib.request.urlopen(f"{self.base_url}/api/history") as response:
+            self.assertEqual(json.loads(response.read()), {"runs": []})
+
+        body = json.dumps({"objective": "Launch fall tune-up campaign"}).encode()
+        request = urllib.request.Request(
+            f"{self.base_url}/api/execute", data=body, headers={"Content-Type": "application/json"}
+        )
+        urllib.request.urlopen(request).read()
+
+        with urllib.request.urlopen(f"{self.base_url}/api/history") as response:
+            history = json.loads(response.read())
+        self.assertEqual(len(history["runs"]), 1)
+        run = history["runs"][0]
+        self.assertEqual(run["objective"], "Launch fall tune-up campaign")
+        self.assertEqual(run["recommendation"], "scale")
+        self.assertEqual(run["reached"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
