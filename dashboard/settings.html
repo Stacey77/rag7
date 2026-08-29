@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Multi-Agent Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-container">
+            <img src="assets/logo.svg" alt="Platform Logo" class="logo">
+            <h2>Multi-Agent Platform</h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="policies.html">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Policies</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="scripts.html">
+                    <i class="fas fa-code"></i>
+                    <span>Scripts</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="compliance.html">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Compliance</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Settings</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="resetBtn">
+                    <i class="fas fa-undo"></i> Reset
+                </button>
+                <button class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </header>
+
+        <!-- Settings Tabs -->
+        <section class="tabs-section">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="general">
+                    <i class="fas fa-sliders-h"></i> General
+                </button>
+                <button class="tab-btn" data-tab="agents">
+                    <i class="fas fa-robot"></i> Agents
+                </button>
+                <button class="tab-btn" data-tab="api">
+                    <i class="fas fa-plug"></i> API Endpoints
+                </button>
+                <button class="tab-btn" data-tab="cloud">
+                    <i class="fas fa-cloud"></i> Cloud Providers
+                </button>
+                <button class="tab-btn" data-tab="notifications">
+                    <i class="fas fa-bell"></i> Notifications
+                </button>
+            </div>
+        </section>
+
+        <!-- General Settings -->
+        <section class="tab-content active" id="general">
+            <h2 class="section-title">
+                <i class="fas fa-sliders-h"></i> General Settings
+            </h2>
+            <div class="card settings-card">
+                <div class="form-group">
+                    <label>Platform Name</label>
+                    <input type="text" value="Multi-Agent Infrastructure Platform" placeholder="Enter platform name">
+                </div>
+                <div class="form-group">
+                    <label>Dashboard Refresh Interval</label>
+                    <select>
+                        <option value="5">5 seconds</option>
+                        <option value="10">10 seconds</option>
+                        <option value="30" selected>30 seconds</option>
+                        <option value="60">1 minute</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Timezone</label>
+                    <select>
+                        <option>UTC</option>
+                        <option selected>America/New_York</option>
+                        <option>America/Los_Angeles</option>
+                        <option>Europe/London</option>
+                        <option>Asia/Tokyo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date Format</label>
+                    <select>
+                        <option>MM/DD/YYYY</option>
+                        <option selected>YYYY-MM-DD</option>
+                        <option>DD/MM/YYYY</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" checked>
+                        <span>Enable real-time updates</span>
+                    </label>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" checked>
+                        <span>Show tooltips</span>
+                    </label>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox">
+                        <span>Enable dark mode (default)</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agent Configuration -->
+        <section class="tab-content" id="agents">
+            <h2 class="section-title">
+                <i class="fas fa-robot"></i> Agent Configuration
+            </h2>
+            
+            <div class="agent-config-grid">
+                <div class="card settings-card">
+                    <h3>Policy Agent</h3>
+                    <div class="form-group">
+                        <label>Check Interval (seconds)</label>
+                        <input type="number" value="60" min="10" max="3600">
+                    </div>
+                    <div class="form-group">
+                        <label>Max Violations Before Alert</label>
+                        <input type="number" value="5" min="1" max="100">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Auto-start on platform launch</span>
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Enable notifications</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card settings-card">
+                    <h3>Intent Agent</h3>
+                    <div class="form-group">
+                        <label>Script Generation Timeout (sec)</label>
+                        <input type="number" value="120" min="30" max="600">
+                    </div>
+                    <div class="form-group">
+                        <label>Queue Size Limit</label>
+                        <input type="number" value="100" min="10" max="1000">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Auto-start on platform launch</span>
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox">
+                            <span>Enable debug logging</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card settings-card">
+                    <h3>Deployment Agent</h3>
+                    <div class="form-group">
+                        <label>Concurrent Deployments</label>
+                        <input type="number" value="5" min="1" max="20">
+                    </div>
+                    <div class="form-group">
+                        <label>Rollback Window (minutes)</label>
+                        <input type="number" value="30" min="5" max="120">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Auto-start on platform launch</span>
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Enable automatic rollback</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card settings-card">
+                    <h3>Compliance Agent</h3>
+                    <div class="form-group">
+                        <label>Audit Frequency (hours)</label>
+                        <input type="number" value="24" min="1" max="168">
+                    </div>
+                    <div class="form-group">
+                        <label>Retention Period (days)</label>
+                        <input type="number" value="90" min="7" max="365">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Auto-start on platform launch</span>
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Generate compliance reports</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Endpoints -->
+        <section class="tab-content" id="api">
+            <h2 class="section-title">
+                <i class="fas fa-plug"></i> API Endpoints
+            </h2>
+            <div class="card settings-card">
+                <div class="form-group">
+                    <label>Base API URL</label>
+                    <input type="text" value="https://api.example.com/v1" placeholder="Enter API base URL">
+                </div>
+                <div class="form-group">
+                    <label>WebSocket URL</label>
+                    <input type="text" value="wss://ws.example.com" placeholder="Enter WebSocket URL">
+                </div>
+                <div class="form-group">
+                    <label>API Key</label>
+                    <div class="input-with-action">
+                        <input type="password" value="sk_test_1234567890abcdef" placeholder="Enter API key">
+                        <button class="btn-icon" title="Show/Hide">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Request Timeout (seconds)</label>
+                    <input type="number" value="30" min="5" max="120">
+                </div>
+                <div class="form-group">
+                    <label>Retry Attempts</label>
+                    <input type="number" value="3" min="0" max="10">
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" checked>
+                        <span>Enable mock mode (development)</span>
+                    </label>
+                </div>
+            </div>
+
+            <h3 class="section-title mt-3">
+                <i class="fas fa-vial"></i> Test Connection
+            </h3>
+            <div class="card settings-card">
+                <p style="color: var(--text-gray); margin-bottom: 15px;">
+                    Test your API connection to ensure everything is configured correctly
+                </p>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-plug"></i> Test API Connection
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-wifi"></i> Test WebSocket Connection
+                </button>
+            </div>
+        </section>
+
+        <!-- Cloud Providers -->
+        <section class="tab-content" id="cloud">
+            <h2 class="section-title">
+                <i class="fas fa-cloud"></i> Cloud Provider Credentials
+            </h2>
+            
+            <div class="cloud-provider-cards">
+                <div class="card settings-card">
+                    <div class="provider-header">
+                        <i class="fab fa-aws"></i>
+                        <h3>Amazon Web Services</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>Access Key ID</label>
+                        <input type="text" placeholder="AKIA...">
+                    </div>
+                    <div class="form-group">
+                        <label>Secret Access Key</label>
+                        <input type="password" placeholder="Enter secret key">
+                    </div>
+                    <div class="form-group">
+                        <label>Default Region</label>
+                        <select>
+                            <option>us-east-1</option>
+                            <option>us-west-2</option>
+                            <option>eu-central-1</option>
+                            <option>ap-northeast-1</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary btn-block">
+                        <i class="fas fa-check"></i> Verify Credentials
+                    </button>
+                </div>
+
+                <div class="card settings-card">
+                    <div class="provider-header">
+                        <i class="fab fa-microsoft"></i>
+                        <h3>Microsoft Azure</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>Subscription ID</label>
+                        <input type="text" placeholder="Enter subscription ID">
+                    </div>
+                    <div class="form-group">
+                        <label>Client ID</label>
+                        <input type="text" placeholder="Enter client ID">
+                    </div>
+                    <div class="form-group">
+                        <label>Client Secret</label>
+                        <input type="password" placeholder="Enter client secret">
+                    </div>
+                    <button class="btn btn-secondary btn-block">
+                        <i class="fas fa-check"></i> Verify Credentials
+                    </button>
+                </div>
+
+                <div class="card settings-card">
+                    <div class="provider-header">
+                        <i class="fab fa-google"></i>
+                        <h3>Google Cloud Platform</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>Project ID</label>
+                        <input type="text" placeholder="Enter project ID">
+                    </div>
+                    <div class="form-group">
+                        <label>Service Account Key (JSON)</label>
+                        <textarea rows="4" placeholder="Paste service account JSON"></textarea>
+                    </div>
+                    <button class="btn btn-secondary btn-block">
+                        <i class="fas fa-check"></i> Verify Credentials
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notifications -->
+        <section class="tab-content" id="notifications">
+            <h2 class="section-title">
+                <i class="fas fa-bell"></i> Notification Preferences
+            </h2>
+            
+            <div class="card settings-card">
+                <h3>Email Notifications</h3>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" value="admin@example.com" placeholder="Enter email address">
+                </div>
+                <div class="notification-options">
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Policy violations</span>
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Deployment failures</span>
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox">
+                            <span>Deployment successes</span>
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            <span>Compliance alerts</span>
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox">
+                            <span>Daily summary reports</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card settings-card mt-2">
+                <h3>Slack Integration</h3>
+                <div class="form-group">
+                    <label>Webhook URL</label>
+                    <input type="text" placeholder="https://hooks.slack.com/services/...">
+                </div>
+                <div class="form-group">
+                    <label>Channel</label>
+                    <input type="text" placeholder="#infrastructure-alerts">
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox">
+                        <span>Enable Slack notifications</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="card settings-card mt-2">
+                <h3>PagerDuty Integration</h3>
+                <div class="form-group">
+                    <label>Integration Key</label>
+                    <input type="password" placeholder="Enter PagerDuty integration key">
+                </div>
+                <div class="form-group">
+                    <label>Severity Threshold</label>
+                    <select>
+                        <option>Critical</option>
+                        <option>High</option>
+                        <option selected>Medium</option>
+                        <option>Low</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox">
+                        <span>Enable PagerDuty alerts</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <style>
+        .tabs-section {
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid rgba(123, 104, 166, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-light);
+        }
+
+        .tab-btn.active {
+            color: var(--text-light);
+            border-bottom-color: var(--accent-orange);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .settings-card {
+            margin-bottom: 20px;
+        }
+
+        .settings-card h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-gray);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group span {
+            color: var(--text-light);
+            font-weight: normal;
+        }
+
+        .input-with-action {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-with-action input {
+            flex: 1;
+        }
+
+        .agent-config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .cloud-provider-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .provider-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(123, 104, 166, 0.2);
+        }
+
+        .provider-header i {
+            font-size: 32px;
+            color: var(--secondary-purple);
+        }
+
+        .provider-header h3 {
+            margin: 0;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .mt-2 {
+            margin-top: 20px;
+        }
+
+        .mt-3 {
+            margin-top: 30px;
+        }
+
+        .notification-options {
+            padding: 15px;
+            background: rgba(91, 75, 138, 0.05);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .tab-btn {
+                white-space: nowrap;
+            }
+        }
+    </style>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.dataset.tab;
+                
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update active tab content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Save button
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            alert('Settings saved successfully!');
+        });
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all settings to defaults?')) {
+                alert('Settings reset to defaults');
+            }
+        });
+    </script>
+</body>
+</html>

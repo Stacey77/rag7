@@ -1,0 +1,281 @@
+{
+  "platform": {
+    "status": "operational",
+    "activeAgents": 4,
+    "queueSize": 12,
+    "systemHealth": 98
+  },
+  "agents": [
+    {
+      "id": "policy",
+      "name": "Policy Agent",
+      "status": "active",
+      "metrics": {
+        "policiesEnforced": 247,
+        "violations": 3,
+        "lastCheck": "2 min ago"
+      }
+    },
+    {
+      "id": "intent",
+      "name": "Intent Agent",
+      "status": "active",
+      "metrics": {
+        "activeIntents": 8,
+        "scriptsGenerated": 156,
+        "queueSize": 5
+      }
+    },
+    {
+      "id": "deployment",
+      "name": "Deployment Agent",
+      "status": "active",
+      "metrics": {
+        "activeDeployments": 12,
+        "regions": 5,
+        "successRate": "99.2%"
+      }
+    },
+    {
+      "id": "compliance",
+      "name": "Compliance Agent",
+      "status": "active",
+      "metrics": {
+        "complianceScore": "96%",
+        "auditEvents": 1234,
+        "markers": 45
+      }
+    }
+  ],
+  "activities": [
+    {
+      "type": "policy",
+      "title": "Policy Violation Detected",
+      "description": "Cost threshold exceeded in us-east-1 region",
+      "time": "2 minutes ago"
+    },
+    {
+      "type": "deployment",
+      "title": "Deployment Completed",
+      "description": "Successfully deployed version 2.1.4 to production",
+      "time": "15 minutes ago"
+    },
+    {
+      "type": "compliance",
+      "title": "Compliance Check Passed",
+      "description": "All resources meet compliance requirements",
+      "time": "1 hour ago"
+    },
+    {
+      "type": "policy",
+      "title": "Policy Updated",
+      "description": "Resource quota policy modified by admin",
+      "time": "2 hours ago"
+    },
+    {
+      "type": "deployment",
+      "title": "Deployment Initiated",
+      "description": "Starting deployment to eu-central-1",
+      "time": "3 hours ago"
+    },
+    {
+      "type": "compliance",
+      "title": "Audit Event Recorded",
+      "description": "Configuration change logged for security group sg-12345",
+      "time": "4 hours ago"
+    }
+  ],
+  "policies": [
+    {
+      "id": "pol-1",
+      "name": "Resource Quota Enforcement",
+      "description": "Ensures CPU and memory limits are not exceeded",
+      "status": "active",
+      "enforced": 247,
+      "rules": [
+        "cpu_limit < 80%",
+        "memory_limit < 90%"
+      ]
+    },
+    {
+      "id": "pol-2",
+      "name": "Security Group Validation",
+      "description": "Validates security group rules against best practices",
+      "status": "active",
+      "enforced": 89,
+      "rules": [
+        "no_public_ssh_access",
+        "encrypted_traffic_only"
+      ]
+    },
+    {
+      "id": "pol-3",
+      "name": "Cost Threshold Alert",
+      "description": "Alerts when spending exceeds budget thresholds",
+      "status": "warning",
+      "violations": 3,
+      "checks": 156,
+      "rules": [
+        "daily_cost < $500",
+        "monthly_cost < $15000"
+      ]
+    },
+    {
+      "id": "pol-4",
+      "name": "Data Encryption Policy",
+      "description": "Ensures all data at rest is encrypted",
+      "status": "active",
+      "enforced": 312,
+      "rules": [
+        "s3_encryption_enabled",
+        "ebs_encryption_enabled",
+        "rds_encryption_enabled"
+      ]
+    }
+  ],
+  "metrics": {
+    "bandwidth": {
+      "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      "data": [65, 59, 80, 81, 56, 55, 40]
+    },
+    "compute": {
+      "labels": ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
+      "data": [75, 82, 88, 91, 85, 78]
+    },
+    "storage": {
+      "used": 67,
+      "free": 33
+    },
+    "costTrend": {
+      "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+      "data": [1200, 1150, 1100, 1050, 1080, 1020]
+    }
+  },
+  "regions": [
+    {
+      "id": "us-east",
+      "name": "US East",
+      "status": "healthy",
+      "instances": 45,
+      "cpuUsage": 67,
+      "latency": 12
+    },
+    {
+      "id": "us-west",
+      "name": "US West",
+      "status": "healthy",
+      "instances": 38,
+      "cpuUsage": 72,
+      "latency": 15
+    },
+    {
+      "id": "eu-central",
+      "name": "EU Central",
+      "status": "healthy",
+      "instances": 52,
+      "cpuUsage": 58,
+      "latency": 25
+    },
+    {
+      "id": "asia-pacific",
+      "name": "Asia Pacific",
+      "status": "warning",
+      "instances": 29,
+      "cpuUsage": 89,
+      "latency": 45
+    },
+    {
+      "id": "south-america",
+      "name": "South America",
+      "status": "healthy",
+      "instances": 18,
+      "cpuUsage": 45,
+      "latency": 35
+    }
+  ],
+  "blastRadius": {
+    "riskLevel": "medium",
+    "affectedResources": 24,
+    "impactedUsers": 156,
+    "estimatedDowntime": "2-5 minutes",
+    "categories": ["Compute", "Storage", "Network", "Security"],
+    "values": [12, 5, 4, 3],
+    "details": {
+      "compute": ["ec2-instance-1", "ec2-instance-2", "lambda-function-1"],
+      "storage": ["s3-bucket-prod", "ebs-volume-1"],
+      "network": ["load-balancer-1", "vpc-endpoint-1"],
+      "security": ["security-group-1", "iam-role-1"]
+    }
+  },
+  "scripts": [
+    {
+      "id": "script-1",
+      "name": "Auto-Scale Infrastructure",
+      "category": "Automation",
+      "description": "Automatically scales compute resources based on demand",
+      "language": "Python",
+      "cloudProvider": "AWS",
+      "downloads": 1234
+    },
+    {
+      "id": "script-2",
+      "name": "Cost Optimizer",
+      "category": "Optimization",
+      "description": "Identifies and terminates unused resources",
+      "language": "JavaScript",
+      "cloudProvider": "Multi-Cloud",
+      "downloads": 892
+    },
+    {
+      "id": "script-3",
+      "name": "Security Audit",
+      "category": "Security",
+      "description": "Runs comprehensive security checks across infrastructure",
+      "language": "Go",
+      "cloudProvider": "Azure",
+      "downloads": 567
+    }
+  ],
+  "compliance": {
+    "score": 96,
+    "frameworks": [
+      {
+        "name": "SOC 2",
+        "compliance": 98,
+        "controls": 156,
+        "passed": 153,
+        "failed": 3
+      },
+      {
+        "name": "HIPAA",
+        "compliance": 95,
+        "controls": 89,
+        "passed": 85,
+        "failed": 4
+      },
+      {
+        "name": "PCI DSS",
+        "compliance": 94,
+        "controls": 67,
+        "passed": 63,
+        "failed": 4
+      }
+    ],
+    "markers": [
+      {
+        "id": "marker-1",
+        "resource": "s3://production-data",
+        "requirement": "Encryption at rest",
+        "status": "compliant",
+        "lastChecked": "2024-02-15T07:30:00Z"
+      },
+      {
+        "id": "marker-2",
+        "resource": "rds://prod-db",
+        "requirement": "Automated backups",
+        "status": "compliant",
+        "lastChecked": "2024-02-15T07:25:00Z"
+      }
+    ]
+  }
+}

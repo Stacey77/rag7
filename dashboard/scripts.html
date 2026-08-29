@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Library - Multi-Agent Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-container">
+            <img src="assets/logo.svg" alt="Platform Logo" class="logo">
+            <h2>Multi-Agent Platform</h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="policies.html">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Policies</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a href="scripts.html">
+                    <i class="fas fa-code"></i>
+                    <span>Scripts</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="compliance.html">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Compliance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Script Library</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Upload Script
+                </button>
+            </div>
+        </header>
+
+        <!-- Script Statistics -->
+        <section class="overview-section">
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-code"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Scripts</h3>
+                        <div class="stat-value">156</div>
+                        <p class="stat-label">available adapters</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Downloads</h3>
+                        <div class="stat-value">2.7K</div>
+                        <p class="stat-label">this month</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Cloud Providers</h3>
+                        <div class="stat-value">5</div>
+                        <p class="stat-label">supported platforms</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Average Rating</h3>
+                        <div class="stat-value">4.8</div>
+                        <p class="stat-label">out of 5 stars</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Filters -->
+        <section class="category-section">
+            <h2 class="section-title">
+                <i class="fas fa-filter"></i> Browse by Category
+            </h2>
+            <div class="category-pills">
+                <button class="category-pill active">All</button>
+                <button class="category-pill">Automation</button>
+                <button class="category-pill">Optimization</button>
+                <button class="category-pill">Security</button>
+                <button class="category-pill">Monitoring</button>
+                <button class="category-pill">Backup</button>
+                <button class="category-pill">Deployment</button>
+            </div>
+        </section>
+
+        <!-- Script Grid -->
+        <section class="script-section">
+            <div class="script-grid">
+                <!-- Script Card 1 -->
+                <div class="script-card" data-category="automation">
+                    <div class="script-header">
+                        <div class="script-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="script-meta">
+                            <span class="badge info">Python</span>
+                            <span class="cloud-badge aws">AWS</span>
+                        </div>
+                    </div>
+                    <h3>Auto-Scale Infrastructure</h3>
+                    <p class="script-description">Automatically scales compute resources based on demand using predictive algorithms</p>
+                    <div class="script-stats">
+                        <span><i class="fas fa-download"></i> 1,234</span>
+                        <span><i class="fas fa-star"></i> 4.9</span>
+                    </div>
+                    <div class="script-footer">
+                        <button class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-download"></i> Install
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Script Card 2 -->
+                <div class="script-card" data-category="optimization">
+                    <div class="script-header">
+                        <div class="script-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="script-meta">
+                            <span class="badge info">JavaScript</span>
+                            <span class="cloud-badge multi">Multi-Cloud</span>
+                        </div>
+                    </div>
+                    <h3>Cost Optimizer</h3>
+                    <p class="script-description">Identifies and terminates unused resources to reduce infrastructure costs</p>
+                    <div class="script-stats">
+                        <span><i class="fas fa-download"></i> 892</span>
+                        <span><i class="fas fa-star"></i> 4.7</span>
+                    </div>
+                    <div class="script-footer">
+                        <button class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-download"></i> Install
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Script Card 3 -->
+                <div class="script-card" data-category="security">
+                    <div class="script-header">
+                        <div class="script-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="script-meta">
+                            <span class="badge info">Go</span>
+                            <span class="cloud-badge azure">Azure</span>
+                        </div>
+                    </div>
+                    <h3>Security Audit</h3>
+                    <p class="script-description">Runs comprehensive security checks across infrastructure and reports vulnerabilities</p>
+                    <div class="script-stats">
+                        <span><i class="fas fa-download"></i> 567</span>
+                        <span><i class="fas fa-star"></i> 4.8</span>
+                    </div>
+                    <div class="script-footer">
+                        <button class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-download"></i> Install
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Script Card 4 -->
+                <div class="script-card" data-category="monitoring">
+                    <div class="script-header">
+                        <div class="script-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="script-meta">
+                            <span class="badge info">Python</span>
+                            <span class="cloud-badge gcp">GCP</span>
+                        </div>
+                    </div>
+                    <h3>Health Monitor</h3>
+                    <p class="script-description">Monitors system health metrics and sends alerts for anomalies</p>
+                    <div class="script-stats">
+                        <span><i class="fas fa-download"></i> 445</span>
+                        <span><i class="fas fa-star"></i> 4.6</span>
+                    </div>
+                    <div class="script-footer">
+                        <button class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-download"></i> Install
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Script Card 5 -->
+                <div class="script-card" data-category="backup">
+                    <div class="script-header">
+                        <div class="script-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="script-meta">
+                            <span class="badge info">Bash</span>
+                            <span class="cloud-badge aws">AWS</span>
+                        </div>
+                    </div>
+                    <h3>Automated Backup</h3>
+                    <p class="script-description">Schedules and executes regular backups of critical data with rotation</p>
+                    <div class="script-stats">
+                        <span><i class="fas fa-download"></i> 678</span>
+                        <span><i class="fas fa-star"></i> 4.9</span>
+                    </div>
+                    <div class="script-footer">
+                        <button class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-download"></i> Install
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Script Card 6 -->
+                <div class="script-card" data-category="deployment">
+                    <div class="script-header">
+                        <div class="script-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="script-meta">
+                            <span class="badge info">Python</span>
+                            <span class="cloud-badge multi">Multi-Cloud</span>
+                        </div>
+                    </div>
+                    <h3>Blue-Green Deployer</h3>
+                    <p class="script-description">Implements blue-green deployment strategy with automatic rollback</p>
+                    <div class="script-stats">
+                        <span><i class="fas fa-download"></i> 823</span>
+                        <span><i class="fas fa-star"></i> 4.8</span>
+                    </div>
+                    <div class="script-footer">
+                        <button class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-download"></i> Install
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Adapter Marketplace -->
+        <section class="marketplace-section">
+            <h2 class="section-title">
+                <i class="fas fa-shopping-cart"></i> Adapter Marketplace
+            </h2>
+            <div class="card">
+                <p style="color: var(--text-gray); margin-bottom: 20px;">
+                    Browse and install community-contributed adapters for various cloud providers and tools
+                </p>
+                <div class="marketplace-grid">
+                    <div class="adapter-item">
+                        <i class="fab fa-aws"></i>
+                        <h4>AWS Adapter</h4>
+                        <p>56 scripts</p>
+                    </div>
+                    <div class="adapter-item">
+                        <i class="fab fa-microsoft"></i>
+                        <h4>Azure Adapter</h4>
+                        <p>42 scripts</p>
+                    </div>
+                    <div class="adapter-item">
+                        <i class="fab fa-google"></i>
+                        <h4>GCP Adapter</h4>
+                        <p>38 scripts</p>
+                    </div>
+                    <div class="adapter-item">
+                        <i class="fas fa-server"></i>
+                        <h4>Kubernetes Adapter</h4>
+                        <p>29 scripts</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <style>
+        .category-section {
+            margin-bottom: 30px;
+        }
+
+        .category-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .category-pill {
+            padding: 8px 20px;
+            background: rgba(91, 75, 138, 0.1);
+            border: 1px solid rgba(123, 104, 166, 0.2);
+            border-radius: 20px;
+            color: var(--text-gray);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-pill:hover {
+            background: rgba(91, 75, 138, 0.2);
+            color: var(--text-light);
+        }
+
+        .category-pill.active {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            color: var(--text-light);
+            border-color: var(--secondary-purple);
+        }
+
+        .script-section {
+            margin-bottom: 30px;
+        }
+
+        .script-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .script-card {
+            background: linear-gradient(145deg, rgba(91, 75, 138, 0.15) 0%, rgba(46, 37, 71, 0.4) 100%);
+            border: 1px solid rgba(123, 104, 166, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .script-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(123, 104, 166, 0.3);
+            border-color: var(--secondary-purple);
+        }
+
+        .script-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .script-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #ff8555 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--text-light);
+        }
+
+        .script-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-end;
+        }
+
+        .cloud-badge {
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .cloud-badge.aws {
+            background: rgba(255, 153, 0, 0.2);
+            color: #FF9900;
+            border: 1px solid #FF9900;
+        }
+
+        .cloud-badge.azure {
+            background: rgba(0, 120, 212, 0.2);
+            color: #0078D4;
+            border: 1px solid #0078D4;
+        }
+
+        .cloud-badge.gcp {
+            background: rgba(66, 133, 244, 0.2);
+            color: #4285F4;
+            border: 1px solid #4285F4;
+        }
+
+        .cloud-badge.multi {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--status-success);
+            border: 1px solid var(--status-success);
+        }
+
+        .script-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .script-description {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 15px;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
+        .script-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(123, 104, 166, 0.2);
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .script-stats span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .script-footer {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        .marketplace-section {
+            margin-bottom: 30px;
+        }
+
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .adapter-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(91, 75, 138, 0.1);
+            border: 1px solid rgba(123, 104, 166, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .adapter-item:hover {
+            background: rgba(91, 75, 138, 0.2);
+            border-color: var(--secondary-purple);
+        }
+
+        .adapter-item i {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: var(--secondary-purple);
+        }
+
+        .adapter-item h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--text-light);
+        }
+
+        .adapter-item p {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        @media (max-width: 768px) {
+            .script-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>
