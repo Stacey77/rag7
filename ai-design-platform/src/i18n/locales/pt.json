@@ -1,0 +1,73 @@
+{
+  "common": {
+    "dashboard": "Painel de Controle",
+    "models": "Modelos",
+    "analytics": "Análise",
+    "monitoring": "Monitoramento",
+    "settings": "Configurações",
+    "home": "Início",
+    "profile": "Perfil",
+    "help": "Ajuda",
+    "documentation": "Documentação",
+    "notifications": "Notificações"
+  },
+  "actions": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "export": "Exportar",
+    "import": "Importar",
+    "create": "Criar",
+    "update": "Atualizar",
+    "remove": "Remover",
+    "download": "Baixar",
+    "upload": "Carregar",
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "refresh": "Atualizar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "submit": "Enviar",
+    "reset": "Redefinir",
+    "confirm": "Confirmar",
+    "close": "Fechar"
+  },
+  "messages": {
+    "success": "Operação concluída com sucesso",
+    "error": "Ocorreu um erro",
+    "warning": "Aviso",
+    "loading": "Carregando...",
+    "noData": "Nenhum dado disponível",
+    "saved": "Salvo com sucesso",
+    "deleted": "Excluído com sucesso",
+    "updated": "Atualizado com sucesso",
+    "created": "Criado com sucesso",
+    "confirmDelete": "Tem certeza de que deseja excluir este item?",
+    "confirmAction": "Tem certeza de que deseja continuar?"
+  },
+  "nav": {
+    "overview": "Visão Geral",
+    "projects": "Projetos",
+    "team": "Equipe",
+    "reports": "Relatórios",
+    "templates": "Modelos",
+    "workspace": "Área de Trabalho",
+    "library": "Biblioteca",
+    "resources": "Recursos"
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Registrar",
+    "logout": "Sair",
+    "username": "Nome de Usuário",
+    "password": "Senha",
+    "email": "E-mail",
+    "forgotPassword": "Esqueceu a Senha?",
+    "rememberMe": "Lembrar-me",
+    "signIn": "Fazer Login",
+    "signUp": "Cadastrar-se",
+    "createAccount": "Criar Conta",
+    "welcomeBack": "Bem-vindo de Volta"
+  }
+}

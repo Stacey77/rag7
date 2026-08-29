@@ -1,0 +1,73 @@
+{
+  "common": {
+    "dashboard": "डैशबोर्ड",
+    "models": "मॉडल",
+    "analytics": "विश्लेषण",
+    "monitoring": "निगरानी",
+    "settings": "सेटिंग्स",
+    "home": "होम",
+    "profile": "प्रोफ़ाइल",
+    "help": "सहायता",
+    "documentation": "प्रलेखन",
+    "notifications": "सूचनाएं"
+  },
+  "actions": {
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "export": "निर्यात करें",
+    "import": "आयात करें",
+    "create": "बनाएं",
+    "update": "अपडेट करें",
+    "remove": "हटाएं",
+    "download": "डाउनलोड करें",
+    "upload": "अपलोड करें",
+    "search": "खोजें",
+    "filter": "फ़िल्टर करें",
+    "refresh": "रीफ्रेश करें",
+    "back": "वापस",
+    "next": "आगे",
+    "submit": "जमा करें",
+    "reset": "रीसेट करें",
+    "confirm": "पुष्टि करें",
+    "close": "बंद करें"
+  },
+  "messages": {
+    "success": "ऑपरेशन सफलतापूर्वक पूर्ण हुआ",
+    "error": "एक त्रुटि हुई",
+    "warning": "चेतावनी",
+    "loading": "लोड हो रहा है...",
+    "noData": "कोई डेटा उपलब्ध नहीं है",
+    "saved": "सफलतापूर्वक सहेजा गया",
+    "deleted": "सफलतापूर्वक हटाया गया",
+    "updated": "सफलतापूर्वक अपडेट किया गया",
+    "created": "सफलतापूर्वक बनाया गया",
+    "confirmDelete": "क्या आप वाकई इस आइटम को हटाना चाहते हैं?",
+    "confirmAction": "क्या आप वाकई जारी रखना चाहते हैं?"
+  },
+  "nav": {
+    "overview": "अवलोकन",
+    "projects": "परियोजनाएं",
+    "team": "टीम",
+    "reports": "रिपोर्ट",
+    "templates": "टेम्पलेट",
+    "workspace": "कार्यक्षेत्र",
+    "library": "लाइब्रेरी",
+    "resources": "संसाधन"
+  },
+  "auth": {
+    "login": "लॉगिन",
+    "register": "रजिस्टर करें",
+    "logout": "लॉगआउट",
+    "username": "उपयोगकर्ता नाम",
+    "password": "पासवर्ड",
+    "email": "ईमेल",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "rememberMe": "मुझे याद रखें",
+    "signIn": "साइन इन करें",
+    "signUp": "साइन अप करें",
+    "createAccount": "खाता बनाएं",
+    "welcomeBack": "वापसी पर स्वागत है"
+  }
+}

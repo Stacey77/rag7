@@ -1,0 +1,73 @@
+{
+  "common": {
+    "dashboard": "لوحة التحكم",
+    "models": "النماذج",
+    "analytics": "التحليلات",
+    "monitoring": "المراقبة",
+    "settings": "الإعدادات",
+    "home": "الرئيسية",
+    "profile": "الملف الشخصي",
+    "help": "المساعدة",
+    "documentation": "التوثيق",
+    "notifications": "الإشعارات"
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "export": "تصدير",
+    "import": "استيراد",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "remove": "إزالة",
+    "download": "تحميل",
+    "upload": "رفع",
+    "search": "بحث",
+    "filter": "تصفية",
+    "refresh": "تحديث",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "reset": "إعادة تعيين",
+    "confirm": "تأكيد",
+    "close": "إغلاق"
+  },
+  "messages": {
+    "success": "تمت العملية بنجاح",
+    "error": "حدث خطأ",
+    "warning": "تحذير",
+    "loading": "جاري التحميل...",
+    "noData": "لا توجد بيانات متاحة",
+    "saved": "تم الحفظ بنجاح",
+    "deleted": "تم الحذف بنجاح",
+    "updated": "تم التحديث بنجاح",
+    "created": "تم الإنشاء بنجاح",
+    "confirmDelete": "هل أنت متأكد من حذف هذا العنصر؟",
+    "confirmAction": "هل أنت متأكد من المتابعة؟"
+  },
+  "nav": {
+    "overview": "نظرة عامة",
+    "projects": "المشاريع",
+    "team": "الفريق",
+    "reports": "التقارير",
+    "templates": "القوالب",
+    "workspace": "مساحة العمل",
+    "library": "المكتبة",
+    "resources": "الموارد"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "التسجيل",
+    "logout": "تسجيل الخروج",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "email": "البريد الإلكتروني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "rememberMe": "تذكرني",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "createAccount": "إنشاء حساب",
+    "welcomeBack": "مرحباً بعودتك"
+  }
+}

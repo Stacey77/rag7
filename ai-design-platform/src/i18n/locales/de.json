@@ -1,0 +1,73 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "models": "Modelle",
+    "analytics": "Analytik",
+    "monitoring": "Überwachung",
+    "settings": "Einstellungen",
+    "home": "Startseite",
+    "profile": "Profil",
+    "help": "Hilfe",
+    "documentation": "Dokumentation",
+    "notifications": "Benachrichtigungen"
+  },
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "create": "Erstellen",
+    "update": "Aktualisieren",
+    "remove": "Entfernen",
+    "download": "Herunterladen",
+    "upload": "Hochladen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "refresh": "Aktualisieren",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Absenden",
+    "reset": "Zurücksetzen",
+    "confirm": "Bestätigen",
+    "close": "Schließen"
+  },
+  "messages": {
+    "success": "Vorgang erfolgreich abgeschlossen",
+    "error": "Ein Fehler ist aufgetreten",
+    "warning": "Warnung",
+    "loading": "Wird geladen...",
+    "noData": "Keine Daten verfügbar",
+    "saved": "Erfolgreich gespeichert",
+    "deleted": "Erfolgreich gelöscht",
+    "updated": "Erfolgreich aktualisiert",
+    "created": "Erfolgreich erstellt",
+    "confirmDelete": "Sind Sie sicher, dass Sie dieses Element löschen möchten?",
+    "confirmAction": "Sind Sie sicher, dass Sie fortfahren möchten?"
+  },
+  "nav": {
+    "overview": "Übersicht",
+    "projects": "Projekte",
+    "team": "Team",
+    "reports": "Berichte",
+    "templates": "Vorlagen",
+    "workspace": "Arbeitsbereich",
+    "library": "Bibliothek",
+    "resources": "Ressourcen"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "email": "E-Mail",
+    "forgotPassword": "Passwort vergessen?",
+    "rememberMe": "Angemeldet bleiben",
+    "signIn": "Einloggen",
+    "signUp": "Registrieren",
+    "createAccount": "Konto erstellen",
+    "welcomeBack": "Willkommen zurück"
+  }
+}
