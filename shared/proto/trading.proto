@@ -1,0 +1,229 @@
+syntax = "proto3";
+
+package trading;
+
+option go_package = "github.com/rag7/trading/proto/trading";
+option java_multiple_files = true;
+option java_package = "com.rag7.trading.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// ---------------------------------------------------------------------------
+// Enumerations
+// ---------------------------------------------------------------------------
+
+enum OrderSide {
+  ORDER_SIDE_UNSPECIFIED = 0;
+  ORDER_SIDE_BUY = 1;
+  ORDER_SIDE_SELL = 2;
+}
+
+enum OrderType {
+  ORDER_TYPE_UNSPECIFIED = 0;
+  ORDER_TYPE_MARKET = 1;
+  ORDER_TYPE_LIMIT = 2;
+  ORDER_TYPE_STOP_MARKET = 3;
+  ORDER_TYPE_STOP_LIMIT = 4;
+  ORDER_TYPE_TAKE_PROFIT = 5;
+  ORDER_TYPE_TAKE_PROFIT_LIMIT = 6;
+  ORDER_TYPE_TRAILING_STOP = 7;
+}
+
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_PENDING = 1;
+  ORDER_STATUS_SUBMITTED = 2;
+  ORDER_STATUS_ACCEPTED = 3;
+  ORDER_STATUS_PARTIALLY_FILLED = 4;
+  ORDER_STATUS_FILLED = 5;
+  ORDER_STATUS_CANCELLED = 6;
+  ORDER_STATUS_REJECTED = 7;
+  ORDER_STATUS_EXPIRED = 8;
+}
+
+enum TimeInForce {
+  TIME_IN_FORCE_UNSPECIFIED = 0;
+  TIME_IN_FORCE_GTC = 1;  // Good Till Cancelled
+  TIME_IN_FORCE_IOC = 2;  // Immediate Or Cancel
+  TIME_IN_FORCE_FOK = 3;  // Fill Or Kill
+  TIME_IN_FORCE_GTD = 4;  // Good Till Date
+}
+
+// ---------------------------------------------------------------------------
+// Core messages
+// ---------------------------------------------------------------------------
+
+// Represents a single order fill / execution.
+message Fill {
+  string fill_id = 1;
+  string order_id = 2;
+  string symbol = 3;
+  OrderSide side = 4;
+  // Prices and quantities are transmitted as string-encoded decimals to
+  // preserve precision across languages.
+  string price = 5;
+  string quantity = 6;
+  string commission = 7;
+  string commission_asset = 8;
+  string trade_id = 9;
+  google.protobuf.Timestamp timestamp = 10;
+}
+
+// Full order state.
+message Order {
+  string order_id = 1;
+  string exchange_order_id = 2;
+  string symbol = 3;
+  OrderSide side = 4;
+  OrderType order_type = 5;
+  string quantity = 6;
+  string price = 7;
+  string stop_price = 8;
+  TimeInForce time_in_force = 9;
+  OrderStatus status = 10;
+  string filled_quantity = 11;
+  string average_fill_price = 12;
+  repeated Fill fills = 13;
+  string strategy_id = 14;
+  map<string, string> tags = 15;
+  google.protobuf.Timestamp created_at = 16;
+  google.protobuf.Timestamp updated_at = 17;
+}
+
+// Open position in a single instrument.
+message Position {
+  string symbol = 1;
+  OrderSide side = 2;
+  string quantity = 3;
+  string average_entry_price = 4;
+  string unrealised_pnl = 5;
+  string realised_pnl = 6;
+  string notional = 7;
+  string strategy_id = 8;
+  google.protobuf.Timestamp opened_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// Aggregate portfolio snapshot.
+message Portfolio {
+  string portfolio_id = 1;
+  string account_id = 2;
+  map<string, Position> positions = 3;
+  string cash_balance = 4;
+  string total_equity = 5;
+  string total_unrealised_pnl = 6;
+  string total_realised_pnl = 7;
+  string peak_equity = 8;
+  string current_drawdown_pct = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// ---------------------------------------------------------------------------
+// Request / response messages
+// ---------------------------------------------------------------------------
+
+message SubmitOrderRequest {
+  string client_request_id = 1;  // Idempotency key.
+  string symbol = 2;
+  OrderSide side = 3;
+  OrderType order_type = 4;
+  string quantity = 5;
+  string price = 6;
+  string stop_price = 7;
+  TimeInForce time_in_force = 8;
+  string strategy_id = 9;
+  map<string, string> tags = 10;
+}
+
+message SubmitOrderResponse {
+  Order order = 1;
+  string error_message = 2;
+}
+
+message CancelOrderRequest {
+  string order_id = 1;
+  string symbol = 2;
+}
+
+message CancelOrderResponse {
+  Order order = 1;
+  bool success = 2;
+  string error_message = 3;
+}
+
+message GetOrderRequest {
+  string order_id = 1;
+}
+
+message GetOrderResponse {
+  Order order = 1;
+  string error_message = 2;
+}
+
+message ListOrdersRequest {
+  string symbol = 1;           // Optional: filter by symbol.
+  OrderStatus status_filter = 2; // Optional: filter by status.
+  string strategy_id = 3;      // Optional: filter by strategy.
+  int32 limit = 4;
+  string page_token = 5;
+}
+
+message ListOrdersResponse {
+  repeated Order orders = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message GetPositionRequest {
+  string symbol = 1;
+}
+
+message GetPositionResponse {
+  Position position = 1;
+  string error_message = 2;
+}
+
+message GetPortfolioRequest {
+  string account_id = 1;
+}
+
+message GetPortfolioResponse {
+  Portfolio portfolio = 1;
+  string error_message = 2;
+}
+
+// Streamed order-status update pushed to subscribers.
+message OrderStatusUpdate {
+  Order order = 1;
+  Fill latest_fill = 2;        // Populated when status changed due to fill.
+  string reason = 3;           // Human-readable reason for the status change.
+  google.protobuf.Timestamp event_time = 4;
+}
+
+// ---------------------------------------------------------------------------
+// Service definition
+// ---------------------------------------------------------------------------
+
+service TradingService {
+  // Submit a new order to the exchange.
+  rpc SubmitOrder(SubmitOrderRequest) returns (SubmitOrderResponse);
+
+  // Cancel an existing open order.
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse);
+
+  // Retrieve a single order by ID.
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+
+  // List orders with optional filters.
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+
+  // Retrieve the current open position for a symbol.
+  rpc GetPosition(GetPositionRequest) returns (GetPositionResponse);
+
+  // Retrieve the full portfolio snapshot.
+  rpc GetPortfolio(GetPortfolioRequest) returns (GetPortfolioResponse);
+
+  // Server-streaming: subscribe to real-time order status updates.
+  rpc StreamOrderUpdates(google.protobuf.Empty) returns (stream OrderStatusUpdate);
+}
