@@ -94,6 +94,12 @@ class TestWorkspaceStore(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "corrupt"):
             self.store.load("fortis-auto")
 
+    def test_list_skips_corrupt_workspace_file(self):
+        self.store.create("Good Co")
+        with open(os.path.join(self.tmp.name, "bad.json"), "w", encoding="utf-8") as handle:
+            handle.write("{")
+        self.assertEqual([m["slug"] for m in self.store.list()], ["good-co"])
+
     def test_save_uses_atomic_replace_without_tmp_leftovers(self):
         self.store.create("Fortis Auto")
         brain = self.store.load("fortis-auto")
@@ -107,6 +113,8 @@ class TestHistorySummary(unittest.TestCase):
         brain = Ingenium()
         brain.history = [
             {"objective": "A"},
+            {"pipeline": {"optimize": {"recommendation": "scale"}}},
+            {"pipeline": {"outreach": {"sent": [{"to": "x@y.com"}]}}},
             {"pipeline": {"optimize": {}, "outreach": {}}},
             "invalid",
         ]
@@ -114,6 +122,8 @@ class TestHistorySummary(unittest.TestCase):
             _history_summary(brain),
             [
                 {"objective": "A", "recommendation": "", "reached": 0},
+                {"objective": "", "recommendation": "scale", "reached": 0},
+                {"objective": "", "recommendation": "", "reached": 1},
                 {"objective": "", "recommendation": "", "reached": 0},
                 {"objective": "", "recommendation": "", "reached": 0},
             ],

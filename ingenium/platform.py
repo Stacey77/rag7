@@ -211,7 +211,12 @@ class WorkspaceStore:
 
     def list(self) -> list[dict]:
         """Return metadata for every workspace, sorted by name."""
-        metas = [self.meta(p.stem) for p in self.dir.glob("*.json")]
+        metas = []
+        for p in self.dir.glob("*.json"):
+            try:
+                metas.append(self.meta(p.stem))
+            except ValueError:
+                logger.warning("Skipping corrupt workspace file: %s", p.name)
         return sorted(metas, key=lambda m: m["name"].lower())
 
 
@@ -391,23 +396,23 @@ def make_handler(store: WorkspaceStore) -> type:
                     return
                 try:
                     edge = self._body().get("edge", {})
-                except json.JSONDecodeError as exc:
-                    self._json(400, {"error": str(exc)})
-                    return
-                try:
                     brain = store.load(slug)
-                except ValueError as exc:
+                    brain.company_intelligence.restore(edge)
+                    store.save(slug, brain)
+                except (json.JSONDecodeError, ValueError) as exc:
                     self._json(400, {"error": str(exc)})
                     return
-                brain.company_intelligence.restore(edge)
-                store.save(slug, brain)
                 self._json(200, {"edge": brain.company_intelligence.snapshot()})
                 return
             self._json(404, {"error": "not found"})
 
         def _export_zip(self, slug: str, objective: str) -> None:
             # Export against a transient copy so the stored history is untouched.
-            brain = store.load(slug)
+            try:
+                brain = store.load(slug)
+            except ValueError as exc:
+                self._json(400, {"error": str(exc)})
+                return
             report = brain.execute(objective)
             with tempfile.TemporaryDirectory() as tmp:
                 written = export_campaign(report, tmp)
