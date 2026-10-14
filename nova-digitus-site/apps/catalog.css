@@ -1,0 +1,57 @@
+
+:root{--bg:#F5F7FB;--panel:#fff;--ink:#13213D;--muted:#56627A;--line:#D8DEE8;--cobalt:#2F5BEA;--cobalt-deep:#1A3AAE;--soft:#E4EAFD;--amber:#E0A23A;
+--display:"Bricolage Grotesque",system-ui,sans-serif;--body:"Figtree",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+a{color:var(--cobalt)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0;gap:16px}
+.logo{font-family:var(--display);font-weight:800;font-size:1.15rem;text-decoration:none;color:var(--ink)}
+.nav nav{display:flex;gap:22px;align-items:center}
+.nav nav a{color:var(--muted);text-decoration:none;font-weight:500}
+.btn{display:inline-block;background:var(--cobalt);color:#fff;border:0;padding:11px 18px;border-radius:9px;text-decoration:none;cursor:pointer;font:600 .98rem var(--body);white-space:nowrap}
+.nav nav a.btn{color:#fff}
+.btn:hover{background:var(--cobalt-deep)}
+.btn.line{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.line:hover{background:var(--ink);color:#fff}
+.btn.sm{padding:8px 14px;font-size:.9rem}
+@media (max-width:720px){.nav nav a:not(.btn){display:none}}
+.crumb{font-size:.9rem;color:var(--muted);margin-top:8px}
+.crumb a{color:var(--muted)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2.3rem,5.6vw,4.2rem);line-height:.98;letter-spacing:-.035em;margin:14px 0 16px}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.02em;margin:0 0 6px}
+.lede{font-size:1.15rem;color:var(--muted);max-width:60ch;margin:0 0 26px}
+section{padding:40px 0;border-top:1px solid var(--line)}
+.hero{padding:36px 0 44px}
+.search{display:flex;gap:10px;max-width:620px}
+.search input{flex:1;font:inherit;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
+.search input:focus{border-color:var(--cobalt);outline:none}
+#results{margin-top:18px}
+.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.door{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+.door:hover{border-color:var(--cobalt)}
+.door h3{font-family:var(--display);font-size:1.3rem;margin:0 0 6px;letter-spacing:-.01em}
+.door p{margin:0 0 14px;color:var(--muted);font-size:.95rem}
+.door .count{margin-top:auto;font-weight:600;color:var(--cobalt-deep)}
+@media (max-width:900px){.doors{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.doors{grid-template-columns:1fr}}
+.apps{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.app{background:var(--panel);padding:22px 24px;display:flex;flex-direction:column;gap:6px}
+.app h3{font-family:var(--display);font-size:1.2rem;margin:0;letter-spacing:-.01em}
+.app p{margin:0 0 10px;color:var(--muted)}
+.app .row{margin-top:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tag{font-size:.78rem;font-weight:600;color:var(--cobalt-deep);background:var(--soft);padding:2px 9px;border-radius:999px;align-self:flex-start}
+.grp{font-size:.85rem;color:var(--muted)}
+.apps .app:last-child:nth-child(odd){grid-column:1/-1}
+@media (max-width:720px){.apps{grid-template-columns:1fr}}
+.note{font-size:.88rem;color:var(--muted);border-left:3px solid var(--line);padding-left:12px;margin:26px 0 0;max-width:70ch}
+.cta{background:var(--ink);color:#fff;border-radius:16px;padding:34px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.cta h2{color:#fff}
+.cta p{margin:0;color:#C9D2E3;max-width:52ch}
+.cta .btn{background:#fff;color:var(--ink)}
+.others{display:flex;flex-wrap:wrap;gap:10px}
+.others a{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;text-decoration:none;color:var(--ink);font-size:.95rem}
+.others a:hover{border-color:var(--cobalt)}
+footer{padding:30px 0 44px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);margin-top:30px}
+.empty{color:var(--muted)}
