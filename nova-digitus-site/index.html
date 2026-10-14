@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nova Digitus Designs — AI apps and pilots for operators</title>
+<meta name="description" content="Nova Digitus Designs builds and deploys AI applications for operations, engineering and field teams. License a working app, get one set up on your data, or start with a pilot.">
+<meta property="og:title" content="Nova Digitus Designs">
+<meta property="og:description" content="Working AI apps and pilots for operations, engineering and field teams.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F7FB; --panel:#FFFFFF; --ink:#13213D; --muted:#56627A; --line:#D8DEE8;
+  --cobalt:#2F5BEA; --cobalt-deep:#1A3AAE; --amber:#E0A23A;
+  --display:"Bricolage Grotesque", system-ui, sans-serif; --body:"Figtree", system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+a{color:var(--cobalt)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+.nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0;gap:16px}
+.logo{font-family:var(--display);font-weight:800;font-size:1.15rem;text-decoration:none;color:var(--ink)}
+.nav nav{display:flex;gap:22px;align-items:center}
+.nav nav a{color:var(--muted);text-decoration:none;font-weight:500}
+.btn{display:inline-block;background:var(--cobalt);color:#fff;border:0;padding:12px 20px;border-radius:9px;text-decoration:none;cursor:pointer;font:600 1rem var(--body)}
+.nav nav a.btn{color:#fff}
+.btn:hover{background:var(--cobalt-deep)}
+.btn.line{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.line:hover{background:var(--ink);color:#fff}
+@media (max-width:720px){.nav nav a:not(.btn){display:none}}
+
+.hero{padding:56px 0 64px;display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:end}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,6.4vw,5rem);line-height:.95;letter-spacing:-.035em;margin:0 0 22px}
+.hero p{font-size:1.2rem;color:var(--muted);max-width:52ch;margin:0 0 28px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
+.count{border-left:3px solid var(--cobalt);padding-left:20px}
+.count b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(4rem,10vw,7rem);line-height:.85;letter-spacing:-.04em;color:var(--cobalt)}
+.count span{color:var(--muted);display:block;margin-top:10px;max-width:24ch}
+@media (max-width:820px){.hero{grid-template-columns:1fr;gap:32px}}
+
+section{padding:64px 0;border-top:1px solid var(--line)}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.6vw,2.6rem);letter-spacing:-.025em;line-height:1.05;margin:0 0 10px}
+.intro{color:var(--muted);max-width:60ch;margin:0 0 32px}
+
+.apps{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.app{background:var(--panel);padding:28px}
+.app .tag{font-size:.82rem;font-weight:600;color:var(--cobalt-deep);background:#E4EAFD;padding:3px 10px;border-radius:999px}
+.app h3{font-family:var(--display);font-size:1.45rem;margin:14px 0 6px;letter-spacing:-.015em}
+.app p{margin:0 0 12px;color:var(--muted)}
+.app .for{font-size:.92rem}
+.app .for b{color:var(--ink)}
+@media (max-width:720px){.apps{grid-template-columns:1fr}}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;counter-reset:s}
+.step{counter-increment:s}
+.step::before{content:counter(s);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font:700 1.1rem var(--display);margin-bottom:14px}
+.step h3{font-family:var(--display);margin:0 0 6px;font-size:1.2rem}
+.step p{margin:0;color:var(--muted)}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tier{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;display:flex;flex-direction:column}
+.tier.main{border:2px solid var(--cobalt)}
+.tier h3{font-family:var(--display);margin:0 0 4px;font-size:1.25rem}
+.tier .amt{font-family:var(--display);font-weight:800;font-size:2.4rem;letter-spacing:-.03em;margin:8px 0 0}
+.tier .unit{color:var(--muted);font-size:.9rem}
+.tier ul{padding-left:18px;margin:16px 0 22px;color:var(--muted)}
+.tier li{margin-bottom:6px}
+.tier .btn{margin-top:auto;text-align:center}
+@media (max-width:860px){.tiers{grid-template-columns:1fr}}
+
+.library{display:flex;flex-wrap:wrap;gap:10px}
+.library span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.95rem}
+.library a{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:.95rem;text-decoration:none;color:var(--ink);display:inline-flex;gap:8px;align-items:center}
+.library a:hover{border-color:var(--cobalt)}
+.library .more{background:var(--soft,#E4EAFD);color:var(--cobalt-deep);border-radius:999px;padding:0 8px;font-size:.8rem;font-weight:600}
+.library a.all{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px}
+.contact p{color:var(--muted)}
+form{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;display:grid;gap:14px;grid-template-columns:1fr 1fr}
+form .full{grid-column:1/-1}
+label{display:block;font-weight:600;font-size:.9rem;margin-bottom:5px}
+input,select,textarea{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+textarea{min-height:120px;resize:vertical}
+.hp{position:absolute;left:-9999px}
+@media (max-width:820px){.contact{grid-template-columns:1fr}form{grid-template-columns:1fr}}
+
+footer{padding:36px 0 48px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="nav">
+    <a class="logo" href="/">Nova Digitus Designs</a>
+    <nav>
+      <a href="/apps/">All apps</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a class="btn" href="https://cal.com/stacey-williams-5enqex" target="_blank" rel="noopener">Book a call</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>AI software that's already built, ready for your business.</h1>
+      <p>We design, build and run AI applications for operations, engineering and field teams. Start with an app that exists today, have it set up on your data, or bring a problem and get a working pilot in weeks.</p>
+      <div class="ctas">
+        <a class="btn" href="https://cal.com/stacey-williams-5enqex" target="_blank" rel="noopener">Book a 30-minute call</a>
+        <a class="btn line" href="/apps/">Browse all apps</a>
+      </div>
+    </div>
+    <div class="count"><b>132</b><span>AI applications built in-house, from engineering and IT to wealth, health and culture.</span></div>
+  </div>
+
+  <section id="apps">
+    <h2>Apps available for pilots</h2>
+    <p class="intro">These can be configured for your team now. Each one starts with a short pilot so you see results on your own work before you commit.</p>
+    <div class="apps">
+      <article class="app">
+        <span class="tag">Flagship</span>
+        <h3>Engineering Orchestrator</h3>
+        <p>Keeps multi-person engineering projects moving: breaks work into tasks, tracks handoffs, and flags what's blocked before a deadline slips.</p>
+        <div class="for"><b>For</b> engineering firms, hardware teams and product shops juggling parallel projects.</div>
+      </article>
+      <article class="app">
+        <span class="tag">Pilot ready</span>
+        <h3>AI Swarm Problem Solver</h3>
+        <p>A team of AI agents takes a business problem apart, tests explanations against your data, and returns ranked options with the reasoning shown.</p>
+        <div class="for"><b>For</b> owners and operators facing a recurring cost, delay or quality problem.</div>
+      </article>
+      <article class="app">
+        <span class="tag">Pilot ready</span>
+        <h3>Digital vCard</h3>
+        <p>A phone-first digital business card your whole team shares by link or QR, with one-tap contact save and no app to install.</p>
+        <div class="for"><b>For</b> sales teams, field staff and anyone still handing out paper cards.</div>
+      </article>
+      <article class="app">
+        <span class="tag">Pilot ready</span>
+        <h3>Robot Agent Layer</h3>
+        <p>Plans tasks for service and humanoid robots and decides when to hand off to a person, so robots and staff can share the same job safely.</p>
+        <div class="for"><b>For</b> facilities, logistics and hospitality teams exploring robotics.</div>
+      </article>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>How a pilot works</h2>
+    <p class="intro">Fixed scope, fixed price, and a clear yes-or-no at the end.</p>
+    <div class="steps">
+      <div class="step"><h3>Call</h3><p>Thirty minutes on where the time or money is leaking. You leave with a straight answer on whether AI helps.</p></div>
+      <div class="step"><h3>Pilot</h3><p>We set up one app on your data and workflow and agree on the number it has to move.</p></div>
+      <div class="step"><h3>Decide</h3><p>You see the result. Keep it on a retainer, license it, or walk away with what we built.</p></div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <h2>Ways to work together</h2>
+    <p class="intro">Most clients start with a Strategy Session or go straight to a pilot. Retainers are for teams that want ongoing builds.</p>
+    <div class="tiers">
+      <div class="tier">
+        <h3>Strategy Session</h3>
+        <div class="amt">$497</div><div class="unit">one session</div>
+        <ul><li>90 minutes on your workflows</li><li>Where AI saves time or money, ranked</li><li>A written plan you keep</li></ul>
+        <a class="btn line" href="https://cal.com/stacey-williams-5enqex" target="_blank" rel="noopener">Book a session</a>
+      </div>
+      <div class="tier main">
+        <h3>Custom AI Pilot</h3>
+        <div class="amt">$4,500</div><div class="unit">per pilot</div>
+        <ul><li>One app configured on your data</li><li>Live in weeks, not months</li><li>Measured against a goal we set together</li></ul>
+        <a class="btn" href="#contact">Start a pilot</a>
+      </div>
+      <div class="tier">
+        <h3>Monthly Retainer</h3>
+        <div class="amt">$2,000</div><div class="unit">per month</div>
+        <ul><li>New builds and improvements</li><li>Monitoring and support</li><li>Priority access to new apps</li></ul>
+        <a class="btn line" href="#contact">Ask about retainers</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Every app, sorted by who it's for</h2>
+    <p class="intro">132 apps in nine groups. Send your team straight to theirs, or search the whole catalog.</p>
+    <div class="library"><a href="/apps/engineering.html">Engineering &amp; Field Systems <span class="more">12</span></a><a href="/apps/it.html">IT, Security &amp; Cloud <span class="more">17</span></a><a href="/apps/ai.html">AI Platforms &amp; Agent Builders <span class="more">29</span></a><a href="/apps/operations.html">Business Operations &amp; Automation <span class="more">21</span></a><a href="/apps/sales.html">Sales &amp; Marketing <span class="more">12</span></a><a href="/apps/wealth.html">Wealth, Credit &amp; Real Estate <span class="more">13</span></a><a href="/apps/health.html">Health &amp; Wellbeing <span class="more">9</span></a><a href="/apps/culture.html">Culture, Heritage &amp; Spirit <span class="more">8</span></a><a href="/apps/creative.html">Creative, Media &amp; Entertainment <span class="more">11</span></a><a class="all" href="/apps/">Search all 132 apps</a></div>
+  </section>
+
+  <section id="contact">
+    <div class="contact">
+      <div>
+        <h2>Tell us what's slowing you down</h2>
+        <p>Describe the problem in a few lines. You'll get a reply within one business day on whether an existing app fits, or what a pilot would look like.</p>
+        <p>Prefer to talk? <a href="https://cal.com/stacey-williams-5enqex" target="_blank" rel="noopener">Pick a time on the calendar.</a></p>
+      </div>
+      <form name="inquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="company_site">
+        <input type="hidden" name="form-name" value="inquiry">
+        <p class="hp"><label>Leave this empty <input name="company_site" tabindex="-1" autocomplete="off"></label></p>
+        <div><label for="n">Name</label><input id="n" name="name" required autocomplete="name"></div>
+        <div><label for="e">Work email</label><input id="e" name="email" type="email" required autocomplete="email"></div>
+        <div><label for="c">Company</label><input id="c" name="company" autocomplete="organization"></div>
+        <div><label for="i">Interested in</label>
+          <select id="i" name="interest">
+            <option>Not sure yet</option><option>Engineering Orchestrator</option><option>AI Swarm Problem Solver</option>
+            <option>Digital vCard</option><option>Robot Agent Layer</option><option>Strategy Session</option><option>Custom AI Pilot</option><option>Monthly Retainer</option>
+          </select></div>
+        <div class="full"><label for="m">What's the problem?</label><textarea id="m" name="message" required></textarea></div>
+        <div class="full"><button class="btn" type="submit">Send inquiry</button></div>
+      </form>
+    </div>
+  </section>
+</div>
+<footer><div class="wrap">© 2026 Nova Digitus Designs LLC</div></footer>
+</body>
+</html>
