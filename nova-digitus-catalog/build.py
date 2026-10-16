@@ -88,8 +88,8 @@ def head(title, desc):
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/apps/catalog.css"></head><body><div class="wrap">
-<header class="nav"><a class="logo" href="/">Nova Digitus Designs</a><nav><a href="/apps/">All apps</a><a href="/#pricing">Pricing</a><a class="btn" href="{CAL}" target="_blank" rel="noopener">Book a call</a></nav></header>"""
+<link rel="stylesheet" href="catalog.css"></head><body><div class="wrap">
+<header class="nav"><a class="logo" href="../">Nova Digitus Designs</a><nav><a href="./">All apps</a><a href="../#pricing">Pricing</a><a class="btn" href="{CAL}" target="_blank" rel="noopener">Book a call</a></nav></header>"""
 
 FOOT = """</div><footer><div class="wrap">© 2026 Nova Digitus Designs LLC</div></footer></body></html>"""
 
@@ -101,7 +101,7 @@ def app_card(a, show_group=False):
     name, gid, desc, featured = a
     g = next(x for x in GROUPS if x[0] == gid)
     tag = '<span class="tag">Most requested</span>' if featured else ""
-    grp = f'<a class="grp" href="/apps/{gid}.html">{e(g[1])}</a>' if show_group else ""
+    grp = f'<a class="grp" href="{gid}.html">{e(g[1])}</a>' if show_group else ""
     return f"""<article class="app">{tag}<h3>{e(name)}</h3><p>{e(desc)}</p>
 <div class="row"><a class="btn sm" href="{e(book_url(name))}" target="_blank" rel="noopener">Book a demo</a>{try_btn(name)}{grp}</div></article>"""
 
@@ -113,10 +113,10 @@ def cta():
 for gid, gname, who, blurb in GROUPS:
     apps = [a for a in APPS if a[1] == gid]
     apps.sort(key=lambda a: (not a[3], a[0].lower()))
-    others = "".join(f'<a href="/apps/{g[0]}.html">{e(g[1])}</a>' for g in GROUPS if g[0] != gid)
+    others = "".join(f'<a href="{g[0]}.html">{e(g[1])}</a>' for g in GROUPS if g[0] != gid)
     note = f'<p class="note">{e(DISCLAIMER[gid])}</p>' if gid in DISCLAIMER else ""
     page = head(f"{gname} | Nova Digitus Designs", f"{blurb} {len(apps)} AI apps from Nova Digitus Designs.") + f"""
-<div class="crumb"><a href="/apps/">All apps</a> / {e(gname)}</div>
+<div class="crumb"><a href="./">All apps</a> / {e(gname)}</div>
 <div class="hero"><h1>{e(gname)}</h1><p class="lede">{e(who)} {e(blurb)} Pick an app and book a demo; the call is free and the app you chose comes with you.</p></div>
 <section><h2>{len(apps)} apps</h2><p class="lede" style="font-size:1rem">Every demo is a live 30-minute call on your own use case.</p>
 <div class="apps">{''.join(app_card(a) for a in apps)}</div>{note}</section>
@@ -127,7 +127,7 @@ for gid, gname, who, blurb in GROUPS:
 
 # ---------- catalog front door
 doors = "".join(
-    f'<a class="door" href="/apps/{gid}.html"><h3>{e(gname)}</h3><p>{e(who)}</p><span class="count">{sum(1 for a in APPS if a[1]==gid)} apps</span></a>'
+    f'<a class="door" href="{gid}.html"><h3>{e(gname)}</h3><p>{e(who)}</p><span class="count">{sum(1 for a in APPS if a[1]==gid)} apps</span></a>'
     for gid, gname, who, blurb in GROUPS)
 data = json.dumps([{"n": a[0], "g": a[1], "d": a[2], "f": a[3], "t": try_url(a[0])} for a in APPS]).replace("</", "<\\/")
 groups_js = json.dumps({g[0]: g[1] for g in GROUPS})
@@ -150,7 +150,7 @@ document.getElementById('q').addEventListener('input',ev=>{{
   if(q.length<2){{box.innerHTML='';return;}}
   const words=q.split(/\\s+/);
   const hits=APPS.filter(a=>words.every(w=>(a.n+' '+a.d+' '+GROUPS[a.g]).toLowerCase().includes(w))).sort((x,y)=>(y.f-x.f)).slice(0,12);
-  box.innerHTML=hits.length?'<div class="apps">'+hits.map(a=>`<article class="app"><h3>${{esc(a.n)}}</h3><p>${{esc(a.d)}}</p><div class="row"><a class="btn sm" target="_blank" rel="noopener" href="${{CAL}}?app=${{encodeURIComponent(a.n)}}">Book a demo</a>${{a.t?`<a class="btn sm line" target="_blank" rel="noopener" href="${{a.t}}">Try it</a>`:''}}<a class="grp" href="/apps/${{a.g}}.html">${{esc(GROUPS[a.g])}}</a></div></article>`).join('')+'</div>'
+  box.innerHTML=hits.length?'<div class="apps">'+hits.map(a=>`<article class="app"><h3>${{esc(a.n)}}</h3><p>${{esc(a.d)}}</p><div class="row"><a class="btn sm" target="_blank" rel="noopener" href="${{CAL}}?app=${{encodeURIComponent(a.n)}}">Book a demo</a>${{a.t?`<a class="btn sm line" target="_blank" rel="noopener" href="${{a.t}}">Try it</a>`:''}}<a class="grp" href="${{a.g}}.html">${{esc(GROUPS[a.g])}}</a></div></article>`).join('')+'</div>'
     :'<p class="empty">No app matches that yet. <a href="'+CAL+'" target="_blank" rel="noopener">Book a call</a> and describe the problem; it may be a quick custom build.</p>';
 }});
 </script>

@@ -24,6 +24,8 @@ Pick one:
 2. In GitHub: Stacey77/WellOff > Settings > Secrets and variables > Actions > New repository secret, named `NETLIFY_AUTH_TOKEN`.
 3. Every push to `main` that changes this folder publishes to **nova-digitus-designs-f0js.netlify.app**. You can also run it by hand from the Actions tab.
 
+**Also live on GitHub Pages:** https://stacey77.github.io/rag7/nova-digitus-site/ (links are relative, so the site works at any address).
+
 **B. Netlify's own Git connection:** in Netlify, open the project, go to Site configuration > Build & deploy > Link repository, choose `Stacey77/WellOff`, set the base directory to `nova-digitus-site` and the publish directory to `.`, and leave the build command empty.
 
 **C. Drag and drop (no setup):** Netlify > project > Deploys, then drag this folder onto the page.
