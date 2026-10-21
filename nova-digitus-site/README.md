@@ -40,7 +40,7 @@ The contact form on the home page uses Netlify Forms, which is already turned on
 4. Add your domain (for example `novadigitus.com`). Coolify issues the HTTPS certificate.
 5. Turn on **Auto deploy** so each push to `main` redeploys.
 
-On Coolify the contact form has no Netlify Forms backend, so visitors should use the booking buttons.
+Off Netlify (GitHub Pages, Coolify) the contact form opens the Discovery Call booking page with the visitor's name, email, app and message already filled in, so inquiries still arrive.
 If you want the form on Coolify, point its `action` at your own form handler or an n8n webhook.
 
 ## Updating the catalog

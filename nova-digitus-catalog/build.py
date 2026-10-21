@@ -100,7 +100,7 @@ def try_btn(name):
 def app_card(a, show_group=False):
     name, gid, desc, featured = a
     g = next(x for x in GROUPS if x[0] == gid)
-    tag = '<span class="tag">Most requested</span>' if featured else ""
+    tag = '<span class="tag">Live: try it now</span>' if try_url(name) else ('<span class="tag">Most requested</span>' if featured else "")
     grp = f'<a class="grp" href="{gid}.html">{e(g[1])}</a>' if show_group else ""
     return f"""<article class="app">{tag}<h3>{e(name)}</h3><p>{e(desc)}</p>
 <div class="row"><a class="btn sm" href="{e(book_url(name))}" target="_blank" rel="noopener">Book a demo</a>{try_btn(name)}{grp}</div></article>"""
@@ -112,7 +112,7 @@ def cta():
 # ---------- group pages
 for gid, gname, who, blurb in GROUPS:
     apps = [a for a in APPS if a[1] == gid]
-    apps.sort(key=lambda a: (not a[3], a[0].lower()))
+    apps.sort(key=lambda a: (not try_url(a[0]), not a[3], a[0].lower()))
     others = "".join(f'<a href="{g[0]}.html">{e(g[1])}</a>' for g in GROUPS if g[0] != gid)
     note = f'<p class="note">{e(DISCLAIMER[gid])}</p>' if gid in DISCLAIMER else ""
     page = head(f"{gname} | Nova Digitus Designs", f"{blurb} {len(apps)} AI apps from Nova Digitus Designs.") + f"""
@@ -133,12 +133,17 @@ data = json.dumps([{"n": a[0], "g": a[1], "d": a[2], "f": a[3], "t": try_url(a[0
 groups_js = json.dumps({g[0]: g[1] for g in GROUPS})
 total = len(APPS)
 from links import PUBLIC_URLS
+live = [a for a in APPS if try_url(a[0])]
+spotlight = (f'<section><h2>Try it live</h2><p class="lede" style="font-size:1rem">Open these in your browser right now, no call needed.</p><div class="apps">'
+             + "".join(app_card(a, show_group=True) for a in live) + '</div></section>') if live else ""
+
 INTRO_TAIL = "Try an app yourself where you see a Try it button, or book a free 30-minute demo of any app." if PUBLIC_URLS else "Every app has its own demo button that books a free 30-minute call."
 index = head("AI apps for every team | Nova Digitus Designs", f"Browse {total} AI apps by who they're for and book a free demo of any of them.") + f"""
 <div class="hero"><h1>Find the AI app built for your team.</h1>
 <p class="lede">{total} working apps, sorted by who they're for. Pick your group, or search by what you need done. {INTRO_TAIL}</p>
 <form class="search" role="search" onsubmit="return false"><input id="q" type="search" placeholder="Try: network, credit, outreach, sound, robot" aria-label="Search apps"></form>
 <div id="results" aria-live="polite"></div></div>
+{spotlight}
 <section><h2>Browse by who it's for</h2><p class="lede" style="font-size:1rem">Send people straight to their group: each one has its own link.</p><div class="doors">{doors}</div></section>
 {cta()}
 <script>
@@ -149,7 +154,7 @@ document.getElementById('q').addEventListener('input',ev=>{{
   const q=ev.target.value.trim().toLowerCase();
   if(q.length<2){{box.innerHTML='';return;}}
   const words=q.split(/\\s+/);
-  const hits=APPS.filter(a=>words.every(w=>(a.n+' '+a.d+' '+GROUPS[a.g]).toLowerCase().includes(w))).sort((x,y)=>(y.f-x.f)).slice(0,12);
+  const hits=APPS.filter(a=>words.every(w=>(a.n+' '+a.d+' '+GROUPS[a.g]).toLowerCase().includes(w))).sort((x,y)=>(!!y.t-!!x.t)||(y.f-x.f)).slice(0,12);
   box.innerHTML=hits.length?'<div class="apps">'+hits.map(a=>`<article class="app"><h3>${{esc(a.n)}}</h3><p>${{esc(a.d)}}</p><div class="row"><a class="btn sm" target="_blank" rel="noopener" href="${{CAL}}?app=${{encodeURIComponent(a.n)}}">Book a demo</a>${{a.t?`<a class="btn sm line" target="_blank" rel="noopener" href="${{a.t}}">Try it</a>`:''}}<a class="grp" href="${{a.g}}.html">${{esc(GROUPS[a.g])}}</a></div></article>`).join('')+'</div>'
     :'<p class="empty">No app matches that yet. <a href="'+CAL+'" target="_blank" rel="noopener">Book a call</a> and describe the problem; it may be a quick custom build.</p>';
 }});
