@@ -1,4 +1,6 @@
-# Publishes nova-digitus-site/ to Netlify whenever it changes on main.
+# Rebuilds the app catalog and publishes nova-digitus-site/ to Netlify whenever the site or the catalog changes on main.
+# The Wiki Brain on Stacey's PC pushes nova-digitus-catalog/vault_apps.json (apps marked `public: true` in Obsidian);
+# this workflow turns it into the catalog pages, commits them (GitHub Pages serves them from main) and deploys.
 # Replaces the manual drag-and-drop. One-time setup in GitHub:
 #   Settings > Secrets and variables > Actions > New repository secret
 #   NETLIFY_AUTH_TOKEN = a personal access token from app.netlify.com/user/applications
@@ -7,12 +9,15 @@ name: Deploy Nova Digitus site
 on:
   push:
     branches: [main]
-    paths: ["nova-digitus-site/**", ".github/workflows/deploy-nova-digitus-site.yml"]
+    paths: ["nova-digitus-site/**", "nova-digitus-catalog/**", ".github/workflows/deploy-nova-digitus-site.yml"]
   workflow_dispatch: {}
+
+permissions:
+  contents: write
 
 concurrency:
   group: nova-digitus-site
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -22,6 +27,22 @@ jobs:
       NETLIFY_SITE_ID: a1f0bbc5-b209-4ca7-b476-8235174e54dc   # nova-digitus-designs-f0js
     steps:
       - uses: actions/checkout@v4
+
+      - name: Rebuild the app catalog
+        run: python3 nova-digitus-catalog/build.py
+
+      - name: Save the rebuilt pages to main (for GitHub Pages)
+        run: |
+          if [ -n "$(git status --porcelain nova-digitus-site)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add nova-digitus-site
+            git commit -m "Rebuild app catalog from the Obsidian vault"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo "Catalog pages already up to date."
+          fi
 
       - name: Check the site before publishing
         run: |
