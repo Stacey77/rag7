@@ -8,6 +8,10 @@ from urllib.parse import quote
 from catalog_data import APPS, GROUPS
 from links import public_try_url as try_url
 
+# 60-second teaser demos (demos.json) and the player that runs them, bundled into the site as demos.js
+HERE = os.path.dirname(os.path.abspath(__file__))
+DEMOS = json.load(open(os.path.join(HERE, "demos.json")))
+
 SITE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "nova-digitus-site")
 OUT = os.path.join(SITE, "apps")
 CAL = "https://cal.com/stacey-williams-5enqex/discovery-call"
@@ -91,11 +95,14 @@ def head(title, desc):
 <link rel="stylesheet" href="catalog.css"></head><body><div class="wrap">
 <header class="nav"><a class="logo" href="../">Nova Digitus Designs</a><nav><a href="./">All apps</a><a href="../#pricing">Pricing</a><a class="btn" href="{CAL}" target="_blank" rel="noopener">Book a call</a></nav></header>"""
 
-FOOT = """</div><footer><div class="wrap">© 2026 Nova Digitus Designs LLC</div></footer></body></html>"""
+FOOT = """</div><script src="../demos.js" defer></script><footer><div class="wrap">© 2026 Nova Digitus Designs LLC</div></footer></body></html>"""
 
 def try_btn(name):
     u = try_url(name)
     return f'<a class="btn sm line" href="{e(u)}" target="_blank" rel="noopener">Try it</a>' if u else ""
+
+def demo_btn(name):
+    return f'<button type="button" class="btn sm line" data-demo="{e(name)}">60-second demo</button>' if name in DEMOS else ""
 
 def app_card(a, show_group=False):
     name, gid, desc, featured = a
@@ -103,7 +110,7 @@ def app_card(a, show_group=False):
     tag = '<span class="tag">Live: try it now</span>' if try_url(name) else ('<span class="tag">Most requested</span>' if featured else "")
     grp = f'<a class="grp" href="{gid}.html">{e(g[1])}</a>' if show_group else ""
     return f"""<article class="app">{tag}<h3>{e(name)}</h3><p>{e(desc)}</p>
-<div class="row"><a class="btn sm" href="{e(book_url(name))}" target="_blank" rel="noopener">Book a demo</a>{try_btn(name)}{grp}</div></article>"""
+<div class="row"><a class="btn sm" href="{e(book_url(name))}" target="_blank" rel="noopener">Book a demo</a>{demo_btn(name)}{try_btn(name)}{grp}</div></article>"""
 
 def cta():
     return f"""<section><div class="cta"><div><h2>Don't see your problem here?</h2><p>Most clients come with a problem, not an app name. Bring it to a free 30-minute call and we'll tell you which app fits, or what a custom build would take.</p></div>
@@ -129,7 +136,7 @@ for gid, gname, who, blurb in GROUPS:
 doors = "".join(
     f'<a class="door" href="{gid}.html"><h3>{e(gname)}</h3><p>{e(who)}</p><span class="count">{sum(1 for a in APPS if a[1]==gid)} apps</span></a>'
     for gid, gname, who, blurb in GROUPS)
-data = json.dumps([{"n": a[0], "g": a[1], "d": a[2], "f": a[3], "t": try_url(a[0])} for a in APPS]).replace("</", "<\\/")
+data = json.dumps([{"n": a[0], "g": a[1], "d": a[2], "f": a[3], "t": try_url(a[0]), "v": a[0] in DEMOS} for a in APPS]).replace("</", "<\\/")
 groups_js = json.dumps({g[0]: g[1] for g in GROUPS})
 total = len(APPS)
 from links import PUBLIC_URLS
@@ -155,7 +162,7 @@ document.getElementById('q').addEventListener('input',ev=>{{
   if(q.length<2){{box.innerHTML='';return;}}
   const words=q.split(/\\s+/);
   const hits=APPS.filter(a=>words.every(w=>(a.n+' '+a.d+' '+GROUPS[a.g]).toLowerCase().includes(w))).sort((x,y)=>(!!y.t-!!x.t)||(y.f-x.f)).slice(0,12);
-  box.innerHTML=hits.length?'<div class="apps">'+hits.map(a=>`<article class="app"><h3>${{esc(a.n)}}</h3><p>${{esc(a.d)}}</p><div class="row"><a class="btn sm" target="_blank" rel="noopener" href="${{CAL}}?app=${{encodeURIComponent(a.n)}}">Book a demo</a>${{a.t?`<a class="btn sm line" target="_blank" rel="noopener" href="${{a.t}}">Try it</a>`:''}}<a class="grp" href="${{a.g}}.html">${{esc(GROUPS[a.g])}}</a></div></article>`).join('')+'</div>'
+  box.innerHTML=hits.length?'<div class="apps">'+hits.map(a=>`<article class="app"><h3>${{esc(a.n)}}</h3><p>${{esc(a.d)}}</p><div class="row"><a class="btn sm" target="_blank" rel="noopener" href="${{CAL}}?app=${{encodeURIComponent(a.n)}}">Book a demo</a>${{a.v?`<button type="button" class="btn sm line" data-demo="${{esc(a.n)}}">60-second demo</button>`:''}}${{a.t?`<a class="btn sm line" target="_blank" rel="noopener" href="${{a.t}}">Try it</a>`:''}}<a class="grp" href="${{a.g}}.html">${{esc(GROUPS[a.g])}}</a></div></article>`).join('')+'</div>'
     :'<p class="empty">No app matches that yet. <a href="'+CAL+'" target="_blank" rel="noopener">Book a call</a> and describe the problem; it may be a quick custom build.</p>';
 }});
 </script>
@@ -163,3 +170,11 @@ document.getElementById('q').addEventListener('input',ev=>{{
 open(os.path.join(OUT, "index.html"), "w").write(index)
 open(os.path.join(OUT, "catalog.css"), "w").write(CSS)
 print(f"built {len(GROUPS)} group pages + index, {total} apps")
+
+# ---------- demos.js for the whole site
+missing = [n for n in DEMOS if n not in {a[0] for a in APPS}]
+demo_data = {n: dict(d, url=try_url(n) or "") for n, d in DEMOS.items()}
+with open(os.path.join(SITE, "demos.js"), "w") as f:
+    f.write("window.ND_DEMOS=" + json.dumps(demo_data, ensure_ascii=False).replace("</", "<\\/") + ";\n")
+    f.write(open(os.path.join(HERE, "demo_player.js")).read())
+print(f"demos.js: {len(DEMOS)} demos" + (f" ({len(missing)} for apps outside the catalog: {', '.join(missing)})" if missing else ""))
