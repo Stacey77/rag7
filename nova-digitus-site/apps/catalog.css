@@ -55,3 +55,6 @@ section{padding:40px 0;border-top:1px solid var(--line)}
 .others a:hover{border-color:var(--cobalt)}
 footer{padding:30px 0 44px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);margin-top:30px}
 .empty{color:var(--muted)}
+.lede-sm{font-size:1rem}
+.others.mt{margin-top:12px}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

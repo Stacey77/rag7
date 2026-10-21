@@ -15,6 +15,10 @@ DEMOS = json.load(open(os.path.join(HERE, "demos.json")))
 SITE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "nova-digitus-site")
 OUT = os.path.join(SITE, "apps")
 CAL = "https://cal.com/stacey-williams-5enqex/discovery-call"
+# Canonical public URL (GitHub Pages serves the site from a subfolder). Used for canonical links + sitemap.xml only;
+# every internal link stays relative so the site also works at domain root (Netlify/Coolify).
+BASE = "https://stacey77.github.io/rag7/nova-digitus-site/"
+FAVICON = '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%232F5BEA%27/%3E%3Cpath d=%27M19 47V17h6l14 19V17h6v30h-6L25 28v19z%27 fill=%27%23fff%27/%3E%3C/svg%3E">'
 os.makedirs(OUT, exist_ok=True)
 e = html.escape
 
@@ -83,19 +87,24 @@ section{padding:40px 0;border-top:1px solid var(--line)}
 .others a:hover{border-color:var(--cobalt)}
 footer{padding:30px 0 44px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);margin-top:30px}
 .empty{color:var(--muted)}
+.lede-sm{font-size:1rem}
+.others.mt{margin-top:12px}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 """
 
-def head(title, desc):
-    return f"""<!doctype html>
+def head(title, desc, path):
+    return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
+<link rel="canonical" href="{BASE}{path}">{FAVICON}
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="catalog.css"></head><body><div class="wrap">
-<header class="nav"><a class="logo" href="../">Nova Digitus Designs</a><nav><a href="./">All apps</a><a href="../#pricing">Pricing</a><a class="btn" href="{CAL}" target="_blank" rel="noopener">Book a call</a></nav></header>"""
+<header class="nav"><a class="logo" href="../">Nova Digitus Designs</a><nav><a href="./">All apps</a><a href="../#pricing">Pricing</a><a class="btn" href="{CAL}" target="_blank" rel="noopener">Book a call</a></nav></header>
+<main>"""
 
-FOOT = """</div><script src="../demos.js" defer></script><footer><div class="wrap">© 2026 Nova Digitus Designs LLC</div></footer></body></html>"""
+FOOT = """</main></div><script src="../demos.js" defer></script><footer><div class="wrap">© 2026 Nova Digitus Designs LLC</div></footer></body></html>"""
 
 def try_btn(name):
     u = try_url(name)
@@ -122,13 +131,13 @@ for gid, gname, who, blurb in GROUPS:
     apps.sort(key=lambda a: (not try_url(a[0]), not a[3], a[0].lower()))
     others = "".join(f'<a href="{g[0]}.html">{e(g[1])}</a>' for g in GROUPS if g[0] != gid)
     note = f'<p class="note">{e(DISCLAIMER[gid])}</p>' if gid in DISCLAIMER else ""
-    page = head(f"{gname} | Nova Digitus Designs", f"{blurb} {len(apps)} AI apps from Nova Digitus Designs.") + f"""
+    page = head(f"{gname} | Nova Digitus Designs", f"{blurb} {len(apps)} AI apps from Nova Digitus Designs.", f"apps/{gid}.html") + f"""
 <div class="crumb"><a href="./">All apps</a> / {e(gname)}</div>
 <div class="hero"><h1>{e(gname)}</h1><p class="lede">{e(who)} {e(blurb)} Pick an app and book a demo; the call is free and the app you chose comes with you.</p></div>
-<section><h2>{len(apps)} apps</h2><p class="lede" style="font-size:1rem">Every demo is a live 30-minute call on your own use case.</p>
+<section><h2>{len(apps)} apps</h2><p class="lede lede-sm">Every demo is a live 30-minute call on your own use case.</p>
 <div class="apps">{''.join(app_card(a) for a in apps)}</div>{note}</section>
 {cta()}
-<section><h2>Other groups</h2><div class="others" style="margin-top:12px">{others}</div></section>
+<section><h2>Other groups</h2><div class="others mt">{others}</div></section>
 """ + FOOT
     open(os.path.join(OUT, f"{gid}.html"), "w").write(page)
 
@@ -141,17 +150,17 @@ groups_js = json.dumps({g[0]: g[1] for g in GROUPS})
 total = len(APPS)
 from links import PUBLIC_URLS
 live = [a for a in APPS if try_url(a[0])]
-spotlight = (f'<section><h2>Try it live</h2><p class="lede" style="font-size:1rem">Open these in your browser right now, no call needed.</p><div class="apps">'
+spotlight = (f'<section><h2>Try it live</h2><p class="lede lede-sm">Open these in your browser right now, no call needed.</p><div class="apps">'
              + "".join(app_card(a, show_group=True) for a in live) + '</div></section>') if live else ""
 
 INTRO_TAIL = "Try an app yourself where you see a Try it button, or book a free 30-minute demo of any app." if PUBLIC_URLS else "Every app has its own demo button that books a free 30-minute call."
-index = head("AI apps for every team | Nova Digitus Designs", f"Browse {total} AI apps by who they're for and book a free demo of any of them.") + f"""
+index = head("AI apps for every team | Nova Digitus Designs", f"Browse {total} AI apps by who they're for and book a free demo of any of them.", "apps/") + f"""
 <div class="hero"><h1>Find the AI app built for your team.</h1>
 <p class="lede">{total} working apps, sorted by who they're for. Pick your group, or search by what you need done. {INTRO_TAIL}</p>
-<form class="search" role="search" onsubmit="return false"><input id="q" type="search" placeholder="Try: network, credit, outreach, sound, robot" aria-label="Search apps"></form>
+<form class="search" role="search" onsubmit="return false"><input id="q" type="search" placeholder="Try: network, credit, outreach, sound, robot" aria-label="Search apps"><button type="submit" class="vh">Search</button></form>
 <div id="results" aria-live="polite"></div></div>
 {spotlight}
-<section><h2>Browse by who it's for</h2><p class="lede" style="font-size:1rem">Send people straight to their group: each one has its own link.</p><div class="doors">{doors}</div></section>
+<section><h2>Browse by who it's for</h2><p class="lede lede-sm">Send people straight to their group: each one has its own link.</p><div class="doors">{doors}</div></section>
 {cta()}
 <script>
 const APPS={data}, GROUPS={groups_js}, CAL={json.dumps(CAL)};
@@ -169,6 +178,12 @@ document.getElementById('q').addEventListener('input',ev=>{{
 """ + FOOT
 open(os.path.join(OUT, "index.html"), "w").write(index)
 open(os.path.join(OUT, "catalog.css"), "w").write(CSS)
+# ---------- sitemap.xml (thanks.html and 404.html are intentionally left out)
+urls = ["", "apps/"] + [f"apps/{g[0]}.html" for g in GROUPS]
+with open(os.path.join(SITE, "sitemap.xml"), "w") as f:
+    f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+    f.write("".join(f"  <url><loc>{BASE}{u}</loc></url>\n" for u in urls))
+    f.write("</urlset>\n")
 print(f"built {len(GROUPS)} group pages + index, {total} apps")
 
 # ---------- demos.js for the whole site

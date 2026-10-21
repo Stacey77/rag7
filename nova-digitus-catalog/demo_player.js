@@ -22,6 +22,7 @@ dialog.nd-demo::backdrop{background:rgba(8,14,30,.6)}\
 .nd-timer.low b{color:#FF7A7A}\
 .nd-bar{height:3px;background:#22304D}.nd-bar i{display:block;height:100%;background:#FFC861;width:100%;transition:width 1s linear}\
 .nd-b{padding:16px 22px 6px;overflow:auto;flex:1 1 auto;min-height:120px}\
+.nd-b:focus{outline:none}.nd-b:focus-visible{outline:2px solid #FFC861;outline-offset:-2px;border-radius:4px}\
 .nd-ask{background:#17233C;border:1px solid #22304D;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:.95rem}\
 .nd-ask small{display:block;color:#7F8DA8;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}\
 .nd-step{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:8px 0;border-bottom:1px dashed #22304D;animation:ndIn .35s ease both}\
@@ -61,7 +62,7 @@ dialog.nd-demo::backdrop{background:rgba(8,14,30,.6)}\
     if (dlg) return dlg;
     var st = el("style"); st.textContent = css; document.head.appendChild(st);
     dlg = el("dialog", "nd-demo");
-    dlg.setAttribute("aria-label", "App demo");
+    dlg.setAttribute("aria-labelledby", "nd-demo-title");
     dlg.addEventListener("close", clearTimers);
     dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
     document.body.appendChild(dlg);
@@ -72,7 +73,7 @@ dialog.nd-demo::backdrop{background:rgba(8,14,30,.6)}\
     return '<div class="nd-f"><small>' + esc(note) + '</small><div class="nd-acts">' +
       (d.url ? '<a class="nd-btn ghost" href="' + esc(d.url) + '" target="_blank" rel="noopener">Try the full app</a>' : "") +
       '<a class="nd-btn" href="' + esc(bookUrl(name)) + '" target="_blank" rel="noopener">Book a demo on your data</a>' +
-      '<button class="nd-btn ghost" data-nd-close>Close</button></div></div>';
+      '<button type="button" class="nd-btn ghost" data-nd-close>Close</button></div></div>';
   }
 
   function gone(name, d, again) {
@@ -91,12 +92,14 @@ dialog.nd-demo::backdrop{background:rgba(8,14,30,.6)}\
     ensureDialog(); clearTimers();
     var again = Date.now() - lastRun(name) < COOLDOWN;
     dlg.innerHTML =
-      '<div class="nd-h"><div><h3>' + esc(name) + "</h3><p>" + esc(d.tag) + '</p></div>' +
+      '<div class="nd-h"><div><h3 id="nd-demo-title">' + esc(name) + "</h3><p>" + esc(d.tag) + '</p></div>' +
       '<div class="nd-timer" aria-live="off"><b>1:00</b><span>self-destructs</span></div></div>' +
-      '<div class="nd-bar"><i></i></div><div class="nd-b" aria-live="polite"></div>' +
+      '<div class="nd-bar"><i></i></div><div class="nd-b" tabindex="0" role="region" aria-label="Demo walkthrough for ' + esc(name) + '" aria-live="polite"></div>' +
       footer(name, d, "Simulated walkthrough with sample data.");
-    dlg.querySelector("[data-nd-close]").onclick = function () { dlg.close(); };
+    var closeBtn = dlg.querySelector("[data-nd-close]");
+    closeBtn.onclick = function () { dlg.close(); };
     if (!dlg.open) dlg.showModal();
+    closeBtn.focus();                   // predictable start point; Esc and the backdrop also close
     if (again) { gone(name, d, true); return; }
     markRun(name);
 

@@ -1,10 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nova Digitus Designs — AI apps and pilots for operators</title>
 <meta name="description" content="Nova Digitus Designs builds and deploys AI applications for operations, engineering and field teams. License a working app, get one set up on your data, or start with a pilot.">
+<link rel="canonical" href="https://stacey77.github.io/rag7/nova-digitus-site/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%232F5BEA%27/%3E%3Cpath d=%27M19 47V17h6l14 19V17h6v30h-6L25 28v19z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
 <meta property="og:title" content="Nova Digitus Designs">
 <meta property="og:description" content="Working AI apps and pilots for operations, engineering and field teams.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -115,6 +117,7 @@ footer{padding:36px 0 48px;color:var(--muted);font-size:.9rem;border-top:1px sol
     </nav>
   </header>
 
+  <main>
   <div class="hero">
     <div>
       <h1>AI software that's already built, ready for your business.</h1>
@@ -218,10 +221,10 @@ footer{padding:36px 0 48px;color:var(--muted);font-size:.9rem;border-top:1px sol
       </div>
       <form name="inquiry" method="POST" action="thanks.html" data-netlify="true" netlify-honeypot="company_site">
         <input type="hidden" name="form-name" value="inquiry">
-        <p class="hp"><label>Leave this empty <input name="company_site" tabindex="-1" autocomplete="off"></label></p>
-        <div><label for="n">Name</label><input id="n" name="name" required autocomplete="name"></div>
+        <p class="hp"><label>Leave this empty <input type="text" name="company_site" tabindex="-1" autocomplete="off"></label></p>
+        <div><label for="n">Name</label><input id="n" type="text" name="name" required autocomplete="name"></div>
         <div><label for="e">Work email</label><input id="e" name="email" type="email" required autocomplete="email"></div>
-        <div><label for="c">Company</label><input id="c" name="company" autocomplete="organization"></div>
+        <div><label for="c">Company</label><input id="c" type="text" name="company" autocomplete="organization"></div>
         <div><label for="i">Interested in</label>
           <select id="i" name="interest">
             <option>Not sure yet</option><option>Engineering Orchestrator</option><option>AI Swarm Problem Solver</option>
@@ -250,6 +253,7 @@ footer{padding:36px 0 48px;color:var(--muted);font-size:.9rem;border-top:1px sol
       </script>
     </div>
   </section>
+  </main>
 </div>
 <footer><div class="wrap">© 2026 Nova Digitus Designs LLC</div></footer>
 <script src="demos.js" defer></script>
