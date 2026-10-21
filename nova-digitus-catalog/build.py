@@ -134,7 +134,7 @@ for gid, gname, who, blurb in GROUPS:
     page = head(f"{gname} | Nova Digitus Designs", f"{blurb} {len(apps)} AI apps from Nova Digitus Designs.", f"apps/{gid}.html") + f"""
 <div class="crumb"><a href="./">All apps</a> / {e(gname)}</div>
 <div class="hero"><h1>{e(gname)}</h1><p class="lede">{e(who)} {e(blurb)} Pick an app and book a demo; the call is free and the app you chose comes with you.</p></div>
-<section><h2>{len(apps)} apps</h2><p class="lede lede-sm">Every demo is a live 30-minute call on your own use case.</p>
+<section><h2>{len(apps)} apps</h2><p class="lede lede-sm">Watch a 60-second demo where you see one, then book a free 30-minute call to see the app on your own use case.</p>
 <div class="apps">{''.join(app_card(a) for a in apps)}</div>{note}</section>
 {cta()}
 <section><h2>Other groups</h2><div class="others mt">{others}</div></section>
