@@ -55,6 +55,8 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.6vw,2.6re
 .app p{margin:0 0 12px;color:var(--muted)}
 .app .for{font-size:.92rem}
 .app .for b{color:var(--ink)}
+.app .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.app .acts .btn{padding:9px 16px;font-size:.92rem}
 @media (max-width:720px){.apps{grid-template-columns:1fr}}
 
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;counter-reset:s}
@@ -113,7 +115,7 @@ footer{padding:36px 0 48px;color:var(--muted);font-size:.9rem;border-top:1px sol
       <p>We design, build and run AI applications for operations, engineering and field teams. Start with an app that exists today, have it set up on your data, or bring a problem and get a working pilot in weeks.</p>
       <div class="ctas">
         <a class="btn" href="https://cal.com/stacey-williams-5enqex" target="_blank" rel="noopener">Book a 30-minute call</a>
-        <a class="btn line" href="apps/">Browse all apps</a>
+        <a class="btn line" href="https://nova-digitus-engineering-orchestrator.ai.studio" target="_blank" rel="noopener">Try the Engineering Orchestrator</a>
       </div>
     </div>
     <div class="count"><b>132</b><span>AI applications built in-house, from engineering and IT to wealth, health and culture.</span></div>
@@ -124,10 +126,11 @@ footer{padding:36px 0 48px;color:var(--muted);font-size:.9rem;border-top:1px sol
     <p class="intro">These can be configured for your team now. Each one starts with a short pilot so you see results on your own work before you commit.</p>
     <div class="apps">
       <article class="app">
-        <span class="tag">Flagship</span>
+        <span class="tag">Flagship · live now</span>
         <h3>Engineering Orchestrator</h3>
         <p>Keeps multi-person engineering projects moving: breaks work into tasks, tracks handoffs, and flags what's blocked before a deadline slips.</p>
         <div class="for"><b>For</b> engineering firms, hardware teams and product shops juggling parallel projects.</div>
+        <div class="acts"><a class="btn" href="https://nova-digitus-engineering-orchestrator.ai.studio" target="_blank" rel="noopener">Try it live</a><a class="btn line" href="https://cal.com/stacey-williams-5enqex/discovery-call?app=Engineering%20Orchestrator" target="_blank" rel="noopener">Book a demo</a></div>
       </article>
       <article class="app">
         <span class="tag">Pilot ready</span>
@@ -168,19 +171,19 @@ footer{padding:36px 0 48px;color:var(--muted);font-size:.9rem;border-top:1px sol
         <h3>Strategy Session</h3>
         <div class="amt">$497</div><div class="unit">one session</div>
         <ul><li>90 minutes on your workflows</li><li>Where AI saves time or money, ranked</li><li>A written plan you keep</li></ul>
-        <a class="btn line" href="https://cal.com/stacey-williams-5enqex" target="_blank" rel="noopener">Book a session</a>
+        <a class="btn line" href="https://cal.com/stacey-williams-5enqex/strategy-session" target="_blank" rel="noopener">Book a session</a>
       </div>
       <div class="tier main">
         <h3>Custom AI Pilot</h3>
         <div class="amt">$4,500</div><div class="unit">per pilot</div>
         <ul><li>One app configured on your data</li><li>Live in weeks, not months</li><li>Measured against a goal we set together</li></ul>
-        <a class="btn" href="#contact">Start a pilot</a>
+        <a class="btn" href="https://cal.com/stacey-williams-5enqex/pilot-kickoff" target="_blank" rel="noopener">Start a pilot</a>
       </div>
       <div class="tier">
         <h3>Monthly Retainer</h3>
         <div class="amt">$2,000</div><div class="unit">per month</div>
         <ul><li>New builds and improvements</li><li>Monitoring and support</li><li>Priority access to new apps</li></ul>
-        <a class="btn line" href="#contact">Ask about retainers</a>
+        <a class="btn line" href="https://cal.com/stacey-williams-5enqex/discovery-call?app=Monthly%20Retainer" target="_blank" rel="noopener">Ask about retainers</a>
       </div>
     </div>
   </section>
@@ -212,6 +215,24 @@ footer{padding:36px 0 48px;color:var(--muted);font-size:.9rem;border-top:1px sol
         <div class="full"><label for="m">What's the problem?</label><textarea id="m" name="message" required></textarea></div>
         <div class="full"><button class="btn" type="submit">Send inquiry</button></div>
       </form>
+      <script>
+      // Netlify Forms only work on Netlify. Anywhere else (GitHub Pages, Coolify), send the inquiry
+      // to the booking page with the visitor's details filled in, so no lead is lost.
+      (function(){
+        if (/netlify\.app$/.test(location.hostname)) return;
+        var f = document.querySelector('form[name="inquiry"]');
+        var v = function(k){ return f.elements[k].value.trim(); };
+        f.querySelector('button[type="submit"]').textContent = 'Send and pick a time';
+        f.addEventListener('submit', function(ev){
+          ev.preventDefault();
+          if (v('company_site')) return;
+          var notes = (v('company') ? 'Company: ' + v('company') + '\n' : '') + v('message');
+          var u = 'https://cal.com/stacey-williams-5enqex/discovery-call' + '?name=' + encodeURIComponent(v('name')) + '&email=' + encodeURIComponent(v('email'))
+            + '&app=' + encodeURIComponent(v('interest')) + '&notes=' + encodeURIComponent(notes);
+          window.location.href = u;
+        });
+      })();
+      </script>
     </div>
   </section>
 </div>
