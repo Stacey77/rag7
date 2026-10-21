@@ -1,0 +1,929 @@
+{
+ "source": "Obsidian vault (Nova Digitus HQ)",
+ "apps": [
+  {
+   "name": "Active Learning Explorer",
+   "group": "ai",
+   "description": "Interactive lesson on training models with fewer labels through active learning.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Aethelgard: Agentic OS",
+   "group": "ai",
+   "description": "Agent workstation built from modular skills, subagents and MCP integrations.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AETHEREA AGI Core",
+   "group": "ai",
+   "description": "Agent that combines symbolic logic with emotional reasoning to work through complex questions.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Aetherius AI",
+   "group": "ai",
+   "description": "Control interface for autonomous agent workflows with 3D visuals and live telemetry.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Agent Dev Kit Dashboard",
+   "group": "ai",
+   "description": "Visual guide to agent architecture: memory, knowledge, guardrails, delegation and distribution.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AgentForge: GenAI Studio",
+   "group": "ai",
+   "description": "Enterprise studio for building multi-agent workflows with retrieval, tool calling, monitoring and deployment blueprints.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Agentic Architecture Sandbox (Azure AI Foundry + Claude)",
+   "group": "ai",
+   "description": "Design and simulate multi-step agent systems on Azure AI Foundry with Claude.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Agentic Research Orchestrator",
+   "group": "ai",
+   "description": "Five research agents that divide up a computer-science question and report back.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AgentOS",
+   "group": "ai",
+   "description": "Engineering platform for coordinating many agents with visual workflows.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Design Architect Workspace",
+   "group": "ai",
+   "description": "Design, visualize and test agent architectures and prompt flows.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI in Testing Gap Analyzer & Optimizer",
+   "group": "ai",
+   "description": "Benchmark your AI-assisted testing against industry practice and get a plan to close the gaps.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Roadmap Architect",
+   "group": "ai",
+   "description": "Walks a team through the AI strategy lifecycle from first problem to governance at scale.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI System Architect",
+   "group": "ai",
+   "description": "Plan, design and govern AI solutions from business problem to deployment.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "ARC AGI Explorer",
+   "group": "ai",
+   "description": "Explore and solve Abstraction and Reasoning Corpus puzzles.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Astra Orchestrator",
+   "group": "ai",
+   "description": "Orchestrates subagents and reviews and improves its own output.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Dev Ecosystem Dashboard",
+   "group": "ai",
+   "description": "Set up an agentic developer environment: rules, skills, guardrail hooks, subagents and plugins.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Flash UI: AI Swarm Vibecoding Studio",
+   "group": "ai",
+   "description": "Describe what you want and a team of agents plans, designs and builds working interface components.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Kimi Research Assistant",
+   "group": "ai",
+   "description": "Research assistant with live web search, document reading and shared conversation threads.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Multi-Agent Orchestrator",
+   "group": "ai",
+   "description": "Configure, simulate and run collaborative AI agent pipelines.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "NeuroLink",
+   "group": "ai",
+   "description": "Command console for a company of named AI agents, each with its own specialty.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nexus AI Production System",
+   "group": "ai",
+   "description": "Reference production AI stack: ingestion, retrieval, memory, routing, generation and observability.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nova Multi-Agent Core",
+   "group": "ai",
+   "description": "Five-hub multi-agent system with robot control, optimization tuning and self-repairing support tickets.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "OmniAgent Enterprise Platform",
+   "group": "ai",
+   "description": "Build, deploy and monitor secure AI agents with retrieval, MCP integrations and human oversight.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Platinum AI Factory",
+   "group": "ai",
+   "description": "Industrial workbench for AI solutions engineers: model orchestration, training pipelines and system health.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Pulse: Live Transcription & Content Analysis",
+   "group": "ai",
+   "description": "Real-time audio transcription and content analysis built on Gemini.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "RAG Orion Superplatform",
+   "group": "ai",
+   "description": "Compare and tune ten tiers of retrieval-augmented generation architecture.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Synthetic Agentic AI Platform Guide",
+   "group": "ai",
+   "description": "Step-by-step build guide for an agentic AI platform with LangGraph and Lindy, with code and deployment plans.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "System Design Architect",
+   "group": "ai",
+   "description": "Practice system design with an estimator, a sandbox and an AI mock interviewer.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "UI Visionary",
+   "group": "ai",
+   "description": "Turns a text prompt into an interactive UI prototype and a design system.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Agentic Brain: Digital Illustration Platform",
+   "group": "creative",
+   "description": "Illustration studio with AI design agents, a shared sketchpad and a color harmony engine.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "AuraDJ",
+   "group": "creative",
+   "description": "AI DJ that reads your mood, learns your taste and builds new sets that grow with you.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Eve: Multimodal Companion",
+   "group": "creative",
+   "description": "Mobile companion that sees and listens, and routes each request to the right specialist model.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Infinite Adventure Engine",
+   "group": "creative",
+   "description": "Endless choose-your-own-adventure game with AI-written plots and live illustrations.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "IPTV Dashboard",
+   "group": "creative",
+   "description": "A clean player for your own IPTV playlists: search, sort by country and save favorites.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Lyrics to Music Studio",
+   "group": "creative",
+   "description": "Turn your lyrics into music clips and full tracks with Lyria.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Majestic Speaker",
+   "group": "creative",
+   "description": "Voice companion: talk in real time with a crowned king character who answers in a royal voice.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Neural Link Voice Assistant",
+   "group": "creative",
+   "description": "Live voice companion with a cyber-noir style.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "OmniScope Proximity",
+   "group": "creative",
+   "description": "Find nearby people, wildlife, workshops and gear with location alerts and offline maps.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Photo Animator",
+   "group": "creative",
+   "description": "Turn photos into short animated videos with Google's Veo model.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "The Roaring Discourse: Talking Lion",
+   "group": "creative",
+   "description": "Upload a photo and make it talk in a podcast studio.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "KeBTAH Rising Firefly Portal",
+   "group": "culture",
+   "description": "Archive, calendar and philosophy explorer preserving Nile Valley and Dogon wisdom.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Kemet and Kush: Spirituality",
+   "group": "culture",
+   "description": "Explore Kemetic and Kushite creation stories and the story of Ausar, Aset and Heru.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Monument: Archive of Black Innovation",
+   "group": "culture",
+   "description": "Interactive museum and patent archive honoring Black inventors, scientists and visionaries.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "OmniBot Academy & Workshop",
+   "group": "culture",
+   "description": "Learn networking, AI design, auto mechanics, herbalism and IoT from AI tutors you can talk to.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Reality Mechanics Diagram",
+   "group": "culture",
+   "description": "Interactive diagram mapping 14 centers of the body to 14 universal laws.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Syzygy: The Hermetic Matrix",
+   "group": "culture",
+   "description": "Interactive visual exploration of the seven Hermetic laws and Gnostic teaching.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "The Logos Organon",
+   "group": "culture",
+   "description": "Trace the roots of words through etymology and number.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Tree of Life Interactive Map",
+   "group": "culture",
+   "description": "Seven-level 3D Tree of Life drawing on Kemet, Kush and Kabbalah, with an AI guide and binaural audio.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Autarkic Field Engineering & Telemetry Suite",
+   "group": "engineering",
+   "description": "Design and monitor off-grid systems: water purification, micro-hydro, solar thermal, battery storage and ram pumps, with live telemetry on your phone.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Azolla Agronomy & Feed Guide",
+   "group": "engineering",
+   "description": "Calculator and sourcing guide for growing Azolla as a low-cost livestock feed.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Carbon-12 3D Visualizer",
+   "group": "engineering",
+   "description": "Explore the carbon atom in interactive 3D: protons, neutrons and electron shells.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "CopperDew: Atmospheric Coil Water Harvester",
+   "group": "engineering",
+   "description": "Simulate, build and monitor a copper-coil system that pulls drinking water from the air.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "EcoGenesis",
+   "group": "engineering",
+   "description": "Design and simulate a self-sustaining natural environment before you build it.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Engineering Orchestrator",
+   "group": "engineering",
+   "description": "Runs multi-person engineering projects with AI agents: tracks handoffs, flags blocked work, and adds 3D visual analysis for structural design and assembly.",
+   "featured": true,
+   "try_url": "https://nova-digitus-engineering-orchestrator.ai.studio"
+  },
+  {
+   "name": "KAO Master Command Hub",
+   "group": "engineering",
+   "description": "One dashboard for telemetry and fleet management across many appliances and sites.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "MAH AI Hub: Robotics & IoT Command",
+   "group": "engineering",
+   "description": "AI agents that diagnose and repair faults across robotics and IoT fleets and log every case.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "OmniNexus",
+   "group": "engineering",
+   "description": "Applied AI that connects problems across engineering disciplines and proposes combined solutions.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Robot Assistant Builder",
+   "group": "engineering",
+   "description": "Assemble a voice-controlled robotic assistant step by step and teach it your commands.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Skywave Gateway · Reticulum HF Mesh Bridge",
+   "group": "engineering",
+   "description": "Plan long-range off-grid radio links: HF propagation modeling, SDR workbench and a Reticulum-to-LoRa bridge.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "TerraFleet Autonomous Garden Robotics",
+   "group": "engineering",
+   "description": "Plans and coordinates autonomous robots that tend gardens and growing beds.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "90 Days of Quiet",
+   "group": "health",
+   "description": "Daily reminders and intentions from the fall equinox to the winter solstice.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Aura Nexus",
+   "group": "health",
+   "description": "Personalized health coaching combined with network automation tools.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Copper-Infused Water Lab",
+   "group": "health",
+   "description": "Prep methods, safety checks and calculations for copper-infused water.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Herbal Digestives & Pastilles Lab",
+   "group": "health",
+   "description": "Recipes and an educational guide for making herbal digestive pastilles at home.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Medica Herbalista",
+   "group": "health",
+   "description": "Voice-guided herbal education: analyze your meals, learn about herbs and track your daily rituals.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Singular Companion",
+   "group": "health",
+   "description": "A floating AI companion that uses your own data to offer timely help.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Wealth in Health Index",
+   "group": "health",
+   "description": "Connects daily wellness habits to long-term savings on healthcare and the investment growth that follows.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Wealth in Health: Sound Healing",
+   "group": "health",
+   "description": "Sound sessions with Solfeggio tones and binaural beats, with cymatic visuals.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Win The Morning",
+   "group": "health",
+   "description": "Morning mindset app with daily Stoic affirmations, an AI reflection coach and a Marcus Aurelius-style mentor chat.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Code Reviewer",
+   "group": "it",
+   "description": "Reviews every change for bugs, security issues and design drift, then writes the missing unit tests.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Governance & Guardrails Platform",
+   "group": "it",
+   "description": "Track AI adoption, assess AI vendors, and keep generative AI use inside your compliance rules.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "AI Ops Engineer Platform",
+   "group": "it",
+   "description": "Monitor AI workloads, containers and cloud settings with AI-guided diagnostics.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Deep Dive IDE & CDE",
+   "group": "it",
+   "description": "Workspace for analyzing IT signals and documenting deep-dive investigations.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "IT Issue Resolver",
+   "group": "it",
+   "description": "Coordinates IT incidents and drafts the fix and the user communication with AI.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "IT System Enhancer",
+   "group": "it",
+   "description": "Assesses your IT systems and recommends integration and database improvements.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "NAAS Elite Control Plane",
+   "group": "it",
+   "description": "Network-as-a-Service console with worldwide link maps, policy controls and AI route optimization.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "OmniNet AI: Network Diagnostics & Self-Healing",
+   "group": "it",
+   "description": "Scans your network from Wi-Fi to fiber, predicts failures and fixes common faults automatically with an AI agent swarm.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "OpsGuard",
+   "group": "it",
+   "description": "One place to run security, cloud and digital operations.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "QuantumGuard",
+   "group": "it",
+   "description": "A human-approval gate that stops AI systems from deleting anything without sign-off.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Radio Broadcast Hub",
+   "group": "it",
+   "description": "Emergency and commercial broadcast desk: generate bulletins and simulate live on-air broadcasts with AI voices.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Stratum MCP: Cloud Resource Control Plane",
+   "group": "it",
+   "description": "Manage and control cloud resources through one AI-ready control plane.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "StreamVerse AI Anomaly Intelligence",
+   "group": "it",
+   "description": "Watches live data streams and flags anomalies before they become outages.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "TenancyCore SaaS",
+   "group": "it",
+   "description": "Multi-tenant SaaS foundation with data isolation, plan management and compliance tracking.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "TrackerShield: Hidden Tracker Detection",
+   "group": "it",
+   "description": "Check vehicles and belongings for AirTags and SmartTags with a guided safety sweep.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Unified Cybersecurity Platform",
+   "group": "it",
+   "description": "Threat prevention, endpoint detection, privileged access and patching in one AI-assisted console.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "VaultGuard",
+   "group": "it",
+   "description": "Secure client portal with separated data for each client, automated agreements and strong sign-in.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Business Operations Orchestrator",
+   "group": "operations",
+   "description": "Builds a team of AI agents for marketing, outreach, scheduling, finance, research and design to run a small business.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "AI Strategy Planner",
+   "group": "operations",
+   "description": "Assess your workflows, design an AI strategy, generate MCP servers and estimate ROI.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Worker Workspace",
+   "group": "operations",
+   "description": "Train a personal AI worker on your methods, wins and mistakes, then put it to work.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AquaFlow: Water Delivery Operations",
+   "group": "operations",
+   "description": "Order intake, inventory and reporting for water delivery businesses.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Aura-OS: Autonomous Enterprise Platform",
+   "group": "operations",
+   "description": "Strategic planning, task automation and market intelligence you can run by voice.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Business Numbers & Unit Economics Engine",
+   "group": "operations",
+   "description": "Reality-check your numbers: ROI, cash flow, CAC vs LTV, break-even and what your time is worth.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Cerebrum Magnum",
+   "group": "operations",
+   "description": "Company intelligence plus agent execution for startups, nonprofits, family businesses and enterprises.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Collaborative Business Context Hub",
+   "group": "operations",
+   "description": "Shared workspace to define your KPIs, data and glossary so every AI tool speaks your language.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Coquus AI",
+   "group": "operations",
+   "description": "Operating system for company workflows: shared context, AI employee skills, integrations and human review.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Cura AI Switchboard",
+   "group": "operations",
+   "description": "Hospital front desk agent: patient room lookup, nurse updates and dispatcher case management.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Donor Services Resolution Swarm",
+   "group": "operations",
+   "description": "AI agents that clear donor receipt delays, missed confirmations and urgent donor questions for nonprofits.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Enterprise Strategy & AI Orchestrator",
+   "group": "operations",
+   "description": "Visual pipeline builder with governance controls and strategy calculators for enterprise automation.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Imperium Neuralis: Website Architect",
+   "group": "operations",
+   "description": "Analyze a website, project its revenue and generate a better one.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nexus Agentic Studio",
+   "group": "operations",
+   "description": "Audit manual processes, calculate ROI and deploy secure automated workflows.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nova Digitus Agent Dashboard",
+   "group": "operations",
+   "description": "Control panel to watch, steer and automate a workspace of AI agents.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nova Digitus Conversational AI",
+   "group": "operations",
+   "description": "Voice and chat assistant for customer conversations, with guardrails, intent detection and analytics.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Nova Wearable Studio",
+   "group": "operations",
+   "description": "Clean up product photos and remove backgrounds with plain-language instructions.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Orchestra PM",
+   "group": "operations",
+   "description": "Project management dashboard with parallel AI agents, mockup analysis and project memory.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Problem Crusher",
+   "group": "operations",
+   "description": "Turns a messy manual process into a coordinated set of AI agents that run it.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Smart Bill Splitter",
+   "group": "operations",
+   "description": "Scan a receipt and split the bill by chatting in plain language.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "SyncSphere",
+   "group": "operations",
+   "description": "Real-time collaborative workspace with two-way data sync and an AI chat agent.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Ad Campaign Scaling Dashboard & Lead Magnet",
+   "group": "sales",
+   "description": "Executive dashboard for scaling ad spend, with an AI auditor that reviews your lead magnet.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI CMO Command Center",
+   "group": "sales",
+   "description": "Marketing strategy agents with a human-in-the-loop approval desk.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI CMO Platform",
+   "group": "sales",
+   "description": "A full AI marketing team for founders: dozens of specialist agents in one dashboard.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "AI SDR Agent Fleet",
+   "group": "sales",
+   "description": "AI sales development team that prospects, writes outreach, handles objections and qualifies leads.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "AI Swarm Outreach Hub",
+   "group": "sales",
+   "description": "Outreach dashboard and playbooks for selling into several niches at once.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Swarm: B2B Outreach Planner",
+   "group": "sales",
+   "description": "Plans B2B outreach and writes the sequences, with lead research built in.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "AI Voice Agent Case Study & Simulator",
+   "group": "sales",
+   "description": "See how an AI voice intake agent handles new-client calls, and estimate what it would cost you.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Comprehensive Outreach Campaign Agent",
+   "group": "sales",
+   "description": "Researches an organization's public contacts and pain points and drafts a targeted campaign.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nova Digitus AI Office Assistant",
+   "group": "sales",
+   "description": "Outreach, lead tracking and automation dashboard for veteran-owned businesses.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nova Digitus Prospect Tracker",
+   "group": "sales",
+   "description": "Pulls business leads into a tracking pipeline and exports them to CSV.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "PitchPerfect AI",
+   "group": "sales",
+   "description": "Helps you pitch any idea to any audience and prepares answers to objections.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Virtual Try-On",
+   "group": "sales",
+   "description": "Let shoppers preview clothing and makeup on themselves before they buy.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Autonomous Quant Trading Desk",
+   "group": "wealth",
+   "description": "Simulated trading desk where scheduled AI agents research, trade, check risk and write the close summary.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Buy Borrow Die Simulator",
+   "group": "wealth",
+   "description": "Simulate buying assets, borrowing against them and passing them on.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Corporate Credit Tradelines Builder",
+   "group": "wealth",
+   "description": "Step-by-step planner for building business credit that stands apart from your personal credit.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "IRIEBOT7.io Autonomous Trading Dashboard",
+   "group": "wealth",
+   "description": "Watch AI agents run technical and fundamental market analysis in one dashboard.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Luxury Salvage Deals Platform",
+   "group": "wealth",
+   "description": "Find luxury salvage cars worth rebuilding and estimate repair costs and margins.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Sovereign BRRRR Command Center",
+   "group": "wealth",
+   "description": "Model the buy, rehab, rent, refinance, repeat cycle: deal pipeline, projections and stress tests.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Sovereign Equity & Overage Recovery Engine",
+   "group": "wealth",
+   "description": "Find, qualify and document unclaimed tax-sale overages and foreclosure surplus funds across U.S. jurisdictions.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Stratos Capital & Trust Optimizer",
+   "group": "wealth",
+   "description": "Sandbox for modeling credit cycles, card rewards and keeping personal and business assets separate.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Tax Form Navigator",
+   "group": "wealth",
+   "description": "Plain-language guide to IRS forms like the 1099-A and 1099-B.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "The Concrete Underneath",
+   "group": "wealth",
+   "description": "Research terminal following the power and infrastructure buildout behind AI.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Wealth Playground",
+   "group": "wealth",
+   "description": "Command center for a consulting business alongside sustainable container home projects.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Wealth Strategy Playbook",
+   "group": "wealth",
+   "description": "Planning dashboard for veterans exploring the buy, borrow, die strategy with holding-company structures.",
+   "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "WealthStrat: Institutional Leverage Engine",
+   "group": "wealth",
+   "description": "Visualize capital stacks, investor pitch structure and K-1 distribution waterfalls.",
+   "featured": false,
+   "try_url": ""
+  }
+ ]
+}
