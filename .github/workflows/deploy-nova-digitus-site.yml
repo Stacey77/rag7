@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: nova-digitus-site
@@ -21,36 +22,71 @@ concurrency:
 
 jobs:
   deploy:
+    # Only main publishes, so a manual run started on another branch can't push that branch's commits to main.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       NETLIFY_SITE_ID: a1f0bbc5-b209-4ca7-b476-8235174e54dc   # nova-digitus-designs-f0js
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
-      - name: Rebuild the app catalog
-        run: python3 nova-digitus-catalog/build.py
-
-      - name: Save the rebuilt pages to main (for GitHub Pages)
+      # Each attempt starts from the newest main, rebuilds, checks the result, then pushes.
+      # If the vault changed meanwhile, the push is refused and the next attempt rebuilds from the newer list,
+      # so generated pages are never rebased onto (or over) a newer catalog.
+      - name: Rebuild the app catalog, check it, and save it to main
         run: |
-          if [ -n "$(git status --porcelain nova-digitus-site)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 nova-digitus-catalog/build.py
+            python3 - <<'PY'
+          import glob, json, os, sys
+          site = "nova-digitus-site"
+          for f in (f"{site}/index.html", f"{site}/apps/index.html"):
+              if not os.path.isfile(f):
+                  sys.exit(f"Missing {f}")
+          buttons = sum(open(p, encoding="utf-8").read().count("discovery-call?app=")
+                        for p in glob.glob(f"{site}/apps/*.html"))
+          vault = "nova-digitus-catalog/vault_apps.json"
+          if os.path.isfile(vault):
+              expected = len(json.load(open(vault, encoding="utf-8")).get("apps", []))
+              if expected == 0:
+                  sys.exit("vault_apps.json lists no apps; refusing to publish an empty catalog")
+          else:
+              expected = 100   # built-in catalog
+          print(f"Booking buttons found: {buttons} (need at least {expected})")
+          if buttons < expected:
+              sys.exit("Catalog pages are missing apps")
+          PY
+            if [ -z "$(git status --porcelain nova-digitus-site)" ]; then
+              echo "Catalog pages already up to date."
+              exit 0
+            fi
             git add nova-digitus-site
             git commit -m "Rebuild app catalog from the Obsidian vault"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          else
-            echo "Catalog pages already up to date."
-          fi
+            if git push origin HEAD:main; then
+              echo "PAGES_PUSHED=1" >> "$GITHUB_ENV"
+              exit 0
+            fi
+            echo "main moved while building; rebuilding from the newer main (attempt $attempt)."
+          done
+          echo "::error::Could not save the rebuilt catalog after 3 attempts."
+          exit 1
 
-      - name: Check the site before publishing
+      # Pushes made with the workflow token don't start a branch-based Pages build, so ask for one.
+      - name: Ask GitHub Pages to rebuild
+        if: env.PAGES_PUSHED == '1'
         run: |
-          test -f nova-digitus-site/index.html
-          test -f nova-digitus-site/apps/index.html
-          n=$(grep -o 'discovery-call?app=' nova-digitus-site/apps/*.html | wc -l)
-          echo "Booking buttons found: $n"
-          test "$n" -gt 100
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" >/dev/null \
+            && echo "GitHub Pages build requested." \
+            || echo "::warning::Couldn't request a GitHub Pages build (Pages may not be set to deploy from a branch)."
 
       - name: Skip if the Netlify token isn't set yet
         if: env.NETLIFY_AUTH_TOKEN == ''
