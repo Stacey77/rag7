@@ -6,10 +6,27 @@ Every "Book a demo" button opens the Discovery Call with the app name pre-filled
 import html, json, os, re
 from urllib.parse import quote
 from catalog_data import APPS, GROUPS
-from links import public_try_url as try_url
+from links import public_try_url as links_try_url
 
 # 60-second teaser demos (demos.json) and the player that runs them, bundled into the site as demos.js
 HERE = os.path.dirname(os.path.abspath(__file__))
+
+# The Obsidian vault is the source of truth when vault_apps.json is present: the Wiki Brain on Stacey's PC
+# exports every app whose note says `public: true`, and only those apps are published. Without the file,
+# catalog_data.py is used as before.
+VAULT_FILE = os.path.join(HERE, "vault_apps.json")
+VAULT_URLS = {}
+if os.path.exists(VAULT_FILE):
+    _gids = {g[0] for g in GROUPS}
+    _vault = json.load(open(VAULT_FILE, encoding="utf-8")).get("apps", [])
+    APPS = [(a["name"], a["group"] if a.get("group") in _gids else "ai", a.get("description", ""), bool(a.get("featured")))
+            for a in _vault if a.get("name")]
+    VAULT_URLS = {a["name"]: a["try_url"] for a in _vault if str(a.get("try_url", "")).startswith("https://")}
+    print(f"catalog source: Obsidian vault ({len(APPS)} public apps)")
+
+
+def try_url(name):
+    return VAULT_URLS.get(name) or links_try_url(name)
 DEMOS = json.load(open(os.path.join(HERE, "demos.json")))
 
 SITE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "nova-digitus-site")
@@ -153,7 +170,7 @@ live = [a for a in APPS if try_url(a[0])]
 spotlight = (f'<section><h2>Try it live</h2><p class="lede lede-sm">Open these in your browser right now, no call needed.</p><div class="apps">'
              + "".join(app_card(a, show_group=True) for a in live) + '</div></section>') if live else ""
 
-INTRO_TAIL = "Try an app yourself where you see a Try it button, or book a free 30-minute demo of any app." if PUBLIC_URLS else "Every app has its own demo button that books a free 30-minute call."
+INTRO_TAIL = "Try an app yourself where you see a Try it button, or book a free 30-minute demo of any app." if (PUBLIC_URLS or VAULT_URLS) else "Every app has its own demo button that books a free 30-minute call."
 index = head("AI apps for every team | Nova Digitus Designs", f"Browse {total} AI apps by who they're for and book a free demo of any of them.", "apps/") + f"""
 <div class="hero"><h1>Find the AI app built for your team.</h1>
 <p class="lede">{total} working apps, sorted by who they're for. Pick your group, or search by what you need done. {INTRO_TAIL}</p>
