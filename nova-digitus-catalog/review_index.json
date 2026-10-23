@@ -36,6 +36,10 @@
 "slug": "agentos"
 },
 {
+"name": "AGI System",
+"slug": "agi-system"
+},
+{
 "name": "AI Design Architect Workspace",
 "slug": "ai-design-architect-workspace"
 },
@@ -60,6 +64,18 @@
 "slug": "astra-orchestrator"
 },
 {
+"name": "Concentus Console",
+"slug": "concentus-console"
+},
+{
+"name": "Consilium Mobile",
+"slug": "consilium-mobile"
+},
+{
+"name": "Consilium Orchestrator",
+"slug": "consilium-orchestrator"
+},
+{
 "name": "Dev Ecosystem Dashboard",
 "slug": "dev-ecosystem-dashboard"
 },
@@ -76,6 +92,10 @@
 "slug": "multi-agent-orchestrator"
 },
 {
+"name": "Multi-LLM Chat",
+"slug": "multi-llm-chat"
+},
+{
 "name": "NeuroLink",
 "slug": "neurolink"
 },
@@ -84,16 +104,36 @@
 "slug": "nexus-ai-production-system"
 },
 {
+"name": "NOVA Assistant",
+"slug": "nova-assistant"
+},
+{
 "name": "Nova Multi-Agent Core",
 "slug": "nova-multi-agent-core"
+},
+{
+"name": "Nova Orchestrator",
+"slug": "nova-orchestrator"
 },
 {
 "name": "OmniAgent Enterprise Platform",
 "slug": "omniagent-enterprise-platform"
 },
 {
+"name": "Platinum Agent Console",
+"slug": "platinum-agent-console"
+},
+{
 "name": "Platinum AI Factory",
 "slug": "platinum-ai-factory"
+},
+{
+"name": "Plugin Tools Control",
+"slug": "plugin-tools-control"
+},
+{
+"name": "Private Assistant",
+"slug": "private-assistant"
 },
 {
 "name": "Pulse: Live Transcription & Content Analysis",
@@ -102,6 +142,14 @@
 {
 "name": "RAG Orion Superplatform",
 "slug": "rag-orion-superplatform"
+},
+{
+"name": "Super Brain",
+"slug": "super-brain"
+},
+{
+"name": "Swarm Control",
+"slug": "swarm-control"
 },
 {
 "name": "Synthetic Agentic AI Platform Guide",
@@ -114,6 +162,22 @@
 {
 "name": "UI Visionary",
 "slug": "ui-visionary"
+},
+{
+"name": "Unbound AGI Console",
+"slug": "unbound-agi-console"
+},
+{
+"name": "Vertical AI Agents: Multi-modal Interface",
+"slug": "vertical-ai-agents-multi-modal-interface"
+},
+{
+"name": "WellOff AI",
+"slug": "welloff-ai"
+},
+{
+"name": "WellOff Neural Link IDE",
+"slug": "welloff-neural-link-ide"
 },
 {
 "name": "AI Agentic Brain: Digital Illustration Platform",
@@ -160,12 +224,28 @@
 "slug": "the-roaring-discourse-talking-lion"
 },
 {
+"name": "Unseen Dispatch",
+"slug": "unseen-dispatch"
+},
+{
+"name": "Cosmic Code Tutor",
+"slug": "cosmic-code-tutor"
+},
+{
+"name": "Etz Chaim Atlas",
+"slug": "etz-chaim-atlas"
+},
+{
 "name": "KeBTAH Rising Firefly Portal",
 "slug": "kebtah-rising-firefly-portal"
 },
 {
 "name": "Kemet and Kush: Spirituality",
 "slug": "kemet-and-kush-spirituality"
+},
+{
+"name": "Merkaba Code Studio",
+"slug": "merkaba-code-studio"
 },
 {
 "name": "Monument: Archive of Black Innovation",
@@ -176,8 +256,16 @@
 "slug": "omnibot-academy-workshop"
 },
 {
+"name": "Pleroma Codex",
+"slug": "pleroma-codex"
+},
+{
 "name": "Reality Mechanics Diagram",
 "slug": "reality-mechanics-diagram"
+},
+{
+"name": "Sopdet Calendar",
+"slug": "sopdet-calendar"
 },
 {
 "name": "Syzygy: The Hermetic Matrix",
@@ -190,6 +278,10 @@
 {
 "name": "Tree of Life Interactive Map",
 "slug": "tree-of-life-interactive-map"
+},
+{
+"name": "Yad Workbench",
+"slug": "yad-workbench"
 },
 {
 "name": "Autarkic Field Engineering & Telemetry Suite",
@@ -208,12 +300,28 @@
 "slug": "copperdew-atmospheric-coil-water-harvester"
 },
 {
+"name": "Earth Tube Planner",
+"slug": "earth-tube-planner"
+},
+{
 "name": "EcoGenesis",
 "slug": "ecogenesis"
 },
 {
 "name": "Engineering Orchestrator",
 "slug": "engineering-orchestrator"
+},
+{
+"name": "Exoskeleton Repair Agent",
+"slug": "exoskeleton-repair-agent"
+},
+{
+"name": "Fleet Console",
+"slug": "fleet-console"
+},
+{
+"name": "Humanoid Body Studio",
+"slug": "humanoid-body-studio"
 },
 {
 "name": "KAO Master Command Hub",
@@ -230,6 +338,10 @@
 {
 "name": "Robot Assistant Builder",
 "slug": "robot-assistant-builder"
+},
+{
+"name": "Robot Design Studio",
+"slug": "robot-design-studio"
 },
 {
 "name": "Skywave Gateway · Reticulum HF Mesh Bridge",
@@ -292,12 +404,20 @@
 "slug": "deep-dive-ide-cde"
 },
 {
+"name": "HELIX Console",
+"slug": "helix-console"
+},
+{
 "name": "IT Issue Resolver",
 "slug": "it-issue-resolver"
 },
 {
 "name": "IT System Enhancer",
 "slug": "it-system-enhancer"
+},
+{
+"name": "Kiln Cloud",
+"slug": "kiln-cloud"
 },
 {
 "name": "NAAS Elite Control Plane",
@@ -320,6 +440,10 @@
 "slug": "radio-broadcast-hub"
 },
 {
+"name": "SentientShield: Swarm Command",
+"slug": "sentientshield-swarm-command"
+},
+{
 "name": "Stratum MCP: Cloud Resource Control Plane",
 "slug": "stratum-mcp-cloud-resource-control-plane"
 },
@@ -328,8 +452,16 @@
 "slug": "streamverse-ai-anomaly-intelligence"
 },
 {
+"name": "SUPER SEC Platform",
+"slug": "super-sec-platform"
+},
+{
 "name": "TenancyCore SaaS",
 "slug": "tenancycore-saas"
+},
+{
+"name": "The Gatekeeper",
+"slug": "the-gatekeeper"
 },
 {
 "name": "TrackerShield: Hidden Tracker Detection",
@@ -360,6 +492,10 @@
 "slug": "aquaflow-water-delivery-operations"
 },
 {
+"name": "Attention Board",
+"slug": "attention-board"
+},
+{
 "name": "Aura-OS: Autonomous Enterprise Platform",
 "slug": "aura-os-autonomous-enterprise-platform"
 },
@@ -388,12 +524,20 @@
 "slug": "donor-services-resolution-swarm"
 },
 {
+"name": "Empire Console",
+"slug": "empire-console"
+},
+{
 "name": "Enterprise Strategy & AI Orchestrator",
 "slug": "enterprise-strategy-ai-orchestrator"
 },
 {
 "name": "Imperium Neuralis: Website Architect",
 "slug": "imperium-neuralis-website-architect"
+},
+{
+"name": "KITH",
+"slug": "kith"
 },
 {
 "name": "Nexus Agentic Studio",
@@ -416,8 +560,16 @@
 "slug": "orchestra-pm"
 },
 {
+"name": "Pricing Floor",
+"slug": "pricing-floor"
+},
+{
 "name": "Problem Crusher",
 "slug": "problem-crusher"
+},
+{
+"name": "QUANTUM Live Ops",
+"slug": "quantum-live-ops"
 },
 {
 "name": "Smart Bill Splitter",
@@ -426,6 +578,10 @@
 {
 "name": "SyncSphere",
 "slug": "syncsphere"
+},
+{
+"name": "Unified Symphony Platform",
+"slug": "unified-symphony-platform"
 },
 {
 "name": "Ad Campaign Scaling Dashboard & Lead Magnet",
@@ -460,6 +616,14 @@
 "slug": "comprehensive-outreach-campaign-agent"
 },
 {
+"name": "Day One Store Builder",
+"slug": "day-one-store-builder"
+},
+{
+"name": "LeadFinder EPIC",
+"slug": "leadfinder-epic"
+},
+{
 "name": "Nova Digitus AI Office Assistant",
 "slug": "nova-digitus-ai-office-assistant"
 },
@@ -468,8 +632,20 @@
 "slug": "nova-digitus-prospect-tracker"
 },
 {
+"name": "Orbis Six Origins",
+"slug": "orbis-six-origins"
+},
+{
 "name": "PitchPerfect AI",
 "slug": "pitchperfect-ai"
+},
+{
+"name": "Prospect Case Files",
+"slug": "prospect-case-files"
+},
+{
+"name": "Relay Product Search",
+"slug": "relay-product-search"
 },
 {
 "name": "Virtual Try-On",
@@ -478,6 +654,10 @@
 {
 "name": "Autonomous Quant Trading Desk",
 "slug": "autonomous-quant-trading-desk"
+},
+{
+"name": "BagBot Kraken Trader",
+"slug": "bagbot-kraken-trader"
 },
 {
 "name": "Buy Borrow Die Simulator",
@@ -492,8 +672,20 @@
 "slug": "iriebot7-io-autonomous-trading-dashboard"
 },
 {
+"name": "Leverage Ledger",
+"slug": "leverage-ledger"
+},
+{
 "name": "Luxury Salvage Deals Platform",
 "slug": "luxury-salvage-deals-platform"
+},
+{
+"name": "MCP Trading Desk",
+"slug": "mcp-trading-desk"
+},
+{
+"name": "Nova Trading Platform",
+"slug": "nova-trading-platform"
 },
 {
 "name": "Sovereign BRRRR Command Center",
@@ -506,6 +698,10 @@
 {
 "name": "Stratos Capital & Trust Optimizer",
 "slug": "stratos-capital-trust-optimizer"
+},
+{
+"name": "Surplus Swarm Console",
+"slug": "surplus-swarm-console"
 },
 {
 "name": "Tax Form Navigator",
@@ -528,44 +724,12 @@
 "slug": "wealthstrat-institutional-leverage-engine"
 },
 {
-"name": "AGI System",
-"slug": "agi-system"
-},
-{
 "name": "AI Advisor",
 "slug": "ai-advisor"
 },
 {
-"name": "Attention Board",
-"slug": "attention-board"
-},
-{
-"name": "BagBot Kraken Trader",
-"slug": "bagbot-kraken-trader"
-},
-{
 "name": "Break the Chains",
 "slug": "break-the-chains"
-},
-{
-"name": "Concentus Console",
-"slug": "concentus-console"
-},
-{
-"name": "Consilium Mobile",
-"slug": "consilium-mobile"
-},
-{
-"name": "Consilium Orchestrator",
-"slug": "consilium-orchestrator"
-},
-{
-"name": "Cosmic Code Tutor",
-"slug": "cosmic-code-tutor"
-},
-{
-"name": "Day One Store Builder",
-"slug": "day-one-store-builder"
 },
 {
 "name": "Digital vCard",
@@ -576,124 +740,16 @@
 "slug": "downloads-wiki"
 },
 {
-"name": "Earth Tube Planner",
-"slug": "earth-tube-planner"
-},
-{
-"name": "Empire Console",
-"slug": "empire-console"
-},
-{
-"name": "Etz Chaim Atlas",
-"slug": "etz-chaim-atlas"
-},
-{
-"name": "Exoskeleton Repair Agent",
-"slug": "exoskeleton-repair-agent"
-},
-{
-"name": "Fleet Console",
-"slug": "fleet-console"
-},
-{
-"name": "HELIX Console",
-"slug": "helix-console"
-},
-{
-"name": "Humanoid Body Studio",
-"slug": "humanoid-body-studio"
-},
-{
-"name": "Kiln Cloud",
-"slug": "kiln-cloud"
-},
-{
-"name": "KITH",
-"slug": "kith"
-},
-{
-"name": "LeadFinder EPIC",
-"slug": "leadfinder-epic"
-},
-{
-"name": "Leverage Ledger",
-"slug": "leverage-ledger"
-},
-{
 "name": "Marcus: Stoic Mentor",
 "slug": "marcus-stoic-mentor"
-},
-{
-"name": "MCP Trading Desk",
-"slug": "mcp-trading-desk"
-},
-{
-"name": "Merkaba Code Studio",
-"slug": "merkaba-code-studio"
-},
-{
-"name": "Multi-LLM Chat",
-"slug": "multi-llm-chat"
 },
 {
 "name": "NEXUM",
 "slug": "nexum"
 },
 {
-"name": "NOVA Assistant",
-"slug": "nova-assistant"
-},
-{
-"name": "Nova Orchestrator",
-"slug": "nova-orchestrator"
-},
-{
-"name": "Nova Trading Platform",
-"slug": "nova-trading-platform"
-},
-{
-"name": "Orbis Six Origins",
-"slug": "orbis-six-origins"
-},
-{
-"name": "Platinum Agent Console",
-"slug": "platinum-agent-console"
-},
-{
-"name": "Pleroma Codex",
-"slug": "pleroma-codex"
-},
-{
-"name": "Plugin Tools Control",
-"slug": "plugin-tools-control"
-},
-{
-"name": "Pricing Floor",
-"slug": "pricing-floor"
-},
-{
-"name": "Private Assistant",
-"slug": "private-assistant"
-},
-{
 "name": "AI Swarm Problem Solver",
 "slug": "ai-swarm-problem-solver"
-},
-{
-"name": "Prospect Case Files",
-"slug": "prospect-case-files"
-},
-{
-"name": "QUANTUM Live Ops",
-"slug": "quantum-live-ops"
-},
-{
-"name": "Relay Product Search",
-"slug": "relay-product-search"
-},
-{
-"name": "Robot Design Studio",
-"slug": "robot-design-studio"
 },
 {
 "name": "Robot Fleet Interface",
@@ -704,14 +760,6 @@
 "slug": "robot-agent-layer"
 },
 {
-"name": "SentientShield: Swarm Command",
-"slug": "sentientshield-swarm-command"
-},
-{
-"name": "Sopdet Calendar",
-"slug": "sopdet-calendar"
-},
-{
 "name": "Star OS",
 "slug": "star-os"
 },
@@ -720,59 +768,11 @@
 "slug": "stock-trading-assistant"
 },
 {
-"name": "Super Brain",
-"slug": "super-brain"
-},
-{
-"name": "SUPER SEC Platform",
-"slug": "super-sec-platform"
-},
-{
-"name": "Surplus Swarm Console",
-"slug": "surplus-swarm-console"
-},
-{
-"name": "Swarm Control",
-"slug": "swarm-control"
-},
-{
-"name": "The Gatekeeper",
-"slug": "the-gatekeeper"
-},
-{
 "name": "The Standard",
 "slug": "the-standard"
 },
 {
-"name": "Unbound AGI Console",
-"slug": "unbound-agi-console"
-},
-{
-"name": "Unified Symphony Platform",
-"slug": "unified-symphony-platform"
-},
-{
-"name": "Unseen Dispatch",
-"slug": "unseen-dispatch"
-},
-{
-"name": "Vertical AI Agents: Multi-modal Interface",
-"slug": "vertical-ai-agents-multi-modal-interface"
-},
-{
-"name": "WellOff AI",
-"slug": "welloff-ai"
-},
-{
-"name": "WellOff Neural Link IDE",
-"slug": "welloff-neural-link-ide"
-},
-{
 "name": "Where They're Biting",
 "slug": "where-they-re-biting"
-},
-{
-"name": "Yad Workbench",
-"slug": "yad-workbench"
 }
 ]
