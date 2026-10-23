@@ -270,9 +270,9 @@ REVIEW_JS = """<script>
     if(hex!==code){show('invalid');return;}
     var end=new Date(until+'T23:59:59');
     if(Date.now()>end.getTime()){show('expired');return;}
-    var days=Math.max(0,Math.ceil((end.getTime()-Date.now())/86400000));
+    var days=Math.max(0,Math.floor((end.getTime()-Date.now())/86400000));
     document.getElementById('rv-who').textContent = who ? 'Prepared for '+who+'. ' : '';
-    document.getElementById('rv-until').textContent = end.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+' ('+days+' day'+(days===1?'':'s')+' left)';
+    document.getElementById('rv-until').textContent = end.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+(days===0?' (last day)':' ('+days+' day'+(days===1?'':'s')+' left)');
     show('ok');
   });
 })();
