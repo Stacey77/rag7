@@ -1,0 +1,275 @@
+[
+ {
+  "name": "Active Learning Explorer",
+  "group": "ai",
+  "description": "Interactive lesson on training models with fewer labels through active learning.",
+  "slug": "active-learning-explorer",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Aethelgard: Agentic OS",
+  "group": "ai",
+  "description": "Agent workstation built from modular skills, subagents and MCP integrations.",
+  "slug": "aethelgard-agentic-os",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AETHEREA AGI Core",
+  "group": "ai",
+  "description": "Agent that combines symbolic logic with emotional reasoning to work through complex questions.",
+  "slug": "aetherea-agi-core",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Aetherius AI",
+  "group": "ai",
+  "description": "Control interface for autonomous agent workflows with 3D visuals and live telemetry.",
+  "slug": "aetherius-ai",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Agent Dev Kit Dashboard",
+  "group": "ai",
+  "description": "Visual guide to agent architecture: memory, knowledge, guardrails, delegation and distribution.",
+  "slug": "agent-dev-kit-dashboard",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AgentForge: GenAI Studio",
+  "group": "ai",
+  "description": "Enterprise studio for building multi-agent workflows with retrieval, tool calling, monitoring and deployment blueprints.",
+  "slug": "agentforge-genai-studio",
+  "has_60s_demo": true
+ },
+ {
+  "name": "Agentic Architecture Sandbox (Azure AI Foundry + Claude)",
+  "group": "ai",
+  "description": "Design and simulate multi-step agent systems on Azure AI Foundry with Claude.",
+  "slug": "agentic-architecture-sandbox-azure-ai-foundry-claude",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Agentic Research Orchestrator",
+  "group": "ai",
+  "description": "Five research agents that divide up a computer-science question and report back.",
+  "slug": "agentic-research-orchestrator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AgentOS",
+  "group": "ai",
+  "description": "Engineering platform for coordinating many agents with visual workflows.",
+  "slug": "agentos",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Design Architect Workspace",
+  "group": "ai",
+  "description": "Design, visualize and test agent architectures and prompt flows.",
+  "slug": "ai-design-architect-workspace",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI in Testing Gap Analyzer & Optimizer",
+  "group": "ai",
+  "description": "Benchmark your AI-assisted testing against industry practice and get a plan to close the gaps.",
+  "slug": "ai-in-testing-gap-analyzer-optimizer",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Roadmap Architect",
+  "group": "ai",
+  "description": "Walks a team through the AI strategy lifecycle from first problem to governance at scale.",
+  "slug": "ai-roadmap-architect",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI System Architect",
+  "group": "ai",
+  "description": "Plan, design and govern AI solutions from business problem to deployment.",
+  "slug": "ai-system-architect",
+  "has_60s_demo": false
+ },
+ {
+  "name": "ARC AGI Explorer",
+  "group": "ai",
+  "description": "Explore and solve Abstraction and Reasoning Corpus puzzles.",
+  "slug": "arc-agi-explorer",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Astra Orchestrator",
+  "group": "ai",
+  "description": "Orchestrates subagents and reviews and improves its own output.",
+  "slug": "astra-orchestrator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Dev Ecosystem Dashboard",
+  "group": "ai",
+  "description": "Set up an agentic developer environment: rules, skills, guardrail hooks, subagents and plugins.",
+  "slug": "dev-ecosystem-dashboard",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Flash UI: AI Swarm Vibecoding Studio",
+  "group": "ai",
+  "description": "Describe what you want and a team of agents plans, designs and builds working interface components.",
+  "slug": "flash-ui-ai-swarm-vibecoding-studio",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Kimi Research Assistant",
+  "group": "ai",
+  "description": "Research assistant with live web search, document reading and shared conversation threads.",
+  "slug": "kimi-research-assistant",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Multi-Agent Orchestrator",
+  "group": "ai",
+  "description": "Configure, simulate and run collaborative AI agent pipelines.",
+  "slug": "multi-agent-orchestrator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "NeuroLink",
+  "group": "ai",
+  "description": "Command console for a company of named AI agents, each with its own specialty.",
+  "slug": "neurolink",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nexus AI Production System",
+  "group": "ai",
+  "description": "Reference production AI stack: ingestion, retrieval, memory, routing, generation and observability.",
+  "slug": "nexus-ai-production-system",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nova Multi-Agent Core",
+  "group": "ai",
+  "description": "Five-hub multi-agent system with robot control, optimization tuning and self-repairing support tickets.",
+  "slug": "nova-multi-agent-core",
+  "has_60s_demo": false
+ },
+ {
+  "name": "OmniAgent Enterprise Platform",
+  "group": "ai",
+  "description": "Build, deploy and monitor secure AI agents with retrieval, MCP integrations and human oversight.",
+  "slug": "omniagent-enterprise-platform",
+  "has_60s_demo": true
+ },
+ {
+  "name": "Platinum AI Factory",
+  "group": "ai",
+  "description": "Industrial workbench for AI solutions engineers: model orchestration, training pipelines and system health.",
+  "slug": "platinum-ai-factory",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Pulse: Live Transcription & Content Analysis",
+  "group": "ai",
+  "description": "Real-time audio transcription and content analysis built on Gemini.",
+  "slug": "pulse-live-transcription-content-analysis",
+  "has_60s_demo": false
+ },
+ {
+  "name": "RAG Orion Superplatform",
+  "group": "ai",
+  "description": "Compare and tune ten tiers of retrieval-augmented generation architecture.",
+  "slug": "rag-orion-superplatform",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Synthetic Agentic AI Platform Guide",
+  "group": "ai",
+  "description": "Step-by-step build guide for an agentic AI platform with LangGraph and Lindy, with code and deployment plans.",
+  "slug": "synthetic-agentic-ai-platform-guide",
+  "has_60s_demo": false
+ },
+ {
+  "name": "System Design Architect",
+  "group": "ai",
+  "description": "Practice system design with an estimator, a sandbox and an AI mock interviewer.",
+  "slug": "system-design-architect",
+  "has_60s_demo": false
+ },
+ {
+  "name": "UI Visionary",
+  "group": "ai",
+  "description": "Turns a text prompt into an interactive UI prototype and a design system.",
+  "slug": "ui-visionary",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Agentic Brain: Digital Illustration Platform",
+  "group": "creative",
+  "description": "Illustration studio with AI design agents, a shared sketchpad and a color harmony engine.",
+  "slug": "ai-agentic-brain-digital-illustration-platform",
+  "has_60s_demo": true
+ },
+ {
+  "name": "AuraDJ",
+  "group": "creative",
+  "description": "AI DJ that reads your mood, learns your taste and builds new sets that grow with you.",
+  "slug": "auradj",
+  "has_60s_demo": true
+ },
+ {
+  "name": "Eve: Multimodal Companion",
+  "group": "creative",
+  "description": "Mobile companion that sees and listens, and routes each request to the right specialist model.",
+  "slug": "eve-multimodal-companion",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Infinite Adventure Engine",
+  "group": "creative",
+  "description": "Endless choose-your-own-adventure game with AI-written plots and live illustrations.",
+  "slug": "infinite-adventure-engine",
+  "has_60s_demo": false
+ },
+ {
+  "name": "IPTV Dashboard",
+  "group": "creative",
+  "description": "A clean player for your own IPTV playlists: search, sort by country and save favorites.",
+  "slug": "iptv-dashboard",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Lyrics to Music Studio",
+  "group": "creative",
+  "description": "Turn your lyrics into music clips and full tracks with Lyria.",
+  "slug": "lyrics-to-music-studio",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Majestic Speaker",
+  "group": "creative",
+  "description": "Voice companion: talk in real time with a crowned king character who answers in a royal voice.",
+  "slug": "majestic-speaker",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Neural Link Voice Assistant",
+  "group": "creative",
+  "description": "Live voice companion with a cyber-noir style.",
+  "slug": "neural-link-voice-assistant",
+  "has_60s_demo": false
+ },
+ {
+  "name": "OmniScope Proximity",
+  "group": "creative",
+  "description": "Find nearby people, wildlife, workshops and gear with location alerts and offline maps.",
+  "slug": "omniscope-proximity",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Photo Animator",
+  "group": "creative",
+  "description": "Turn photos into short animated videos with Google's Veo model.",
+  "slug": "photo-animator",
+  "has_60s_demo": false
+ }
+]

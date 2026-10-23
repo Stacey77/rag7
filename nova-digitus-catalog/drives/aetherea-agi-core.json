@@ -1,0 +1,91 @@
+{
+  "name": "AETHEREA AGI Core",
+  "tag": "Works through hard decisions by weighing both the logic and how people will feel about them.",
+  "scenarios": [
+    {
+      "title": "Decide on a store closure",
+      "ask": "Should we close our {stores} lowest-earning stores? {staff} staff would be affected. Weigh the numbers and the people side.",
+      "inputs": [
+        {"id": "stores", "label": "Stores under review", "type": "range", "min": 1, "max": 10, "step": 1, "value": 3},
+        {"id": "staff", "label": "Staff affected", "type": "range", "min": 5, "max": 200, "step": 5, "value": 45},
+        {"id": "weight", "label": "Weight on people impact", "type": "select", "value": "Balanced",
+         "options": [{"label": "Mostly financial", "n": 1}, {"label": "Balanced", "n": 2}, {"label": "Mostly people", "n": 3}]}
+      ],
+      "steps": [
+        ["Logic engine", "Laid out the case as rules: each store's margin, lease end date and the cost to exit."],
+        ["Emotion model", "Mapped how {staff} staff, nearby customers and the remaining teams are likely to react."],
+        ["Conflict finder", "Found {=stores + 1} points where the numbers and the people impact pull in different directions."],
+        ["Reasoner", "Scored three options: close all, close {=max(1, stores - 1)} and relocate staff, or a 6-month turnaround test."],
+        ["Explainer", "Wrote out the reasoning for each option in plain language so your team can challenge it."]
+      ],
+      "result": {
+        "title": "Decision brief",
+        "rows": [
+          ["Options compared", "3"],
+          ["Tension points found", "{=stores + 1}"],
+          ["Staff who could be offered other roles", "about {=round(staff * (0.2 + weight * 0.1))}"],
+          ["Leading option", "Close {=max(1, stores - 1)}, relocate staff, test the last store"],
+          ["Final call", "Yours. This is decision support, not a decision."]
+        ]
+      },
+      "followups": [
+        ["How does it model emotions?", "It does not read minds. It uses the stakeholder notes you give it and common patterns from change management to estimate likely reactions, and it shows those assumptions so you can correct them."],
+        ["Can it change its mind?", "Yes. Edit any rule or assumption and it re-runs the reasoning and shows which conclusions moved and why."]
+      ]
+    },
+    {
+      "title": "Resolve a team conflict",
+      "ask": "Two team leads disagree on a launch date. The gap is {gap} weeks. Help us find a fair path.",
+      "inputs": [
+        {"id": "gap", "label": "Gap between proposed dates", "type": "range", "min": 1, "max": 12, "step": 1, "value": 4, "unit": "weeks"},
+        {"id": "risk", "label": "Open quality issues", "type": "range", "min": 0, "max": 30, "step": 1, "value": 8}
+      ],
+      "steps": [
+        ["Listener", "Summarized each lead's position and the concern underneath it: market timing versus quality."],
+        ["Logic engine", "Checked the facts: {risk} open issues and about {=round(risk * 0.6, 1)} engineer-weeks to close the serious ones."],
+        ["Emotion model", "Noted that both leads feel unheard, which raises the cost of a top-down ruling."],
+        ["Reasoner", "Proposed a staged launch: a limited release in {=max(1, round(gap / 2))} weeks and full launch once serious issues are closed."]
+      ],
+      "result": {
+        "title": "Proposed path",
+        "rows": [
+          ["Limited release", "in {=max(1, round(gap / 2))} weeks"],
+          ["Issues to close first", "{=ceil(risk * 0.4)}"],
+          ["Work needed", "about {=round(risk * 0.6, 1)} engineer-weeks"],
+          ["Talking points", "One page for each lead"]
+        ]
+      },
+      "followups": [
+        ["Will it take sides?", "No. It shows where each position is supported by the facts and where it rests on a feeling or a guess, for both sides equally."],
+        ["What if they still disagree?", "It names the single question that would settle it, such as how many customers need the feature by a given date, and suggests how to get that answer."]
+      ]
+    },
+    {
+      "title": "Stress-test a policy",
+      "ask": "We plan to require {days} office days a week. Check the logic and the likely reaction from {staff} employees.",
+      "inputs": [
+        {"id": "days", "label": "Office days required", "type": "range", "min": 1, "max": 5, "step": 1, "value": 3, "unit": "days"},
+        {"id": "staff", "label": "Employees", "type": "range", "min": 20, "max": 2000, "step": 20, "value": 300}
+      ],
+      "steps": [
+        ["Logic engine", "Tested the stated goals, collaboration and mentoring, against the rule. Found 2 goals the rule does not directly address."],
+        ["Emotion model", "Estimated reactions by group: commuters, caregivers and new hires respond differently."],
+        ["Edge cases", "Listed {=days + 2} situations the policy does not cover, such as travel weeks and medical needs."],
+        ["Reasoner", "Suggested anchor days by team and a 90-day review instead of a fixed rule."]
+      ],
+      "result": {
+        "title": "Policy review",
+        "rows": [
+          ["Gaps in the logic", "2"],
+          ["Uncovered edge cases", "{=days + 2}"],
+          ["Staff likely to push back", "estimate {=round(staff * days * 0.08)}"],
+          ["Suggested change", "Team anchor days plus a 90-day review"]
+        ]
+      },
+      "followups": [
+        ["Where does the push-back estimate come from?", "It is a rough estimate from the group mix you enter and general survey patterns. Run a short pulse survey to replace it with real numbers."],
+        ["Can we see the full reasoning?", "Yes. Every conclusion links to the rules and assumptions behind it, so you can check each step."]
+      ]
+    }
+  ]
+}

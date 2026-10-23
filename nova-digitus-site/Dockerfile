@@ -5,6 +5,7 @@ FROM nginx:1.27-alpine
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY index.html thanks.html 404.html demos.js sitemap.xml /usr/share/nginx/html/
+COPY drives/ /usr/share/nginx/html/drives/
 COPY apps/ /usr/share/nginx/html/apps/
 
 EXPOSE 80

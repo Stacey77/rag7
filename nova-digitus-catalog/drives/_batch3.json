@@ -1,0 +1,275 @@
+[
+ {
+  "name": "Radio Broadcast Hub",
+  "group": "it",
+  "description": "Emergency and commercial broadcast desk: generate bulletins and simulate live on-air broadcasts with AI voices.",
+  "slug": "radio-broadcast-hub",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Stratum MCP: Cloud Resource Control Plane",
+  "group": "it",
+  "description": "Manage and control cloud resources through one AI-ready control plane.",
+  "slug": "stratum-mcp-cloud-resource-control-plane",
+  "has_60s_demo": true
+ },
+ {
+  "name": "StreamVerse AI Anomaly Intelligence",
+  "group": "it",
+  "description": "Watches live data streams and flags anomalies before they become outages.",
+  "slug": "streamverse-ai-anomaly-intelligence",
+  "has_60s_demo": false
+ },
+ {
+  "name": "TenancyCore SaaS",
+  "group": "it",
+  "description": "Multi-tenant SaaS foundation with data isolation, plan management and compliance tracking.",
+  "slug": "tenancycore-saas",
+  "has_60s_demo": false
+ },
+ {
+  "name": "TrackerShield: Hidden Tracker Detection",
+  "group": "it",
+  "description": "Check vehicles and belongings for AirTags and SmartTags with a guided safety sweep.",
+  "slug": "trackershield-hidden-tracker-detection",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Unified Cybersecurity Platform",
+  "group": "it",
+  "description": "Threat prevention, endpoint detection, privileged access and patching in one AI-assisted console.",
+  "slug": "unified-cybersecurity-platform",
+  "has_60s_demo": false
+ },
+ {
+  "name": "VaultGuard",
+  "group": "it",
+  "description": "Secure client portal with separated data for each client, automated agreements and strong sign-in.",
+  "slug": "vaultguard",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Business Operations Orchestrator",
+  "group": "operations",
+  "description": "Builds a team of AI agents for marketing, outreach, scheduling, finance, research and design to run a small business.",
+  "slug": "ai-business-operations-orchestrator",
+  "has_60s_demo": true
+ },
+ {
+  "name": "AI Strategy Planner",
+  "group": "operations",
+  "description": "Assess your workflows, design an AI strategy, generate MCP servers and estimate ROI.",
+  "slug": "ai-strategy-planner",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Worker Workspace",
+  "group": "operations",
+  "description": "Train a personal AI worker on your methods, wins and mistakes, then put it to work.",
+  "slug": "ai-worker-workspace",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AquaFlow: Water Delivery Operations",
+  "group": "operations",
+  "description": "Order intake, inventory and reporting for water delivery businesses.",
+  "slug": "aquaflow-water-delivery-operations",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Aura-OS: Autonomous Enterprise Platform",
+  "group": "operations",
+  "description": "Strategic planning, task automation and market intelligence you can run by voice.",
+  "slug": "aura-os-autonomous-enterprise-platform",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Business Numbers & Unit Economics Engine",
+  "group": "operations",
+  "description": "Reality-check your numbers: ROI, cash flow, CAC vs LTV, break-even and what your time is worth.",
+  "slug": "business-numbers-unit-economics-engine",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Cerebrum Magnum",
+  "group": "operations",
+  "description": "Company intelligence plus agent execution for startups, nonprofits, family businesses and enterprises.",
+  "slug": "cerebrum-magnum",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Collaborative Business Context Hub",
+  "group": "operations",
+  "description": "Shared workspace to define your KPIs, data and glossary so every AI tool speaks your language.",
+  "slug": "collaborative-business-context-hub",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Coquus AI",
+  "group": "operations",
+  "description": "Operating system for company workflows: shared context, AI employee skills, integrations and human review.",
+  "slug": "coquus-ai",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Cura AI Switchboard",
+  "group": "operations",
+  "description": "Hospital front desk agent: patient room lookup, nurse updates and dispatcher case management.",
+  "slug": "cura-ai-switchboard",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Donor Services Resolution Swarm",
+  "group": "operations",
+  "description": "AI agents that clear donor receipt delays, missed confirmations and urgent donor questions for nonprofits.",
+  "slug": "donor-services-resolution-swarm",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Enterprise Strategy & AI Orchestrator",
+  "group": "operations",
+  "description": "Visual pipeline builder with governance controls and strategy calculators for enterprise automation.",
+  "slug": "enterprise-strategy-ai-orchestrator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Imperium Neuralis: Website Architect",
+  "group": "operations",
+  "description": "Analyze a website, project its revenue and generate a better one.",
+  "slug": "imperium-neuralis-website-architect",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nexus Agentic Studio",
+  "group": "operations",
+  "description": "Audit manual processes, calculate ROI and deploy secure automated workflows.",
+  "slug": "nexus-agentic-studio",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nova Digitus Agent Dashboard",
+  "group": "operations",
+  "description": "Control panel to watch, steer and automate a workspace of AI agents.",
+  "slug": "nova-digitus-agent-dashboard",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nova Digitus Conversational AI",
+  "group": "operations",
+  "description": "Voice and chat assistant for customer conversations, with guardrails, intent detection and analytics.",
+  "slug": "nova-digitus-conversational-ai",
+  "has_60s_demo": true
+ },
+ {
+  "name": "Nova Wearable Studio",
+  "group": "operations",
+  "description": "Clean up product photos and remove backgrounds with plain-language instructions.",
+  "slug": "nova-wearable-studio",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Orchestra PM",
+  "group": "operations",
+  "description": "Project management dashboard with parallel AI agents, mockup analysis and project memory.",
+  "slug": "orchestra-pm",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Problem Crusher",
+  "group": "operations",
+  "description": "Turns a messy manual process into a coordinated set of AI agents that run it.",
+  "slug": "problem-crusher",
+  "has_60s_demo": true
+ },
+ {
+  "name": "Smart Bill Splitter",
+  "group": "operations",
+  "description": "Scan a receipt and split the bill by chatting in plain language.",
+  "slug": "smart-bill-splitter",
+  "has_60s_demo": false
+ },
+ {
+  "name": "SyncSphere",
+  "group": "operations",
+  "description": "Real-time collaborative workspace with two-way data sync and an AI chat agent.",
+  "slug": "syncsphere",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Ad Campaign Scaling Dashboard & Lead Magnet",
+  "group": "sales",
+  "description": "Executive dashboard for scaling ad spend, with an AI auditor that reviews your lead magnet.",
+  "slug": "ad-campaign-scaling-dashboard-lead-magnet",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI CMO Command Center",
+  "group": "sales",
+  "description": "Marketing strategy agents with a human-in-the-loop approval desk.",
+  "slug": "ai-cmo-command-center",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI CMO Platform",
+  "group": "sales",
+  "description": "A full AI marketing team for founders: dozens of specialist agents in one dashboard.",
+  "slug": "ai-cmo-platform",
+  "has_60s_demo": true
+ },
+ {
+  "name": "AI SDR Agent Fleet",
+  "group": "sales",
+  "description": "AI sales development team that prospects, writes outreach, handles objections and qualifies leads.",
+  "slug": "ai-sdr-agent-fleet",
+  "has_60s_demo": true
+ },
+ {
+  "name": "AI Swarm Outreach Hub",
+  "group": "sales",
+  "description": "Outreach dashboard and playbooks for selling into several niches at once.",
+  "slug": "ai-swarm-outreach-hub",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Swarm: B2B Outreach Planner",
+  "group": "sales",
+  "description": "Plans B2B outreach and writes the sequences, with lead research built in.",
+  "slug": "ai-swarm-b2b-outreach-planner",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Voice Agent Case Study & Simulator",
+  "group": "sales",
+  "description": "See how an AI voice intake agent handles new-client calls, and estimate what it would cost you.",
+  "slug": "ai-voice-agent-case-study-simulator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Comprehensive Outreach Campaign Agent",
+  "group": "sales",
+  "description": "Researches an organization's public contacts and pain points and drafts a targeted campaign.",
+  "slug": "comprehensive-outreach-campaign-agent",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nova Digitus AI Office Assistant",
+  "group": "sales",
+  "description": "Outreach, lead tracking and automation dashboard for veteran-owned businesses.",
+  "slug": "nova-digitus-ai-office-assistant",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nova Digitus Prospect Tracker",
+  "group": "sales",
+  "description": "Pulls business leads into a tracking pipeline and exports them to CSV.",
+  "slug": "nova-digitus-prospect-tracker",
+  "has_60s_demo": false
+ },
+ {
+  "name": "PitchPerfect AI",
+  "group": "sales",
+  "description": "Helps you pitch any idea to any audience and prepares answers to objections.",
+  "slug": "pitchperfect-ai",
+  "has_60s_demo": false
+ }
+]

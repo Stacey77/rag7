@@ -1,0 +1,275 @@
+[
+ {
+  "name": "Virtual Try-On",
+  "group": "sales",
+  "description": "Let shoppers preview clothing and makeup on themselves before they buy.",
+  "slug": "virtual-try-on",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Autonomous Quant Trading Desk",
+  "group": "wealth",
+  "description": "Simulated trading desk where scheduled AI agents research, trade, check risk and write the close summary.",
+  "slug": "autonomous-quant-trading-desk",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Buy Borrow Die Simulator",
+  "group": "wealth",
+  "description": "Simulate buying assets, borrowing against them and passing them on.",
+  "slug": "buy-borrow-die-simulator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Corporate Credit Tradelines Builder",
+  "group": "wealth",
+  "description": "Step-by-step planner for building business credit that stands apart from your personal credit.",
+  "slug": "corporate-credit-tradelines-builder",
+  "has_60s_demo": false
+ },
+ {
+  "name": "IRIEBOT7.io Autonomous Trading Dashboard",
+  "group": "wealth",
+  "description": "Watch AI agents run technical and fundamental market analysis in one dashboard.",
+  "slug": "iriebot7-io-autonomous-trading-dashboard",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Luxury Salvage Deals Platform",
+  "group": "wealth",
+  "description": "Find luxury salvage cars worth rebuilding and estimate repair costs and margins.",
+  "slug": "luxury-salvage-deals-platform",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Sovereign BRRRR Command Center",
+  "group": "wealth",
+  "description": "Model the buy, rehab, rent, refinance, repeat cycle: deal pipeline, projections and stress tests.",
+  "slug": "sovereign-brrrr-command-center",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Sovereign Equity & Overage Recovery Engine",
+  "group": "wealth",
+  "description": "Find, qualify and document unclaimed tax-sale overages and foreclosure surplus funds across U.S. jurisdictions.",
+  "slug": "sovereign-equity-overage-recovery-engine",
+  "has_60s_demo": true
+ },
+ {
+  "name": "Stratos Capital & Trust Optimizer",
+  "group": "wealth",
+  "description": "Sandbox for modeling credit cycles, card rewards and keeping personal and business assets separate.",
+  "slug": "stratos-capital-trust-optimizer",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Tax Form Navigator",
+  "group": "wealth",
+  "description": "Plain-language guide to IRS forms like the 1099-A and 1099-B.",
+  "slug": "tax-form-navigator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "The Concrete Underneath",
+  "group": "wealth",
+  "description": "Research terminal following the power and infrastructure buildout behind AI.",
+  "slug": "the-concrete-underneath",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Wealth Playground",
+  "group": "wealth",
+  "description": "Command center for a consulting business alongside sustainable container home projects.",
+  "slug": "wealth-playground",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Wealth Strategy Playbook",
+  "group": "wealth",
+  "description": "Planning dashboard for veterans exploring the buy, borrow, die strategy with holding-company structures.",
+  "slug": "wealth-strategy-playbook",
+  "has_60s_demo": true
+ },
+ {
+  "name": "WealthStrat: Institutional Leverage Engine",
+  "group": "wealth",
+  "description": "Visualize capital stacks, investor pitch structure and K-1 distribution waterfalls.",
+  "slug": "wealthstrat-institutional-leverage-engine",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AGI System",
+  "group": "ai",
+  "description": "Production-ready framework for chatbots, writing assistants and research tools built on LangChain and CrewAI.",
+  "slug": "agi-system",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Advisor",
+  "group": "ai",
+  "description": "Self-hosted AI chat platform with a memory vault that remembers your projects and decisions.",
+  "slug": "ai-advisor",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Attention Board",
+  "group": "operations",
+  "description": "One board that shows what needs your attention today across email, tasks and projects.",
+  "slug": "attention-board",
+  "has_60s_demo": false
+ },
+ {
+  "name": "BagBot Kraken Trader",
+  "group": "wealth",
+  "description": "Command-line crypto trading bot for Kraken with strategy settings and live mode.",
+  "slug": "bagbot-kraken-trader",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Break the Chains",
+  "group": "culture",
+  "description": "Free 20-chapter guide and guided practice studio to activate your Merkaba and break the chains of fear.",
+  "slug": "break-the-chains",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Concentus Console",
+  "group": "ai",
+  "description": "Console for coordinating multiple AI agents on shared goals with a common timeline.",
+  "slug": "concentus-console",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Consilium Mobile",
+  "group": "ai",
+  "description": "Mobile version of Consilium for getting multi-agent advice on the go.",
+  "slug": "consilium-mobile",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Consilium Orchestrator",
+  "group": "ai",
+  "description": "Advisory AI orchestrator that brings several expert agents together on a decision.",
+  "slug": "consilium-orchestrator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Cosmic Code Tutor",
+  "group": "culture",
+  "description": "Interactive tutor that teaches sacred geometry, number symbolism and cosmology through guided lessons.",
+  "slug": "cosmic-code-tutor",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Day One Store Builder",
+  "group": "sales",
+  "description": "Builds a ready-to-launch online store on day one: products, pages and launch checklist.",
+  "slug": "day-one-store-builder",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Digital vCard",
+  "group": "sales",
+  "description": "A phone-first digital business card your whole team shares by link or QR, with one-tap contact save and no app to install.",
+  "slug": "digital-vcard",
+  "has_60s_demo": true
+ },
+ {
+  "name": "Downloads Wiki",
+  "group": "ai",
+  "description": "Knowledge vault in Obsidian that an AI agent crew keeps organized and current, running on local models.",
+  "slug": "downloads-wiki",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Earth Tube Planner",
+  "group": "engineering",
+  "description": "Planner for earth-tube ground cooling and heating: sizing, depth, airflow and expected temperature gains.",
+  "slug": "earth-tube-planner",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Empire Console",
+  "group": "operations",
+  "description": "Command console for running a multi-business portfolio: projects, agents, revenue and next actions in one view.",
+  "slug": "empire-console",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Etz Chaim Atlas",
+  "group": "culture",
+  "description": "Interactive atlas of the Tree of Life with sephirot, paths and their correspondences.",
+  "slug": "etz-chaim-atlas",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Exoskeleton Repair Agent",
+  "group": "engineering",
+  "description": "Agentic AI that diagnoses robotic exoskeleton faults and recommends repairs, with a dashboard.",
+  "slug": "exoskeleton-repair-agent",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Fleet Console",
+  "group": "engineering",
+  "description": "Operations console for a robot fleet: status, missions, health and alerts.",
+  "slug": "fleet-console",
+  "has_60s_demo": false
+ },
+ {
+  "name": "HELIX Console",
+  "group": "it",
+  "description": "Control plane for AI-designed, AI-operated distributed systems with a genetic design brain and agent swarm.",
+  "slug": "helix-console",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Humanoid Body Studio",
+  "group": "engineering",
+  "description": "3D studio for designing humanoid robot bodies: proportions, joints and component layout.",
+  "slug": "humanoid-body-studio",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Kiln Cloud",
+  "group": "it",
+  "description": "Browser IDE and hosting console: edit a site, preview live, deploy with build logs, roll back, manage domains, functions and env vars.",
+  "slug": "kiln-cloud",
+  "has_60s_demo": false
+ },
+ {
+  "name": "KITH",
+  "group": "operations",
+  "description": "Relationship hub for keeping in touch with the people who matter, with reminders and notes.",
+  "slug": "kith",
+  "has_60s_demo": false
+ },
+ {
+  "name": "LeadFinder EPIC",
+  "group": "sales",
+  "description": "MCP-enabled B2B campaign platform: find leads, build sequences and track replies.",
+  "slug": "leadfinder-epic",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Leverage Ledger",
+  "group": "wealth",
+  "description": "Business credit builder that tracks tradelines, funding tiers and next steps across multiple LLCs.",
+  "slug": "leverage-ledger",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Marcus: Stoic Mentor",
+  "group": "health",
+  "description": "Stoic mentor chat app for Android that coaches you through daily decisions.",
+  "slug": "marcus-stoic-mentor",
+  "has_60s_demo": false
+ },
+ {
+  "name": "MCP Trading Desk",
+  "group": "wealth",
+  "description": "Trading desk console that connects market tools through MCP for research, signals and order planning.",
+  "slug": "mcp-trading-desk",
+  "has_60s_demo": false
+ }
+]

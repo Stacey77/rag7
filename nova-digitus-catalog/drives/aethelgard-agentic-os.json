@@ -1,0 +1,91 @@
+{
+  "name": "Aethelgard: Agentic OS",
+  "tag": "Assembles an agent workstation from reusable skills, subagents and tool connections.",
+  "scenarios": [
+    {
+      "title": "Set up a sales-ops workstation",
+      "ask": "Build a workstation for our sales-ops team of {seats} with {tools} connected tools and a {review} review policy.",
+      "inputs": [
+        {"id": "seats", "label": "People using it", "type": "range", "min": 1, "max": 25, "step": 1, "value": 5},
+        {"id": "tools", "label": "Tools to connect (CRM, email, sheets...)", "type": "range", "min": 1, "max": 10, "step": 1, "value": 4},
+        {"id": "review", "label": "Human review", "type": "select", "value": "Before any send",
+         "options": [{"label": "Before any send", "n": 2}, {"label": "Spot checks", "n": 1}, {"label": "Every step", "n": 3}]}
+      ],
+      "steps": [
+        ["Skill library", "Picked {=tools + 3} skills: pipeline cleanup, quote drafting, meeting notes and one per connected tool."],
+        ["MCP connector", "Linked {tools} tools through MCP servers with read-only access by default."],
+        ["Subagent builder", "Created 3 subagents: Researcher, Drafter and Checker. Each gets only the skills it needs."],
+        ["Policy", "Set the review rule to {review}. About {=review * 4} approvals a day per person at normal volume."],
+        ["Workspace", "Issued {seats} workstations from one shared template so updates reach everyone."]
+      ],
+      "result": {
+        "title": "Workstation ready",
+        "rows": [
+          ["Skills installed", "{=tools + 3}"],
+          ["Tool connections", "{tools}"],
+          ["Subagents", "3"],
+          ["Approvals per day (team)", "about {=review * 4 * seats}"],
+          ["Setup time", "about {=1 + tools} hours"]
+        ]
+      },
+      "followups": [
+        ["Can people add their own skills?", "Yes. A new skill is a short instruction file plus any scripts. Admins approve it once and it appears for everyone on the template."],
+        ["What does read-only by default mean?", "Each connection starts with read access only. Write access, such as updating a CRM record, is switched on per skill and logged."]
+      ]
+    },
+    {
+      "title": "Automate a weekly report",
+      "ask": "Our team spends {hours} hours a week building a status report from {sources} sources. Turn it into a skill.",
+      "inputs": [
+        {"id": "hours", "label": "Hours spent each week", "type": "range", "min": 1, "max": 20, "step": 1, "value": 6, "unit": "hours"},
+        {"id": "sources", "label": "Data sources", "type": "range", "min": 1, "max": 8, "step": 1, "value": 3}
+      ],
+      "steps": [
+        ["Recorder", "Watched one manual run and listed {=sources * 3 + 2} repeatable actions."],
+        ["Skill writer", "Wrote a report skill with one fetch step per source and a fixed layout."],
+        ["Subagent", "Assigned a Checker subagent that compares totals with last week and flags jumps over 20%."],
+        ["Scheduler", "Set the skill to run every Friday at 7 a.m. and post a draft for review."]
+      ],
+      "result": {
+        "title": "Report skill live",
+        "rows": [
+          ["Manual time before", "{hours}"],
+          ["Review time after", "about {=max(0.5, round(hours * 0.15, 1))} hours"],
+          ["Hours saved per year", "{=round((hours - max(0.5, hours * 0.15)) * 48)}"],
+          ["Sources fetched", "{sources}"]
+        ]
+      },
+      "followups": [
+        ["What if a source is down?", "The skill marks that section as missing and still posts the rest, so the report is never silently wrong."],
+        ["Can we change the layout later?", "Yes. The layout is part of the skill file. Edit it once and the next run uses it."]
+      ]
+    },
+    {
+      "title": "Audit agent permissions",
+      "ask": "We have {agents} agents running with {conns} tool connections. Show who can do what.",
+      "inputs": [
+        {"id": "agents", "label": "Agents and subagents", "type": "range", "min": 2, "max": 40, "step": 1, "value": 12},
+        {"id": "conns", "label": "Tool connections", "type": "range", "min": 2, "max": 30, "step": 1, "value": 9}
+      ],
+      "steps": [
+        ["Inventory", "Listed {agents} agents, {conns} connections and every skill that uses them."],
+        ["Permission map", "Built a grid of agent by tool with read, write or none."],
+        ["Risk check", "Found {=max(1, round(agents * 0.15))} agents with write access they have not used in 30 days."],
+        ["Fix list", "Drafted a change list to drop the unused write access. Nothing changes until you approve."]
+      ],
+      "result": {
+        "title": "Permission audit",
+        "rows": [
+          ["Agents reviewed", "{agents}"],
+          ["Connections reviewed", "{conns}"],
+          ["Unused write access", "{=max(1, round(agents * 0.15))} agents"],
+          ["Changes waiting for approval", "{=max(1, round(agents * 0.15))}"]
+        ]
+      },
+      "followups": [
+        ["How often should we run this?", "Monthly works for most teams. The audit can run on a schedule and only alert you when something changed."],
+        ["Is there a log of agent actions?", "Yes. Every tool call is logged with the agent, the skill, the input and the result, and the log can be exported."]
+      ]
+    }
+  ]
+}

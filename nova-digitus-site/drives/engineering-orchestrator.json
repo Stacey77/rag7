@@ -1,0 +1,92 @@
+{
+  "name": "Engineering Orchestrator",
+  "tag": "Keeps engineering projects moving and flags blocked work before deadlines slip.",
+  "scenarios": [
+    {
+      "title": "Plan a product redesign",
+      "ask": "Plan the bracket redesign for the Line 3 conveyor with {team} engineers, ship in {weeks} weeks, optimizing for {priority}.",
+      "inputs": [
+        {"id": "team", "label": "Engineers on the job", "type": "range", "min": 2, "max": 12, "step": 1, "value": 4},
+        {"id": "weeks", "label": "Weeks until ship date", "type": "range", "min": 2, "max": 12, "step": 1, "value": 3, "unit": "weeks"},
+        {"id": "priority", "label": "What matters most", "type": "select", "value": "Speed",
+         "options": [{"label": "Speed", "n": 1}, {"label": "Cost", "n": 2}, {"label": "Quality", "n": 3}]}
+      ],
+      "steps": [
+        ["Planner", "Split the job into {=8 + team * 2} tasks across CAD, load analysis, drawings and the supplier quote."],
+        ["Scheduler", "Assigned owners by skill and current load. Each engineer carries about {=round((8 + team * 2) / team, 1)} tasks."],
+        ["3D analysis", "Load check on the new bracket: peak stress at {=58 + priority * 3}% of yield at twice the rated load."],
+        ["Watcher", "The supplier quote has no owner and blocks day {=round(weeks * 5 * 0.6)}. Flagged to the lead."]
+      ],
+      "result": {
+        "title": "Project plan ready",
+        "rows": [
+          ["Tasks", "{=8 + team * 2}"],
+          ["Critical path", "{=max(6, round(26 / team * 2 + 4))} working days"],
+          ["Days available", "{=weeks * 5}"],
+          ["Buffer", "{=max(0, weeks * 5 - max(6, round(26 / team * 2 + 4)))} days"],
+          ["Risks flagged", "1 blocked handoff"]
+        ]
+      },
+      "followups": [
+        ["What if we lose an engineer mid-project?", "The plan re-balances {=round((8 + team * 2) / team)} tasks onto the remaining {=max(1, team - 1)} engineers and the critical path grows by about {=max(1, round(26 / max(1, team - 1) * 2 + 4) - round(26 / team * 2 + 4))} days. You'd see the new dates before approving the change."],
+        ["Can it talk to our existing tools?", "Yes. Tasks sync with Jira, Asana or a shared spreadsheet, and CAD files stay where they are. The Orchestrator only reads what it needs to track progress."],
+        ["How does it know work is blocked?", "Each task has an owner, an input it waits on and a due date. When an input is late or has no owner, the Watcher flags it to the lead with the days of slack left."]
+      ]
+    },
+    {
+      "title": "Rescue a slipping project",
+      "ask": "Our {projects} active projects keep slipping. {late}% of tasks are late. Find out why and get us back on track.",
+      "inputs": [
+        {"id": "projects", "label": "Active projects", "type": "range", "min": 2, "max": 15, "step": 1, "value": 5},
+        {"id": "late", "label": "Tasks running late", "type": "range", "min": 5, "max": 60, "step": 5, "value": 25, "unit": "%"}
+      ],
+      "steps": [
+        ["Reader", "Read {=projects * 34} open tasks across {projects} projects and their handoff history."],
+        ["Analyst", "{=round(late * 0.6)}% of late tasks were waiting on a review that had no named reviewer."],
+        ["Planner", "Proposed a review rota and moved {=round(projects * 1.5)} low-priority tasks out of this month."],
+        ["Watcher", "Set daily checks so any handoff without an owner is flagged within 24 hours."]
+      ],
+      "result": {
+        "title": "Recovery plan",
+        "rows": [
+          ["Main cause", "Reviews with no owner"],
+          ["Late tasks today", "{late}%"],
+          ["Expected in 4 weeks", "{=max(3, round(late * 0.35))}%"],
+          ["Tasks deferred", "{=round(projects * 1.5)}"]
+        ]
+      },
+      "followups": [
+        ["Will this add meetings?", "No. The Watcher sends one short daily note to each lead with only the handoffs that need a decision."],
+        ["How fast will we see a change?", "Most teams see late work drop within two sprints, because the biggest cause, reviews with no owner, is fixed on day one."]
+      ]
+    },
+    {
+      "title": "Staff a new contract",
+      "ask": "We won a contract that needs {hours} engineering hours over {months} months. Can our team of {team} take it on?",
+      "inputs": [
+        {"id": "hours", "label": "Engineering hours needed", "type": "range", "min": 200, "max": 4000, "step": 100, "value": 1200, "unit": "hours"},
+        {"id": "months", "label": "Contract length", "type": "range", "min": 1, "max": 12, "step": 1, "value": 4, "unit": "months"},
+        {"id": "team", "label": "Engineers available", "type": "range", "min": 2, "max": 20, "step": 1, "value": 6}
+      ],
+      "steps": [
+        ["Capacity", "Your team has about {=round(team * months * 140 * 0.55)} free hours over {months} months, after current work."],
+        ["Planner", "Broke the contract into phases and matched skills to each phase."],
+        ["Risk check", "Load peaks in month {=max(1, round(months / 2))}, when two projects overlap."],
+        ["Recommendation", "Compared hiring, contracting and re-sequencing current work."]
+      ],
+      "result": {
+        "title": "Capacity check",
+        "rows": [
+          ["Hours needed", "{=hours}"],
+          ["Hours available", "{=round(team * months * 140 * 0.55)}"],
+          ["Gap", "{=max(0, hours - round(team * months * 140 * 0.55))} hours"],
+          ["Extra people for the gap", "{=ceil(max(0, hours - round(team * months * 140 * 0.55)) / (months * 140))}"]
+        ]
+      },
+      "followups": [
+        ["What if we push the start by a month?", "Starting a month later frees about {=round(team * 140 * 0.3)} more hours, because two current projects finish first."],
+        ["Can it plan contractors in?", "Yes. Add a contractor with their hours and skills, and the Planner gives them the tasks that fit and keeps them off the critical path."]
+      ]
+    }
+  ]
+}

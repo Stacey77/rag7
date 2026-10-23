@@ -1,0 +1,94 @@
+{
+  "name": "Active Learning Explorer",
+  "tag": "Shows your team how to train a useful model with far fewer hand-labeled examples.",
+  "scenarios": [
+    {
+      "title": "Label fewer product photos",
+      "ask": "We have {pool} unlabeled product photos and budget for {budget} labels. Show how {strategy} sampling compares to labeling at random.",
+      "inputs": [
+        {"id": "pool", "label": "Unlabeled photos", "type": "range", "min": 5000, "max": 100000, "step": 5000, "value": 40000, "unit": "photos"},
+        {"id": "budget", "label": "Labels you can afford", "type": "range", "min": 200, "max": 4000, "step": 200, "value": 1000, "unit": "labels"},
+        {"id": "strategy", "label": "Query strategy", "type": "select", "value": "Uncertainty",
+         "options": [{"label": "Uncertainty", "n": 2}, {"label": "Diversity", "n": 1}, {"label": "Uncertainty plus diversity", "n": 3}]}
+      ],
+      "steps": [
+        ["Seed set", "Picked {=round(budget * 0.1)} random photos to label first so the starter model sees every category."],
+        ["Learner", "Trained a starter model on the seed set. Test accuracy: {=min(80, round(48 + budget / 100))}%."],
+        ["Query picker", "Scored all {=pool - round(budget * 0.1)} remaining photos and chose the ones the model was least sure about, in batches of {=round(budget * 0.1)}."],
+        ["Labeler", "Simulated 9 labeling rounds. The lesson shows each batch so you can see what the model asks for."],
+        ["Evaluator", "Plotted accuracy against labels used for {strategy} sampling and for random sampling, side by side."]
+      ],
+      "result": {
+        "title": "Learning curve comparison",
+        "rows": [
+          ["Labels used", "{budget} of {pool}"],
+          ["Random sampling accuracy", "{=min(90, round(60 + budget / 150))}%"],
+          ["Active learning accuracy", "{=min(94, round(60 + budget / 150 + strategy * 2))}%"],
+          ["Labels saved for the same accuracy", "about {=round(budget * strategy * 0.12)}"],
+          ["Label cost saved at $0.40 each", "${=round(budget * strategy * 0.12 * 0.4)}"]
+        ]
+      },
+      "followups": [
+        ["Are these numbers real?", "They are a teaching simulation on sample data. Real savings depend on your data, but the lesson shows the same pattern you would measure in your own pilot."],
+        ["Why combine uncertainty and diversity?", "Uncertainty alone tends to pick many near-duplicate hard cases. Adding diversity spreads each batch across the data, so every label teaches the model something new."],
+        ["When should we stop labeling?", "When the accuracy curve flattens. The Evaluator marks the round where the last batch added less than one point, which is usually the point to stop."]
+      ]
+    },
+    {
+      "title": "Triage support tickets",
+      "ask": "Train a ticket router for {classes} categories. Our agents can label {per_day} tickets a day. How long until it is useful?",
+      "inputs": [
+        {"id": "classes", "label": "Ticket categories", "type": "range", "min": 3, "max": 20, "step": 1, "value": 8},
+        {"id": "per_day", "label": "Tickets labeled per day", "type": "range", "min": 20, "max": 300, "step": 10, "value": 80, "unit": "tickets"},
+        {"id": "target", "label": "Target accuracy", "type": "select", "value": "85%",
+         "options": [{"label": "80%", "n": 80}, {"label": "85%", "n": 85}, {"label": "90%", "n": 90}]}
+      ],
+      "steps": [
+        ["Seed set", "Asked for {=classes * 10} labeled tickets, 10 per category, as a starting point."],
+        ["Learner", "Trained a text classifier and measured accuracy by category."],
+        ["Query picker", "Found the {=max(1, round(classes / 3))} categories the model confuses most and pulled tickets from the border between them."],
+        ["Planner", "Estimated labels needed for {target}: about {=round(classes * (target - 60) * 2.2)} with active learning versus {=round(classes * (target - 60) * 3.5)} at random."]
+      ],
+      "result": {
+        "title": "Labeling plan",
+        "rows": [
+          ["Labels needed (active)", "{=round(classes * (target - 60) * 2.2)}"],
+          ["Labels needed (random)", "{=round(classes * (target - 60) * 3.5)}"],
+          ["Days to reach target","{=ceil(classes * (target - 60) * 2.2 / per_day)}"],
+          ["Days saved", "{=max(0, ceil(classes * (target - 60) * 3.5 / per_day) - ceil(classes * (target - 60) * 2.2 / per_day))}"]
+        ]
+      },
+      "followups": [
+        ["What if a category is rare?", "The Query picker can reserve part of each batch for rare categories so they are not drowned out. The lesson lets you toggle this and see the effect on recall."],
+        ["Do agents need training to label?", "A one-page label guide is enough for most teams. The lesson includes a short exercise where two people label the same 20 tickets and compare."]
+      ]
+    },
+    {
+      "title": "Teach the concept to a team",
+      "ask": "Run a {minutes}-minute session for {people} analysts who are new to active learning.",
+      "inputs": [
+        {"id": "minutes", "label": "Session length", "type": "range", "min": 20, "max": 90, "step": 10, "value": 45, "unit": "minutes"},
+        {"id": "people", "label": "Attendees", "type": "range", "min": 2, "max": 30, "step": 1, "value": 10}
+      ],
+      "steps": [
+        ["Lesson planner", "Built an outline with {=max(2, floor(minutes / 15))} modules: why labels are costly, query strategies, stopping rules and a hands-on round."],
+        ["Sandbox", "Prepared a shared toy dataset so each of the {people} attendees runs their own labeling loop."],
+        ["Quiz builder", "Added {=max(3, round(minutes / 9))} check questions with explanations."],
+        ["Recap", "Generated a one-page summary attendees can keep."]
+      ],
+      "result": {
+        "title": "Session pack",
+        "rows": [
+          ["Modules", "{=max(2, floor(minutes / 15))}"],
+          ["Hands-on time", "{=round(minutes * 0.4)} minutes"],
+          ["Quiz questions", "{=max(3, round(minutes / 9))}"],
+          ["Sandboxes", "{people}"]
+        ]
+      },
+      "followups": [
+        ["Do attendees need to code?", "No. The sandbox is point and click. An optional notebook is included for anyone who wants to see the code."],
+        ["Can we use our own data?", "Yes, for a private session. We load a small, cleaned sample so the examples feel familiar to your team."]
+      ]
+    }
+  ]
+}

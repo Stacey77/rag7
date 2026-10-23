@@ -8,7 +8,8 @@ from urllib.parse import quote
 from catalog_data import APPS, GROUPS, PORTFOLIO_EXTRA
 from links import public_try_url as links_try_url
 
-# 60-second teaser demos (demos.json) and the player that runs them, bundled into the site as demos.js
+# 5-minute test drives: one script per app in drives/<slug>.json (checked by check_drives.py), copied to the
+# site's drives/ folder and loaded on demand by the player (test_drive.js), which is bundled into demos.js
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # The Obsidian vault is the source of truth when vault_apps.json is present: the Wiki Brain on Stacey's PC
@@ -33,7 +34,20 @@ if _extra:
 
 def try_url(name):
     return VAULT_URLS.get(name) or links_try_url(name)
-DEMOS = json.load(open(os.path.join(HERE, "demos.json")))
+import glob, shutil
+from check_drives import check as _check_drive
+_names_file = os.path.join(HERE, "drives", "_apps.json")
+_known = {a["name"] for a in json.load(open(_names_file))} if os.path.exists(_names_file) else None
+DRIVES = {}   # app name -> slug, for every drive that passes the checker
+for _f in sorted(glob.glob(os.path.join(HERE, "drives", "*.json"))):
+    if os.path.basename(_f).startswith("_"):
+        continue
+    _probs = _check_drive(_f)
+    if _probs:
+        print("skipping drive with problems:", *_probs[:3], sep="\n  ")
+        continue
+    DRIVES[json.load(open(_f, encoding="utf-8"))["name"]] = os.path.basename(_f)[:-5]
+DEMOS = DRIVES
 
 SITE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "nova-digitus-site")
 OUT = os.path.join(SITE, "apps")
@@ -134,7 +148,7 @@ def try_btn(name):
     return f'<a class="btn sm line" href="{e(u)}" target="_blank" rel="noopener">Try it</a>' if u else ""
 
 def demo_btn(name):
-    return f'<button type="button" class="btn sm line" data-demo="{e(name)}">60-second demo</button>' if name in DEMOS else ""
+    return f'<button type="button" class="btn sm line" data-demo="{e(name)}">5-minute test drive</button>' if name in DEMOS else ""
 
 def app_card(a, show_group=False):
     name, gid, desc, featured = a
@@ -157,7 +171,7 @@ for gid, gname, who, blurb in GROUPS:
     page = head(f"{gname} | Nova Digitus Designs", f"{blurb} {len(apps)} AI apps from Nova Digitus Designs.", f"apps/{gid}.html") + f"""
 <div class="crumb"><a href="./">All apps</a> / {e(gname)}</div>
 <div class="hero"><h1>{e(gname)}</h1><p class="lede">{e(who)} {e(blurb)} Pick an app and book a demo; the call is free and the app you chose comes with you.</p></div>
-<section><h2>{len(apps)} apps</h2><p class="lede lede-sm">Watch a 60-second demo where you see one, then book a free 30-minute call to see the app on your own use case.</p>
+<section><h2>{len(apps)} apps</h2><p class="lede lede-sm">Take any app for a 5-minute test drive with sample data, then book a free 30-minute call to see it on your own use case.</p>
 <div class="apps">{''.join(app_card(a) for a in apps)}</div>{note}</section>
 {cta()}
 <section><h2>Other groups</h2><div class="others mt">{others}</div></section>
@@ -194,7 +208,7 @@ document.getElementById('q').addEventListener('input',ev=>{{
   if(q.length<2){{box.innerHTML='';return;}}
   const words=q.split(/\\s+/);
   const hits=APPS.filter(a=>words.every(w=>(a.n+' '+a.d+' '+GROUPS[a.g]).toLowerCase().includes(w))).sort((x,y)=>(!!y.t-!!x.t)||(y.f-x.f)).slice(0,12);
-  box.innerHTML=hits.length?'<div class="apps">'+hits.map(a=>`<article class="app"><h3>${{esc(a.n)}}</h3><p>${{esc(a.d)}}</p><div class="row"><a class="btn sm" target="_blank" rel="noopener" href="${{CAL}}?app=${{encodeURIComponent(a.n)}}">Book a demo</a>${{a.v?`<button type="button" class="btn sm line" data-demo="${{esc(a.n)}}">60-second demo</button>`:''}}${{a.t?`<a class="btn sm line" target="_blank" rel="noopener" href="${{a.t}}">Try it</a>`:''}}<a class="grp" href="${{a.g}}.html">${{esc(GROUPS[a.g])}}</a></div></article>`).join('')+'</div>'
+  box.innerHTML=hits.length?'<div class="apps">'+hits.map(a=>`<article class="app"><h3>${{esc(a.n)}}</h3><p>${{esc(a.d)}}</p><div class="row"><a class="btn sm" target="_blank" rel="noopener" href="${{CAL}}?app=${{encodeURIComponent(a.n)}}">Book a demo</a>${{a.v?`<button type="button" class="btn sm line" data-demo="${{esc(a.n)}}">5-minute test drive</button>`:''}}${{a.t?`<a class="btn sm line" target="_blank" rel="noopener" href="${{a.t}}">Try it</a>`:''}}<a class="grp" href="${{a.g}}.html">${{esc(GROUPS[a.g])}}</a></div></article>`).join('')+'</div>'
     :'<p class="empty">No app matches that yet. <a href="'+CAL+'" target="_blank" rel="noopener">Book a call</a> and describe the problem; it may be a quick custom build.</p>';
 }});
 </script>
@@ -209,13 +223,19 @@ with open(os.path.join(SITE, "sitemap.xml"), "w") as f:
     f.write("</urlset>\n")
 print(f"built {len(GROUPS)} group pages + index, {total} apps")
 
-# ---------- demos.js for the whole site
-missing = [n for n in DEMOS if n not in {a[0] for a in APPS}]
-demo_data = {n: dict(d, url=try_url(n) or "") for n, d in DEMOS.items()}
+# ---------- demos.js (player + index) and drives/ for the whole site
+_out = os.path.join(SITE, "drives")
+if os.path.isdir(_out):
+    shutil.rmtree(_out)
+os.makedirs(_out)
+for _name, _slug in DRIVES.items():
+    shutil.copy(os.path.join(HERE, "drives", _slug + ".json"), os.path.join(_out, _slug + ".json"))
+_index = {n: {"slug": s_, "url": try_url(n) or ""} for n, s_ in DRIVES.items()}
 with open(os.path.join(SITE, "demos.js"), "w") as f:
-    f.write("window.ND_DEMOS=" + json.dumps(demo_data, ensure_ascii=False).replace("</", "<\\/") + ";\n")
-    f.write(open(os.path.join(HERE, "demo_player.js")).read())
-print(f"demos.js: {len(DEMOS)} demos" + (f" ({len(missing)} for apps outside the catalog: {', '.join(missing)})" if missing else ""))
+    f.write("window.ND_DRIVES=" + json.dumps(_index, ensure_ascii=False).replace("</", "<\\/") + ";\n")
+    f.write(open(os.path.join(HERE, "test_drive.js")).read())
+_without = [a[0] for a in APPS if a[0] not in DRIVES]
+print(f"test drives: {len(DRIVES)} of {len(APPS)} apps" + (f" (missing: {', '.join(_without[:8])}{'...' if len(_without) > 8 else ''})" if _without else ""))
 
 # ---------- keep the home page's app counts in step with the catalog
 _home = os.path.join(SITE, "index.html")
@@ -227,4 +247,9 @@ if os.path.exists(_home):
     for _gid, *_ in GROUPS:
         _n = sum(1 for a in APPS if a[1] == _gid)
         _h = re.sub(rf'(href="apps/{_gid}\.html">[^<]*<span class="more">)\d+', rf"\g<1>{_n}", _h)
+    _h = _h.replace(">60-second demo</button>", ">5-minute test drive</button>")
+    _h = _h.replace("<h2>See it work in 60 seconds</h2>", "<h2>Test-drive any app for 5 minutes</h2>")
+    _h = re.sub(r'(<section id="demos">\s*<h2>[^<]*</h2>\s*<p class="intro">)[^<]*(</p>)',
+                r"\g<1>Pick an app, choose a situation, move the sliders and watch the AI agents work, with sample data. Each test drive runs for 5 minutes, then self-destructs. Every app in the catalog has one.\g<2>", _h)
+    _h = _h.replace('<a href="#demos">Demos</a>', '<a href="#demos">Test drives</a>')
     open(_home, "w", encoding="utf-8").write(_h)

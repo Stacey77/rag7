@@ -1,0 +1,261 @@
+[
+ {
+  "name": "Merkaba Code Studio",
+  "group": "culture",
+  "description": "Studio for producing the Merkaba Code program: modules, audio scripts and launch assets.",
+  "slug": "merkaba-code-studio",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Multi-LLM Chat",
+  "group": "ai",
+  "description": "One chat window that sends a prompt to several AI models and compares their answers side by side.",
+  "slug": "multi-llm-chat",
+  "has_60s_demo": false
+ },
+ {
+  "name": "NEXUM",
+  "group": "it",
+  "description": "Autonomous network platform: scans, diagnoses and resolves network problems with an AI agent swarm.",
+  "slug": "nexum",
+  "has_60s_demo": false
+ },
+ {
+  "name": "NOVA Assistant",
+  "group": "ai",
+  "description": "Personal AI assistant console for chat, tasks and quick actions across your tools.",
+  "slug": "nova-assistant",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nova Orchestrator",
+  "group": "ai",
+  "description": "Orchestrates Nova Digitus agents across tasks, with handoffs and progress tracking.",
+  "slug": "nova-orchestrator",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Nova Trading Platform",
+  "group": "wealth",
+  "description": "AI-orchestrated trading platform with strategy agents, risk checks and a live portfolio view.",
+  "slug": "nova-trading-platform",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Orbis Six Origins",
+  "group": "sales",
+  "description": "Curated online store with goods from six origins: China, Japan, Africa, Canada, Mexico and Thailand.",
+  "slug": "orbis-six-origins",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Platinum Agent Console",
+  "group": "ai",
+  "description": "Console for building, running and monitoring a team of business AI agents.",
+  "slug": "platinum-agent-console",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Pleroma Codex",
+  "group": "culture",
+  "description": "Interactive codex of Gnostic texts and concepts with guided study paths.",
+  "slug": "pleroma-codex",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Plugin Tools Control",
+  "group": "ai",
+  "description": "Control panel for managing AI plugins, their tools and which agents can use them.",
+  "slug": "plugin-tools-control",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Pricing Floor",
+  "group": "operations",
+  "description": "Calculates the lowest price you can charge for a service while still hitting your margin.",
+  "slug": "pricing-floor",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Private Assistant",
+  "group": "ai",
+  "description": "Private, self-hosted style AI assistant that keeps conversations and notes on your side.",
+  "slug": "private-assistant",
+  "has_60s_demo": false
+ },
+ {
+  "name": "AI Swarm Problem Solver",
+  "group": "operations",
+  "description": "A team of AI agents takes a business problem apart, tests explanations against your data, and returns ranked options with the reasoning shown.",
+  "slug": "ai-swarm-problem-solver",
+  "has_60s_demo": true
+ },
+ {
+  "name": "Prospect Case Files",
+  "group": "sales",
+  "description": "Case-file view of each sales prospect: research, needs, pitch angle and next step.",
+  "slug": "prospect-case-files",
+  "has_60s_demo": false
+ },
+ {
+  "name": "QUANTUM Live Ops",
+  "group": "operations",
+  "description": "Live operations dashboard for monitoring systems, incidents and team actions in real time.",
+  "slug": "quantum-live-ops",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Relay Product Search",
+  "group": "sales",
+  "description": "Worldwide affiliate product search that compares offers and earns commission without inventory.",
+  "slug": "relay-product-search",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Robot Design Studio",
+  "group": "engineering",
+  "description": "Design studio for robots: parts, layout and behavior planning.",
+  "slug": "robot-design-studio",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Robot Fleet Interface",
+  "group": "engineering",
+  "description": "3D fleet app for humanoid and service robots, with an agent build pipeline, environment editor and real-robot connectivity.",
+  "slug": "robot-fleet-interface",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Robot Agent Layer",
+  "group": "engineering",
+  "description": "Plans tasks for service and humanoid robots and decides when to hand off to a person, so robots and staff can share the same job safely.",
+  "slug": "robot-agent-layer",
+  "has_60s_demo": true
+ },
+ {
+  "name": "SentientShield: Swarm Command",
+  "group": "it",
+  "description": "AI agent swarm with a command dashboard, shared agent memory and modular skills for monitoring and defending your systems.",
+  "slug": "sentientshield-swarm-command",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Sopdet Calendar",
+  "group": "culture",
+  "description": "13-moon and Kemetic calendar with an AI tutor, daily reflections and study modules.",
+  "slug": "sopdet-calendar",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Star OS",
+  "group": "ai",
+  "description": "Floating desktop AI companion: an always-on orb backed by a self-hosted AI brain.",
+  "slug": "star-os",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Stock Trading Assistant",
+  "group": "wealth",
+  "description": "Machine-learning stock trading assistant with signals, risk checks and a watchlist.",
+  "slug": "stock-trading-assistant",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Super Brain",
+  "group": "ai",
+  "description": "Central AI brain that connects memory, tools and agents into one assistant.",
+  "slug": "super-brain",
+  "has_60s_demo": false
+ },
+ {
+  "name": "SUPER SEC Platform",
+  "group": "it",
+  "description": "Security operations platform for monitoring threats, triaging alerts and tracking remediation.",
+  "slug": "super-sec-platform",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Surplus Swarm Console",
+  "group": "wealth",
+  "description": "AI agent swarm for surplus-funds recovery: finds overages, tracks claimants and runs outreach.",
+  "slug": "surplus-swarm-console",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Swarm Control",
+  "group": "ai",
+  "description": "Board for running a swarm of AI coding agents: plan tasks, dispatch builders, verify and ship pull requests.",
+  "slug": "swarm-control",
+  "has_60s_demo": false
+ },
+ {
+  "name": "The Gatekeeper",
+  "group": "it",
+  "description": "Access gate that screens requests, enforces rules and logs who got in and why.",
+  "slug": "the-gatekeeper",
+  "has_60s_demo": false
+ },
+ {
+  "name": "The Standard",
+  "group": "health",
+  "description": "Personal discipline and mindset app built around your own creed, with daily check-ins.",
+  "slug": "the-standard",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Unbound AGI Console",
+  "group": "ai",
+  "description": "Console for vertical AI agents with data sovereignty and human approval on every action.",
+  "slug": "unbound-agi-console",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Unified Symphony Platform",
+  "group": "operations",
+  "description": "Unified platform that orchestrates business workflows and agents across tools.",
+  "slug": "unified-symphony-platform",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Unseen Dispatch",
+  "group": "creative",
+  "description": "Interactive dispatch for publishing stories and updates with a distinctive editorial look.",
+  "slug": "unseen-dispatch",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Vertical AI Agents: Multi-modal Interface",
+  "group": "ai",
+  "description": "Next.js interface for working with multiple vertical AI agents by text, voice and image.",
+  "slug": "vertical-ai-agents-multi-modal-interface",
+  "has_60s_demo": false
+ },
+ {
+  "name": "WellOff AI",
+  "group": "ai",
+  "description": "Conversational AI platform that builds what you ask and confirms before acting, with vector memory and workflow automation.",
+  "slug": "welloff-ai",
+  "has_60s_demo": false
+ },
+ {
+  "name": "WellOff Neural Link IDE",
+  "group": "ai",
+  "description": "AI coding workspace that pairs an editor with a conversational agent that builds, explains and confirms changes.",
+  "slug": "welloff-neural-link-ide",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Where They're Biting",
+  "group": "creative",
+  "description": "Fish finder app with fishing spots, catch reports and maps.",
+  "slug": "where-they-re-biting",
+  "has_60s_demo": false
+ },
+ {
+  "name": "Yad Workbench",
+  "group": "culture",
+  "description": "Practice console for Tree of Life study: paths, correspondences and daily work.",
+  "slug": "yad-workbench",
+  "has_60s_demo": false
+ }
+]
