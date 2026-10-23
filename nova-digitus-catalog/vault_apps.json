@@ -163,6 +163,13 @@
    "try_url": ""
   },
   {
+   "name": "Multi-LLM Chat",
+   "group": "ai",
+   "description": "One chat window that sends a prompt to several AI models and compares their answers side by side.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "NeuroLink",
    "group": "ai",
    "description": "Command console for a company of named AI agents, each with its own specialty.",
@@ -177,9 +184,23 @@
    "try_url": ""
   },
   {
+   "name": "NOVA Assistant",
+   "group": "ai",
+   "description": "Personal AI assistant console for chat, tasks and quick actions across your tools.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Nova Multi-Agent Core",
    "group": "ai",
    "description": "Five-hub multi-agent system with robot control, optimization tuning and self-repairing support tickets.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nova Orchestrator",
+   "group": "ai",
+   "description": "Orchestrates Nova Digitus agents across tasks, with handoffs and progress tracking.",
    "featured": false,
    "try_url": ""
   },
@@ -191,9 +212,30 @@
    "try_url": ""
   },
   {
+   "name": "Platinum Agent Console",
+   "group": "ai",
+   "description": "Console for building, running and monitoring a team of business AI agents.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Platinum AI Factory",
    "group": "ai",
    "description": "Industrial workbench for AI solutions engineers: model orchestration, training pipelines and system health.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Plugin Tools Control",
+   "group": "ai",
+   "description": "Control panel for managing AI plugins, their tools and which agents can use them.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Private Assistant",
+   "group": "ai",
+   "description": "Private, self-hosted style AI assistant that keeps conversations and notes on your side.",
    "featured": false,
    "try_url": ""
   },
@@ -208,6 +250,20 @@
    "name": "RAG Orion Superplatform",
    "group": "ai",
    "description": "Compare and tune ten tiers of retrieval-augmented generation architecture.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Super Brain",
+   "group": "ai",
+   "description": "Central AI brain that connects memory, tools and agents into one assistant.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Swarm Control",
+   "group": "ai",
+   "description": "Board for running a swarm of AI coding agents: plan tasks, dispatch builders, verify and ship pull requests.",
    "featured": false,
    "try_url": ""
   },
@@ -229,6 +285,34 @@
    "name": "UI Visionary",
    "group": "ai",
    "description": "Turns a text prompt into an interactive UI prototype and a design system.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Unbound AGI Console",
+   "group": "ai",
+   "description": "Console for vertical AI agents with data sovereignty and human approval on every action.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Vertical AI Agents: Multi-modal Interface",
+   "group": "ai",
+   "description": "Next.js interface for working with multiple vertical AI agents by text, voice and image.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "WellOff AI",
+   "group": "ai",
+   "description": "Conversational AI platform that builds what you ask and confirms before acting, with vector memory and workflow automation.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "WellOff Neural Link IDE",
+   "group": "ai",
+   "description": "AI coding workspace that pairs an editor with a conversational agent that builds, explains and confirms changes.",
    "featured": false,
    "try_url": ""
   },
@@ -310,6 +394,27 @@
    "try_url": ""
   },
   {
+   "name": "Unseen Dispatch",
+   "group": "creative",
+   "description": "Interactive dispatch for publishing stories and updates with a distinctive editorial look.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Cosmic Code Tutor",
+   "group": "culture",
+   "description": "Interactive tutor that teaches sacred geometry, number symbolism and cosmology through guided lessons.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Etz Chaim Atlas",
+   "group": "culture",
+   "description": "Interactive atlas of the Tree of Life with sephirot, paths and their correspondences.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "KeBTAH Rising Firefly Portal",
    "group": "culture",
    "description": "Archive, calendar and philosophy explorer preserving Nile Valley and Dogon wisdom.",
@@ -320,6 +425,13 @@
    "name": "Kemet and Kush: Spirituality",
    "group": "culture",
    "description": "Explore Kemetic and Kushite creation stories and the story of Ausar, Aset and Heru.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Merkaba Code Studio",
+   "group": "culture",
+   "description": "Studio for producing the Merkaba Code program: modules, audio scripts and launch assets.",
    "featured": false,
    "try_url": ""
   },
@@ -338,9 +450,23 @@
    "try_url": ""
   },
   {
+   "name": "Pleroma Codex",
+   "group": "culture",
+   "description": "Interactive codex of Gnostic texts and concepts with guided study paths.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Reality Mechanics Diagram",
    "group": "culture",
    "description": "Interactive diagram mapping 14 centers of the body to 14 universal laws.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Sopdet Calendar",
+   "group": "culture",
+   "description": "13-moon and Kemetic calendar with an AI tutor, daily reflections and study modules.",
    "featured": false,
    "try_url": ""
   },
@@ -363,6 +489,13 @@
    "group": "culture",
    "description": "Seven-level 3D Tree of Life drawing on Kemet, Kush and Kabbalah, with an AI guide and binaural audio.",
    "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "Yad Workbench",
+   "group": "culture",
+   "description": "Practice console for Tree of Life study: paths, correspondences and daily work.",
+   "featured": false,
    "try_url": ""
   },
   {
@@ -394,6 +527,13 @@
    "try_url": ""
   },
   {
+   "name": "Earth Tube Planner",
+   "group": "engineering",
+   "description": "Planner for earth-tube ground cooling and heating: sizing, depth, airflow and expected temperature gains.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "EcoGenesis",
    "group": "engineering",
    "description": "Design and simulate a self-sustaining natural environment before you build it.",
@@ -406,6 +546,27 @@
    "description": "Runs multi-person engineering projects with AI agents: tracks handoffs, flags blocked work, and adds 3D visual analysis for structural design and assembly.",
    "featured": true,
    "try_url": "https://nova-digitus-engineering-orchestrator.ai.studio"
+  },
+  {
+   "name": "Exoskeleton Repair Agent",
+   "group": "engineering",
+   "description": "Agentic AI that diagnoses robotic exoskeleton faults and recommends repairs, with a dashboard.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Fleet Console",
+   "group": "engineering",
+   "description": "Operations console for a robot fleet: status, missions, health and alerts.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Humanoid Body Studio",
+   "group": "engineering",
+   "description": "3D studio for designing humanoid robot bodies: proportions, joints and component layout.",
+   "featured": false,
+   "try_url": ""
   },
   {
    "name": "KAO Master Command Hub",
@@ -432,6 +593,13 @@
    "name": "Robot Assistant Builder",
    "group": "engineering",
    "description": "Assemble a voice-controlled robotic assistant step by step and teach it your commands.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Robot Design Studio",
+   "group": "engineering",
+   "description": "Design studio for robots: parts, layout and behavior planning.",
    "featured": false,
    "try_url": ""
   },
@@ -541,6 +709,13 @@
    "try_url": ""
   },
   {
+   "name": "HELIX Console",
+   "group": "it",
+   "description": "Control plane for AI-designed, AI-operated distributed systems with a genetic design brain and agent swarm.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "IT Issue Resolver",
    "group": "it",
    "description": "Coordinates IT incidents and drafts the fix and the user communication with AI.",
@@ -551,6 +726,13 @@
    "name": "IT System Enhancer",
    "group": "it",
    "description": "Assesses your IT systems and recommends integration and database improvements.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Kiln Cloud",
+   "group": "it",
+   "description": "Browser IDE and hosting console: edit a site, preview live, deploy with build logs, roll back, manage domains, functions and env vars.",
    "featured": false,
    "try_url": ""
   },
@@ -590,6 +772,13 @@
    "try_url": ""
   },
   {
+   "name": "SentientShield: Swarm Command",
+   "group": "it",
+   "description": "AI agent swarm with a command dashboard, shared agent memory and modular skills for monitoring and defending your systems.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Stratum MCP: Cloud Resource Control Plane",
    "group": "it",
    "description": "Manage and control cloud resources through one AI-ready control plane.",
@@ -604,9 +793,23 @@
    "try_url": ""
   },
   {
+   "name": "SUPER SEC Platform",
+   "group": "it",
+   "description": "Security operations platform for monitoring threats, triaging alerts and tracking remediation.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "TenancyCore SaaS",
    "group": "it",
    "description": "Multi-tenant SaaS foundation with data isolation, plan management and compliance tracking.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "The Gatekeeper",
+   "group": "it",
+   "description": "Access gate that screens requests, enforces rules and logs who got in and why.",
    "featured": false,
    "try_url": ""
   },
@@ -716,6 +919,13 @@
    "try_url": ""
   },
   {
+   "name": "Empire Console",
+   "group": "operations",
+   "description": "Command console for running a multi-business portfolio: projects, agents, revenue and next actions in one view.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Enterprise Strategy & AI Orchestrator",
    "group": "operations",
    "description": "Visual pipeline builder with governance controls and strategy calculators for enterprise automation.",
@@ -726,6 +936,13 @@
    "name": "Imperium Neuralis: Website Architect",
    "group": "operations",
    "description": "Analyze a website, project its revenue and generate a better one.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "KITH",
+   "group": "operations",
+   "description": "Relationship hub for keeping in touch with the people who matter, with reminders and notes.",
    "featured": false,
    "try_url": ""
   },
@@ -765,10 +982,24 @@
    "try_url": ""
   },
   {
+   "name": "Pricing Floor",
+   "group": "operations",
+   "description": "Calculates the lowest price you can charge for a service while still hitting your margin.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Problem Crusher",
    "group": "operations",
    "description": "Turns a messy manual process into a coordinated set of AI agents that run it.",
    "featured": true,
+   "try_url": ""
+  },
+  {
+   "name": "QUANTUM Live Ops",
+   "group": "operations",
+   "description": "Live operations dashboard for monitoring systems, incidents and team actions in real time.",
+   "featured": false,
    "try_url": ""
   },
   {
@@ -782,6 +1013,13 @@
    "name": "SyncSphere",
    "group": "operations",
    "description": "Real-time collaborative workspace with two-way data sync and an AI chat agent.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Unified Symphony Platform",
+   "group": "operations",
+   "description": "Unified platform that orchestrates business workflows and agents across tools.",
    "featured": false,
    "try_url": ""
   },
@@ -842,6 +1080,20 @@
    "try_url": ""
   },
   {
+   "name": "Day One Store Builder",
+   "group": "sales",
+   "description": "Builds a ready-to-launch online store on day one: products, pages and launch checklist.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "LeadFinder EPIC",
+   "group": "sales",
+   "description": "MCP-enabled B2B campaign platform: find leads, build sequences and track replies.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Nova Digitus AI Office Assistant",
    "group": "sales",
    "description": "Outreach, lead tracking and automation dashboard for veteran-owned businesses.",
@@ -856,9 +1108,30 @@
    "try_url": ""
   },
   {
+   "name": "Orbis Six Origins",
+   "group": "sales",
+   "description": "Curated online store with goods from six origins: China, Japan, Africa, Canada, Mexico and Thailand.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "PitchPerfect AI",
    "group": "sales",
    "description": "Helps you pitch any idea to any audience and prepares answers to objections.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Prospect Case Files",
+   "group": "sales",
+   "description": "Case-file view of each sales prospect: research, needs, pitch angle and next step.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Relay Product Search",
+   "group": "sales",
+   "description": "Worldwide affiliate product search that compares offers and earns commission without inventory.",
    "featured": false,
    "try_url": ""
   },
@@ -905,9 +1178,30 @@
    "try_url": ""
   },
   {
+   "name": "Leverage Ledger",
+   "group": "wealth",
+   "description": "Business credit builder that tracks tradelines, funding tiers and next steps across multiple LLCs.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Luxury Salvage Deals Platform",
    "group": "wealth",
    "description": "Find luxury salvage cars worth rebuilding and estimate repair costs and margins.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "MCP Trading Desk",
+   "group": "wealth",
+   "description": "Trading desk console that connects market tools through MCP for research, signals and order planning.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Nova Trading Platform",
+   "group": "wealth",
+   "description": "AI-orchestrated trading platform with strategy agents, risk checks and a live portfolio view.",
    "featured": false,
    "try_url": ""
   },
@@ -929,6 +1223,13 @@
    "name": "Stratos Capital & Trust Optimizer",
    "group": "wealth",
    "description": "Sandbox for modeling credit cycles, card rewards and keeping personal and business assets separate.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Surplus Swarm Console",
+   "group": "wealth",
+   "description": "AI agent swarm for surplus-funds recovery: finds overages, tracks claimants and runs outreach.",
    "featured": false,
    "try_url": ""
   },
