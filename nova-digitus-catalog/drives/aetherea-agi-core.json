@@ -35,7 +35,7 @@
     },
     {
       "title": "Resolve a team conflict",
-      "ask": "Two team leads disagree on a launch date. The gap is {gap} weeks. Help us find a fair path.",
+      "ask": "Two team leads disagree on a launch date. The gap is {gap}. Help us find a fair path.",
       "inputs": [
         {"id": "gap", "label": "Gap between proposed dates", "type": "range", "min": 1, "max": 12, "step": 1, "value": 4, "unit": "weeks"},
         {"id": "risk", "label": "Open quality issues", "type": "range", "min": 0, "max": 30, "step": 1, "value": 8}
@@ -62,7 +62,7 @@
     },
     {
       "title": "Stress-test a policy",
-      "ask": "We plan to require {days} office days a week. Check the logic and the likely reaction from {staff} employees.",
+      "ask": "We plan to require {days} in the office each week. Check the logic and the likely reaction from {staff} employees.",
       "inputs": [
         {"id": "days", "label": "Office days required", "type": "range", "min": 1, "max": 5, "step": 1, "value": 3, "unit": "days"},
         {"id": "staff", "label": "Employees", "type": "range", "min": 20, "max": 2000, "step": 20, "value": 300}

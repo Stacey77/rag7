@@ -1,0 +1,240 @@
+{
+  "name": "Plugin Tools Control",
+  "tag": "One control panel for which AI agents can use which plugins and tools, with a log of every change.",
+  "scenarios": [
+    {
+      "title": "Audit who can use what",
+      "ask": "We have {plugins} plugins and {agents} agents. Find tools that agents can use but do not need.",
+      "inputs": [
+        {
+          "id": "plugins",
+          "label": "Plugins installed",
+          "type": "range",
+          "min": 5,
+          "max": 60,
+          "step": 5,
+          "value": 20
+        },
+        {
+          "id": "agents",
+          "label": "Agents",
+          "type": "range",
+          "min": 2,
+          "max": 30,
+          "step": 1,
+          "value": 8
+        }
+      ],
+      "steps": [
+        [
+          "Inventory",
+          "Listed {=plugins * 4} tools across {plugins} plugins and mapped which of {agents} agents can call each one."
+        ],
+        [
+          "Usage reader",
+          "Checked 30 days of call logs. {=round(plugins * 4 * 0.45)} tools were never used by the agents allowed to call them."
+        ],
+        [
+          "Risk sorter",
+          "Marked {=max(1, round(plugins * 0.3))} unused tools that can write, send or delete as high priority."
+        ],
+        [
+          "Planner",
+          "Prepared a permission change for review: remove unused access, keep everything that was used."
+        ]
+      ],
+      "result": {
+        "title": "Permission audit",
+        "rows": [
+          [
+            "Tools mapped",
+            "{=plugins * 4}"
+          ],
+          [
+            "Unused permissions",
+            "{=round(plugins * 4 * 0.45)}"
+          ],
+          [
+            "High-risk unused",
+            "{=max(1, round(plugins * 0.3))}"
+          ],
+          [
+            "Agents affected",
+            "{=max(1, ceil(agents * 0.6))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will removing access break anything?",
+          "The plan only removes tools that were not called in 30 days. If an agent later needs one, it asks and you approve with one click."
+        ],
+        [
+          "Is every change logged?",
+          "Yes. The log shows who changed which permission, when and why, and you can roll back any change."
+        ],
+        [
+          "How often should we audit?",
+          "Monthly works for most teams, and the panel can run the audit on a schedule."
+        ]
+      ]
+    },
+    {
+      "title": "Roll out a new plugin",
+      "ask": "Add a new {kind} plugin and give it only to the agents that need it.",
+      "inputs": [
+        {
+          "id": "kind",
+          "label": "Plugin type",
+          "type": "select",
+          "value": "billing",
+          "options": [
+            {
+              "label": "billing",
+              "n": 6
+            },
+            {
+              "label": "email",
+              "n": 4
+            },
+            {
+              "label": "file storage",
+              "n": 5
+            }
+          ]
+        },
+        {
+          "id": "agents",
+          "label": "Agents in the workspace",
+          "type": "range",
+          "min": 2,
+          "max": 30,
+          "step": 1,
+          "value": 10
+        }
+      ],
+      "steps": [
+        [
+          "Installer",
+          "Added the {kind} plugin with {kind} tools in a disabled state."
+        ],
+        [
+          "Matcher",
+          "Suggested {=max(1, ceil(agents * 0.25))} agents whose jobs match the plugin."
+        ],
+        [
+          "Policy agent",
+          "Set read-only tools to allowed and anything that sends money, mail or deletes files to 'ask a person first'."
+        ],
+        [
+          "Tester",
+          "Ran each tool once in a sandbox and recorded the result."
+        ]
+      ],
+      "result": {
+        "title": "Rollout plan",
+        "rows": [
+          [
+            "Tools in plugin",
+            "{=kind}"
+          ],
+          [
+            "Agents given access",
+            "{=max(1, ceil(agents * 0.25))}"
+          ],
+          [
+            "Tools needing human approval",
+            "{=ceil(kind / 2)}"
+          ],
+          [
+            "Agents left without access",
+            "{=agents - max(1, ceil(agents * 0.25))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can an agent request access later?",
+          "Yes. It sends a request with the reason, and an admin approves or declines it in the panel."
+        ],
+        [
+          "What does 'ask a person first' look like?",
+          "The agent pauses and posts the exact action, such as 'refund $40 to order 1182', and waits for approval."
+        ]
+      ]
+    },
+    {
+      "title": "Stop a misbehaving tool fast",
+      "ask": "A tool is sending duplicate messages. It is used by {agents} agents and ran {calls} times in the last hour.",
+      "inputs": [
+        {
+          "id": "agents",
+          "label": "Agents using the tool",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "calls",
+          "label": "Calls in the last hour",
+          "type": "range",
+          "min": 10,
+          "max": 1000,
+          "step": 10,
+          "value": 150
+        }
+      ],
+      "steps": [
+        [
+          "Monitor",
+          "Spotted the call rate at about {=round(calls / 60, 1)} per minute, well above normal."
+        ],
+        [
+          "Kill switch",
+          "Disabled the tool for all {agents} agents in one action. The agents keep running without it."
+        ],
+        [
+          "Log reader",
+          "Found the cause: a retry setting changed in the last plugin update."
+        ],
+        [
+          "Planner",
+          "Prepared a rollback to the previous plugin version for your approval."
+        ]
+      ],
+      "result": {
+        "title": "Incident summary",
+        "rows": [
+          [
+            "Tool status",
+            "Disabled"
+          ],
+          [
+            "Agents affected",
+            "{agents}"
+          ],
+          [
+            "Calls in the last hour",
+            "{calls}"
+          ],
+          [
+            "Likely duplicates sent",
+            "{=round(calls / 2)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Do agents crash when a tool is disabled?",
+          "No. They get a clear 'tool unavailable' message and either skip the step or hand off to a person, based on their settings."
+        ],
+        [
+          "Can we prevent this next time?",
+          "Yes. Set a rate limit per tool, and the panel blocks calls above it and alerts you."
+        ]
+      ]
+    }
+  ]
+}

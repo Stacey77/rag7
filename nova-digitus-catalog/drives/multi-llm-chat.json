@@ -1,0 +1,267 @@
+{
+  "name": "Multi-LLM Chat",
+  "tag": "Ask once and see how several AI models answer, side by side, so you can pick the best one.",
+  "scenarios": [
+    {
+      "title": "Compare answers on a contract question",
+      "ask": "Send one prompt about a {words}-word supplier contract to {models} AI models and show where they agree, with {priority} as the tie-breaker.",
+      "inputs": [
+        {
+          "id": "models",
+          "label": "Models to compare",
+          "type": "range",
+          "min": 2,
+          "max": 6,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "words",
+          "label": "Contract length (words)",
+          "type": "range",
+          "min": 500,
+          "max": 8000,
+          "step": 500,
+          "value": 2500
+        },
+        {
+          "id": "priority",
+          "label": "Tie-breaker",
+          "type": "select",
+          "value": "Accuracy",
+          "options": [
+            {
+              "label": "Accuracy",
+              "n": 1
+            },
+            {
+              "label": "Speed",
+              "n": 2
+            },
+            {
+              "label": "Cost",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Router",
+          "Sent the same prompt and contract text to {models} models at once, about {=round(words * 1.33)} tokens each."
+        ],
+        [
+          "Collector",
+          "Gathered all answers. The fastest came back in about {=round(2 + words / 1500, 1)} seconds, the slowest in {=round(4 + words / 600, 1)}."
+        ],
+        [
+          "Comparer",
+          "Lined up the answers clause by clause. All models agreed on {=max(3, 9 - models)} key terms."
+        ],
+        [
+          "Difference finder",
+          "Flagged {=models - 1} points where answers differ, such as the notice period for termination."
+        ],
+        [
+          "Picker",
+          "Ranked the answers using {priority} as the tie-breaker and marked the strongest one."
+        ]
+      ],
+      "result": {
+        "title": "Side-by-side result",
+        "rows": [
+          [
+            "Models compared",
+            "{models}"
+          ],
+          [
+            "Terms all models agree on",
+            "{=max(3, 9 - models)}"
+          ],
+          [
+            "Disagreements to check",
+            "{=models - 1}"
+          ],
+          [
+            "Approx. cost of this run",
+            "{=round(models * words * 1.33 * 2 / 1000 * 0.5, 1)} cents"
+          ],
+          [
+            "Reminder",
+            "Check flagged points against the contract itself"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why do the models disagree?",
+          "Different models read long text differently and some skip details near the end. A disagreement is a signal to read that clause yourself, which is often the most useful thing the comparison gives you."
+        ],
+        [
+          "Is my contract sent anywhere else?",
+          "Only to the model providers you switch on. You can turn off any provider, and the chat history stays in your workspace."
+        ],
+        [
+          "Do I always need this many models?",
+          "No. Many teams use two for everyday questions and add more only for high-stakes text like contracts."
+        ]
+      ]
+    },
+    {
+      "title": "Pick a default model for the team",
+      "ask": "Our team sends about {prompts} prompts a month. Compare {models} models on our typical questions and pick a default.",
+      "inputs": [
+        {
+          "id": "prompts",
+          "label": "Prompts per month",
+          "type": "range",
+          "min": 1000,
+          "max": 50000,
+          "step": 1000,
+          "value": 8000
+        },
+        {
+          "id": "models",
+          "label": "Models in the test",
+          "type": "range",
+          "min": 2,
+          "max": 6,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "simple",
+          "label": "Share of simple questions",
+          "type": "range",
+          "min": 20,
+          "max": 90,
+          "step": 5,
+          "value": 60,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Sampler",
+          "Pulled 50 recent prompts and grouped them: {=simple}% simple, {=100 - simple}% complex."
+        ],
+        [
+          "Router",
+          "Ran all 50 prompts on {models} models and saved the answers side by side."
+        ],
+        [
+          "Reviewer",
+          "Asked two team members to score blind answers. Scores were within 10% on simple questions."
+        ],
+        [
+          "Planner",
+          "Suggested a lower-cost model for simple questions and a stronger model for the rest."
+        ]
+      ],
+      "result": {
+        "title": "Model plan",
+        "rows": [
+          [
+            "Prompts sent to lower-cost model",
+            "{=round(prompts * simple / 100)} a month"
+          ],
+          [
+            "Prompts sent to stronger model",
+            "{=round(prompts * (100 - simple) / 100)} a month"
+          ],
+          [
+            "Estimated monthly cost",
+            "${=round(prompts * simple / 100 * 0.002 + prompts * (100 - simple) / 100 * 0.02)}"
+          ],
+          [
+            "Cost if everything used the stronger model",
+            "${=round(prompts * 0.02)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How was the price per prompt worked out?",
+          "This demo uses sample rates of 0.2 cents for a simple prompt and 2 cents for a complex one. In your workspace it uses your real provider prices and token counts."
+        ],
+        [
+          "Can people still pick a model themselves?",
+          "Yes. The default is just a starting point. Anyone can open the side-by-side view and choose a different answer."
+        ]
+      ]
+    },
+    {
+      "title": "Check a fact before publishing",
+      "ask": "Before we publish a blog post, check {claims} factual claims by asking {models} models and flag any where they disagree.",
+      "inputs": [
+        {
+          "id": "claims",
+          "label": "Claims in the draft",
+          "type": "range",
+          "min": 3,
+          "max": 30,
+          "step": 1,
+          "value": 10
+        },
+        {
+          "id": "models",
+          "label": "Models to ask",
+          "type": "range",
+          "min": 2,
+          "max": 5,
+          "step": 1,
+          "value": 3
+        }
+      ],
+      "steps": [
+        [
+          "Extractor",
+          "Pulled {claims} factual claims out of the draft, such as dates, numbers and definitions."
+        ],
+        [
+          "Router",
+          "Asked {models} models to check each claim and say how sure they are."
+        ],
+        [
+          "Comparer",
+          "{=max(0, claims - ceil(claims * 0.2))} claims had matching answers. {=ceil(claims * 0.2)} had mixed answers."
+        ],
+        [
+          "Editor",
+          "Listed the mixed claims with a note to check a primary source before publishing."
+        ]
+      ],
+      "result": {
+        "title": "Fact-check summary",
+        "rows": [
+          [
+            "Claims checked",
+            "{claims}"
+          ],
+          [
+            "Consistent across models",
+            "{=max(0, claims - ceil(claims * 0.2))}"
+          ],
+          [
+            "Need a human check",
+            "{=ceil(claims * 0.2)}"
+          ],
+          [
+            "Model calls made",
+            "{=claims * models}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "If all models agree, is the claim true?",
+          "Not necessarily. Models can share the same wrong information. Agreement lowers the risk, but a primary source is still the real check for anything important."
+        ],
+        [
+          "Can it cite sources?",
+          "Models that support web search can return links, and the chat shows them next to each answer so you can open and verify them."
+        ]
+      ]
+    }
+  ]
+}

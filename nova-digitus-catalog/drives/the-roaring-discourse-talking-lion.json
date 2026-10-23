@@ -1,0 +1,308 @@
+{
+  "name": "The Roaring Discourse: Talking Lion",
+  "tag": "Turns one photo into a talking host in a podcast studio, ready to post.",
+  "scenarios": [
+    {
+      "title": "Make a mascot intro clip",
+      "ask": "Use our lion mascot photo to record a podcast intro of {secs} in a {voice} voice with {angles} camera angles.",
+      "inputs": [
+        {
+          "id": "secs",
+          "label": "Clip length",
+          "type": "range",
+          "min": 15,
+          "max": 180,
+          "step": 15,
+          "value": 45,
+          "unit": "seconds"
+        },
+        {
+          "id": "voice",
+          "label": "Voice style",
+          "type": "select",
+          "value": "Warm narrator",
+          "options": [
+            {
+              "label": "Warm narrator",
+              "n": 1
+            },
+            {
+              "label": "Deep and slow",
+              "n": 2
+            },
+            {
+              "label": "Upbeat host",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "angles",
+          "label": "Camera angles",
+          "type": "range",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "value": 2
+        }
+      ],
+      "steps": [
+        [
+          "Photo prep",
+          "Found the face in your photo and mapped 68 points around the mouth, eyes and mane."
+        ],
+        [
+          "Voice",
+          "Turned your script into {secs} of speech, about {=round(secs * (2.2 + voice * 0.2))} words."
+        ],
+        [
+          "Lip sync",
+          "Matched mouth shapes to the audio across {=secs * 30} frames at 30 frames per second."
+        ],
+        [
+          "Studio",
+          "Placed the lion at a desk with a microphone and set up {angles} camera angles with {=max(0, angles * 2 - 2)} cuts."
+        ],
+        [
+          "Render",
+          "Exported wide and vertical versions with captions."
+        ]
+      ],
+      "result": {
+        "title": "Intro clip ready",
+        "rows": [
+          [
+            "Clip length",
+            "{secs}"
+          ],
+          [
+            "Words spoken",
+            "{=round(secs * (2.2 + voice * 0.2))}"
+          ],
+          [
+            "Camera cuts",
+            "{=max(0, angles * 2 - 2)}"
+          ],
+          [
+            "Render time",
+            "About {=round(secs * 0.4 * angles + 20)} seconds"
+          ],
+          [
+            "Formats",
+            "Wide 16:9 and vertical 9:16, captions on"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I use any photo?",
+          "Use a photo you own or have permission to use. Clear, front-facing photos with even light give the best mouth movement."
+        ],
+        [
+          "Can I record my own voice instead?",
+          "Yes. Upload a voice track and the lip sync follows your recording instead of the generated voice."
+        ],
+        [
+          "What if the mane hides the mouth?",
+          "Photo prep marks the mouth area for you to confirm before rendering, so you can adjust it in a few clicks."
+        ]
+      ]
+    },
+    {
+      "title": "Run a weekly show",
+      "ask": "We want {eps} episodes a month, {mins} each, with the lion as host. Format: {cohost}.",
+      "inputs": [
+        {
+          "id": "eps",
+          "label": "Episodes per month",
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "mins",
+          "label": "Minutes per episode",
+          "type": "range",
+          "min": 2,
+          "max": 20,
+          "step": 1,
+          "value": 8,
+          "unit": "min"
+        },
+        {
+          "id": "cohost",
+          "label": "Show format",
+          "type": "select",
+          "value": "Lion solo",
+          "options": [
+            {
+              "label": "Lion solo",
+              "n": 1
+            },
+            {
+              "label": "Lion plus a guest photo",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Script writer",
+          "Drafted {eps} episode outlines from your topic list, about {=mins * 140} words each."
+        ],
+        [
+          "Voice",
+          "Generated {=cohost} voice track(s) per episode and balanced the levels."
+        ],
+        [
+          "Lip sync",
+          "Animated {=eps * mins * cohost} minutes of talking footage this month."
+        ],
+        [
+          "Editor",
+          "Added the studio intro, lower-third titles and an end card to every episode."
+        ],
+        [
+          "Captioner",
+          "Wrote caption files and a short description for each episode."
+        ]
+      ],
+      "result": {
+        "title": "Monthly show plan",
+        "rows": [
+          [
+            "Episodes",
+            "{eps}"
+          ],
+          [
+            "Total runtime",
+            "{=eps * mins} minutes"
+          ],
+          [
+            "Animated footage",
+            "{=eps * mins * cohost} minutes"
+          ],
+          [
+            "Editing hours saved",
+            "About {=round(eps * mins * 1.5)} (estimate vs manual editing)"
+          ],
+          [
+            "Captions",
+            "{eps} caption files"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does the host look the same every week?",
+          "Yes. The lion's photo, voice and studio set are saved as a profile, so every episode matches."
+        ],
+        [
+          "Can I review scripts before they are voiced?",
+          "Yes. Nothing is voiced until you approve the script. Edits take seconds and the voice regenerates."
+        ],
+        [
+          "How long does a month take to produce?",
+          "Rendering {=eps * mins * cohost} minutes takes roughly {=round(eps * mins * cohost * 0.5)} minutes of machine time. Your time goes into approving scripts."
+        ]
+      ]
+    },
+    {
+      "title": "Cut social clips from an episode",
+      "ask": "Turn our {ep} episode into {clips} short clips of {cliplen} each for social posts.",
+      "inputs": [
+        {
+          "id": "ep",
+          "label": "Episode length",
+          "type": "range",
+          "min": 20,
+          "max": 60,
+          "step": 5,
+          "value": 30,
+          "unit": "min"
+        },
+        {
+          "id": "clips",
+          "label": "Clips wanted",
+          "type": "range",
+          "min": 3,
+          "max": 10,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "cliplen",
+          "label": "Clip length",
+          "type": "select",
+          "value": "30 seconds",
+          "options": [
+            {
+              "label": "15 seconds",
+              "n": 15
+            },
+            {
+              "label": "30 seconds",
+              "n": 30
+            },
+            {
+              "label": "45 seconds",
+              "n": 45
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Transcriber",
+          "Transcribed the full {ep} and marked who speaks when."
+        ],
+        [
+          "Highlight finder",
+          "Scored {=ep * 4} candidate moments by energy, laughs and quotable lines."
+        ],
+        [
+          "Clipper",
+          "Cut the top {clips} moments to {cliplen} each and kept full sentences."
+        ],
+        [
+          "Reframer",
+          "Re-centered the lion for vertical screens and added burned-in captions."
+        ]
+      ],
+      "result": {
+        "title": "Clips ready",
+        "rows": [
+          [
+            "Clips",
+            "{clips}"
+          ],
+          [
+            "Total clip time",
+            "{=round(clips * cliplen / 60, 1)} minutes"
+          ],
+          [
+            "Share of episode used",
+            "{=round(clips * cliplen / (ep * 60) * 100, 1)}%"
+          ],
+          [
+            "Candidates reviewed",
+            "{=ep * 4}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I pick different moments?",
+          "Yes. The other {=max(0, ep * 4 - clips)} scored moments stay in a list, and swapping one in re-cuts it in seconds."
+        ],
+        [
+          "Do clips keep the studio look?",
+          "Yes. Each clip keeps the studio background and adds a small show logo in the corner."
+        ]
+      ]
+    }
+  ]
+}

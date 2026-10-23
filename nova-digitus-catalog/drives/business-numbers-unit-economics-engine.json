@@ -1,0 +1,270 @@
+{
+  "name": "Business Numbers & Unit Economics Engine",
+  "tag": "A reality check for your numbers: customer cost vs. value, break-even, cash runway and what your time is worth.",
+  "scenarios": [
+    {
+      "title": "Is my ad spend paying off?",
+      "ask": "I spend ${spend} a month on ads and get {customers} new customers. Each orders about ${order} and comes back {repeat} times.",
+      "inputs": [
+        {
+          "id": "spend",
+          "label": "Monthly ad spend",
+          "type": "range",
+          "min": 200,
+          "max": 50000,
+          "step": 100,
+          "value": 3000
+        },
+        {
+          "id": "customers",
+          "label": "New customers per month",
+          "type": "range",
+          "min": 5,
+          "max": 500,
+          "step": 5,
+          "value": 60
+        },
+        {
+          "id": "order",
+          "label": "Average order",
+          "type": "range",
+          "min": 10,
+          "max": 500,
+          "step": 5,
+          "value": 80
+        },
+        {
+          "id": "repeat",
+          "label": "Orders per customer, lifetime",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 4
+        }
+      ],
+      "steps": [
+        [
+          "CAC calculator",
+          "Cost to get a customer: ${spend} / {customers} = ${=round(spend / customers, 2)}."
+        ],
+        [
+          "LTV calculator",
+          "Lifetime gross profit at a 40% margin: {repeat} orders x ${order} x 0.4 = ${=round(repeat * order * 0.4, 2)}."
+        ],
+        [
+          "Comparer",
+          "Each customer returns {=round(repeat * order * 0.4 / (spend / customers), 1)} times what they cost to get."
+        ],
+        [
+          "Advisor",
+          "A ratio near 3 or more is commonly treated as healthy. Below 1 means each customer loses money."
+        ]
+      ],
+      "result": {
+        "title": "Customer economics",
+        "rows": [
+          [
+            "Cost per customer (CAC)",
+            "${=round(spend / customers, 2)}"
+          ],
+          [
+            "Lifetime gross profit (LTV)",
+            "${=round(repeat * order * 0.4, 2)}"
+          ],
+          [
+            "LTV to CAC",
+            "{=round(repeat * order * 0.4 / (spend / customers), 1)} to 1"
+          ],
+          [
+            "Orders to earn back ad cost",
+            "{=ceil((spend / customers) / max(1, order * 0.4))}"
+          ],
+          [
+            "Note",
+            "Illustration, not financial advice"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why use gross profit instead of revenue?",
+          "Revenue includes what the product costs you. Using gross profit shows what's really left to pay for ads and overhead."
+        ],
+        [
+          "What if my margin isn't 40%?",
+          "Change the margin in the full app. Here, every 10 points of margin moves lifetime profit by ${=round(repeat * order * 0.1, 2)}."
+        ]
+      ]
+    },
+    {
+      "title": "When do I break even?",
+      "ask": "My fixed costs are ${fixed} a month. I sell at ${price} and each sale costs me ${cost} to make.",
+      "inputs": [
+        {
+          "id": "fixed",
+          "label": "Monthly fixed costs",
+          "type": "range",
+          "min": 500,
+          "max": 50000,
+          "step": 500,
+          "value": 8000
+        },
+        {
+          "id": "price",
+          "label": "Price per sale",
+          "type": "range",
+          "min": 10,
+          "max": 1000,
+          "step": 5,
+          "value": 120
+        },
+        {
+          "id": "cost",
+          "label": "Cost per sale",
+          "type": "range",
+          "min": 1,
+          "max": 500,
+          "step": 1,
+          "value": 45
+        }
+      ],
+      "steps": [
+        [
+          "Margin",
+          "Each sale leaves ${=max(1, price - cost)} after its direct cost."
+        ],
+        [
+          "Break-even",
+          "You need {=ceil(fixed / max(1, price - cost))} sales a month to cover fixed costs."
+        ],
+        [
+          "Daily target",
+          "That's about {=ceil(fixed / max(1, price - cost) / 26)} sales per working day."
+        ],
+        [
+          "Sensitivity",
+          "A 10% price rise would cut the sales you need to {=ceil(fixed / max(1, price * 1.1 - cost))}."
+        ]
+      ],
+      "result": {
+        "title": "Break-even",
+        "rows": [
+          [
+            "Profit per sale",
+            "${=max(1, price - cost)}"
+          ],
+          [
+            "Sales to break even",
+            "{=ceil(fixed / max(1, price - cost))} per month"
+          ],
+          [
+            "Revenue to break even",
+            "${=ceil(fixed / max(1, price - cost)) * price}"
+          ],
+          [
+            "With 10% higher price",
+            "{=ceil(fixed / max(1, price * 1.1 - cost))} sales"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if cost is higher than price?",
+          "Then every sale loses money and no volume fixes it. The engine treats profit per sale as at least $1 here so the math still shows, but you'd need to reprice."
+        ],
+        [
+          "Should I just raise prices?",
+          "Maybe. The engine shows how many customers you could lose and still earn the same. Testing a price change on new customers first is lower risk."
+        ]
+      ]
+    },
+    {
+      "title": "What's my time worth?",
+      "ask": "My business makes ${profit} profit a month and I work {hours} a week. Should I hire help at ${wage} an hour?",
+      "inputs": [
+        {
+          "id": "profit",
+          "label": "Monthly profit",
+          "type": "range",
+          "min": 1000,
+          "max": 50000,
+          "step": 500,
+          "value": 9000
+        },
+        {
+          "id": "hours",
+          "label": "Hours you work per week",
+          "type": "range",
+          "min": 10,
+          "max": 80,
+          "step": 1,
+          "value": 55,
+          "unit": "hours"
+        },
+        {
+          "id": "wage",
+          "label": "Hourly cost of help",
+          "type": "range",
+          "min": 15,
+          "max": 80,
+          "step": 1,
+          "value": 25
+        }
+      ],
+      "steps": [
+        [
+          "Rate calculator",
+          "Your effective rate is ${=round(profit / (hours * 4.33), 2)} an hour."
+        ],
+        [
+          "Task sorter",
+          "Sorted your tasks. About {=round(hours * 0.3)} hours a week are admin anyone trained could do."
+        ],
+        [
+          "Comparer",
+          "Help would cost ${=round(hours * 0.3 * wage * 4.33)} a month for those hours."
+        ],
+        [
+          "Advisor",
+          "Hiring pays if you use the freed hours on work that earns more than ${wage} an hour."
+        ]
+      ],
+      "result": {
+        "title": "Your time",
+        "rows": [
+          [
+            "Your hourly value",
+            "${=round(profit / (hours * 4.33), 2)}"
+          ],
+          [
+            "Hours you could hand off",
+            "{=round(hours * 0.3)} per week"
+          ],
+          [
+            "Monthly cost of help",
+            "${=round(hours * 0.3 * wage * 4.33)}"
+          ],
+          [
+            "Break-even on that hire",
+            "${=round(hours * 0.3 * wage * 4.33)} of new monthly profit"
+          ],
+          [
+            "Note",
+            "Illustration, not financial advice"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if I just take the time off?",
+          "That's a fair choice. The engine shows the cost of the time back, which is ${=round(hours * 0.3 * wage * 4.33)} a month here."
+        ],
+        [
+          "Does it include taxes?",
+          "Not in this quick view. The full app lets you add payroll taxes and benefits to the hourly cost."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "name": "Enterprise Strategy & AI Orchestrator",
+  "tag": "Build automation pipelines visually, with governance controls and strategy calculators built in.",
+  "scenarios": [
+    {
+      "title": "Build a governed pipeline",
+      "ask": "Build a contract intake pipeline for {contracts} contracts a month with {gates} approval gates.",
+      "inputs": [
+        {
+          "id": "contracts",
+          "label": "Contracts per month",
+          "type": "range",
+          "min": 20,
+          "max": 2000,
+          "step": 10,
+          "value": 300
+        },
+        {
+          "id": "gates",
+          "label": "Approval gates",
+          "type": "range",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "value": 2
+        },
+        {
+          "id": "minutes",
+          "label": "Minutes of manual work per contract",
+          "type": "range",
+          "min": 10,
+          "max": 120,
+          "step": 5,
+          "value": 40,
+          "unit": "minutes"
+        }
+      ],
+      "steps": [
+        [
+          "Pipeline builder",
+          "Laid out 6 steps: receive, extract terms, risk score, route, approve, file."
+        ],
+        [
+          "Governance",
+          "Added {gates} approval gates and a log of every model decision."
+        ],
+        [
+          "Risk scorer",
+          "Flags about {=round(contracts * 0.12)} contracts a month with unusual terms for legal."
+        ],
+        [
+          "Simulator",
+          "Ran last month's contracts through the pipeline as a dry run."
+        ]
+      ],
+      "result": {
+        "title": "Pipeline ready",
+        "rows": [
+          [
+            "Pipeline steps",
+            "{=4 + gates}"
+          ],
+          [
+            "Manual hours today",
+            "{=round(contracts * minutes / 60)} per month"
+          ],
+          [
+            "Hours with pipeline",
+            "About {=round(contracts * (5 + gates * 3) / 60)} per month"
+          ],
+          [
+            "Sent to legal",
+            "{=round(contracts * 0.12)} per month"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Who can change the pipeline?",
+          "Only roles you allow. Every change is versioned and needs sign-off before going live."
+        ],
+        [
+          "Can auditors see why a contract was flagged?",
+          "Yes. Each decision shows the inputs, the rule or model used and who approved it."
+        ]
+      ]
+    },
+    {
+      "title": "Compare automation options",
+      "ask": "We're choosing between automating {processes} processes. Rank them by value and effort.",
+      "inputs": [
+        {
+          "id": "processes",
+          "label": "Candidate processes",
+          "type": "range",
+          "min": 3,
+          "max": 20,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "rate",
+          "label": "Loaded hourly cost",
+          "type": "range",
+          "min": 30,
+          "max": 150,
+          "step": 5,
+          "value": 60
+        }
+      ],
+      "steps": [
+        [
+          "Calculator",
+          "Scored each process by hours saved, error cost and build effort."
+        ],
+        [
+          "Ranker",
+          "Top {=max(2, round(processes / 3))} processes give most of the value."
+        ],
+        [
+          "Strategist",
+          "Grouped them into two waves by shared systems."
+        ],
+        [
+          "Governance",
+          "Noted which ones touch personal data and need extra review."
+        ]
+      ],
+      "result": {
+        "title": "Options ranked",
+        "rows": [
+          [
+            "Processes scored",
+            "{processes}"
+          ],
+          [
+            "Wave one",
+            "{=max(2, round(processes / 3))} processes"
+          ],
+          [
+            "Wave one value per year",
+            "${=max(2, round(processes / 3)) * 600 * rate} (estimate)"
+          ],
+          [
+            "Need privacy review",
+            "{=max(1, round(processes / 4))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How is value calculated?",
+          "Hours saved times your hourly cost, plus fewer errors, minus build and run costs. All inputs are visible and editable."
+        ],
+        [
+          "Is this a forecast?",
+          "It's an estimate to rank options. Real numbers come from the first wave's results."
+        ]
+      ]
+    },
+    {
+      "title": "Governance check on existing automations",
+      "ask": "We already run {bots} automations built by different teams. Check them against our policies.",
+      "inputs": [
+        {
+          "id": "bots",
+          "label": "Existing automations",
+          "type": "range",
+          "min": 5,
+          "max": 300,
+          "step": 5,
+          "value": 45
+        }
+      ],
+      "steps": [
+        [
+          "Inventory",
+          "Listed {bots} automations, owners and what data each touches."
+        ],
+        [
+          "Policy checker",
+          "{=max(1, round(bots * 0.2))} have no named owner. {=max(1, round(bots * 0.1))} send data outside approved systems."
+        ],
+        [
+          "Risk ranker",
+          "Ranked issues by data sensitivity."
+        ],
+        [
+          "Fixer",
+          "Drafted fixes and owner requests for each."
+        ]
+      ],
+      "result": {
+        "title": "Governance report",
+        "rows": [
+          [
+            "Automations checked",
+            "{bots}"
+          ],
+          [
+            "No owner",
+            "{=max(1, round(bots * 0.2))}"
+          ],
+          [
+            "Data leaving approved systems",
+            "{=max(1, round(bots * 0.1))}"
+          ],
+          [
+            "Fixes drafted",
+            "{=max(1, round(bots * 0.2)) + max(1, round(bots * 0.1))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will it shut automations down?",
+          "Not on its own. It recommends a pause for high-risk ones and the owner or admin decides."
+        ],
+        [
+          "How often should we check?",
+          "Monthly is common. The orchestrator can run the check on a schedule."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "name": "Nexus Agentic Studio",
+  "tag": "Audits your manual processes, calculates the return on automating them and deploys secure automated workflows.",
+  "scenarios": [
+    {
+      "title": "Audit order entry",
+      "ask": "Our team re-keys {orders} emailed orders a week into the ERP. Audit it and automate what makes sense.",
+      "inputs": [
+        {
+          "id": "orders",
+          "label": "Orders per week",
+          "type": "range",
+          "min": 20,
+          "max": 2000,
+          "step": 10,
+          "value": 250
+        },
+        {
+          "id": "minutes",
+          "label": "Minutes per order",
+          "type": "range",
+          "min": 2,
+          "max": 20,
+          "step": 1,
+          "value": 6,
+          "unit": "minutes"
+        },
+        {
+          "id": "rate",
+          "label": "Loaded hourly cost",
+          "type": "range",
+          "min": 20,
+          "max": 90,
+          "step": 5,
+          "value": 35
+        }
+      ],
+      "steps": [
+        [
+          "Process auditor",
+          "Watched the steps: open email, read PDF, look up customer, enter lines, confirm. About {minutes} per order."
+        ],
+        [
+          "Error finder",
+          "Found about 2% of orders had a wrong quantity or item code."
+        ],
+        [
+          "Builder",
+          "Designed a workflow: read the order, match items, enter a draft, a person approves."
+        ],
+        [
+          "Security",
+          "Gave it access only to the order inbox and the ERP order screen, with every action logged."
+        ]
+      ],
+      "result": {
+        "title": "Automation plan",
+        "rows": [
+          [
+            "Hours today",
+            "{=round(orders * minutes / 60, 1)} per week"
+          ],
+          [
+            "Hours after",
+            "{=round(orders * 1 / 60, 1)} per week (approvals)"
+          ],
+          [
+            "Yearly value",
+            "${=round(orders * max(0, minutes - 1) / 60 * rate * 50)} (estimate)"
+          ],
+          [
+            "Errors caught before entry",
+            "About {=round(orders * 0.02)} per week"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if an order is unusual?",
+          "Anything it can't match with confidence goes to a person with the mismatch highlighted."
+        ],
+        [
+          "How is it kept secure?",
+          "It runs with the least access needed, credentials are stored in a vault and every action is logged."
+        ]
+      ]
+    },
+    {
+      "title": "Rank processes by ROI",
+      "ask": "We listed {processes} manual processes. Which should we automate first?",
+      "inputs": [
+        {
+          "id": "processes",
+          "label": "Processes listed",
+          "type": "range",
+          "min": 3,
+          "max": 30,
+          "step": 1,
+          "value": 10
+        },
+        {
+          "id": "budget",
+          "label": "Build budget",
+          "type": "range",
+          "min": 5000,
+          "max": 200000,
+          "step": 5000,
+          "value": 40000
+        }
+      ],
+      "steps": [
+        [
+          "Auditor",
+          "Collected time, volume and error data for {processes} processes."
+        ],
+        [
+          "ROI calculator",
+          "Estimated value and build cost for each."
+        ],
+        [
+          "Ranker",
+          "Top {=max(1, round(processes / 4))} fit within your budget and pay back fastest."
+        ],
+        [
+          "Planner",
+          "Laid out a build order with milestones."
+        ]
+      ],
+      "result": {
+        "title": "ROI ranking",
+        "rows": [
+          [
+            "Processes ranked",
+            "{processes}"
+          ],
+          [
+            "Fit in budget now",
+            "{=max(1, round(processes / 4))}"
+          ],
+          [
+            "Typical payback",
+            "{=round(min(18, max(3, budget / 8000)), 1)} months (estimate)"
+          ],
+          [
+            "Next review",
+            "After first deployment"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Where do the time numbers come from?",
+          "From short interviews and, where possible, system logs. You can correct any number before ranking."
+        ],
+        [
+          "What if we have more budget later?",
+          "The ranking stays, and the next items in line move into the plan."
+        ]
+      ]
+    },
+    {
+      "title": "Deploy and monitor a workflow",
+      "ask": "Deploy the approved invoice-matching workflow for {invoices} invoices a month and watch it.",
+      "inputs": [
+        {
+          "id": "invoices",
+          "label": "Invoices per month",
+          "type": "range",
+          "min": 50,
+          "max": 5000,
+          "step": 50,
+          "value": 600
+        },
+        {
+          "id": "mode",
+          "label": "Starting mode",
+          "type": "select",
+          "value": "Shadow mode",
+          "options": [
+            {
+              "label": "Shadow mode",
+              "n": 1
+            },
+            {
+              "label": "Approve each",
+              "n": 2
+            },
+            {
+              "label": "Auto for exact matches",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Deployer",
+          "Released the workflow in {mode}."
+        ],
+        [
+          "Monitor",
+          "Tracks match rate, exceptions and time per invoice."
+        ],
+        [
+          "Security",
+          "Checks access logs daily for anything unusual."
+        ],
+        [
+          "Reporter",
+          "Sends a weekly results summary."
+        ]
+      ],
+      "result": {
+        "title": "Workflow live",
+        "rows": [
+          [
+            "Invoices per month",
+            "{invoices}"
+          ],
+          [
+            "Exact matches expected",
+            "About {=round(invoices * 0.8)}"
+          ],
+          [
+            "Exceptions for people",
+            "{=invoices - round(invoices * 0.8)}"
+          ],
+          [
+            "Posted without a person",
+            "{=floor(mode / 3) * round(invoices * 0.8)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What is shadow mode?",
+          "The workflow runs alongside your team without changing anything, so you can compare its decisions with theirs first."
+        ],
+        [
+          "When should we turn on auto?",
+          "Many teams switch once shadow results agree with staff on almost all exact matches for a few weeks."
+        ]
+      ]
+    }
+  ]
+}

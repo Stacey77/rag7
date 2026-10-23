@@ -1,0 +1,261 @@
+{
+  "name": "Tax Form Navigator",
+  "tag": "Explains IRS forms like the 1099-A and 1099-B in plain language, box by box.",
+  "scenarios": [
+    {
+      "title": "Read a 1099-B from a broker",
+      "ask": "I sold shares for ${proceeds}. My basis was ${basis} and I held them {holding}. Walk me through the 1099-B.",
+      "inputs": [
+        {
+          "id": "proceeds",
+          "label": "Sale proceeds ($)",
+          "type": "range",
+          "min": 1000,
+          "max": 200000,
+          "step": 1000,
+          "value": 25000
+        },
+        {
+          "id": "basis",
+          "label": "Cost basis ($)",
+          "type": "range",
+          "min": 1000,
+          "max": 200000,
+          "step": 1000,
+          "value": 18000
+        },
+        {
+          "id": "holding",
+          "label": "How long you held them",
+          "type": "select",
+          "value": "more than one year",
+          "options": [
+            {
+              "label": "one year or less",
+              "n": 1
+            },
+            {
+              "label": "more than one year",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Form reader",
+          "Found the key boxes: 1a description, 1b date acquired, 1c date sold, 1d proceeds and 1e cost basis."
+        ],
+        [
+          "Math helper",
+          "Proceeds ${proceeds} minus basis ${basis}."
+        ],
+        [
+          "Term check",
+          "Held {holding}, so it belongs on the matching short-term or long-term part of Form 8949."
+        ],
+        [
+          "Next steps",
+          "Showed how Form 8949 totals carry to Schedule D."
+        ]
+      ],
+      "result": {
+        "title": "Your 1099-B in plain English",
+        "rows": [
+          [
+            "Gain",
+            "${=max(0, proceeds - basis)}"
+          ],
+          [
+            "Loss",
+            "${=max(0, basis - proceeds)}"
+          ],
+          [
+            "Holding period",
+            "{holding}"
+          ],
+          [
+            "Where it goes",
+            "Form 8949, then Schedule D"
+          ],
+          [
+            "Note",
+            "Educational guide, not tax advice"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why does holding period matter?",
+          "Gains on assets held more than one year are long-term and usually taxed at lower federal rates than short-term gains, which are taxed like ordinary income."
+        ],
+        [
+          "What if box 1e is blank?",
+          "Some brokers don't report basis for older or transferred shares. You then need your own records of what you paid, and the navigator shows where to enter it."
+        ]
+      ]
+    },
+    {
+      "title": "Understand a 1099-A after foreclosure",
+      "ask": "I got a 1099-A. The loan balance was ${owed} and the property's fair market value is ${fmv}. What does this mean?",
+      "inputs": [
+        {
+          "id": "owed",
+          "label": "Box 2: principal balance ($)",
+          "type": "range",
+          "min": 20000,
+          "max": 800000,
+          "step": 5000,
+          "value": 210000
+        },
+        {
+          "id": "fmv",
+          "label": "Box 4: fair market value ($)",
+          "type": "range",
+          "min": 20000,
+          "max": 800000,
+          "step": 5000,
+          "value": 185000
+        },
+        {
+          "id": "recourse",
+          "label": "Box 5: personally liable?",
+          "type": "select",
+          "value": "Yes",
+          "options": [
+            {
+              "label": "Yes",
+              "n": 1
+            },
+            {
+              "label": "No",
+              "n": 0
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Form reader",
+          "Explained the boxes: 1 date of acquisition, 2 principal balance, 4 fair market value, 5 personal liability, 6 property description."
+        ],
+        [
+          "Gap check",
+          "Balance minus value: ${=max(0, owed - fmv)} of debt above the property's value."
+        ],
+        [
+          "Liability check",
+          "Box 5 marked {recourse}. This changes how the sale amount is figured and whether canceled debt may follow."
+        ],
+        [
+          "Next steps",
+          "Listed what to look for next: a possible 1099-C and your original purchase records."
+        ]
+      ],
+      "result": {
+        "title": "Your 1099-A in plain English",
+        "rows": [
+          [
+            "Debt above value",
+            "${=max(0, owed - fmv)}"
+          ],
+          [
+            "Personally liable",
+            "{recourse}"
+          ],
+          [
+            "Watch for",
+            "A 1099-C if debt is canceled"
+          ],
+          [
+            "Note",
+            "Educational guide; talk to a tax professional"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is a 1099-A a tax bill?",
+          "No. It reports that the lender took the property. You may have a gain or loss on the disposition, which depends on your basis and the loan terms."
+        ],
+        [
+          "Why does personal liability matter?",
+          "For recourse loans, the amount realized is generally tied to fair market value and any forgiven balance may be canceled debt. For nonrecourse loans, it is generally tied to the full balance. A tax professional should confirm your case."
+        ]
+      ]
+    },
+    {
+      "title": "Organize all your tax forms",
+      "ask": "I have {forms} tax forms from {payers} different payers. Tell me what each is for and what's missing.",
+      "inputs": [
+        {
+          "id": "forms",
+          "label": "Forms received",
+          "type": "range",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "payers",
+          "label": "Payers and brokers",
+          "type": "range",
+          "min": 1,
+          "max": 15,
+          "step": 1,
+          "value": 5
+        }
+      ],
+      "steps": [
+        [
+          "Form sorter",
+          "Grouped {forms} sample forms by type: wages, interest, dividends, brokerage and property."
+        ],
+        [
+          "Plain-language writer",
+          "Wrote a two-line summary of each form."
+        ],
+        [
+          "Missing check",
+          "Compared {payers} payers with last year's list and flagged {=max(0, round(payers * 0.2))} likely missing forms."
+        ],
+        [
+          "Checklist",
+          "Built a checklist to share with your tax preparer."
+        ]
+      ],
+      "result": {
+        "title": "Form checklist",
+        "rows": [
+          [
+            "Forms explained",
+            "{forms}"
+          ],
+          [
+            "Payers",
+            "{payers}"
+          ],
+          [
+            "Possibly missing",
+            "{=max(0, round(payers * 0.2))}"
+          ],
+          [
+            "Export",
+            "One-page PDF checklist"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "When do forms usually arrive?",
+          "Many 1099 forms are due to recipients by the end of January or mid-February, and corrected forms can come later. Check with each payer if one is missing."
+        ],
+        [
+          "Does it file my return?",
+          "No. It explains forms and builds a checklist. Filing is done by you or your tax preparer."
+        ]
+      ]
+    }
+  ]
+}

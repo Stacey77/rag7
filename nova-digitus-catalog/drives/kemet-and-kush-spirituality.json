@@ -1,0 +1,247 @@
+{
+  "name": "Kemet and Kush: Spirituality",
+  "tag": "Teaches Kemetic and Kushite creation stories and the story of Ausar, Aset and Heru.",
+  "scenarios": [
+    {
+      "title": "Teach the story of Ausar, Aset and Heru",
+      "ask": "Build a {length} lesson on Ausar, Aset and Heru for {students} {grade} students.",
+      "inputs": [
+        {
+          "id": "students",
+          "label": "Students",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 1,
+          "value": 24
+        },
+        {
+          "id": "length",
+          "label": "Lesson length",
+          "type": "range",
+          "min": 20,
+          "max": 90,
+          "step": 5,
+          "value": 45,
+          "unit": "min"
+        },
+        {
+          "id": "grade",
+          "label": "Audience",
+          "type": "select",
+          "value": "High school",
+          "options": [
+            {
+              "label": "Middle school",
+              "n": 1
+            },
+            {
+              "label": "High school",
+              "n": 2
+            },
+            {
+              "label": "Adult learners",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Storyteller",
+          "Told the story in {=4 + grade} illustrated scenes, from Ausar's rule to Heru's claim to the throne."
+        ],
+        [
+          "Context",
+          "Explained the Greek names students may know: Osiris, Isis and Horus."
+        ],
+        [
+          "Discussion",
+          "Wrote questions on loyalty, grief and justice, and split the class into {=ceil(students / 5)} groups."
+        ],
+        [
+          "Quiz",
+          "Built a {=4 + grade * 2}-question check for understanding."
+        ]
+      ],
+      "result": {
+        "title": "Lesson ready",
+        "rows": [
+          [
+            "Story scenes",
+            "{=4 + grade}"
+          ],
+          [
+            "Discussion groups",
+            "{=ceil(students / 5)}"
+          ],
+          [
+            "Discussion time",
+            "{=max(5, length - 15)} minutes"
+          ],
+          [
+            "Quiz questions",
+            "{=4 + grade * 2}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is there one official version of the story?",
+          "No. The story was told differently across periods and places. The app shows the main versions and notes which texts each comes from."
+        ],
+        [
+          "Is this suitable for younger students?",
+          "The middle school version leaves out the more violent details and focuses on Aset's search and Heru's growth."
+        ]
+      ]
+    },
+    {
+      "title": "Compare creation stories",
+      "ask": "Compare {stories} creation stories, about {mins} on each.",
+      "inputs": [
+        {
+          "id": "stories",
+          "label": "Stories to compare",
+          "type": "range",
+          "min": 2,
+          "max": 4,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "mins",
+          "label": "Time per story",
+          "type": "range",
+          "min": 5,
+          "max": 20,
+          "step": 1,
+          "value": 10,
+          "unit": "min"
+        }
+      ],
+      "steps": [
+        [
+          "Library",
+          "Opened the Iunu (Heliopolis) account of Atum and the Ennead, the Khemenu (Hermopolis) Ogdoad of eight primeval beings, and the Memphite account of Ptah."
+        ],
+        [
+          "Kush link",
+          "Noted that the Shabaka Stone, which preserves the Memphite text, was carved under the Kushite king Shabaka."
+        ],
+        [
+          "Comparer",
+          "Lined up shared themes, such as the primeval waters of Nun and the first mound rising from them."
+        ],
+        [
+          "Visuals",
+          "Built a side-by-side chart of who creates, how, and what comes first in each of the {stories} stories."
+        ]
+      ],
+      "result": {
+        "title": "Comparison ready",
+        "rows": [
+          [
+            "Stories compared",
+            "{stories}"
+          ],
+          [
+            "Viewing time",
+            "{=stories * mins} minutes"
+          ],
+          [
+            "Shared theme",
+            "Primeval waters and a first mound"
+          ],
+          [
+            "Format",
+            "Side-by-side chart with readings"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why are there several creation stories?",
+          "Different temple centers developed their own accounts. The app presents them side by side rather than ranking them."
+        ],
+        [
+          "Where does Kush fit in?",
+          "The app covers Kushite kings who ruled Egypt as the 25th Dynasty and the Amun temple at Jebel Barkal, and marks where sources are thin."
+        ]
+      ]
+    },
+    {
+      "title": "Create an exhibit for a cultural event",
+      "ask": "We expect {visitors} visitors. Build a {panels}-panel exhibit on Kemet and Kush spirituality.",
+      "inputs": [
+        {
+          "id": "panels",
+          "label": "Exhibit panels",
+          "type": "range",
+          "min": 4,
+          "max": 20,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "visitors",
+          "label": "Expected visitors",
+          "type": "range",
+          "min": 50,
+          "max": 1000,
+          "step": 50,
+          "value": 300
+        }
+      ],
+      "steps": [
+        [
+          "Curator",
+          "Picked {panels} themes, from creation stories to the Ausar, Aset and Heru cycle."
+        ],
+        [
+          "Writer",
+          "Wrote about 120 words per panel in plain language, with sources on each."
+        ],
+        [
+          "Audio guide",
+          "Recorded a {=round(panels * 1.5)}-minute audio guide visitors can play on their phones."
+        ],
+        [
+          "Planner",
+          "Estimated visitor flow and screen needs."
+        ]
+      ],
+      "result": {
+        "title": "Exhibit plan",
+        "rows": [
+          [
+            "Panels",
+            "{panels}"
+          ],
+          [
+            "Reading time per visitor",
+            "About {=round(panels * 1.5)} minutes"
+          ],
+          [
+            "Audio guide",
+            "{=round(panels * 1.5)} minutes"
+          ],
+          [
+            "Tablets suggested",
+            "{=ceil(visitors / 150)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can we print the panels?",
+          "Yes. Each panel exports as a print-ready poster and as a slide."
+        ],
+        [
+          "Who checks the content?",
+          "The app cites a source on every panel. We suggest a local scholar or educator review before the event."
+        ]
+      ]
+    }
+  ]
+}

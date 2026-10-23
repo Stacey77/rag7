@@ -1,0 +1,244 @@
+{
+  "name": "Reality Mechanics Diagram",
+  "tag": "An interactive diagram that maps 14 centers of the body to 14 universal laws for study and reflection.",
+  "scenarios": [
+    {
+      "title": "Take a guided tour",
+      "ask": "Walk me through {centers} of the 14 centers, about {mins} each, in {view} view.",
+      "inputs": [
+        {
+          "id": "centers",
+          "label": "Centers to explore",
+          "type": "range",
+          "min": 1,
+          "max": 14,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "mins",
+          "label": "Time per center",
+          "type": "range",
+          "min": 2,
+          "max": 10,
+          "step": 1,
+          "value": 5,
+          "unit": "min"
+        },
+        {
+          "id": "view",
+          "label": "View",
+          "type": "select",
+          "value": "3D",
+          "options": [
+            {
+              "label": "2D",
+              "n": 1
+            },
+            {
+              "label": "3D",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Diagram",
+          "Highlighted {centers} center(s) on the body map and drew the line to each linked law."
+        ],
+        [
+          "Guide",
+          "Read a short description of each center and its law, in the app's own framework."
+        ],
+        [
+          "Reflection",
+          "Added one question per center to think about during the day."
+        ],
+        [
+          "Journal",
+          "Saved your notes so the next tour starts at center {=min(14, centers + 1)}."
+        ]
+      ],
+      "result": {
+        "title": "Tour summary",
+        "rows": [
+          [
+            "Centers explored",
+            "{centers} of 14"
+          ],
+          [
+            "Laws linked",
+            "{centers}"
+          ],
+          [
+            "Tour time",
+            "{=centers * mins} minutes"
+          ],
+          [
+            "Remaining",
+            "{=14 - centers} centers"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is this an anatomy or medical chart?",
+          "No. It is a contemplative study model, not anatomy and not medical advice."
+        ],
+        [
+          "Can I see all 14 at once?",
+          "Yes. The full view shows all 14 centers and laws, and you can tap any pair to open it."
+        ]
+      ]
+    },
+    {
+      "title": "Run a workshop",
+      "ask": "I'm teaching {people} people in a {length} session. Set up the diagram for the room.",
+      "inputs": [
+        {
+          "id": "people",
+          "label": "Participants",
+          "type": "range",
+          "min": 5,
+          "max": 50,
+          "step": 1,
+          "value": 16
+        },
+        {
+          "id": "length",
+          "label": "Session length",
+          "type": "range",
+          "min": 30,
+          "max": 180,
+          "step": 15,
+          "value": 90,
+          "unit": "min"
+        }
+      ],
+      "steps": [
+        [
+          "Presenter",
+          "Switched to presenter mode with large labels for a projector."
+        ],
+        [
+          "Planner",
+          "Fit {=min(14, floor(length / 10))} centers into the session at about 10 minutes each."
+        ],
+        [
+          "Groups",
+          "Split the room into {=ceil(people / 6)} groups, each with a center to discuss."
+        ],
+        [
+          "Handouts",
+          "Made {people} printable handouts with the diagram and reflection questions."
+        ]
+      ],
+      "result": {
+        "title": "Workshop kit",
+        "rows": [
+          [
+            "Centers covered",
+            "{=min(14, floor(length / 10))}"
+          ],
+          [
+            "Discussion groups",
+            "{=ceil(people / 6)}"
+          ],
+          [
+            "Handouts",
+            "{people}"
+          ],
+          [
+            "Follow-up session needed",
+            "{=max(0, 14 - min(14, floor(length / 10)))} centers left"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can participants follow on their phones?",
+          "Yes. They scan a code and see the diagram move as you present."
+        ],
+        [
+          "Can I add my own notes?",
+          "Yes. Presenter notes stay on your screen and do not show on the projector."
+        ]
+      ]
+    },
+    {
+      "title": "Start a daily practice",
+      "ask": "Give me a {days}-day practice, {mins} a day, cycling through the 14 centers.",
+      "inputs": [
+        {
+          "id": "days",
+          "label": "Days",
+          "type": "range",
+          "min": 7,
+          "max": 60,
+          "step": 1,
+          "value": 28
+        },
+        {
+          "id": "mins",
+          "label": "Minutes a day",
+          "type": "range",
+          "min": 5,
+          "max": 30,
+          "step": 5,
+          "value": 10,
+          "unit": "min"
+        }
+      ],
+      "steps": [
+        [
+          "Planner",
+          "Cycled the 14 centers across {days} days, so each comes up about {=round(days / 14, 1)} times."
+        ],
+        [
+          "Reminders",
+          "Set a daily reminder with the day's center and law."
+        ],
+        [
+          "Reflection",
+          "Wrote one prompt for each day."
+        ],
+        [
+          "Tracker",
+          "Tracks streaks and shows which centers you return to most."
+        ]
+      ],
+      "result": {
+        "title": "Practice plan",
+        "rows": [
+          [
+            "Days",
+            "{days}"
+          ],
+          [
+            "Total time",
+            "{=round(days * mins / 60, 1)} hours"
+          ],
+          [
+            "Full cycles",
+            "{=floor(days / 14)}"
+          ],
+          [
+            "Prompts",
+            "{days}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if I miss a day?",
+          "The plan picks up where you left off. Your streak resets, but your notes stay."
+        ],
+        [
+          "Does it make health claims?",
+          "No. The practice is for reflection and study, not medical advice."
+        ]
+      ]
+    }
+  ]
+}

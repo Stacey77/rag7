@@ -1,0 +1,275 @@
+{
+  "name": "KeBTAH Rising Firefly Portal",
+  "tag": "Brings Nile Valley and Dogon teachings into one archive, calendar and study space.",
+  "scenarios": [
+    {
+      "title": "Build a personal study path",
+      "ask": "Give me a {weeks}-week study path on {focus}, about {mins} a day.",
+      "inputs": [
+        {
+          "id": "weeks",
+          "label": "Length of path",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 6,
+          "unit": "weeks"
+        },
+        {
+          "id": "mins",
+          "label": "Time per day",
+          "type": "range",
+          "min": 10,
+          "max": 60,
+          "step": 5,
+          "value": 20,
+          "unit": "min"
+        },
+        {
+          "id": "focus",
+          "label": "Focus",
+          "type": "select",
+          "value": "Nile Valley philosophy",
+          "options": [
+            {
+              "label": "Nile Valley philosophy",
+              "n": 1
+            },
+            {
+              "label": "Dogon cosmology",
+              "n": 2
+            },
+            {
+              "label": "Both, side by side",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Archive",
+          "Pulled {=12 + focus * 8} entries matched to your focus, each with its source listed."
+        ],
+        [
+          "Planner",
+          "Ordered them from core ideas, such as the principle of Maat, to more detailed readings."
+        ],
+        [
+          "Calendar",
+          "Placed {=weeks * 5} study sessions on weekdays and left weekends for review."
+        ],
+        [
+          "Reflection",
+          "Added a short journal prompt to the end of each week."
+        ]
+      ],
+      "result": {
+        "title": "Study path ready",
+        "rows": [
+          [
+            "Sessions",
+            "{=weeks * 5}"
+          ],
+          [
+            "Total study time",
+            "{=round(weeks * 5 * mins / 60, 1)} hours"
+          ],
+          [
+            "Archive entries",
+            "{=12 + focus * 8}"
+          ],
+          [
+            "Journal prompts",
+            "{weeks}"
+          ],
+          [
+            "Sources",
+            "Listed on every entry"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is the Dogon material settled history?",
+          "Not all of it. Some 20th-century accounts of Dogon cosmology have been questioned by later researchers. The portal labels each entry with its source and flags readings that are debated."
+        ],
+        [
+          "What does Maat mean in the portal?",
+          "The portal presents Maat as the ancient Egyptian idea of truth, balance and right order, with readings from primary texts in translation."
+        ],
+        [
+          "Can I change pace mid-way?",
+          "Yes. Change the minutes per day and the calendar re-spreads the remaining sessions."
+        ]
+      ]
+    },
+    {
+      "title": "Digitize a community collection",
+      "ask": "Our group has {items} {kind} to preserve and {vols} volunteers. Plan the archive work.",
+      "inputs": [
+        {
+          "id": "items",
+          "label": "Items to preserve",
+          "type": "range",
+          "min": 20,
+          "max": 500,
+          "step": 10,
+          "value": 120
+        },
+        {
+          "id": "kind",
+          "label": "Item type",
+          "type": "select",
+          "value": "Photos",
+          "options": [
+            {
+              "label": "Photos",
+              "n": 1
+            },
+            {
+              "label": "Documents",
+              "n": 2
+            },
+            {
+              "label": "Oral history recordings",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "vols",
+          "label": "Volunteers",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3
+        }
+      ],
+      "steps": [
+        [
+          "Intake",
+          "Created an intake form for each item: who gave it, where it came from and any permissions."
+        ],
+        [
+          "Tagger",
+          "Suggested tags for people, places and themes so items can be found later."
+        ],
+        [
+          "Transcriber",
+          "Drafts text for documents and recordings for a volunteer to check."
+        ],
+        [
+          "Planner",
+          "Split {items} items across {vols} volunteers at about 3 hours a week each."
+        ]
+      ],
+      "result": {
+        "title": "Archive plan",
+        "rows": [
+          [
+            "Items",
+            "{items}"
+          ],
+          [
+            "Estimated work",
+            "{=round(items * kind * 0.2)} hours"
+          ],
+          [
+            "Per volunteer",
+            "{=round(items * kind * 0.2 / vols, 1)} hours"
+          ],
+          [
+            "Time to finish",
+            "About {=ceil(items * kind * 0.2 / (vols * 3))} weeks"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Who can see the archive?",
+          "You choose per item: private to the group, shared with members, or public. Families can ask to keep items private."
+        ],
+        [
+          "Why do recordings take longer?",
+          "Each recording needs listening, a checked transcript and consent notes, so it takes about three times the effort of a photo."
+        ]
+      ]
+    },
+    {
+      "title": "Plan study circles by season",
+      "ask": "Schedule study circles for {size} people, {per} meetings in each of the three seasons of the ancient Egyptian year.",
+      "inputs": [
+        {
+          "id": "size",
+          "label": "People in the circle",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "per",
+          "label": "Meetings per season",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 4
+        }
+      ],
+      "steps": [
+        [
+          "Calendar",
+          "Showed the civil year's three seasons, Akhet, Peret and Shemu, each four months of 30 days."
+        ],
+        [
+          "Scheduler",
+          "Placed {=per * 3} meetings across the year and sent invites."
+        ],
+        [
+          "Archive",
+          "Attached one reading and one discussion question to each meeting."
+        ],
+        [
+          "Groups",
+          "Split the circle into {=ceil(size / 8)} discussion group(s) of up to 8."
+        ]
+      ],
+      "result": {
+        "title": "Year of study circles",
+        "rows": [
+          [
+            "Meetings per year",
+            "{=per * 3}"
+          ],
+          [
+            "Discussion groups",
+            "{=ceil(size / 8)}"
+          ],
+          [
+            "Readings attached",
+            "{=per * 3}"
+          ],
+          [
+            "Reminders sent",
+            "{=per * 3 * size}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What about the extra days?",
+          "The calendar view also shows the five added days at the end of the civil year, which made 365 days in total."
+        ],
+        [
+          "Can members suggest readings?",
+          "Yes. Suggestions go to the circle leader for approval before they join the archive."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "name": "MAH AI Hub: Robotics & IoT Command",
+  "tag": "AI agents find and fix faults across robots and IoT devices, and log every case.",
+  "scenarios": [
+    {
+      "title": "Fix a robot arm that stops mid-cycle",
+      "ask": "{stops} of our {robots} pick-and-place arms stop mid-cycle a few times a shift. Find the cause.",
+      "inputs": [
+        {
+          "id": "robots",
+          "label": "Robot arms",
+          "type": "range",
+          "min": 2,
+          "max": 50,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "stops",
+          "label": "Arms affected",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "shifts",
+          "label": "Shifts per day",
+          "type": "select",
+          "value": "2 shifts",
+          "options": [
+            {
+              "label": "1 shift",
+              "n": 1
+            },
+            {
+              "label": "2 shifts",
+              "n": 2
+            },
+            {
+              "label": "3 shifts",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Collector",
+          "Pulled controller logs, motor currents and safety events from {robots} arms."
+        ],
+        [
+          "Diagnostician",
+          "Affected arms show a torque spike on joint 3 just before each stop."
+        ],
+        [
+          "Root cause",
+          "Grease on joint 3 is past its service interval. The others were serviced last month."
+        ],
+        [
+          "Fixer",
+          "Lowered joint 3 speed by 10% as a stopgap and booked service for the affected arms."
+        ],
+        [
+          "Case log",
+          "Opened a case with logs, charts and the fix for each arm."
+        ]
+      ],
+      "result": {
+        "title": "Fault resolved",
+        "rows": [
+          [
+            "Root cause",
+            "Joint 3 lubrication overdue"
+          ],
+          [
+            "Arms affected",
+            "{=min(stops, robots)}"
+          ],
+          [
+            "Stops avoided",
+            "About {=min(stops, robots) * shifts * 3} a day"
+          ],
+          [
+            "Cases logged",
+            "{=min(stops, robots)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does the AI change robot settings on its own?",
+          "Only inside limits you set, like a small speed cut. Anything bigger waits for an engineer to approve."
+        ],
+        [
+          "Will it find this sooner next time?",
+          "Yes. The case trains a watch rule, so a rising joint torque raises a service ticket before the arm stops."
+        ]
+      ]
+    },
+    {
+      "title": "Stop sensor dropouts",
+      "ask": "{drop} of our {sensors} IoT sensors drop offline each day. Fix it.",
+      "inputs": [
+        {
+          "id": "sensors",
+          "label": "Sensors",
+          "type": "range",
+          "min": 50,
+          "max": 5000,
+          "step": 50,
+          "value": 800
+        },
+        {
+          "id": "drop",
+          "label": "Sensors dropping daily",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 6,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Scanner",
+          "Found {=round(sensors * drop / 100)} sensors dropping each day."
+        ],
+        [
+          "Diagnostician",
+          "{=round(drop * 5)}% of dropouts happen on batteries under 3.0 volts."
+        ],
+        [
+          "Network check",
+          "The rest cluster on one gateway with a weak signal."
+        ],
+        [
+          "Fixer",
+          "Raised the reporting interval on low-battery units and opened a battery swap list."
+        ],
+        [
+          "Case log",
+          "Logged one case per root cause with the affected devices."
+        ]
+      ],
+      "result": {
+        "title": "Dropout report",
+        "rows": [
+          [
+            "Dropping daily",
+            "{=round(sensors * drop / 100)}"
+          ],
+          [
+            "Battery cause",
+            "{=round(sensors * drop / 100 * drop * 5 / 100)} sensors"
+          ],
+          [
+            "Network cause",
+            "{=round(sensors * drop / 100) - round(sensors * drop / 100 * drop * 5 / 100)} sensors"
+          ],
+          [
+            "Expected after fix",
+            "Under {=max(1, round(drop / 4, 1))}% a day"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can it order batteries?",
+          "It drafts the order and the swap route. A person approves the purchase."
+        ],
+        [
+          "How fast is the fix?",
+          "Interval changes apply in minutes. Battery swaps follow your field schedule."
+        ]
+      ]
+    },
+    {
+      "title": "Review the monthly case log",
+      "ask": "Summarize last month's {cases} cases for our {fleets} fleets.",
+      "inputs": [
+        {
+          "id": "cases",
+          "label": "Cases last month",
+          "type": "range",
+          "min": 10,
+          "max": 500,
+          "step": 10,
+          "value": 120
+        },
+        {
+          "id": "fleets",
+          "label": "Fleets",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3
+        }
+      ],
+      "steps": [
+        [
+          "Reader",
+          "Read {cases} cases across {fleets} fleet(s), with causes and fixes."
+        ],
+        [
+          "Grouper",
+          "Grouped them into {=min(12, 3 + floor(cases / 40))} root-cause families."
+        ],
+        [
+          "Analyst",
+          "{=round(cases * 0.45)} cases came from the top 3 causes."
+        ],
+        [
+          "Writer",
+          "Drafted a 1-page summary with 3 prevention actions."
+        ]
+      ],
+      "result": {
+        "title": "Monthly summary",
+        "rows": [
+          [
+            "Cases",
+            "{cases}"
+          ],
+          [
+            "Fixed automatically",
+            "{=round(cases * 0.55)}"
+          ],
+          [
+            "Needed a technician",
+            "{=cases - round(cases * 0.55)}"
+          ],
+          [
+            "From top 3 causes",
+            "{=round(cases * 0.45)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can auditors read the log?",
+          "Yes. Each case keeps the evidence, every action taken and who approved it."
+        ],
+        [
+          "Does it track repeat faults?",
+          "Yes. Any device with the same fault twice in 30 days is flagged for a deeper fix."
+        ]
+      ]
+    }
+  ]
+}

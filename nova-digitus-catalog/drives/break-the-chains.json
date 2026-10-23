@@ -1,0 +1,88 @@
+{
+  "name": "Break the Chains",
+  "tag": "A free 20-chapter guide and practice studio for Merkaba meditation and working through fear.",
+  "scenarios": [
+    {
+      "title": "Plan your path through the guide",
+      "ask": "I can give {minutes} minutes a day and read {per_week} chapters a week. Plan my path through the 20 chapters.",
+      "inputs": [
+        {"id": "minutes", "label": "Minutes a day", "type": "range", "min": 5, "max": 60, "step": 5, "value": 15, "unit": "minutes"},
+        {"id": "per_week", "label": "Chapters per week", "type": "range", "min": 1, "max": 5, "step": 1, "value": 2}
+      ],
+      "steps": [
+        ["Guide", "Split the 20 chapters into {=ceil(20 / per_week)} weekly sections."],
+        ["Practice planner", "Paired each chapter with a short practice that fits in {minutes}."],
+        ["Reminders", "Set a gentle daily reminder you can snooze or turn off."],
+        ["Journal", "Added a short reflection prompt at the end of each chapter."]
+      ],
+      "result": {
+        "title": "Your path",
+        "rows": [
+          ["Chapters", "20"],
+          ["Weeks to finish", "{=ceil(20 / per_week)}"],
+          ["Practice time per week", "{=minutes * 7} minutes"],
+          ["Cost", "Free"]
+        ]
+      },
+      "followups": [
+        ["What if I fall behind?", "The plan simply moves forward from where you are. There is no streak to lose."],
+        ["Do I need experience with meditation?", "No. Early chapters start with simple breathing and posture before the Merkaba visualization."]
+      ]
+    },
+    {
+      "title": "Build a practice session",
+      "ask": "Build a {length} session with {breaths} guided breaths and a {focus} focus.",
+      "inputs": [
+        {"id": "length", "label": "Session length", "type": "select", "value": "15 minutes", "options": [{"label": "5 minutes", "n": 5}, {"label": "15 minutes", "n": 15}, {"label": "30 minutes", "n": 30}]},
+        {"id": "breaths", "label": "Guided breaths", "type": "range", "min": 3, "max": 21, "step": 1, "value": 9},
+        {"id": "focus", "label": "Focus", "type": "select", "value": "Releasing fear", "options": [{"label": "Grounding", "n": 1}, {"label": "Releasing fear", "n": 2}, {"label": "Heart and gratitude", "n": 3}]}
+      ],
+      "steps": [
+        ["Studio", "Opened with {=max(1, round(length * 0.2))} minutes of settling and posture."],
+        ["Breath guide", "Paced {breaths} slow breaths with on-screen timing."],
+        ["Visualization", "Guided the star tetrahedron visualization with a {focus} theme."],
+        ["Close", "Ended with quiet time and a one-line journal prompt."]
+      ],
+      "result": {
+        "title": "Session ready",
+        "rows": [
+          ["Length", "{length}"],
+          ["Guided breaths", "{breaths}"],
+          ["Focus", "{focus}"],
+          ["Note", "A reflective practice, not medical or mental health care"]
+        ]
+      },
+      "followups": [
+        ["What is the Merkaba visualization?", "In this practice it means picturing two interlocking tetrahedrons, a star shape, around the body while breathing slowly. The guide explains it step by step."],
+        ["Can this replace therapy?", "No. It is a reflective practice. If fear or anxiety is affecting your daily life, please talk with a licensed professional."]
+      ]
+    },
+    {
+      "title": "Track progress with a fear journal",
+      "ask": "I've written {entries} journal entries over {weeks} weeks. Show what has shifted.",
+      "inputs": [
+        {"id": "entries", "label": "Journal entries", "type": "range", "min": 1, "max": 100, "step": 1, "value": 18},
+        {"id": "weeks", "label": "Weeks practicing", "type": "range", "min": 1, "max": 20, "step": 1, "value": 6, "unit": "weeks"}
+      ],
+      "steps": [
+        ["Journal reader", "Read your {entries} private entries on your device."],
+        ["Theme finder", "Grouped recurring fears into {=min(6, max(1, round(entries / 5)))} themes."],
+        ["Trend", "Compared how you rated each fear in week 1 and week {weeks}."],
+        ["Reflection", "Wrote a short note with the theme to revisit next."]
+      ],
+      "result": {
+        "title": "Your reflections",
+        "rows": [
+          ["Entries", "{entries}"],
+          ["Themes found", "{=min(6, max(1, round(entries / 5)))}"],
+          ["Entries per week", "{=round(entries / weeks, 1)}"],
+          ["Privacy", "Stored on your device"]
+        ]
+      },
+      "followups": [
+        ["Who can read my journal?", "Only you. Entries stay on your device unless you choose to export them."],
+        ["What do the ratings mean?", "They are your own 1 to 10 ratings of how strong a fear felt. They help you notice change over time; they are not a test or a diagnosis."]
+      ]
+    }
+  ]
+}

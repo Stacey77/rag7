@@ -1,0 +1,93 @@
+{
+  "name": "WealthStrat: Institutional Leverage Engine",
+  "tag": "See your capital stack, investor pitch structure and K-1 distribution waterfall in one place.",
+  "scenarios": [
+    {
+      "title": "Build a capital stack",
+      "ask": "Fund a ${cost} project with {senior} senior debt and {mezz} mezzanine. Show the rest as equity.",
+      "inputs": [
+        {"id": "cost", "label": "Total project cost ($)", "type": "range", "min": 500000, "max": 50000000, "step": 500000, "value": 8000000},
+        {"id": "senior", "label": "Senior debt", "type": "range", "min": 40, "max": 75, "step": 5, "value": 60, "unit": "%"},
+        {"id": "mezz", "label": "Mezzanine debt", "type": "range", "min": 0, "max": 20, "step": 5, "value": 10, "unit": "%"},
+        {"id": "gp", "label": "Sponsor share of equity", "type": "range", "min": 5, "max": 30, "step": 5, "value": 10, "unit": "%"}
+      ],
+      "steps": [
+        ["Stack builder", "Senior debt ${=round(cost * senior / 100)} and mezzanine ${=round(cost * mezz / 100)}."],
+        ["Equity", "Equity fills the rest: ${=round(cost * (100 - senior - mezz) / 100)}."],
+        ["Split", "Sponsor puts in {gp} of equity, investors the other {=100 - gp}%."],
+        ["Chart", "Drew the stack from first-paid to last-paid so investors see their position."]
+      ],
+      "result": {
+        "title": "Capital stack",
+        "rows": [
+          ["Senior debt", "${=round(cost * senior / 100)}"],
+          ["Mezzanine", "${=round(cost * mezz / 100)}"],
+          ["Investor equity", "${=round(cost * (100 - senior - mezz) / 100 * (100 - gp) / 100)}"],
+          ["Sponsor equity", "${=round(cost * (100 - senior - mezz) / 100 * gp / 100)}"],
+          ["Total leverage", "{=senior + mezz}%"]
+        ]
+      },
+      "followups": [
+        ["Who gets paid first?", "Senior debt, then mezzanine, then equity. That order is why debt usually costs less than equity."],
+        ["Is {=senior + mezz}% leverage high?", "It depends on the asset and lender. Higher leverage can raise equity returns and also raises the risk of loss if values fall. The engine runs downside cases for this."]
+      ]
+    },
+    {
+      "title": "Run a distribution waterfall",
+      "ask": "We have ${cash} to distribute. Investors put in ${lpcap} with a {pref} preferred return, then a {split} split.",
+      "inputs": [
+        {"id": "cash", "label": "Cash to distribute ($)", "type": "range", "min": 50000, "max": 5000000, "step": 50000, "value": 900000},
+        {"id": "lpcap", "label": "Investor capital ($)", "type": "range", "min": 500000, "max": 20000000, "step": 250000, "value": 3000000},
+        {"id": "pref", "label": "Preferred return", "type": "range", "min": 5, "max": 12, "step": 1, "value": 8, "unit": "%"},
+        {"id": "split", "label": "Split after the preferred return", "type": "select", "value": "80/20", "options": [{"label": "90/10", "n": 0.9}, {"label": "80/20", "n": 0.8}, {"label": "70/30", "n": 0.7}]}
+      ],
+      "steps": [
+        ["Tier 1", "Investors receive the {pref} preferred return first: ${=round(min(cash, lpcap * pref / 100))}."],
+        ["Tier 2", "Remaining cash: ${=round(max(0, cash - lpcap * pref / 100))}, split {split} between investors and sponsor."],
+        ["Totals", "Added each party's share across tiers."],
+        ["K-1 prep", "Mapped each party's distributions to the K-1 schedule for the accountant."]
+      ],
+      "result": {
+        "title": "Waterfall (one year, simplified)",
+        "rows": [
+          ["Preferred return paid", "${=round(min(cash, lpcap * pref / 100))}"],
+          ["Investors total", "${=round(min(cash, lpcap * pref / 100) + max(0, cash - lpcap * pref / 100) * split)}"],
+          ["Sponsor total", "${=round(max(0, cash - lpcap * pref / 100) * (1 - split))}"],
+          ["Investor cash yield", "{=round((min(cash, lpcap * pref / 100) + max(0, cash - lpcap * pref / 100) * split) / lpcap * 100, 1)}%"],
+          ["Note", "Simplified model, no catch-up or return of capital tier"]
+        ]
+      },
+      "followups": [
+        ["What is a catch-up?", "Some deals let the sponsor receive a larger share right after the preferred return until it reaches its target split. You can switch a catch-up tier on in the full model."],
+        ["Does this replace the operating agreement?", "No. The waterfall must follow your operating agreement exactly. The engine shows it visually so investors can follow it."]
+      ]
+    },
+    {
+      "title": "Structure an investor pitch",
+      "ask": "Outline a pitch to raise ${raise} from investors with a minimum check of ${minimum}.",
+      "inputs": [
+        {"id": "raise", "label": "Amount to raise ($)", "type": "range", "min": 250000, "max": 20000000, "step": 250000, "value": 3000000},
+        {"id": "minimum", "label": "Minimum investment ($)", "type": "range", "min": 10000, "max": 250000, "step": 5000, "value": 50000}
+      ],
+      "steps": [
+        ["Outline agent", "Built a 10-slide outline: thesis, market, deal, capital stack, waterfall, team, risks, timeline, terms, next steps."],
+        ["Math agent", "At a ${minimum} minimum, the raise needs at most {=ceil(raise / minimum)} investors."],
+        ["Risk writer", "Drafted a plain-language risks slide covering leverage, market and execution."],
+        ["Review list", "Flagged items for securities counsel before anything goes to investors."]
+      ],
+      "result": {
+        "title": "Pitch outline",
+        "rows": [
+          ["Slides", "10"],
+          ["Max investors at minimum", "{=ceil(raise / minimum)}"],
+          ["Typical investors at 3x minimum", "{=ceil(raise / (minimum * 3))}"],
+          ["Before sharing", "Securities counsel review"]
+        ]
+      },
+      "followups": [
+        ["Why does investor count matter?", "Securities rules can limit how many and what kind of investors you take, and each investor adds reporting work. Counsel should confirm which exemption you use."],
+        ["Can it make the slides?", "It builds the outline and charts. You or your designer finish the deck."]
+      ]
+    }
+  ]
+}

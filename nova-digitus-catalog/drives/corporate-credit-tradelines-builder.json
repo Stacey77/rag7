@@ -1,0 +1,93 @@
+{
+  "name": "Corporate Credit Tradelines Builder",
+  "tag": "A step-by-step plan for building business credit that stands on its own, apart from your personal credit.",
+  "scenarios": [
+    {
+      "title": "Start credit for a new LLC",
+      "ask": "My LLC is {months} months old with {done} of the 6 foundation items in place. Build my tradeline plan.",
+      "inputs": [
+        {"id": "months", "label": "Months in business", "type": "range", "min": 0, "max": 36, "step": 1, "value": 3, "unit": "months"},
+        {"id": "done", "label": "Foundation items done (of 6)", "type": "range", "min": 0, "max": 6, "step": 1, "value": 3},
+        {"id": "pace", "label": "Pace", "type": "select", "value": "Steady", "options": [{"label": "Careful", "n": 1}, {"label": "Steady", "n": 2}, {"label": "Fast", "n": 3}]}
+      ],
+      "steps": [
+        ["Foundation check", "Reviewed the 6 basics: EIN, business bank account, business address, business phone, business credit bureau profiles and matching records. {=6 - done} still open."],
+        ["Vendor planner", "Picked {=2 + pace} starter vendor accounts that sell on net-30 terms and report payments to business bureaus."],
+        ["Payment scheduler", "Set reminders to pay each invoice early, since on-time history is what builds the file."],
+        ["Timeline", "Mapped tiers: starter vendors, then store accounts, then fleet and cash cards."]
+      ],
+      "result": {
+        "title": "Your tradeline plan",
+        "rows": [
+          ["Foundation items to finish", "{=6 - done}"],
+          ["Starter vendor accounts", "{=2 + pace}"],
+          ["Estimated weeks to first reported history", "{=max(4, 10 - pace * 2 + (6 - done) * 2)}"],
+          ["Personal guarantee needed", "Avoid where possible"],
+          ["Note", "Timelines vary; no approval is guaranteed"]
+        ]
+      },
+      "followups": [
+        ["Why finish the foundation first?", "Lenders and bureaus check that your business name, address and phone match everywhere. Mismatches are a common reason applications stall, so the {=6 - done} open items come first."],
+        ["Does my LLC's age matter?", "Yes. Many lenders look for time in business. At {months} months, starter vendor accounts are the right first step, and larger lines usually come later."]
+      ]
+    },
+    {
+      "title": "Separate business and personal credit",
+      "ask": "Our {accounts} business accounts include {guarantees} with a personal guarantee. Show how to separate them.",
+      "inputs": [
+        {"id": "accounts", "label": "Business credit accounts", "type": "range", "min": 1, "max": 20, "step": 1, "value": 8},
+        {"id": "guarantees", "label": "Accounts with a personal guarantee", "type": "range", "min": 0, "max": 20, "step": 1, "value": 5},
+        {"id": "personal", "label": "Accounts reporting to personal credit", "type": "range", "min": 0, "max": 10, "step": 1, "value": 2}
+      ],
+      "steps": [
+        ["Account reader", "Listed all {accounts} accounts with limits, balances and who is on the hook."],
+        ["Guarantee check", "Flagged {=min(accounts, guarantees)} accounts tied to you personally."],
+        ["Reporting check", "{=min(accounts, personal)} accounts report balances to your personal file, which can raise your personal utilization."],
+        ["Plan writer", "Ordered replacements: open business-only accounts first, then move spending and close or downgrade the tied ones."]
+      ],
+      "result": {
+        "title": "Separation plan",
+        "rows": [
+          ["Accounts reviewed", "{accounts}"],
+          ["Tied to you personally", "{=min(accounts, guarantees)}"],
+          ["Reporting to personal credit", "{=min(accounts, personal)}"],
+          ["Business-only accounts to open", "{=max(1, ceil(min(accounts, guarantees) / 2))}"],
+          ["Note", "Educational plan, not legal or credit advice"]
+        ]
+      },
+      "followups": [
+        ["Can I remove a personal guarantee?", "Sometimes. Some lenders will release it once the business shows enough history and revenue. The plan lists which accounts to ask about first."],
+        ["Should I close old accounts right away?", "Usually not. Closing accounts can affect credit history. The plan moves spending first and closes accounts only when replacements are in place."]
+      ]
+    },
+    {
+      "title": "Get ready for a bigger credit line",
+      "ask": "We want a ${target} business line. We have {lines} tradelines reporting and ${revenue} in monthly revenue.",
+      "inputs": [
+        {"id": "target", "label": "Target credit line ($)", "type": "range", "min": 10000, "max": 250000, "step": 5000, "value": 50000},
+        {"id": "lines", "label": "Tradelines reporting", "type": "range", "min": 0, "max": 15, "step": 1, "value": 5},
+        {"id": "revenue", "label": "Monthly revenue ($)", "type": "range", "min": 2000, "max": 200000, "step": 1000, "value": 25000}
+      ],
+      "steps": [
+        ["Profile reader", "Pulled the sample business file: {lines} tradelines reporting, all paid on time."],
+        ["Lender match", "Compared the ${target} target with typical lender rules of thumb, such as a line near 10% of yearly revenue."],
+        ["Gap finder", "Listed what is missing: more tradelines, time in business or revenue history."],
+        ["Plan writer", "Wrote a 90-day checklist to close the gaps before applying."]
+      ],
+      "result": {
+        "title": "Readiness check",
+        "rows": [
+          ["Rule-of-thumb line from revenue", "${=round(revenue * 12 * 0.1)}"],
+          ["Your target", "${target}"],
+          ["Tradelines to add", "{=max(0, 8 - lines)}"],
+          ["Readiness", "{=min(100, round(min(1, revenue * 12 * 0.1 / target) * 60 + min(lines, 8) * 5))} of 100"],
+          ["Note", "Sample scoring for planning only"]
+        ]
+      },
+      "followups": [
+        ["Why tie the line to revenue?", "Lenders want to see that you can repay. Many start near 10% of yearly revenue, which is about ${=round(revenue * 12 * 0.1)} for you. Rules differ by lender."],
+        ["What raises the readiness score fastest?", "Adding reporting tradelines and paying them early. Revenue history grows more slowly, so the plan works on both at once."]
+      ]
+    }
+  ]
+}

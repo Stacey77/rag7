@@ -1,0 +1,246 @@
+{
+  "name": "Carbon-12 3D Visualizer",
+  "tag": "Shows the carbon atom in 3D so students can see protons, neutrons and electron shells.",
+  "scenarios": [
+    {
+      "title": "Teach the carbon atom",
+      "ask": "Set up a carbon-12 lesson for {students} students using the {view} view.",
+      "inputs": [
+        {
+          "id": "students",
+          "label": "Students",
+          "type": "range",
+          "min": 1,
+          "max": 40,
+          "step": 1,
+          "value": 24
+        },
+        {
+          "id": "view",
+          "label": "View",
+          "type": "select",
+          "value": "Shell model",
+          "options": [
+            {
+              "label": "Shell model",
+              "n": 1
+            },
+            {
+              "label": "Electron cloud",
+              "n": 2
+            }
+          ]
+        },
+        {
+          "id": "mins",
+          "label": "Lesson length",
+          "type": "range",
+          "min": 15,
+          "max": 60,
+          "step": 5,
+          "value": 30,
+          "unit": "min"
+        }
+      ],
+      "steps": [
+        [
+          "Builder",
+          "Built the nucleus with 6 protons and 6 neutrons."
+        ],
+        [
+          "Shells",
+          "Placed 6 electrons: 2 in the inner shell and 4 in the outer shell."
+        ],
+        [
+          "Guide",
+          "Explained why the 4 outer electrons let carbon form 4 bonds."
+        ],
+        [
+          "Class",
+          "Made {=ceil(students / 2)} pair links so students can rotate the model on their own devices."
+        ]
+      ],
+      "result": {
+        "title": "Lesson ready",
+        "rows": [
+          [
+            "Protons, neutrons, electrons",
+            "6, 6, 6"
+          ],
+          [
+            "Shells",
+            "2 (holding 2 and 4)"
+          ],
+          [
+            "Device pairs",
+            "{=ceil(students / 2)}"
+          ],
+          [
+            "Quiz questions",
+            "{=round(mins / 5)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why carbon-12?",
+          "Carbon-12 is the most common form of carbon, and it is the standard for atomic mass: one atom is defined as exactly 12 atomic mass units."
+        ],
+        [
+          "Is the shell model accurate?",
+          "It is a simplified picture. The electron cloud view shows that electrons are spread in regions, not fixed paths."
+        ]
+      ]
+    },
+    {
+      "title": "Compare carbon isotopes",
+      "ask": "Compare carbon-12 with {iso} and show what changes.",
+      "inputs": [
+        {
+          "id": "iso",
+          "label": "Isotope",
+          "type": "select",
+          "value": "carbon-14",
+          "options": [
+            {
+              "label": "carbon-12",
+              "n": 6
+            },
+            {
+              "label": "carbon-13",
+              "n": 7
+            },
+            {
+              "label": "carbon-14",
+              "n": 8
+            }
+          ]
+        },
+        {
+          "id": "speed",
+          "label": "Animation speed",
+          "type": "range",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "value": 2,
+          "unit": "x"
+        }
+      ],
+      "steps": [
+        [
+          "Builder",
+          "Built {iso} with 6 protons and {=iso} neutrons."
+        ],
+        [
+          "Comparer",
+          "Showed both nuclei side by side at {speed} speed."
+        ],
+        [
+          "Facts",
+          "Carbon-12 and carbon-13 are stable. Carbon-14 is radioactive, with a half-life of about 5,730 years."
+        ],
+        [
+          "Guide",
+          "Explained that the electrons, and so the chemistry, stay the same."
+        ]
+      ],
+      "result": {
+        "title": "Isotope comparison",
+        "rows": [
+          [
+            "Protons",
+            "6"
+          ],
+          [
+            "Neutrons",
+            "{=iso}"
+          ],
+          [
+            "Mass number",
+            "{=6 + iso}"
+          ],
+          [
+            "Neutron-to-proton ratio",
+            "{=round(iso / 6, 2)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How is carbon-14 used?",
+          "Its steady decay is the basis of radiocarbon dating of once-living material, up to roughly 50,000 years old."
+        ],
+        [
+          "Do isotopes look different?",
+          "Only the nucleus changes. The app shows the extra neutrons, and the electron shells stay the same."
+        ]
+      ]
+    },
+    {
+      "title": "Show the scale of an atom",
+      "ask": "If we draw the nucleus {nuc} wide, how big would the whole atom be?",
+      "inputs": [
+        {
+          "id": "nuc",
+          "label": "Nucleus drawn as",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 5,
+          "unit": "mm"
+        }
+      ],
+      "steps": [
+        [
+          "Scaler",
+          "Used a rough ratio: the atom is about 30,000 times wider than its nucleus."
+        ],
+        [
+          "Model",
+          "Drew the nucleus at {nuc} and the outer shell at about {=round(nuc * 30, 1)} meters."
+        ],
+        [
+          "Compare",
+          "Matched that size to a familiar object for the class."
+        ],
+        [
+          "Guide",
+          "Explained that almost all of the atom is empty space."
+        ]
+      ],
+      "result": {
+        "title": "Scale model",
+        "rows": [
+          [
+            "Nucleus",
+            "{nuc}"
+          ],
+          [
+            "Whole atom",
+            "About {=round(nuc * 30, 1)} m across"
+          ],
+          [
+            "Ratio",
+            "Roughly 1 to 30,000"
+          ],
+          [
+            "Mass in nucleus",
+            "More than 99.9%"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why only roughly?",
+          "An atom has no hard edge, so its size depends on how you measure it. The ratio is a teaching estimate."
+        ],
+        [
+          "Can we print it?",
+          "Yes. The app exports a to-scale chart you can lay out on the playground or a hallway."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "name": "AI Design Architect Workspace",
+  "tag": "Sketch an agent architecture, wire up its prompt flow and test it on sample inputs in one place.",
+  "scenarios": [
+    {
+      "title": "Design a quote-request assistant",
+      "ask": "Design an assistant that turns customer emails into draft quotes, with {nodes} prompt steps, tested on {cases} sample emails.",
+      "inputs": [
+        {"id": "nodes", "label": "Prompt steps in the flow", "type": "range", "min": 2, "max": 8, "step": 1, "value": 4},
+        {"id": "cases", "label": "Sample emails to test", "type": "range", "min": 10, "max": 200, "step": 10, "value": 40}
+      ],
+      "steps": [
+        ["Canvas", "Drew a flow with {nodes} steps that read the email, pull out line items, look up prices and draft the quote."],
+        ["Prompt editor", "Wrote a prompt for each step with input and output fields named so steps connect cleanly."],
+        ["Test bench", "Ran {cases} sample emails. {=round(cases * min(0.95, 0.7 + nodes * 0.05))} produced a complete quote."],
+        ["Inspector", "Most failures came from emails listing items in a table image. Suggested an image-reading step."]
+      ],
+      "result": {
+        "title": "Flow test",
+        "rows": [
+          ["Complete quotes", "{=round(cases * min(0.95, 0.7 + nodes * 0.05))} of {cases}"],
+          ["Pass rate", "{=round(min(0.95, 0.7 + nodes * 0.05) * 100)}%"],
+          ["Average steps run", "{nodes}"],
+          ["Cost per email", "about ${=round(nodes * 0.004, 3)}"]
+        ]
+      },
+      "followups": [
+        ["Why does adding steps raise the pass rate?", "Each step does one small job and checks its own output, so errors are caught earlier. Past about six steps the gain is small and cost keeps rising."],
+        ["Can I export the flow?", "Yes. Export as JSON or as Python code that runs the same prompts in the same order."]
+      ]
+    },
+    {
+      "title": "Choose between two prompt versions",
+      "ask": "Test two versions of our summary prompt on {cases} support tickets and pick the better one.",
+      "inputs": [
+        {"id": "cases", "label": "Tickets in the test set", "type": "range", "min": 20, "max": 500, "step": 20, "value": 100},
+        {"id": "length", "label": "Target summary length in words", "type": "range", "min": 20, "max": 150, "step": 10, "value": 60}
+      ],
+      "steps": [
+        ["Test bench", "Ran version A and version B on the same {cases} tickets."],
+        ["Grader", "Scored each summary for accuracy, missing facts and length against a {length}-word target."],
+        ["Diff view", "Showed the {=max(5, round(cases * 0.1))} tickets where the two versions differed most."],
+        ["Recommendation", "Version B wins on missing facts. Version A is closer to the length target."]
+      ],
+      "result": {
+        "title": "A versus B",
+        "rows": [
+          ["Accuracy, A", "88%"],
+          ["Accuracy, B", "92%"],
+          ["Average length, A", "{=round(length * 1.05)} words"],
+          ["Average length, B", "{=round(length * 1.25)} words"],
+          ["Pick", "B, with a stricter length instruction"]
+        ]
+      },
+      "followups": [
+        ["Who grades the summaries?", "A grader model scores them against a rubric you can edit. Spot-check 10 by hand to make sure the grader agrees with your team."],
+        ["Is {cases} tickets enough?", "For a clear winner, usually yes. If the scores are within two points, add more tickets before deciding."]
+      ]
+    },
+    {
+      "title": "Map an agent architecture",
+      "ask": "Draw the architecture for a research agent with {tools} tools and {memory} memory.",
+      "inputs": [
+        {"id": "tools", "label": "Tools", "type": "range", "min": 1, "max": 12, "step": 1, "value": 4},
+        {"id": "memory", "label": "Memory type", "type": "select", "value": "Per-session",
+         "options": [{"label": "None", "n": 0}, {"label": "Per-session", "n": 1}, {"label": "Long-term", "n": 2}]}
+      ],
+      "steps": [
+        ["Canvas", "Placed the agent, {tools} tools and a {memory} memory store on the board."],
+        ["Linter", "Checked every arrow has a defined input and output. Found {=max(1, round(tools / 3))} tools with no error handling."],
+        ["Simulator", "Walked 5 sample questions through the diagram and highlighted the path each took."],
+        ["Documenter", "Generated a one-page design doc from the diagram."]
+      ],
+      "result": {
+        "title": "Architecture ready",
+        "rows": [
+          ["Components", "{=tools + 1 + memory}"],
+          ["Warnings", "{=max(1, round(tools / 3))}"],
+          ["Memory", "{memory}"],
+          ["Design doc", "1 page, ready to share"]
+        ]
+      },
+      "followups": [
+        ["What does long-term memory add?", "The agent can recall earlier sessions, like a user's preferred sources. It also needs a retention rule and a way for users to clear it, which the workspace adds to the design."],
+        ["Can my team comment on the diagram?", "Yes. Anyone with the link can leave comments on a component."]
+      ]
+    }
+  ]
+}

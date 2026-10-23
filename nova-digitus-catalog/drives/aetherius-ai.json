@@ -1,0 +1,88 @@
+{
+  "name": "Aetherius AI",
+  "tag": "One control screen to launch, watch and steer autonomous agent workflows as they run.",
+  "scenarios": [
+    {
+      "title": "Watch an invoice-processing run",
+      "ask": "Run the invoice workflow on {invoices} invoices with {workers} worker agents and show me live progress.",
+      "inputs": [
+        {"id": "invoices", "label": "Invoices in the batch", "type": "range", "min": 50, "max": 5000, "step": 50, "value": 800},
+        {"id": "workers", "label": "Worker agents", "type": "range", "min": 1, "max": 20, "step": 1, "value": 6}
+      ],
+      "steps": [
+        ["Launcher", "Started {workers} worker agents and split the batch into lots of about {=ceil(invoices / workers)}."],
+        ["Telemetry", "Streaming throughput, error rate and cost per invoice to the 3D flow view."],
+        ["Extractor agents", "Read vendor, amount and due date. Average {=round(4 + 30 / workers, 1)} seconds per invoice including queue time."],
+        ["Exception lane", "Moved {=ceil(invoices * 0.03)} invoices with missing PO numbers to a human queue, shown as an amber branch."],
+        ["Controller", "Run complete. Telemetry saved for replay."]
+      ],
+      "result": {
+        "title": "Run summary",
+        "rows": [
+          ["Invoices processed", "{=invoices - ceil(invoices * 0.03)}"],
+          ["Sent to a person", "{=ceil(invoices * 0.03)}"],
+          ["Wall-clock time", "about {=ceil(invoices * 4 / workers / 60)} minutes"],
+          ["Model cost", "about ${=round(invoices * 0.004, 2)}"]
+        ]
+      },
+      "followups": [
+        ["Can I pause a run midway?", "Yes. Pause holds every agent after its current item. You can change a setting, like the exception rule, and resume without losing work."],
+        ["What does the 3D view add?", "It shows each agent as a node and each handoff as a flow, so a stalled step or a growing queue is visible at a glance instead of buried in logs."]
+      ]
+    },
+    {
+      "title": "Catch a runaway agent",
+      "ask": "Alert me when any of our {agents} agents loops or spends more than ${budget} in an hour.",
+      "inputs": [
+        {"id": "agents", "label": "Agents in production", "type": "range", "min": 2, "max": 50, "step": 1, "value": 10},
+        {"id": "budget", "label": "Hourly spend limit per agent", "type": "range", "min": 1, "max": 50, "step": 1, "value": 5}
+      ],
+      "steps": [
+        ["Telemetry", "Tracked calls, tokens and spend for {agents} agents in one-minute windows."],
+        ["Loop detector", "Flagged the Pricing agent: the same tool call 14 times in 3 minutes with the same input."],
+        ["Guard", "Paused it at ${=round(budget * 0.6, 2)} spent, before the ${budget} limit."],
+        ["Notifier", "Sent an alert with the last 10 steps so the owner can see where it got stuck."]
+      ],
+      "result": {
+        "title": "Incident caught",
+        "rows": [
+          ["Agents watched", "{agents}"],
+          ["Agent paused", "Pricing agent"],
+          ["Spend at pause", "${=round(budget * 0.6, 2)}"],
+          ["Monthly spend protected", "up to ${=budget * 24 * 30}"]
+        ]
+      },
+      "followups": [
+        ["Will it pause agents that are just busy?", "It looks for repeats with the same input, not volume. A busy agent making varied calls is not paused, only rate-limited if it hits the spend cap."],
+        ["Who can restart it?", "The agent's owner or an admin, from the same screen. The restart is logged with a note."]
+      ]
+    },
+    {
+      "title": "Compare two workflow versions",
+      "ask": "Run version A and version B of our lead-scoring workflow on {leads} leads and compare.",
+      "inputs": [
+        {"id": "leads", "label": "Test leads", "type": "range", "min": 100, "max": 5000, "step": 100, "value": 1000},
+        {"id": "steps_b", "label": "Extra steps in version B", "type": "range", "min": 1, "max": 5, "step": 1, "value": 2}
+      ],
+      "steps": [
+        ["Launcher", "Ran both versions on the same {leads} leads in parallel."],
+        ["Telemetry", "Recorded time, cost and score for every lead in both runs."],
+        ["Comparator", "Version B added {steps_b} steps. It agreed with sales-qualified outcomes {=min(12, steps_b * 3)} points more often."],
+        ["Reporter", "Built a side-by-side view with the 20 leads where the versions disagreed most."]
+      ],
+      "result": {
+        "title": "A versus B",
+        "rows": [
+          ["Agreement with sales, A", "71%"],
+          ["Agreement with sales, B", "{=71 + min(12, steps_b * 3)}%"],
+          ["Extra cost per 1,000 leads, B", "${=round(steps_b * 0.9, 2)}"],
+          ["Extra time per lead, B", "{=steps_b * 2} seconds"]
+        ]
+      },
+      "followups": [
+        ["Is the test sample fair?", "Both versions see the exact same leads in the same order, so the difference comes from the workflow, not the data."],
+        ["Can we roll out B to part of traffic first?", "Yes. Send a share of live leads to B, watch the same telemetry, and promote it when you are satisfied."]
+      ]
+    }
+  ]
+}

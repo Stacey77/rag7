@@ -1,0 +1,255 @@
+{
+  "name": "AI Strategy Planner",
+  "tag": "Maps your workflows, picks where AI helps most, generates the MCP servers to connect your tools and estimates the return.",
+  "scenarios": [
+    {
+      "title": "Find the best AI opportunities",
+      "ask": "Assess our {workflows} main workflows. We have {staff} staff at about ${rate} an hour.",
+      "inputs": [
+        {
+          "id": "workflows",
+          "label": "Workflows to assess",
+          "type": "range",
+          "min": 3,
+          "max": 30,
+          "step": 1,
+          "value": 10
+        },
+        {
+          "id": "staff",
+          "label": "Staff involved",
+          "type": "range",
+          "min": 2,
+          "max": 200,
+          "step": 1,
+          "value": 25
+        },
+        {
+          "id": "rate",
+          "label": "Loaded hourly cost",
+          "type": "range",
+          "min": 20,
+          "max": 150,
+          "step": 5,
+          "value": 45
+        }
+      ],
+      "steps": [
+        [
+          "Interviewer",
+          "Asked short questions about each of the {workflows} workflows: steps, tools, volume and errors."
+        ],
+        [
+          "Scorer",
+          "Rated each on time spent, repetition and risk. {=max(1, round(workflows * 0.3))} scored high for AI help."
+        ],
+        [
+          "Strategist",
+          "Grouped them into a 3-phase roadmap: quick wins, connected tools, then agents."
+        ],
+        [
+          "ROI model",
+          "Estimated about {=round(staff * 2.5)} staff hours a week freed in phase one."
+        ]
+      ],
+      "result": {
+        "title": "AI strategy draft",
+        "rows": [
+          [
+            "High-value workflows",
+            "{=max(1, round(workflows * 0.3))}"
+          ],
+          [
+            "Hours freed per week (phase 1)",
+            "About {=round(staff * 2.5)}"
+          ],
+          [
+            "Value per year",
+            "${=round(staff * 2.5 * rate * 48)} (estimate)"
+          ],
+          [
+            "Roadmap phases",
+            "3"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Where do the hour estimates come from?",
+          "From your own answers about volume and time per task, cut by a safety margin. They're estimates to rank options, not promises."
+        ],
+        [
+          "What's a typical first project?",
+          "Usually a document or email task done many times a day, because it's easy to measure and low risk."
+        ]
+      ]
+    },
+    {
+      "title": "Connect our tools with MCP",
+      "ask": "Generate MCP servers so our AI assistant can use {tools} of our business tools, with {access} access.",
+      "inputs": [
+        {
+          "id": "tools",
+          "label": "Tools to connect",
+          "type": "range",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "access",
+          "label": "Access level",
+          "type": "select",
+          "value": "read-only",
+          "options": [
+            {
+              "label": "read-only",
+              "n": 1
+            },
+            {
+              "label": "read and draft",
+              "n": 2
+            },
+            {
+              "label": "read and write with approval",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Tool mapper",
+          "Listed what each of the {tools} tools can do through its API and what your team actually uses."
+        ],
+        [
+          "Generator",
+          "Wrote {tools} MCP servers exposing about {=tools * (3 + access * 2)} actions in total."
+        ],
+        [
+          "Guardrails",
+          "Set {access} access, with every write action held for a person to approve."
+        ],
+        [
+          "Tester",
+          "Ran sample requests against each server using test accounts."
+        ]
+      ],
+      "result": {
+        "title": "Servers generated",
+        "rows": [
+          [
+            "MCP servers",
+            "{tools}"
+          ],
+          [
+            "Actions exposed",
+            "{=tools * (3 + access * 2)}"
+          ],
+          [
+            "Access level",
+            "{access}"
+          ],
+          [
+            "Estimated setup time",
+            "{=tools * 2 + access} days with testing"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What is an MCP server?",
+          "MCP (Model Context Protocol) is an open standard for letting AI assistants use tools and data. Each server is a small connector to one tool."
+        ],
+        [
+          "Is read-only enough to be useful?",
+          "Often, yes. Letting the assistant look things up across tools saves time on its own, and you can add write actions later."
+        ]
+      ]
+    },
+    {
+      "title": "Build the business case",
+      "ask": "Our board wants a business case for a ${budget} AI program. Show payback.",
+      "inputs": [
+        {
+          "id": "budget",
+          "label": "Year-one budget",
+          "type": "range",
+          "min": 10000,
+          "max": 500000,
+          "step": 5000,
+          "value": 80000
+        },
+        {
+          "id": "hours",
+          "label": "Hours freed per week",
+          "type": "range",
+          "min": 10,
+          "max": 400,
+          "step": 10,
+          "value": 60,
+          "unit": "hours"
+        },
+        {
+          "id": "rate",
+          "label": "Loaded hourly cost",
+          "type": "range",
+          "min": 20,
+          "max": 150,
+          "step": 5,
+          "value": 50
+        }
+      ],
+      "steps": [
+        [
+          "ROI model",
+          "Year-one value: {hours} a week at ${rate} for 48 weeks is ${=hours * rate * 48}."
+        ],
+        [
+          "Risk adjuster",
+          "Applied a 30% haircut for slow adoption, giving ${=round(hours * rate * 48 * 0.7)}."
+        ],
+        [
+          "Writer",
+          "Drafted a 2-page case with scope, costs, risks and how success is measured."
+        ],
+        [
+          "Reviewer",
+          "Listed questions a board is likely to ask, with answers."
+        ]
+      ],
+      "result": {
+        "title": "Business case",
+        "rows": [
+          [
+            "Program cost",
+            "${budget}"
+          ],
+          [
+            "Risk-adjusted value, year one",
+            "${=round(hours * rate * 48 * 0.7)}"
+          ],
+          [
+            "Payback",
+            "{=round(budget / max(1, hours * rate * 4 * 0.7), 1)} months"
+          ],
+          [
+            "Note",
+            "Illustration, not a forecast"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if adoption is slower?",
+          "At half the expected hours, payback stretches to about {=round(budget / max(1, hours * rate * 2 * 0.7), 1)} months. The case shows both lines."
+        ],
+        [
+          "How do we measure it?",
+          "Pick two or three tracked numbers, such as handling time per request, before you start. The plan reports them monthly."
+        ]
+      ]
+    }
+  ]
+}

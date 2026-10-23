@@ -1,0 +1,257 @@
+{
+  "name": "TerraFleet Autonomous Garden Robotics",
+  "tag": "Plans and coordinates garden robots that water, weed and scout your beds.",
+  "scenarios": [
+    {
+      "title": "Tend beds before rain",
+      "ask": "Tend beds 1 to {beds} today with {robots} robot(s). Chance of rain tomorrow is {rain}.",
+      "inputs": [
+        {
+          "id": "beds",
+          "label": "Beds",
+          "type": "range",
+          "min": 2,
+          "max": 24,
+          "step": 1,
+          "value": 6
+        },
+        {
+          "id": "rain",
+          "label": "Chance of rain tomorrow",
+          "type": "range",
+          "min": 0,
+          "max": 100,
+          "step": 10,
+          "value": 90,
+          "unit": "%"
+        },
+        {
+          "id": "robots",
+          "label": "Robots available",
+          "type": "range",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "value": 1
+        }
+      ],
+      "steps": [
+        [
+          "Sensors",
+          "Soil moisture is low in {=ceil(beds / 3)} bed(s). The rest are fine."
+        ],
+        [
+          "Planner",
+          "Cut the watering plan by {=round(rain * 0.75)}% because of the forecast. Light top-up for dry beds only."
+        ],
+        [
+          "Weeder bot",
+          "Cleared weeds in {=ceil(beds / 3)} bed(s). {=ceil(beds / 3) * 106} weeds removed."
+        ],
+        [
+          "Scout bot",
+          "Aphids spotted on one kale bed. Photo sent for review."
+        ]
+      ],
+      "result": {
+        "title": "Garden report",
+        "rows": [
+          [
+            "Water saved",
+            "{=round(rain * 0.75)}% vs full schedule"
+          ],
+          [
+            "Beds weeded",
+            "{=ceil(beds / 3)}"
+          ],
+          [
+            "Alerts",
+            "Aphids on one kale bed"
+          ],
+          [
+            "Robot time",
+            "{=round(beds * 9 / robots)} min"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if the rain doesn't come?",
+          "The planner checks soil moisture the next morning and waters any bed below its target."
+        ],
+        [
+          "Do the robots spray anything for the aphids?",
+          "No. The scout sends a photo and suggestions. You decide on treatment."
+        ]
+      ]
+    },
+    {
+      "title": "Plan a planting season",
+      "ask": "Plan a season of {crop} across {beds} beds with {robots} robots.",
+      "inputs": [
+        {
+          "id": "beds",
+          "label": "Beds",
+          "type": "range",
+          "min": 2,
+          "max": 40,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "crop",
+          "label": "Main crop",
+          "type": "select",
+          "value": "salad greens",
+          "options": [
+            {
+              "label": "salad greens",
+              "n": 4
+            },
+            {
+              "label": "tomatoes",
+              "n": 1
+            },
+            {
+              "label": "root vegetables",
+              "n": 2
+            }
+          ]
+        },
+        {
+          "id": "robots",
+          "label": "Robots",
+          "type": "range",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "value": 2
+        }
+      ],
+      "steps": [
+        [
+          "Planner",
+          "Built a sowing calendar with {crop} rotated across {beds} beds."
+        ],
+        [
+          "Succession",
+          "Planned {=crop} sowing round(s) so harvests are spread out."
+        ],
+        [
+          "Fleet",
+          "Gave each robot about {=round(beds / robots, 1)} beds to tend."
+        ],
+        [
+          "Calendar",
+          "Scheduled weekly weeding and daily moisture checks."
+        ]
+      ],
+      "result": {
+        "title": "Season plan",
+        "rows": [
+          [
+            "Sowing rounds",
+            "{=crop}"
+          ],
+          [
+            "Beds per robot",
+            "{=round(beds / robots, 1)}"
+          ],
+          [
+            "Robot hours per week",
+            "About {=round(beds * 9 * 7 / 60 / 2)}"
+          ],
+          [
+            "Harvest weeks",
+            "{=4 + crop * 3}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I override the plan?",
+          "Yes. Move any sowing date and the robots' schedules update."
+        ],
+        [
+          "Do robots harvest?",
+          "This plan covers watering, weeding and scouting. Harvesting stays with people."
+        ]
+      ]
+    },
+    {
+      "title": "Size a robot fleet",
+      "ask": "How many robots do we need for {area} of beds, with {hours} of robot work a day?",
+      "inputs": [
+        {
+          "id": "area",
+          "label": "Bed area",
+          "type": "range",
+          "min": 50,
+          "max": 2000,
+          "step": 50,
+          "value": 400,
+          "unit": "m²"
+        },
+        {
+          "id": "hours",
+          "label": "Robot work hours per day",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 6,
+          "unit": "hours"
+        }
+      ],
+      "steps": [
+        [
+          "Survey",
+          "Mapped {area} of beds and the paths between them."
+        ],
+        [
+          "Workload",
+          "Estimated {=round(area * 0.025, 1)} robot hours a day for watering, weeding and scouting."
+        ],
+        [
+          "Fleet",
+          "Recommended {=max(1, ceil(area * 0.025 / hours))} robot(s) working {hours} a day."
+        ],
+        [
+          "Charging",
+          "Placed {=max(1, ceil(max(1, ceil(area * 0.025 / hours)) / 2))} charging dock(s) at bed ends."
+        ]
+      ],
+      "result": {
+        "title": "Fleet size",
+        "rows": [
+          [
+            "Robot hours needed",
+            "{=round(area * 0.025, 1)} a day"
+          ],
+          [
+            "Robots",
+            "{=max(1, ceil(area * 0.025 / hours))}"
+          ],
+          [
+            "Charging docks",
+            "{=max(1, ceil(max(1, ceil(area * 0.025 / hours)) / 2))}"
+          ],
+          [
+            "Spare capacity",
+            "{=round(max(1, ceil(area * 0.025 / hours)) * hours - area * 0.025, 1)} hours a day"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if we add more beds?",
+          "The sizer re-runs and shows when one more robot is needed."
+        ],
+        [
+          "Can robots share docks?",
+          "Yes. The planner staggers charging so two robots share one dock."
+        ]
+      ]
+    }
+  ]
+}

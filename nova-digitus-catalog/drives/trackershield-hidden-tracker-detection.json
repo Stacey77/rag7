@@ -1,0 +1,253 @@
+{
+  "name": "TrackerShield: Hidden Tracker Detection",
+  "tag": "Walks you through a calm, step-by-step sweep of your car or bags to check for hidden Bluetooth trackers.",
+  "scenarios": [
+    {
+      "title": "Sweep a vehicle",
+      "ask": "I think someone may be tracking my {vehicle}. Walk me through a sweep. It's been {days} since I last checked.",
+      "inputs": [
+        {
+          "id": "vehicle",
+          "label": "Vehicle type",
+          "type": "select",
+          "value": "Sedan",
+          "options": [
+            {
+              "label": "Compact car",
+              "n": 1
+            },
+            {
+              "label": "Sedan",
+              "n": 2
+            },
+            {
+              "label": "SUV or truck",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "days",
+          "label": "Days since last check",
+          "type": "range",
+          "min": 1,
+          "max": 90,
+          "step": 1,
+          "value": 14,
+          "unit": "days"
+        }
+      ],
+      "steps": [
+        [
+          "Scanner",
+          "Listened for nearby Bluetooth trackers for 3 minutes. Found {=vehicle + 1} unknown devices, including a parked neighbor's car."
+        ],
+        [
+          "Repeat scan",
+          "Walked you around the vehicle with the scan running. One device stayed strong at every spot. The rest faded."
+        ],
+        [
+          "Sweep guide",
+          "Gave you {=12 + vehicle * 4} places to check: wheel wells, under the seats, the trunk lining, the bumper and the glove box."
+        ],
+        [
+          "Safety guide",
+          "Explained what to do if you find something, before you touch it."
+        ]
+      ],
+      "result": {
+        "title": "Sweep summary (sample)",
+        "rows": [
+          [
+            "Places to check",
+            "{=12 + vehicle * 4}"
+          ],
+          [
+            "Estimated sweep time",
+            "{=10 + vehicle * 5} minutes"
+          ],
+          [
+            "Devices that followed you",
+            "1 in this sample"
+          ],
+          [
+            "Next check reminder",
+            "In {=min(30, max(7, round(days / 2)))} days"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What should I do if I find a tracker?",
+          "If you feel unsafe, go somewhere safe first. Photograph it where you found it and contact local police or a victim advocate before removing it, because it may be evidence."
+        ],
+        [
+          "Can the app find every tracker?",
+          "No. It finds Bluetooth trackers that are powered on and in range. A wired GPS unit or a switched-off device won't show up, so the physical sweep still matters."
+        ],
+        [
+          "Will the person who placed it know I scanned?",
+          "The scan only listens. It doesn't send anything to the tracker."
+        ]
+      ]
+    },
+    {
+      "title": "Check bags after travel",
+      "ask": "I'm back from a trip with {bags} bags. Check them for trackers I didn't put there.",
+      "inputs": [
+        {
+          "id": "bags",
+          "label": "Bags and cases",
+          "type": "range",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "own",
+          "label": "Your own trackers",
+          "type": "range",
+          "min": 0,
+          "max": 4,
+          "step": 1,
+          "value": 1
+        }
+      ],
+      "steps": [
+        [
+          "Scanner",
+          "Found {=own + 1} trackers near you. {own} match the ones registered in your account."
+        ],
+        [
+          "Separator",
+          "Asked you to move each bag to a different room, one at a time, and rescanned."
+        ],
+        [
+          "Locator",
+          "The unknown signal moved with bag 2. Use the sound or signal-strength meter to narrow it down."
+        ],
+        [
+          "Sweep guide",
+          "Listed {=bags * 6} spots to check, such as lining seams, wheel housings and outer pockets."
+        ]
+      ],
+      "result": {
+        "title": "Bag check (sample)",
+        "rows": [
+          [
+            "Your trackers",
+            "{own}"
+          ],
+          [
+            "Unknown trackers",
+            "1 in this sample"
+          ],
+          [
+            "Spots to check",
+            "{=bags * 6}"
+          ],
+          [
+            "Estimated time",
+            "{=bags * 4 + 3} minutes"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Could it be harmless?",
+          "Yes. A tracker left by a travel companion or a borrowed bag is common. The app helps you find it, and you decide what it means."
+        ],
+        [
+          "Do I need an iPhone or Android?",
+          "Both work. The guided sweep and signal meter are the same on either."
+        ]
+      ]
+    },
+    {
+      "title": "Respond to a 'tracker found' alert",
+      "ask": "My phone warned me an unknown tracker is moving with me. I'm {where}. What now?",
+      "inputs": [
+        {
+          "id": "where",
+          "label": "Where you are",
+          "type": "select",
+          "value": "at home",
+          "options": [
+            {
+              "label": "at home",
+              "n": 1
+            },
+            {
+              "label": "in my car",
+              "n": 2
+            },
+            {
+              "label": "out in public",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "minutes",
+          "label": "Minutes since the alert",
+          "type": "range",
+          "min": 1,
+          "max": 120,
+          "step": 1,
+          "value": 15,
+          "unit": "minutes"
+        }
+      ],
+      "steps": [
+        [
+          "Safety check",
+          "Asked if you feel safe right now and showed emergency options first."
+        ],
+        [
+          "Scanner",
+          "Confirmed the signal is still near you, {minutes} after the alert."
+        ],
+        [
+          "Sweep guide",
+          "Started a {=10 - where * 2}-step sweep focused on what you carry and the spaces around you."
+        ],
+        [
+          "Record keeper",
+          "Saved the time, place and signal readings in a private log you can share with police or an advocate."
+        ]
+      ],
+      "result": {
+        "title": "Next steps",
+        "rows": [
+          [
+            "Steps in your sweep",
+            "{=10 - where * 2}"
+          ],
+          [
+            "Log entries saved",
+            "{=3 + where}"
+          ],
+          [
+            "Signal still nearby",
+            "Yes, in this sample"
+          ],
+          [
+            "Help options shown",
+            "Emergency, police non-emergency, advocate hotline"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Should I go home if I'm being tracked?",
+          "If you're worried, consider going to a public, staffed place or a police station instead of home until you've checked. Your safety comes first."
+        ],
+        [
+          "Is my log private?",
+          "Yes. It stays on your device unless you choose to export or share it."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+{
+  "name": "Collaborative Business Context Hub",
+  "tag": "A shared workspace where your team defines its KPIs, data and terms, so every AI tool answers in your language.",
+  "scenarios": [
+    {
+      "title": "Define our KPIs once",
+      "ask": "Our {teams} teams each measure 'active customer' differently. Agree one set of KPI definitions.",
+      "inputs": [
+        {
+          "id": "teams",
+          "label": "Teams involved",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "kpis",
+          "label": "KPIs to define",
+          "type": "range",
+          "min": 3,
+          "max": 40,
+          "step": 1,
+          "value": 12
+        }
+      ],
+      "steps": [
+        [
+          "Collector",
+          "Gathered {=teams * 3} existing definitions of active customer from reports and dashboards."
+        ],
+        [
+          "Comparer",
+          "Showed where they differ: 30-day vs 90-day windows, and whether free users count."
+        ],
+        [
+          "Facilitator",
+          "Proposed one definition per KPI with notes, for each team to comment on."
+        ],
+        [
+          "Publisher",
+          "Published {kpis} approved KPI definitions that AI tools can read."
+        ]
+      ],
+      "result": {
+        "title": "KPI glossary",
+        "rows": [
+          [
+            "KPIs defined",
+            "{kpis}"
+          ],
+          [
+            "Conflicting definitions found",
+            "{=teams * 3}"
+          ],
+          [
+            "Team sign-offs needed",
+            "{teams}"
+          ],
+          [
+            "Estimated time to agree",
+            "{=ceil(kpis / 4)} short sessions"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How do AI tools use this?",
+          "The hub shares definitions with connected assistants, so a question like 'how many active customers?' is answered using your definition."
+        ],
+        [
+          "What if a definition changes later?",
+          "Edit it in the hub and every connected tool picks up the new version. The old one is kept in history."
+        ]
+      ]
+    },
+    {
+      "title": "Map our data sources",
+      "ask": "Document our {sources} data sources so AI tools know which one is the source of truth.",
+      "inputs": [
+        {
+          "id": "sources",
+          "label": "Data sources",
+          "type": "range",
+          "min": 2,
+          "max": 30,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "tables",
+          "label": "Key tables or sheets",
+          "type": "range",
+          "min": 5,
+          "max": 200,
+          "step": 5,
+          "value": 40
+        }
+      ],
+      "steps": [
+        [
+          "Scanner",
+          "Listed {tables} tables and sheets across {sources} sources."
+        ],
+        [
+          "Duplicate finder",
+          "Found {=max(1, round(tables * 0.15))} tables holding the same data in two places."
+        ],
+        [
+          "Owner matcher",
+          "Asked each team to name an owner and a source of truth."
+        ],
+        [
+          "Publisher",
+          "Wrote a plain-English description for every table."
+        ]
+      ],
+      "result": {
+        "title": "Data map",
+        "rows": [
+          [
+            "Tables described",
+            "{tables}"
+          ],
+          [
+            "Duplicates found",
+            "{=max(1, round(tables * 0.15))}"
+          ],
+          [
+            "Sources of truth agreed",
+            "{sources}"
+          ],
+          [
+            "Open questions",
+            "{=max(1, round(tables * 0.05))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it copy our data?",
+          "No. It stores descriptions and links, not the data itself."
+        ],
+        [
+          "Who keeps it up to date?",
+          "Each table has an owner who gets a reminder when the hub notices the table has changed."
+        ]
+      ]
+    },
+    {
+      "title": "Glossary for a new hire",
+      "ask": "We hire {hires} people next quarter. Build a glossary of our {terms} internal terms they can ask about.",
+      "inputs": [
+        {
+          "id": "hires",
+          "label": "New hires",
+          "type": "range",
+          "min": 1,
+          "max": 50,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "terms",
+          "label": "Internal terms and acronyms",
+          "type": "range",
+          "min": 10,
+          "max": 300,
+          "step": 10,
+          "value": 80
+        }
+      ],
+      "steps": [
+        [
+          "Collector",
+          "Found {terms} terms used in docs and chats, from product names to internal acronyms."
+        ],
+        [
+          "Writer",
+          "Drafted a one-line meaning and an example for each."
+        ],
+        [
+          "Reviewer",
+          "Sent {=ceil(terms / 20)} batches to the right experts to check."
+        ],
+        [
+          "Assistant",
+          "Set up a chat assistant new hires can ask, answering from the glossary."
+        ]
+      ],
+      "result": {
+        "title": "Glossary ready",
+        "rows": [
+          [
+            "Terms defined",
+            "{terms}"
+          ],
+          [
+            "Expert review batches",
+            "{=ceil(terms / 20)}"
+          ],
+          [
+            "New hires with access",
+            "{hires}"
+          ],
+          [
+            "Onboarding time saved",
+            "About {=hires * 3} hours of team time"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if the assistant doesn't know a term?",
+          "It says so and sends the question to the term's owner, then adds the answer to the glossary."
+        ],
+        [
+          "Can it work with our current chat tool?",
+          "Yes. The assistant can sit in common team chat tools or a web page."
+        ]
+      ]
+    }
+  ]
+}

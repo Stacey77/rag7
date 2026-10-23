@@ -1,0 +1,226 @@
+{
+  "name": "Nova Digitus Agent Dashboard",
+  "tag": "One control panel to watch, steer and automate your team of AI agents.",
+  "scenarios": [
+    {
+      "title": "Morning check on the agent team",
+      "ask": "Show me how my {agents} agents did overnight and what needs me.",
+      "inputs": [
+        {
+          "id": "agents",
+          "label": "Active agents",
+          "type": "range",
+          "min": 2,
+          "max": 50,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "tasks",
+          "label": "Tasks per agent overnight",
+          "type": "range",
+          "min": 5,
+          "max": 200,
+          "step": 5,
+          "value": 30
+        }
+      ],
+      "steps": [
+        [
+          "Status board",
+          "{agents} agents ran {=agents * tasks} tasks overnight."
+        ],
+        [
+          "Exception finder",
+          "{=max(1, round(agents * tasks * 0.03))} tasks stopped for approval or failed."
+        ],
+        [
+          "Cost tracker",
+          "Model usage cost about ${=round(agents * tasks * 0.04, 2)} overnight."
+        ],
+        [
+          "Summarizer",
+          "Wrote a 5-line morning summary."
+        ]
+      ],
+      "result": {
+        "title": "Morning summary",
+        "rows": [
+          [
+            "Tasks completed",
+            "{=agents * tasks - max(1, round(agents * tasks * 0.03))}"
+          ],
+          [
+            "Need you",
+            "{=max(1, round(agents * tasks * 0.03))}"
+          ],
+          [
+            "Overnight cost",
+            "${=round(agents * tasks * 0.04, 2)}"
+          ],
+          [
+            "Agents healthy",
+            "{agents} of {agents}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I approve from my phone?",
+          "Yes. The approval list works on mobile, with the context for each item."
+        ],
+        [
+          "Where does the cost come from?",
+          "Each agent's model calls are counted and priced. You can set a daily cap per agent."
+        ]
+      ]
+    },
+    {
+      "title": "Steer an agent that's off track",
+      "ask": "Our research agent keeps pulling old sources. Adjust it and rerun the last {runs} jobs.",
+      "inputs": [
+        {
+          "id": "runs",
+          "label": "Jobs to rerun",
+          "type": "range",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "age",
+          "label": "Max source age",
+          "type": "range",
+          "min": 3,
+          "max": 36,
+          "step": 3,
+          "value": 12,
+          "unit": "months"
+        }
+      ],
+      "steps": [
+        [
+          "Inspector",
+          "Opened the agent's last runs. 40% of sources were older than {age}."
+        ],
+        [
+          "Steering",
+          "Added an instruction and a filter: only sources from the last {age}."
+        ],
+        [
+          "Rerun",
+          "Reran {runs} jobs with the new settings."
+        ],
+        [
+          "Comparer",
+          "Showed old vs. new results side by side."
+        ]
+      ],
+      "result": {
+        "title": "Agent adjusted",
+        "rows": [
+          [
+            "Jobs rerun",
+            "{runs}"
+          ],
+          [
+            "Old sources before",
+            "40%"
+          ],
+          [
+            "Old sources after",
+            "0%"
+          ],
+          [
+            "Change logged",
+            "Yes, with your name"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will the change stick?",
+          "Yes. It's saved in the agent's settings and shows in its change history."
+        ],
+        [
+          "Can I undo it?",
+          "One click restores the previous settings."
+        ]
+      ]
+    },
+    {
+      "title": "Automate a recurring job",
+      "ask": "Have the agents build a weekly sales report every Monday from {sources} sources.",
+      "inputs": [
+        {
+          "id": "sources",
+          "label": "Data sources",
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "readers",
+          "label": "People who get it",
+          "type": "range",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "value": 6
+        }
+      ],
+      "steps": [
+        [
+          "Scheduler",
+          "Set a Monday 6 AM job."
+        ],
+        [
+          "Data agent",
+          "Pulls numbers from {sources} sources."
+        ],
+        [
+          "Writer agent",
+          "Writes a one-page report and highlights changes."
+        ],
+        [
+          "Sender",
+          "Sends it to {readers} people after a quick check."
+        ]
+      ],
+      "result": {
+        "title": "Job scheduled",
+        "rows": [
+          [
+            "Runs per year",
+            "52"
+          ],
+          [
+            "Sources",
+            "{sources}"
+          ],
+          [
+            "Recipients",
+            "{readers}"
+          ],
+          [
+            "Hours saved per year",
+            "About {=52 * (1 + sources)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if a source fails?",
+          "The report waits, the dashboard flags the failed source and you choose to send without it or retry."
+        ],
+        [
+          "Can I pause it?",
+          "Yes, any job can be paused or edited from the dashboard."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "name": "StreamVerse AI Anomaly Intelligence",
+  "tag": "Watches your live data streams and flags unusual patterns early, so you fix problems before customers notice.",
+  "scenarios": [
+    {
+      "title": "Catch a checkout slowdown",
+      "ask": "Watch our checkout stream at {eps} events per second and tell us when something looks wrong.",
+      "inputs": [
+        {
+          "id": "eps",
+          "label": "Events per second",
+          "type": "range",
+          "min": 100,
+          "max": 10000,
+          "step": 100,
+          "value": 1500
+        },
+        {
+          "id": "sensitivity",
+          "label": "Alert sensitivity",
+          "type": "select",
+          "value": "Balanced",
+          "options": [
+            {
+              "label": "Calm",
+              "n": 1
+            },
+            {
+              "label": "Balanced",
+              "n": 2
+            },
+            {
+              "label": "Sharp",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "history",
+          "label": "Days of history to learn from",
+          "type": "range",
+          "min": 7,
+          "max": 90,
+          "step": 1,
+          "value": 30,
+          "unit": "days"
+        }
+      ],
+      "steps": [
+        [
+          "Baseline",
+          "Learned normal patterns from {history} of data, including the lunch and evening peaks."
+        ],
+        [
+          "Watcher",
+          "Response time on the payment step rose to {=round(380 + 40 * sensitivity)} ms, about 2.4 times normal for 2:10 PM."
+        ],
+        [
+          "Correlator",
+          "Lined it up with a deploy 6 minutes earlier and a rise in retries from one payment region."
+        ],
+        [
+          "Notifier",
+          "Sent one alert to the on-call engineer with the chart, the deploy and a suggested rollback."
+        ]
+      ],
+      "result": {
+        "title": "Anomaly flagged",
+        "rows": [
+          [
+            "Events checked per minute",
+            "{=eps * 60}"
+          ],
+          [
+            "Lead time before error spike",
+            "About {=4 + sensitivity * 2} minutes"
+          ],
+          [
+            "Likely cause",
+            "Deploy plus one slow payment region"
+          ],
+          [
+            "Expected false alarms per week",
+            "{=sensitivity * 2 - 1}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why not just use fixed thresholds?",
+          "Fixed limits either fire every lunchtime peak or miss a slowdown at 3 AM. StreamVerse compares each moment with what's normal for that time and day."
+        ],
+        [
+          "What does sensitivity change?",
+          "Sharper settings alert sooner but send more alerts you'll dismiss. Most teams start on Balanced and adjust after two weeks."
+        ],
+        [
+          "Does it fix things on its own?",
+          "Not by default. It suggests an action, and you can allow simple, reversible actions such as a rollback later."
+        ]
+      ]
+    },
+    {
+      "title": "Sensor fleet drift",
+      "ask": "We stream readings from {sensors} temperature sensors in cold storage. Find any that are drifting.",
+      "inputs": [
+        {
+          "id": "sensors",
+          "label": "Sensors",
+          "type": "range",
+          "min": 20,
+          "max": 2000,
+          "step": 20,
+          "value": 240
+        },
+        {
+          "id": "interval",
+          "label": "Reading every",
+          "type": "range",
+          "min": 10,
+          "max": 300,
+          "step": 10,
+          "value": 60,
+          "unit": "seconds"
+        }
+      ],
+      "steps": [
+        [
+          "Ingest",
+          "Took in {=round(sensors * 86400 / interval)} readings over the last day."
+        ],
+        [
+          "Watcher",
+          "Found {=max(1, round(sensors * 0.015))} sensors reading slowly higher than their neighbors for 5 days."
+        ],
+        [
+          "Classifier",
+          "Marked them as likely sensor drift, not a real temperature rise, because nearby sensors stayed flat."
+        ],
+        [
+          "Notifier",
+          "Opened a maintenance ticket with the sensor IDs and their locations on the floor plan."
+        ]
+      ],
+      "result": {
+        "title": "Drift report",
+        "rows": [
+          [
+            "Sensors checked",
+            "{sensors}"
+          ],
+          [
+            "Readings per day",
+            "{=round(sensors * 86400 / interval)}"
+          ],
+          [
+            "Drifting sensors",
+            "{=max(1, round(sensors * 0.015))}"
+          ],
+          [
+            "Real temperature alarms",
+            "None in the sample"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How does it tell drift from a real problem?",
+          "A real problem shows up across nearby sensors at once. A single sensor creeping away from its neighbors usually points to the sensor itself."
+        ],
+        [
+          "Can it watch other data too?",
+          "Yes. Any steady stream works, such as orders, logins, machine readings or queue lengths."
+        ]
+      ]
+    },
+    {
+      "title": "Cut alert noise",
+      "ask": "Our team gets {alerts} alerts a day and ignores most of them. Clean this up.",
+      "inputs": [
+        {
+          "id": "alerts",
+          "label": "Alerts per day today",
+          "type": "range",
+          "min": 20,
+          "max": 600,
+          "step": 10,
+          "value": 140
+        },
+        {
+          "id": "team",
+          "label": "On-call engineers",
+          "type": "range",
+          "min": 2,
+          "max": 20,
+          "step": 1,
+          "value": 5
+        }
+      ],
+      "steps": [
+        [
+          "Auditor",
+          "Read 30 days of alerts. {=round(alerts * 0.62)} a day closed with no action."
+        ],
+        [
+          "Grouper",
+          "Combined repeats from the same cause into one incident."
+        ],
+        [
+          "Tuner",
+          "Replaced 18 fixed thresholds with learned baselines."
+        ],
+        [
+          "Router",
+          "Sent each alert type to the team that owns it instead of everyone."
+        ]
+      ],
+      "result": {
+        "title": "Alert plan",
+        "rows": [
+          [
+            "Alerts per day now",
+            "{alerts}"
+          ],
+          [
+            "Expected after tuning",
+            "About {=max(5, round(alerts * 0.22))}"
+          ],
+          [
+            "Alerts per engineer per day",
+            "{=round(max(5, round(alerts * 0.22)) / team, 1)}"
+          ],
+          [
+            "Real incidents missed in replay",
+            "0 of the sample set"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will we miss real problems?",
+          "The new rules were replayed against 30 days of history before switching on. You review that replay before anything changes."
+        ],
+        [
+          "How long does tuning take?",
+          "A first pass takes about a week of learning, then it keeps adjusting as your traffic changes."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "name": "Nova Digitus Conversational AI",
+  "tag": "A voice and chat assistant for customer conversations, with guardrails, intent detection and analytics.",
+  "scenarios": [
+    {
+      "title": "Handle an upset customer",
+      "ask": "Customer: 'My order hasn't arrived and I want a refund.' We get about {daily} conversations like this a day.",
+      "inputs": [
+        {
+          "id": "daily",
+          "label": "Customer conversations per day",
+          "type": "range",
+          "min": 20,
+          "max": 2000,
+          "step": 10,
+          "value": 200
+        },
+        {
+          "id": "limit",
+          "label": "Refund limit before a person steps in",
+          "type": "select",
+          "value": "$200",
+          "options": [
+            {
+              "label": "$100",
+              "n": 100
+            },
+            {
+              "label": "$200",
+              "n": 200
+            },
+            {
+              "label": "$500",
+              "n": 500
+            }
+          ]
+        },
+        {
+          "id": "minutes",
+          "label": "Staff minutes per conversation today",
+          "type": "range",
+          "min": 3,
+          "max": 20,
+          "step": 1,
+          "value": 7,
+          "unit": "minutes"
+        }
+      ],
+      "steps": [
+        [
+          "Intent",
+          "Detected: late delivery, refund request. Tone: frustrated."
+        ],
+        [
+          "Lookup",
+          "Order #20417 is with the carrier, due tomorrow."
+        ],
+        [
+          "Guardrail",
+          "Refunds over ${=limit} need a person. This one is $89, inside policy."
+        ],
+        [
+          "Reply",
+          "Apologized, shared tracking, and offered a refund or 15% off if it arrives."
+        ]
+      ],
+      "result": {
+        "title": "Conversation handled",
+        "rows": [
+          [
+            "Resolved without staff",
+            "Yes"
+          ],
+          [
+            "Time to answer",
+            "4 seconds"
+          ],
+          [
+            "Customer choice",
+            "Kept order, took 15% off"
+          ],
+          [
+            "Daily conversations handled",
+            "About {=round(daily * 0.7)} of {daily}"
+          ],
+          [
+            "Staff hours freed per day",
+            "About {=round(daily * 0.7 * minutes / 60, 1)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if the refund were over the limit?",
+          "The assistant tells the customer a person will confirm, then hands the case to staff with the order and conversation attached."
+        ],
+        [
+          "Does it work on the phone too?",
+          "Yes. The same rules run for voice and chat, and voice calls get a transcript."
+        ],
+        [
+          "Where does the 70% come from?",
+          "It's a sample figure. Your rate depends on how many questions are routine, which the analytics show after the first weeks."
+        ]
+      ]
+    },
+    {
+      "title": "Find out why people contact you",
+      "ask": "Show me what our {daily} daily conversations are really about.",
+      "inputs": [
+        {
+          "id": "daily",
+          "label": "Conversations per day",
+          "type": "range",
+          "min": 20,
+          "max": 2000,
+          "step": 10,
+          "value": 300
+        },
+        {
+          "id": "days",
+          "label": "Days of history",
+          "type": "range",
+          "min": 7,
+          "max": 90,
+          "step": 1,
+          "value": 30,
+          "unit": "days"
+        }
+      ],
+      "steps": [
+        [
+          "Intent",
+          "Labeled {=daily * days} conversations by topic."
+        ],
+        [
+          "Analytics",
+          "Top three: delivery status ({=round(daily * 0.34)} a day), returns, and password resets."
+        ],
+        [
+          "Sentiment",
+          "Tone dips sharply on return questions."
+        ],
+        [
+          "Advisor",
+          "Suggested a self-serve returns page and a clearer delivery email."
+        ]
+      ],
+      "result": {
+        "title": "Contact reasons",
+        "rows": [
+          [
+            "Conversations analyzed",
+            "{=daily * days}"
+          ],
+          [
+            "Delivery status questions",
+            "{=round(daily * 0.34)} per day"
+          ],
+          [
+            "Could be self-served",
+            "About {=round(daily * 0.45)} per day"
+          ],
+          [
+            "Lowest-mood topic",
+            "Returns"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is the analysis private?",
+          "Personal details are masked before analysis, and reports show topics and counts, not identities."
+        ],
+        [
+          "How do we act on it?",
+          "Each insight comes with a suggested fix and the number of conversations it could remove."
+        ]
+      ]
+    },
+    {
+      "title": "Set the guardrails",
+      "ask": "Before going live, set what the assistant can and can't do. We have {topics} topics it should cover.",
+      "inputs": [
+        {
+          "id": "topics",
+          "label": "Topics covered",
+          "type": "range",
+          "min": 3,
+          "max": 40,
+          "step": 1,
+          "value": 10
+        },
+        {
+          "id": "tone",
+          "label": "Tone",
+          "type": "select",
+          "value": "Friendly",
+          "options": [
+            {
+              "label": "Formal",
+              "n": 1
+            },
+            {
+              "label": "Friendly",
+              "n": 2
+            },
+            {
+              "label": "Casual",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Policy builder",
+          "Turned your policies into {=topics * 3} rules, such as refund limits and what not to promise."
+        ],
+        [
+          "Blocked topics",
+          "Medical, legal and account-closure requests always go to people."
+        ],
+        [
+          "Tone",
+          "Set a {tone} tone with your brand words."
+        ],
+        [
+          "Tester",
+          "Ran {=topics * 10} test conversations, including tricky ones, before launch."
+        ]
+      ],
+      "result": {
+        "title": "Guardrails set",
+        "rows": [
+          [
+            "Rules",
+            "{=topics * 3}"
+          ],
+          [
+            "Test conversations",
+            "{=topics * 10}"
+          ],
+          [
+            "Always to a person",
+            "Medical, legal, account closure"
+          ],
+          [
+            "Tone",
+            "{tone}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if a customer tries to trick it?",
+          "The test set includes attempts to get discounts or private data. The assistant refuses and logs them."
+        ],
+        [
+          "Can we change rules after launch?",
+          "Yes. Edit a rule and it applies to the next conversation, with a record of who changed it."
+        ]
+      ]
+    }
+  ]
+}

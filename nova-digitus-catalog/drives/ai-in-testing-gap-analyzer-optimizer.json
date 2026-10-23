@@ -1,0 +1,89 @@
+{
+  "name": "AI in Testing Gap Analyzer & Optimizer",
+  "tag": "Compares how your QA team uses AI with common industry practice and gives a plan to close the gaps.",
+  "scenarios": [
+    {
+      "title": "Benchmark a QA team",
+      "ask": "Benchmark our QA team of {testers}. About {auto}% of tests are automated and we use AI in {areas} of 6 practice areas.",
+      "inputs": [
+        {"id": "testers", "label": "Testers", "type": "range", "min": 2, "max": 100, "step": 1, "value": 12},
+        {"id": "auto", "label": "Tests automated (%)", "type": "range", "min": 0, "max": 90, "step": 5, "value": 40},
+        {"id": "areas", "label": "Practice areas using AI", "type": "range", "min": 0, "max": 6, "step": 1, "value": 2}
+      ],
+      "steps": [
+        ["Survey", "Scored 6 practice areas: test design, data generation, self-healing scripts, visual checks, defect triage and reporting."],
+        ["Benchmark", "Compared your answers with a sample peer profile of mid-size software teams."],
+        ["Gap finder", "Found {=6 - areas} areas where AI is not used yet. Largest gap: test data generation."],
+        ["Optimizer", "Ranked fixes by effort and payoff for a team of {testers}."]
+      ],
+      "result": {
+        "title": "Maturity score",
+        "rows": [
+          ["Your score", "{=round(auto * 0.4 + areas * 10)} of 100"],
+          ["Peer sample median", "52 of 100"],
+          ["Areas with no AI use", "{=6 - areas}"],
+          ["First fix", "AI-generated test data"],
+          ["Hours saved per month (estimate)", "{=round(testers * (6 - areas) * 3)}"]
+        ]
+      },
+      "followups": [
+        ["Where does the peer median come from?", "It is a sample benchmark built into the demo. In a real engagement we calibrate it with your industry and team size, and we show the source."],
+        ["Is a higher score always better?", "No. The score shows where you could use AI, not where you must. Some areas, like exploratory testing, often stay mostly human."]
+      ]
+    },
+    {
+      "title": "Cut flaky tests",
+      "ask": "{flaky}% of our {suite} UI tests fail randomly. Show how AI tools could help.",
+      "inputs": [
+        {"id": "suite", "label": "UI tests in the suite", "type": "range", "min": 100, "max": 10000, "step": 100, "value": 1500},
+        {"id": "flaky", "label": "Flaky tests (%)", "type": "range", "min": 1, "max": 30, "step": 1, "value": 8}
+      ],
+      "steps": [
+        ["Log reader", "Grouped {=round(suite * flaky / 100)} flaky tests by failure message."],
+        ["Root-cause agent", "{=round(flaky * 5)}% of flaky failures trace to changed element locators, a pattern self-healing tools target."],
+        ["Optimizer", "Proposed self-healing locators, smarter waits and quarantine for the worst 20 tests."],
+        ["Estimator", "Projected the flaky rate after 8 weeks if the plan is followed."]
+      ],
+      "result": {
+        "title": "Flaky test plan",
+        "rows": [
+          ["Flaky tests today", "{=round(suite * flaky / 100)}"],
+          ["Projected flaky rate", "about {=max(1, round(flaky * 0.4))}%"],
+          ["Reruns avoided per week", "about {=round(suite * flaky / 100 * 0.6 * 10)}"],
+          ["Projection type", "Estimate, not a promise"]
+        ]
+      },
+      "followups": [
+        ["Do self-healing locators hide real bugs?", "They can if left unchecked. The plan logs every healed locator for review, so a real UI change is still seen by a person."],
+        ["How fast is the payoff?", "Most of the gain comes from the worst few dozen tests, so teams often see fewer reruns within the first two sprints."]
+      ]
+    },
+    {
+      "title": "Build a 90-day roadmap",
+      "ask": "We have {budget} dollars a month for tools and {hours} hours a week to spare. Build a 90-day plan.",
+      "inputs": [
+        {"id": "budget", "label": "Monthly tool budget ($)", "type": "range", "min": 0, "max": 5000, "step": 250, "value": 1000},
+        {"id": "hours", "label": "Spare hours per week", "type": "range", "min": 2, "max": 40, "step": 2, "value": 10}
+      ],
+      "steps": [
+        ["Gap list", "Loaded the gaps from your last assessment."],
+        ["Optimizer", "Fit work into {=hours * 13} team-hours over 13 weeks and ${budget} a month."],
+        ["Sequencer", "Ordered steps so each one makes the next easier: test data first, then triage, then visual checks."],
+        ["Writer", "Wrote a week-by-week plan with a measurable goal for each month."]
+      ],
+      "result": {
+        "title": "90-day plan",
+        "rows": [
+          ["Initiatives that fit", "{=min(5, max(1, floor(hours / 8) + floor(budget / 1500)))}"],
+          ["Team hours planned", "{=hours * 13}"],
+          ["Tool spend over 90 days", "${=budget * 3}"],
+          ["Review points", "Day 30, 60 and 90"]
+        ]
+      },
+      "followups": [
+        ["What if our budget is zero?", "The plan leans on open-source tools and the AI features already in your test platform. Fewer initiatives fit, but test data generation is usually still possible."],
+        ["Can we re-run the assessment at day 90?", "Yes. The second run shows your score change area by area against the first."]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,291 @@
+{
+  "name": "NEXUM",
+  "tag": "Finds what is wrong on your network, explains it in plain words and proposes a fix you approve.",
+  "scenarios": [
+    {
+      "title": "Fix a slow office network",
+      "ask": "Staff at our {sites}-site office say the network is slow. We have about {devices} devices. Main complaint: {symptom}.",
+      "inputs": [
+        {
+          "id": "devices",
+          "label": "Devices on the network",
+          "type": "range",
+          "min": 20,
+          "max": 600,
+          "step": 20,
+          "value": 140
+        },
+        {
+          "id": "sites",
+          "label": "Sites",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 2
+        },
+        {
+          "id": "symptom",
+          "label": "Main complaint",
+          "type": "select",
+          "value": "Slow Wi-Fi",
+          "options": [
+            {
+              "label": "Slow Wi-Fi",
+              "n": 1
+            },
+            {
+              "label": "Dropped video calls",
+              "n": 2
+            },
+            {
+              "label": "Random outages",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Scanner",
+          "Found {=devices + round(devices * 0.08)} devices, {=round(devices * 0.08)} more than your inventory list, across {sites} sites."
+        ],
+        [
+          "Diagnostic agent",
+          "Ran speed, latency and channel tests. {=ceil(sites * 1.5)} access points share overlapping Wi-Fi channels."
+        ],
+        [
+          "Traffic agent",
+          "One backup job runs at {=8 + symptom} a.m. and uses about {=30 + symptom * 10}% of the uplink during work hours."
+        ],
+        [
+          "Resolver",
+          "Proposed new channel plans and moving the backup to 11 p.m. Waiting for your approval."
+        ],
+        [
+          "Verifier",
+          "After approval, re-runs the same tests and compares before and after."
+        ]
+      ],
+      "result": {
+        "title": "Diagnosis",
+        "rows": [
+          [
+            "Devices found",
+            "{=devices + round(devices * 0.08)}"
+          ],
+          [
+            "Unknown devices",
+            "{=round(devices * 0.08)}"
+          ],
+          [
+            "Channel conflicts",
+            "{=ceil(sites * 1.5)}"
+          ],
+          [
+            "Uplink used by backup",
+            "{=30 + symptom * 10}% at peak"
+          ],
+          [
+            "Fixes waiting for approval",
+            "2"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it change anything on its own?",
+          "No. The Resolver prepares the change and shows exactly what it will do. A person approves it, and every change can be rolled back from the log."
+        ],
+        [
+          "What are the unknown devices?",
+          "Usually personal phones, smart TVs or old printers. NEXUM lists each one with its maker and first-seen time so you can label or block it."
+        ],
+        [
+          "Will the scan slow things down?",
+          "The scan is light and spreads over a few minutes. For {devices} devices it usually finishes in about {=max(2, round(devices / 60))} minutes."
+        ]
+      ]
+    },
+    {
+      "title": "Run a security hygiene sweep",
+      "ask": "Check our {devices} network devices for outdated firmware, default passwords and open ports. Our last review was {months} ago.",
+      "inputs": [
+        {
+          "id": "devices",
+          "label": "Network devices (routers, switches, APs, cameras)",
+          "type": "range",
+          "min": 10,
+          "max": 400,
+          "step": 10,
+          "value": 60
+        },
+        {
+          "id": "months",
+          "label": "Time since last review",
+          "type": "range",
+          "min": 1,
+          "max": 36,
+          "step": 1,
+          "value": 12,
+          "unit": "months"
+        }
+      ],
+      "steps": [
+        [
+          "Scanner",
+          "Fingerprinted {devices} devices and matched each to its maker and model."
+        ],
+        [
+          "Firmware agent",
+          "{=ceil(devices * min(0.6, 0.1 + months * 0.015))} devices run firmware older than the maker's current release."
+        ],
+        [
+          "Config agent",
+          "{=max(1, round(devices * 0.04))} devices still accept a default admin login."
+        ],
+        [
+          "Port agent",
+          "Found {=max(1, round(devices * 0.05))} devices with remote management open to the internet."
+        ],
+        [
+          "Resolver",
+          "Built a fix list ordered by risk, with the internet-facing items first."
+        ]
+      ],
+      "result": {
+        "title": "Hygiene report",
+        "rows": [
+          [
+            "Devices checked",
+            "{devices}"
+          ],
+          [
+            "Outdated firmware",
+            "{=ceil(devices * min(0.6, 0.1 + months * 0.015))}"
+          ],
+          [
+            "Default logins",
+            "{=max(1, round(devices * 0.04))}"
+          ],
+          [
+            "Exposed management ports",
+            "{=max(1, round(devices * 0.05))}"
+          ],
+          [
+            "Estimated fix time",
+            "{=round((ceil(devices * min(0.6, 0.1 + months * 0.015)) * 15 + max(1, round(devices * 0.04)) * 10) / 60, 1)} hours"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can it update firmware for us?",
+          "It can stage updates for supported devices and run them in a window you pick. Each update needs approval, and it checks the device comes back healthy."
+        ],
+        [
+          "Is this a full security audit?",
+          "No. It covers network device hygiene. A full audit also looks at user accounts, laptops and cloud services."
+        ],
+        [
+          "How often should we run it?",
+          "Monthly is a good rhythm. NEXUM can run it on a schedule and only alert you when something new shows up."
+        ]
+      ]
+    },
+    {
+      "title": "Plan the network for a new site",
+      "ask": "We are opening a new site for {users} people across {floors}. Plan the network before move-in.",
+      "inputs": [
+        {
+          "id": "users",
+          "label": "People at the new site",
+          "type": "range",
+          "min": 10,
+          "max": 400,
+          "step": 10,
+          "value": 60
+        },
+        {
+          "id": "floors",
+          "label": "Floors",
+          "type": "range",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "value": 2,
+          "unit": "floors"
+        },
+        {
+          "id": "use",
+          "label": "Heaviest use",
+          "type": "select",
+          "value": "Video calls",
+          "options": [
+            {
+              "label": "Email and web",
+              "n": 1
+            },
+            {
+              "label": "Video calls",
+              "n": 2
+            },
+            {
+              "label": "Large file transfers",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Planner",
+          "Sized Wi-Fi for {users} people at about {=2 + use} devices each, or {=users * (2 + use)} connections."
+        ],
+        [
+          "Layout agent",
+          "Placed {=max(floors, ceil(users / 25))} access points so each floor has coverage with overlap."
+        ],
+        [
+          "Segmenter",
+          "Split the network into staff, guest, cameras and building systems so a problem in one does not spread."
+        ],
+        [
+          "Bandwidth agent",
+          "Suggested an internet line of at least {=ceil(users * use * 2.5 / 50) * 50} Mbps with a backup line."
+        ]
+      ],
+      "result": {
+        "title": "Site network plan",
+        "rows": [
+          [
+            "Expected connections",
+            "{=users * (2 + use)}"
+          ],
+          [
+            "Access points",
+            "{=max(floors, ceil(users / 25))}"
+          ],
+          [
+            "Network segments",
+            "4"
+          ],
+          [
+            "Suggested internet speed",
+            "{=ceil(users * use * 2.5 / 50) * 50} Mbps"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can it order the hardware?",
+          "It produces a parts list you can send to your supplier. Ordering stays with you."
+        ],
+        [
+          "What happens after move-in?",
+          "The new site joins the same NEXUM dashboard, so scans and fixes work the same way as at your other sites."
+        ]
+      ]
+    }
+  ]
+}

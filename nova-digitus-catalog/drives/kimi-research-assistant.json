@@ -1,0 +1,91 @@
+{
+  "name": "Kimi Research Assistant",
+  "tag": "Searches the web, reads your documents and keeps the findings in threads your team can share.",
+  "scenarios": [
+    {
+      "title": "Size a new market",
+      "ask": "Research the market for commercial kitchen cleaning in our region. Read {sources} web sources and our {docs} internal reports.",
+      "inputs": [
+        {"id": "sources", "label": "Web sources to read", "type": "range", "min": 5, "max": 60, "step": 5, "value": 20},
+        {"id": "docs", "label": "Internal documents", "type": "range", "min": 1, "max": 20, "step": 1, "value": 3},
+        {"id": "restaurants", "label": "Restaurants in your region", "type": "range", "min": 200, "max": 10000, "step": 100, "value": 1800}
+      ],
+      "steps": [
+        ["Web search", "Ran {=ceil(sources / 4)} searches and read {sources} pages on pricing, demand and local rules."],
+        ["Document reader", "Pulled past quotes and win rates from {docs} internal reports."],
+        ["Analyst", "Built a simple estimate: restaurants times visits per year times average price."],
+        ["Citation keeper", "Linked every number in the summary to the page or file it came from."],
+        ["Thread", "Saved the work in a shared thread so your team can ask follow-ups."]
+      ],
+      "result": {
+        "title": "Market snapshot",
+        "rows": [
+          ["Restaurants in region", "{restaurants}"],
+          ["Assumed deep cleans per year", "4"],
+          ["Assumed average price", "$450"],
+          ["Estimated yearly market", "${=restaurants * 4 * 450}"],
+          ["Sources cited", "{=sources + docs}"]
+        ]
+      },
+      "followups": [
+        ["How reliable is this estimate?", "It is a rough top-down number built from the assumptions shown. Change any assumption and the thread recalculates, and each one links to its source."],
+        ["Can my team add to the thread?", "Yes. Anyone in the thread can ask a follow-up or upload a file, and the assistant answers with the full history in view."]
+      ]
+    },
+    {
+      "title": "Compare software vendors",
+      "ask": "Compare {vendors} payroll software vendors for a {staff}-person company. Focus on cost and setup time.",
+      "inputs": [
+        {"id": "vendors", "label": "Vendors to compare", "type": "range", "min": 2, "max": 8, "step": 1, "value": 4},
+        {"id": "staff", "label": "Employees", "type": "range", "min": 5, "max": 500, "step": 5, "value": 40}
+      ],
+      "steps": [
+        ["Web search", "Found pricing pages, help docs and recent reviews for each of the {vendors} vendors."],
+        ["Reader", "Pulled base fees, per-employee fees and setup steps into one table."],
+        ["Analyst", "Calculated a sample yearly cost for {staff} employees using each vendor's listed pricing."],
+        ["Writer", "Summarized pros and cons and flagged {=max(1, vendors - 2)} vendors whose pricing needs a sales call to confirm."]
+      ],
+      "result": {
+        "title": "Vendor comparison",
+        "rows": [
+          ["Vendors compared", "{vendors}"],
+          ["Cost range per year (sample)", "${=round(staff * 6 * 12 + 480)} to ${=round(staff * 12 * 12 + 1200)}"],
+          ["Need a pricing call", "{=max(1, vendors - 2)}"],
+          ["Format", "Table plus one-page summary"]
+        ]
+      },
+      "followups": [
+        ["Are prices current?", "They are taken from the pages the assistant read today, with links and the date. Vendors change prices, so confirm before you sign."],
+        ["Can it email the vendors for us?", "It can draft the questions to send. A person sends them."]
+      ]
+    },
+    {
+      "title": "Summarize a long report",
+      "ask": "Summarize this {pages}-page industry report in {length} for our leadership team.",
+      "inputs": [
+        {"id": "pages", "label": "Report length in pages", "type": "range", "min": 10, "max": 400, "step": 10, "value": 120},
+        {"id": "length", "label": "Summary size", "type": "select", "value": "one page",
+         "options": [{"label": "one paragraph", "n": 1}, {"label": "one page", "n": 4}, {"label": "three pages", "n": 12}]}
+      ],
+      "steps": [
+        ["Document reader", "Read all {pages} pages, including tables and charts."],
+        ["Outliner", "Found {=max(3, round(pages / 25))} main sections and their key numbers."],
+        ["Writer", "Wrote a summary of about {=length * 120} words with page references."],
+        ["Checker", "Compared each number in the summary with the source page."]
+      ],
+      "result": {
+        "title": "Summary ready",
+        "rows": [
+          ["Pages read", "{pages}"],
+          ["Sections covered", "{=max(3, round(pages / 25))}"],
+          ["Summary length", "about {=length * 120} words"],
+          ["Reading time saved", "about {=max(0.5, round(pages * 2 / 60, 1))} hours"]
+        ]
+      },
+      "followups": [
+        ["What if a chart is the key point?", "The reader extracts the numbers behind charts when possible and notes the page so you can check the original."],
+        ["Can I ask questions about the report later?", "Yes. The report stays in the thread, so anyone can ask about a section and get an answer with the page number."]
+      ]
+    }
+  ]
+}

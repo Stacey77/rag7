@@ -1,0 +1,245 @@
+{
+  "name": "Private Assistant",
+  "tag": "An AI assistant that answers from your own files and notes and keeps them on your side.",
+  "scenarios": [
+    {
+      "title": "Ask questions about private files",
+      "ask": "Index {docs} internal documents and answer staff questions without sending the files to an outside service.",
+      "inputs": [
+        {
+          "id": "docs",
+          "label": "Documents to index",
+          "type": "range",
+          "min": 50,
+          "max": 5000,
+          "step": 50,
+          "value": 600
+        },
+        {
+          "id": "pages",
+          "label": "Average pages per document",
+          "type": "range",
+          "min": 1,
+          "max": 40,
+          "step": 1,
+          "value": 6
+        }
+      ],
+      "steps": [
+        [
+          "Local indexer",
+          "Read {docs} documents, about {=docs * pages} pages, and built a search index stored on your server."
+        ],
+        [
+          "Search agent",
+          "Finds the most relevant passages for each question in about {=round(0.3 + docs * pages / 20000, 1)} seconds."
+        ],
+        [
+          "Answer agent",
+          "Writes a short answer and cites the document and page it came from."
+        ],
+        [
+          "Privacy guard",
+          "Keeps prompts, files and answers on your machine. Nothing is sent to a third party."
+        ]
+      ],
+      "result": {
+        "title": "Private knowledge base",
+        "rows": [
+          [
+            "Documents indexed",
+            "{docs}"
+          ],
+          [
+            "Pages indexed",
+            "{=docs * pages}"
+          ],
+          [
+            "Index size on disk",
+            "About {=round(docs * pages * 0.00005 + 0.1, 1)} GB"
+          ],
+          [
+            "Typical search time",
+            "{=round(0.3 + docs * pages / 20000, 1)} seconds"
+          ],
+          [
+            "Data leaving your network",
+            "None"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How can it answer without an outside AI service?",
+          "It runs an open-weight language model on your own hardware. Answers may be a little less polished than the largest hosted models, but your data stays put."
+        ],
+        [
+          "What if a document changes?",
+          "The indexer watches the folder and re-reads changed files, usually within a few minutes."
+        ],
+        [
+          "Can I limit who sees what?",
+          "Yes. Answers respect folder permissions, so a person only gets answers from documents they are allowed to open."
+        ]
+      ]
+    },
+    {
+      "title": "Keep a private notes journal",
+      "ask": "I write about {notes} notes a week. Organize them and give me a weekly digest, all kept on my laptop.",
+      "inputs": [
+        {
+          "id": "notes",
+          "label": "Notes per week",
+          "type": "range",
+          "min": 5,
+          "max": 100,
+          "step": 5,
+          "value": 25
+        },
+        {
+          "id": "weeks",
+          "label": "Weeks of history",
+          "type": "range",
+          "min": 1,
+          "max": 52,
+          "step": 1,
+          "value": 12,
+          "unit": "weeks"
+        }
+      ],
+      "steps": [
+        [
+          "Organizer",
+          "Tagged {=notes * weeks} notes by project and person and linked related ones."
+        ],
+        [
+          "Summarizer",
+          "Wrote a one-page digest of this week's notes with open questions at the top."
+        ],
+        [
+          "Reminder agent",
+          "Found {=max(1, round(notes * 0.15))} notes that mention a follow-up with no date and listed them."
+        ],
+        [
+          "Privacy guard",
+          "Stored everything in an encrypted local folder."
+        ]
+      ],
+      "result": {
+        "title": "Weekly digest",
+        "rows": [
+          [
+            "Notes organized",
+            "{=notes * weeks}"
+          ],
+          [
+            "Topics found",
+            "{=min(40, max(3, round(notes * weeks / 15)))}"
+          ],
+          [
+            "Follow-ups without a date",
+            "{=max(1, round(notes * 0.15))}"
+          ],
+          [
+            "Storage location",
+            "Your laptop, encrypted"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I search old notes by meaning?",
+          "Yes. Ask a question like 'what did we decide about pricing in spring' and it finds the notes even if those words are not in them."
+        ],
+        [
+          "What happens if I lose the laptop?",
+          "The folder is encrypted. You can also back it up to a drive you control, and the assistant restores from that."
+        ]
+      ]
+    },
+    {
+      "title": "Size the hardware",
+      "ask": "We want {users} people to use a private assistant with a {model} model. What hardware do we need?",
+      "inputs": [
+        {
+          "id": "users",
+          "label": "People using it",
+          "type": "range",
+          "min": 1,
+          "max": 50,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "model",
+          "label": "Model size",
+          "type": "select",
+          "value": "medium",
+          "options": [
+            {
+              "label": "small",
+              "n": 8
+            },
+            {
+              "label": "medium",
+              "n": 24
+            },
+            {
+              "label": "large",
+              "n": 48
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Sizer",
+          "A {model} model needs about {=model} GB of graphics memory to run at a comfortable speed."
+        ],
+        [
+          "Load planner",
+          "Planned for about {=ceil(users * 0.3)} people asking at the same moment."
+        ],
+        [
+          "Config agent",
+          "Suggested {=max(1, ceil(users * 0.3 / 4))} model worker(s) and a queue so nobody gets an error at busy times."
+        ],
+        [
+          "Cost agent",
+          "Compared buying one workstation with renting a private server."
+        ]
+      ],
+      "result": {
+        "title": "Hardware plan",
+        "rows": [
+          [
+            "Graphics memory needed",
+            "{=model * max(1, ceil(users * 0.3 / 4))} GB"
+          ],
+          [
+            "Model workers",
+            "{=max(1, ceil(users * 0.3 / 4))}"
+          ],
+          [
+            "Peak users at once",
+            "{=ceil(users * 0.3)}"
+          ],
+          [
+            "Disk for files and index",
+            "At least {=100 + users * 20} GB"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is a small model good enough?",
+          "For search and summaries of your own documents, often yes. Larger models help more with long reasoning and writing."
+        ],
+        [
+          "Can we start small and grow?",
+          "Yes. Start with one worker and add more when the queue gets long. Your index and settings carry over."
+        ]
+      ]
+    }
+  ]
+}

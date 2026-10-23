@@ -1,0 +1,91 @@
+{
+  "name": "IRIEBOT7.io Autonomous Trading Dashboard",
+  "tag": "Watch AI agents run technical and fundamental analysis on your watchlist in one dashboard.",
+  "scenarios": [
+    {
+      "title": "Analyze a watchlist",
+      "ask": "Analyze my {tickers} stocks on the {timeframe} chart, weighting technicals at {tech}.",
+      "inputs": [
+        {"id": "tickers", "label": "Stocks on the watchlist", "type": "range", "min": 5, "max": 100, "step": 5, "value": 25},
+        {"id": "timeframe", "label": "Chart timeframe", "type": "select", "value": "Daily", "options": [{"label": "Hourly", "n": 1}, {"label": "Daily", "n": 2}, {"label": "Weekly", "n": 3}]},
+        {"id": "tech", "label": "Weight on technicals", "type": "range", "min": 0, "max": 100, "step": 10, "value": 60, "unit": "%"}
+      ],
+      "steps": [
+        ["Technical agent", "Read trend, momentum and volume on the {timeframe} chart for all {tickers} sample stocks."],
+        ["Fundamental agent", "Scored revenue growth, margins, debt and valuation from sample filings."],
+        ["Blender", "Combined scores at {tech} technical and {=100 - tech}% fundamental."],
+        ["Conflict checker", "Found {=max(1, round(tickers * 0.16))} stocks where chart and fundamentals disagree and marked them for review."],
+        ["Dashboard", "Ranked the list and added a short note on each stock explaining its score."]
+      ],
+      "result": {
+        "title": "Watchlist scored",
+        "rows": [
+          ["Stocks analyzed", "{tickers}"],
+          ["Strong on both views", "{=max(1, round(tickers * 0.2))}"],
+          ["Conflicting signals", "{=max(1, round(tickers * 0.16))}"],
+          ["Weighting", "{tech} technical / {=100 - tech}% fundamental"],
+          ["Note", "Sample data; not financial advice"]
+        ]
+      },
+      "followups": [
+        ["What does a conflicting signal mean?", "The chart says one thing and the business data says another, for example a strong uptrend on a company with falling margins. Those {=max(1, round(tickers * 0.16))} stocks are worth a closer human look."],
+        ["Does it trade for me?", "The dashboard shows analysis and agent reasoning. Any trading connection is optional, and the analysis is not a recommendation to buy or sell."]
+      ]
+    },
+    {
+      "title": "Check a stock before earnings",
+      "ask": "{name_hint} reports in {days} days. Run both analyses and show the key risks.",
+      "inputs": [
+        {"id": "days", "label": "Days until earnings", "type": "range", "min": 1, "max": 30, "step": 1, "value": 7, "unit": "days"},
+        {"id": "name_hint", "label": "Sample stock", "type": "select", "value": "Sample retailer", "options": [{"label": "Sample retailer", "n": 1}, {"label": "Sample chipmaker", "n": 2}, {"label": "Sample bank", "n": 3}]},
+        {"id": "move", "label": "Typical post-earnings move", "type": "range", "min": 2, "max": 20, "step": 1, "value": 6, "unit": "%"}
+      ],
+      "steps": [
+        ["Fundamental agent", "Compared the last 4 quarters of sample results with the trend in guidance."],
+        ["Technical agent", "Marked support and resistance levels about {move} away from the current price."],
+        ["News agent", "Summarized {=3 + name_hint * 2} sample headlines from the last {days} days."],
+        ["Risk note", "Wrote what could move the stock and how far it has moved after past reports."]
+      ],
+      "result": {
+        "title": "Pre-earnings brief",
+        "rows": [
+          ["Days to report", "{days}"],
+          ["Headlines reviewed", "{=3 + name_hint * 2}"],
+          ["Typical move range", "plus or minus {move}"],
+          ["Note", "Past moves don't predict the next one"]
+        ]
+      },
+      "followups": [
+        ["Can I get an alert when earnings are out?", "Yes. The dashboard reruns both agents within minutes of the report and highlights what changed."],
+        ["Why show past moves?", "They give a sense of how much the price has swung after reports, about {move} here. It is context, not a forecast."]
+      ]
+    },
+    {
+      "title": "Get a morning market brief",
+      "ask": "Give me a {minutes}-minute morning brief across {sectors} sectors.",
+      "inputs": [
+        {"id": "minutes", "label": "Brief length", "type": "range", "min": 2, "max": 15, "step": 1, "value": 5, "unit": "minutes"},
+        {"id": "sectors", "label": "Sectors covered", "type": "range", "min": 1, "max": 11, "step": 1, "value": 5}
+      ],
+      "steps": [
+        ["Macro agent", "Summarized overnight sample moves in rates, currencies and futures."],
+        ["Sector agent", "Ranked {sectors} sectors by sample momentum and breadth."],
+        ["Watchlist agent", "Pulled {=sectors * 2} watchlist names with new signals since yesterday."],
+        ["Writer", "Kept it to about {=minutes * 140} words so it reads in {minutes}."]
+      ],
+      "result": {
+        "title": "Morning brief ready",
+        "rows": [
+          ["Sectors covered", "{sectors}"],
+          ["New signals", "{=sectors * 2}"],
+          ["Length", "About {=minutes * 140} words"],
+          ["Delivered", "Dashboard and email"]
+        ]
+      },
+      "followups": [
+        ["Can it focus only on my holdings?", "Yes. Switch the brief to holdings-only and the agents skip sectors you don't own."],
+        ["When does it run?", "On a schedule you set, for example 30 minutes before the open."]
+      ]
+    }
+  ]
+}

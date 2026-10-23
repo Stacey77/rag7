@@ -1,0 +1,304 @@
+{
+  "name": "Merkaba Code Studio",
+  "tag": "Turns your Merkaba Code program into finished modules, audio scripts and launch assets in one place.",
+  "scenarios": [
+    {
+      "title": "Build the program modules",
+      "ask": "Outline the Merkaba Code program as {modules} modules with a {minutes} guided audio for each, in a {tone} style.",
+      "inputs": [
+        {
+          "id": "modules",
+          "label": "Modules in the program",
+          "type": "range",
+          "min": 3,
+          "max": 12,
+          "step": 1,
+          "value": 7
+        },
+        {
+          "id": "minutes",
+          "label": "Audio length per module",
+          "type": "range",
+          "min": 5,
+          "max": 30,
+          "step": 5,
+          "value": 15,
+          "unit": "min"
+        },
+        {
+          "id": "tone",
+          "label": "Script style",
+          "type": "select",
+          "value": "Gentle guided",
+          "options": [
+            {
+              "label": "Gentle guided",
+              "n": 110
+            },
+            {
+              "label": "Teaching",
+              "n": 140
+            },
+            {
+              "label": "Ceremonial",
+              "n": 100
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Curriculum agent",
+          "Drafted {modules} module outlines, each with an intention, a short teaching and a practice."
+        ],
+        [
+          "Script writer",
+          "Wrote {modules} audio scripts at about {=minutes * tone} words each, paced for a {tone} delivery."
+        ],
+        [
+          "Voice prep",
+          "Marked breath pauses and music cues, about {=round(minutes * 1.5)} per script, so recording goes in one take."
+        ],
+        [
+          "Review agent",
+          "Checked every script for promises of healing or guaranteed results and suggested softer wording where needed."
+        ]
+      ],
+      "result": {
+        "title": "Program draft ready",
+        "rows": [
+          [
+            "Modules",
+            "{modules}"
+          ],
+          [
+            "Total listening time",
+            "{=modules * minutes} minutes"
+          ],
+          [
+            "Words to record",
+            "{=modules * minutes * tone}"
+          ],
+          [
+            "Recording sessions",
+            "{=ceil(modules * minutes / 45)} (about 45 finished minutes each)"
+          ],
+          [
+            "Wording flags to review",
+            "{=max(1, round(modules * 0.6))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I keep my own voice in the scripts?",
+          "Yes. You paste in a few pages you have written and the Script writer matches your phrasing. Every script stays editable before you record."
+        ],
+        [
+          "Why does it flag wording?",
+          "Spiritual programs sell better and stay safer when they describe an experience instead of promising an outcome. The Review agent points out lines like 'this will heal' so you can decide how to phrase them."
+        ],
+        [
+          "What if I shorten each audio to 10 minutes?",
+          "The program would run about {=modules * 10} minutes in total and need about {=ceil(modules * 10 / 45)} recording sessions instead of {=ceil(modules * minutes / 45)}."
+        ]
+      ]
+    },
+    {
+      "title": "Plan the launch",
+      "ask": "Plan a {days} launch of the program to a list of {list} subscribers at a price of {price}.",
+      "inputs": [
+        {
+          "id": "list",
+          "label": "Email list size",
+          "type": "range",
+          "min": 500,
+          "max": 20000,
+          "step": 500,
+          "value": 4000
+        },
+        {
+          "id": "days",
+          "label": "Launch window",
+          "type": "range",
+          "min": 3,
+          "max": 14,
+          "step": 1,
+          "value": 7,
+          "unit": "days"
+        },
+        {
+          "id": "price",
+          "label": "Program price",
+          "type": "select",
+          "value": "$47",
+          "options": [
+            {
+              "label": "$27",
+              "n": 27
+            },
+            {
+              "label": "$47",
+              "n": 47
+            },
+            {
+              "label": "$97",
+              "n": 97
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Launch planner",
+          "Built a {days} calendar with {=days + 2} emails: a story, a free audio sample, the open, reminders and a close."
+        ],
+        [
+          "Asset builder",
+          "Drafted the sales page sections, {=days * 2} social posts and a 60-second audio teaser from module 1."
+        ],
+        [
+          "Review agent",
+          "Removed income and healing guarantees from the copy and added a clear refund line."
+        ],
+        [
+          "Forecast",
+          "Ran an illustrative forecast at a 1.5% list conversion rate, a common planning figure for warm lists."
+        ]
+      ],
+      "result": {
+        "title": "Launch kit",
+        "rows": [
+          [
+            "Emails",
+            "{=days + 2}"
+          ],
+          [
+            "Social posts",
+            "{=days * 2}"
+          ],
+          [
+            "Illustrative buyers",
+            "{=round(list * 0.015)}"
+          ],
+          [
+            "Illustrative revenue",
+            "${=round(list * 0.015) * price}"
+          ],
+          [
+            "Note",
+            "Planning illustration, not a promise of sales"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if only 0.5% of the list buys?",
+          "Then the illustration drops to about {=round(list * 0.005)} buyers and ${=round(list * 0.005) * price}. The studio shows a low, middle and high case so you can plan costs against the low one."
+        ],
+        [
+          "Can it schedule the emails for me?",
+          "It exports the sequence to your email tool with send dates filled in. You review and press send, nothing goes out on its own."
+        ],
+        [
+          "Does a higher price always earn more?",
+          "Not always. A higher price usually lowers conversion. Many creators test the price on a small segment first, and the studio can split the list for that."
+        ]
+      ]
+    },
+    {
+      "title": "Repurpose modules into content",
+      "ask": "Turn {modules} finished modules into short content for {channel} over the next {weeks}.",
+      "inputs": [
+        {
+          "id": "modules",
+          "label": "Finished modules",
+          "type": "range",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "weeks",
+          "label": "Content calendar length",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 4,
+          "unit": "weeks"
+        },
+        {
+          "id": "channel",
+          "label": "Main channel",
+          "type": "select",
+          "value": "Instagram",
+          "options": [
+            {
+              "label": "Instagram",
+              "n": 5
+            },
+            {
+              "label": "YouTube",
+              "n": 2
+            },
+            {
+              "label": "Email newsletter",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Clip finder",
+          "Picked {=modules * 3} short passages from the module scripts that stand on their own."
+        ],
+        [
+          "Writer",
+          "Wrote captions and hooks for each piece in the same voice as the program."
+        ],
+        [
+          "Scheduler",
+          "Spread {=weeks * channel} posts across {weeks}, with every fourth post pointing to the program page."
+        ],
+        [
+          "Gap check",
+          "Noted where you need new material: {=max(0, weeks * channel - modules * 3)} posts have no source passage yet."
+        ]
+      ],
+      "result": {
+        "title": "Content calendar",
+        "rows": [
+          [
+            "Posts planned",
+            "{=weeks * channel}"
+          ],
+          [
+            "Source passages",
+            "{=modules * 3}"
+          ],
+          [
+            "Posts needing new material",
+            "{=max(0, weeks * channel - modules * 3)}"
+          ],
+          [
+            "Posts linking to the program",
+            "{=floor(weeks * channel / 4)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will the posts sound repetitive?",
+          "Each passage is used once, and the Writer varies the hook style. If the calendar runs out of passages, it tells you instead of reusing them."
+        ],
+        [
+          "Can it make the audio clips too?",
+          "Yes. It marks start and end times in your recorded audio so you or an editor can cut clips quickly."
+        ]
+      ]
+    }
+  ]
+}

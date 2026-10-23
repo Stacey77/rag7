@@ -1,0 +1,89 @@
+{
+  "name": "Flash UI: AI Swarm Vibecoding Studio",
+  "tag": "Describe the screen you need and a team of agents plans, designs and builds working components.",
+  "scenarios": [
+    {
+      "title": "Build a booking widget",
+      "ask": "Build a booking widget for a dental office: pick a service, date and time. {variants} design options, {style} style.",
+      "inputs": [
+        {"id": "variants", "label": "Design options to compare", "type": "range", "min": 1, "max": 4, "step": 1, "value": 3},
+        {"id": "style", "label": "Visual style", "type": "select", "value": "Clean and calm",
+         "options": [{"label": "Clean and calm", "n": 1}, {"label": "Bold and colorful", "n": 2}, {"label": "Minimal", "n": 3}]}
+      ],
+      "steps": [
+        ["Planner", "Split the request into 3 parts: service list, calendar and time slots, plus a confirm screen."],
+        ["Designer agents", "Produced {variants} layouts in a {style} style, all using the same spacing and color tokens."],
+        ["Builder agents", "Wrote working components for each layout with keyboard support and empty states."],
+        ["Tester", "Clicked through each option and checked contrast. Fixed {variants} small issues."],
+        ["Exporter", "Packaged the chosen option as React components with a preview link."]
+      ],
+      "result": {
+        "title": "Components ready",
+        "rows": [
+          ["Design options", "{variants}"],
+          ["Components per option", "{=6 + style}"],
+          ["Accessibility checks passed", "All"],
+          ["Build time", "about {=2 + variants * 2} minutes"]
+        ]
+      },
+      "followups": [
+        ["Can I edit the result by talking to it?", "Yes. Say what to change, like making the time slots bigger, and only the affected component is rebuilt."],
+        ["Does it work with our design system?", "Load your tokens and component list and the designer agents use them instead of their defaults."]
+      ]
+    },
+    {
+      "title": "Turn a spreadsheet into an admin screen",
+      "ask": "Make an admin table for our {rows} inventory items with {cols} columns, search, filters and inline edit.",
+      "inputs": [
+        {"id": "rows", "label": "Items in the sample data", "type": "range", "min": 50, "max": 10000, "step": 50, "value": 500},
+        {"id": "cols", "label": "Columns", "type": "range", "min": 3, "max": 20, "step": 1, "value": 8}
+      ],
+      "steps": [
+        ["Planner", "Read the column names and guessed types: text, number, date and status."],
+        ["Designer agent", "Laid out a table with sticky headers, {=min(cols, 4)} filter chips and a search box."],
+        ["Builder agents", "Built sorting, paging at 50 rows and inline edit with undo."],
+        ["Tester", "Loaded {rows} sample rows and checked that sorting and filters stay fast."]
+      ],
+      "result": {
+        "title": "Admin screen ready",
+        "rows": [
+          ["Columns", "{cols}"],
+          ["Filters", "{=min(cols, 4)}"],
+          ["Pages at 50 rows", "{=ceil(rows / 50)}"],
+          ["Components built", "{=5 + ceil(cols / 4)}"]
+        ]
+      },
+      "followups": [
+        ["Is it connected to our database?", "Not yet. It ships with a data adapter you point at your API. Until then it runs on the sample rows."],
+        ["Can it handle much more data?", "For tens of thousands of rows, ask for server-side paging and the builder agents switch the table to fetch pages on demand."]
+      ]
+    },
+    {
+      "title": "Redesign a sign-up flow",
+      "ask": "Our sign-up flow has {screens} screens and {drop}% of people drop off. Redesign it.",
+      "inputs": [
+        {"id": "screens", "label": "Screens today", "type": "range", "min": 2, "max": 8, "step": 1, "value": 5},
+        {"id": "drop", "label": "Drop-off (%)", "type": "range", "min": 10, "max": 80, "step": 5, "value": 45}
+      ],
+      "steps": [
+        ["Reviewer", "Walked the {screens} screens and listed {=screens * 2} fields, {=max(1, screens - 2)} of them optional."],
+        ["Planner", "Proposed {=max(2, ceil(screens / 2))} screens by moving optional fields after sign-up."],
+        ["Designer agents", "Drew the new flow with a progress bar and clear error messages."],
+        ["Builder agents", "Built it as working components with form validation."]
+      ],
+      "result": {
+        "title": "New flow",
+        "rows": [
+          ["Screens", "{screens} to {=max(2, ceil(screens / 2))}"],
+          ["Fields at sign-up", "{=screens * 2} to {=screens * 2 - max(1, screens - 2)}"],
+          ["Drop-off today", "{drop}%"],
+          ["Next step", "A/B test against the current flow"]
+        ]
+      },
+      "followups": [
+        ["Will drop-off go down?", "Shorter flows often help, but it is not guaranteed. Run an A/B test and the studio can build both versions with tracking events."],
+        ["What happens to the optional fields?", "They move to a profile step after sign-up, where people can fill them in later."]
+      ]
+    }
+  ]
+}

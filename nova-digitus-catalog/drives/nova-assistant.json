@@ -1,0 +1,239 @@
+{
+  "name": "NOVA Assistant",
+  "tag": "One assistant console to chat, sort your day and run quick actions across the tools you already use.",
+  "scenarios": [
+    {
+      "title": "Sort a busy morning",
+      "ask": "I have {emails} unread emails and {meetings} meetings today. Sort what matters and draft what you can.",
+      "inputs": [
+        {
+          "id": "emails",
+          "label": "Unread emails",
+          "type": "range",
+          "min": 10,
+          "max": 300,
+          "step": 10,
+          "value": 80
+        },
+        {
+          "id": "meetings",
+          "label": "Meetings today",
+          "type": "range",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "value": 4
+        }
+      ],
+      "steps": [
+        [
+          "Inbox reader",
+          "Read {emails} emails and grouped them: {=round(emails * 0.12)} need your reply, {=round(emails * 0.3)} are updates, the rest are newsletters and receipts."
+        ],
+        [
+          "Drafter",
+          "Wrote draft replies for {=round(emails * 0.08)} routine emails. They sit in your drafts folder for review."
+        ],
+        [
+          "Calendar agent",
+          "Prepared a one-line brief for each of your {meetings} meetings with the last email thread attached."
+        ],
+        [
+          "Task agent",
+          "Turned {=round(emails * 0.05)} requests into tasks with due dates."
+        ]
+      ],
+      "result": {
+        "title": "Morning summary",
+        "rows": [
+          [
+            "Need your reply",
+            "{=round(emails * 0.12)}"
+          ],
+          [
+            "Drafts ready to review",
+            "{=round(emails * 0.08)}"
+          ],
+          [
+            "Tasks created",
+            "{=round(emails * 0.05)}"
+          ],
+          [
+            "Meeting briefs",
+            "{meetings}"
+          ],
+          [
+            "Estimated time saved",
+            "{=round(emails * 0.6 + meetings * 5)} minutes"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it send emails without asking?",
+          "No. Drafts wait for you. You can allow auto-send for specific cases later, such as meeting confirmations, but it is off by default."
+        ],
+        [
+          "Which tools does it connect to?",
+          "Email, calendar and a task list to start, plus quick actions for tools like your CRM or shared drive. You choose which ones it can see."
+        ],
+        [
+          "How did it decide what needs a reply?",
+          "It looks for direct questions, requests with dates and people you reply to often. You can correct it and it learns your pattern."
+        ]
+      ]
+    },
+    {
+      "title": "Plan the week",
+      "ask": "I have {tasks} open tasks and about {hours} free hours this week. Plan it so the important work gets done.",
+      "inputs": [
+        {
+          "id": "tasks",
+          "label": "Open tasks",
+          "type": "range",
+          "min": 5,
+          "max": 80,
+          "step": 5,
+          "value": 30
+        },
+        {
+          "id": "hours",
+          "label": "Free hours this week",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 1,
+          "value": 18,
+          "unit": "hours"
+        }
+      ],
+      "steps": [
+        [
+          "Task agent",
+          "Estimated time for each task. Total work is about {=round(tasks * 0.9)} hours."
+        ],
+        [
+          "Prioritizer",
+          "Ranked tasks by deadline and impact and marked {=ceil(tasks * 0.25)} as must-do."
+        ],
+        [
+          "Calendar agent",
+          "Blocked focus time for the must-do tasks in your quietest slots."
+        ],
+        [
+          "Planner",
+          "Suggested what to delegate or move to next week if it does not fit."
+        ]
+      ],
+      "result": {
+        "title": "Week plan",
+        "rows": [
+          [
+            "Work estimated",
+            "{=round(tasks * 0.9)} hours"
+          ],
+          [
+            "Free time",
+            "{hours}"
+          ],
+          [
+            "Must-do tasks",
+            "{=ceil(tasks * 0.25)}"
+          ],
+          [
+            "Tasks to move or delegate",
+            "{=max(0, ceil((tasks * 0.9 - hours) / 0.9))}"
+          ],
+          [
+            "Focus blocks booked",
+            "{=min(10, ceil(hours / 2))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if a meeting lands on a focus block?",
+          "The assistant moves the block to the next open slot and tells you if that pushes a deadline."
+        ],
+        [
+          "Can it delegate for me?",
+          "It drafts the handoff message with context and a due date. You choose who gets it and press send."
+        ]
+      ]
+    },
+    {
+      "title": "Follow up after a meeting",
+      "ask": "Turn my notes from a {mins} client meeting with {people} attendees into follow-ups.",
+      "inputs": [
+        {
+          "id": "mins",
+          "label": "Meeting length",
+          "type": "range",
+          "min": 15,
+          "max": 120,
+          "step": 15,
+          "value": 45,
+          "unit": "min"
+        },
+        {
+          "id": "people",
+          "label": "Attendees",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 4
+        }
+      ],
+      "steps": [
+        [
+          "Notes reader",
+          "Read the notes and found {=max(2, round(mins / 10))} action items and {=max(1, round(mins / 30))} decisions."
+        ],
+        [
+          "Drafter",
+          "Wrote a recap email to all {people} attendees with decisions and owners."
+        ],
+        [
+          "Task agent",
+          "Created tasks for the {=max(1, round(max(2, round(mins / 10)) / 2))} items you own and added due dates."
+        ],
+        [
+          "Quick action",
+          "Logged the meeting on the client record in your CRM."
+        ]
+      ],
+      "result": {
+        "title": "Follow-ups ready",
+        "rows": [
+          [
+            "Action items",
+            "{=max(2, round(mins / 10))}"
+          ],
+          [
+            "Decisions captured",
+            "{=max(1, round(mins / 30))}"
+          ],
+          [
+            "Recap email",
+            "Draft for {people} people"
+          ],
+          [
+            "Your tasks",
+            "{=max(1, round(max(2, round(mins / 10)) / 2))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can it work from a recording?",
+          "Yes, if your meeting tool provides a transcript. The assistant reads the transcript the same way it reads notes."
+        ],
+        [
+          "What if it gets an owner wrong?",
+          "You edit the recap before it goes out. Corrections update the tasks too."
+        ]
+      ]
+    }
+  ]
+}

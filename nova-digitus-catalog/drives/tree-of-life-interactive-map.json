@@ -1,0 +1,247 @@
+{
+  "name": "Tree of Life Interactive Map",
+  "tag": "A seven-level 3D Tree of Life with an AI guide and audio for daily study.",
+  "scenarios": [
+    {
+      "title": "Walk through one level",
+      "ask": "Walk me through level {level} and what it teaches, with {audio} of audio.",
+      "inputs": [
+        {
+          "id": "level",
+          "label": "Level",
+          "type": "range",
+          "min": 1,
+          "max": 7,
+          "step": 1,
+          "value": 1
+        },
+        {
+          "id": "audio",
+          "label": "Audio length",
+          "type": "range",
+          "min": 5,
+          "max": 30,
+          "step": 1,
+          "value": 7,
+          "unit": "min"
+        },
+        {
+          "id": "journal",
+          "label": "Journaling time",
+          "type": "range",
+          "min": 3,
+          "max": 20,
+          "step": 1,
+          "value": 5,
+          "unit": "min"
+        }
+      ],
+      "steps": [
+        [
+          "Map",
+          "Opened level {level} in 3D and lit its path to the next level."
+        ],
+        [
+          "Guide",
+          "Explained the level through Kemet, Kush and Kabbalah side by side."
+        ],
+        [
+          "Audio",
+          "Started a {audio} binaural track for reflection."
+        ],
+        [
+          "Practice",
+          "Suggested a {journal} journaling prompt for the day."
+        ]
+      ],
+      "result": {
+        "title": "Level {level}",
+        "rows": [
+          [
+            "Traditions compared",
+            "3"
+          ],
+          [
+            "Audio",
+            "Binaural, {audio}"
+          ],
+          [
+            "Session time",
+            "{=audio + journal + 5} minutes"
+          ],
+          [
+            "Levels remaining",
+            "{=7 - level}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How do seven levels relate to the ten sefirot?",
+          "The app groups the ten sefirot and 22 paths of the Kabbalah tree into seven levels so they can sit beside Kemetic and Kushite ideas. The guide notes where this grouping is the app's own teaching layout."
+        ],
+        [
+          "Do I need headphones?",
+          "Yes, for the binaural tracks. Each ear gets a slightly different tone, which only works with headphones."
+        ]
+      ]
+    },
+    {
+      "title": "Follow a 30-day path",
+      "ask": "Give me a {days}-day path through all seven levels, {mins} a day.",
+      "inputs": [
+        {
+          "id": "days",
+          "label": "Days",
+          "type": "range",
+          "min": 7,
+          "max": 60,
+          "step": 1,
+          "value": 30
+        },
+        {
+          "id": "mins",
+          "label": "Minutes a day",
+          "type": "range",
+          "min": 10,
+          "max": 45,
+          "step": 5,
+          "value": 15,
+          "unit": "min"
+        }
+      ],
+      "steps": [
+        [
+          "Planner",
+          "Gave each level about {=round(days / 7, 1)} days."
+        ],
+        [
+          "Guide",
+          "Set a short daily teaching and one question to carry through the day."
+        ],
+        [
+          "Audio",
+          "Matched a binaural track to each level."
+        ],
+        [
+          "Tracker",
+          "Logs journal entries so you can look back at each level."
+        ]
+      ],
+      "result": {
+        "title": "Path ready",
+        "rows": [
+          [
+            "Days",
+            "{days}"
+          ],
+          [
+            "Days per level",
+            "{=round(days / 7, 1)}"
+          ],
+          [
+            "Total time",
+            "{=round(days * mins / 60, 1)} hours"
+          ],
+          [
+            "Journal prompts",
+            "{days}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I go faster?",
+          "Yes. Shorten the path and the planner gives each level fewer days. You can also unlock levels early."
+        ],
+        [
+          "Is this religious instruction?",
+          "It is a comparative study tool. It shows how each tradition describes ideas and does not ask you to adopt any of them."
+        ]
+      ]
+    },
+    {
+      "title": "Lead a group session",
+      "ask": "I'm leading {people} people through level {level} in a {length} session.",
+      "inputs": [
+        {
+          "id": "people",
+          "label": "Participants",
+          "type": "range",
+          "min": 3,
+          "max": 40,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "level",
+          "label": "Level",
+          "type": "range",
+          "min": 1,
+          "max": 7,
+          "step": 1,
+          "value": 2
+        },
+        {
+          "id": "length",
+          "label": "Session length",
+          "type": "range",
+          "min": 30,
+          "max": 120,
+          "step": 15,
+          "value": 60,
+          "unit": "min"
+        }
+      ],
+      "steps": [
+        [
+          "Presenter",
+          "Put the 3D map on the big screen with level {level} highlighted."
+        ],
+        [
+          "Guide",
+          "Prepared a {=round(length * 0.3)}-minute talk comparing the three traditions."
+        ],
+        [
+          "Audio",
+          "Set a group listening track and reminded everyone to bring headphones."
+        ],
+        [
+          "Discussion",
+          "Wrote questions for {=ceil(people / 5)} small groups."
+        ]
+      ],
+      "result": {
+        "title": "Session plan",
+        "rows": [
+          [
+            "Teaching",
+            "{=round(length * 0.3)} minutes"
+          ],
+          [
+            "Listening",
+            "{=round(length * 0.25)} minutes"
+          ],
+          [
+            "Discussion",
+            "{=length - round(length * 0.3) - round(length * 0.25)} minutes"
+          ],
+          [
+            "Small groups",
+            "{=ceil(people / 5)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if some people have no headphones?",
+          "Use the plain music version for the room. The binaural effect needs headphones, so it is offered as optional."
+        ],
+        [
+          "Can people continue at home?",
+          "Yes. Each participant gets a link to the level and its journal prompt."
+        ]
+      ]
+    }
+  ]
+}

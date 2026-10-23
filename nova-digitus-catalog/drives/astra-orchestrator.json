@@ -1,0 +1,88 @@
+{
+  "name": "Astra Orchestrator",
+  "tag": "Hands work to subagents, then checks and improves the result before you see it.",
+  "scenarios": [
+    {
+      "title": "Write a product launch pack",
+      "ask": "Create a launch pack for our new scheduling app: {pieces} pieces of content, with {rounds} self-review rounds.",
+      "inputs": [
+        {"id": "pieces", "label": "Content pieces", "type": "range", "min": 2, "max": 12, "step": 1, "value": 5},
+        {"id": "rounds", "label": "Self-review rounds", "type": "range", "min": 0, "max": 3, "step": 1, "value": 2}
+      ],
+      "steps": [
+        ["Orchestrator", "Split the job into {pieces} pieces: press note, landing copy, emails and social posts."],
+        ["Writer subagents", "Drafted all {pieces} pieces in parallel from one shared product brief."],
+        ["Critic", "Checked drafts against the brief. Found {=pieces + 2} issues, such as a feature named two different ways."],
+        ["Reviser", "Ran {rounds} review-and-fix rounds. Issues left: {=max(0, round((pieces + 2) / (1 + rounds * 2)))}."],
+        ["Orchestrator", "Packaged the final set with a change log."]
+      ],
+      "result": {
+        "title": "Launch pack",
+        "rows": [
+          ["Pieces", "{pieces}"],
+          ["Issues found", "{=pieces + 2}"],
+          ["Issues left after review", "{=max(0, round((pieces + 2) / (1 + rounds * 2)))}"],
+          ["Extra time for review", "about {=rounds * 3} minutes"]
+        ]
+      },
+      "followups": [
+        ["Why not always run three rounds?", "Each round catches fewer new issues. Past two rounds you mostly pay for time with little change, so two is the default."],
+        ["Can I see what the critic changed?", "Yes. The change log shows each issue, the fix and which round made it."]
+      ]
+    },
+    {
+      "title": "Answer a complex customer question",
+      "ask": "A customer asks for a combined quote across {products} products with volume discounts. Draft the answer.",
+      "inputs": [
+        {"id": "products", "label": "Products in the quote", "type": "range", "min": 2, "max": 15, "step": 1, "value": 4},
+        {"id": "units", "label": "Units per product", "type": "range", "min": 10, "max": 1000, "step": 10, "value": 200}
+      ],
+      "steps": [
+        ["Orchestrator", "Sent pricing to the Pricing subagent and terms to the Policy subagent."],
+        ["Pricing subagent", "Applied the volume tier for {units} units: {=min(20, round(units / 50))}% off."],
+        ["Policy subagent", "Checked delivery and payment terms for {products} products."],
+        ["Self-check", "Re-added the totals and caught one rounding error before sending."]
+      ],
+      "result": {
+        "title": "Quote draft",
+        "rows": [
+          ["Line items", "{products}"],
+          ["Discount applied", "{=min(20, round(units / 50))}%"],
+          ["Sample total at $12 list", "${=round(products * units * 12 * (1 - min(20, round(units / 50)) / 100))}"],
+          ["Errors caught by self-check", "1"]
+        ]
+      },
+      "followups": [
+        ["Does it send the quote itself?", "Not by default. The draft goes to a person for approval. You can allow auto-send for quotes under a set amount."],
+        ["What does the self-check look at?", "Math, consistency with the price list and whether every question in the customer's message got an answer."]
+      ]
+    },
+    {
+      "title": "Improve its own prompts",
+      "ask": "Our ticket summaries get {rating} out of 5 from agents. Let Astra tune its subagent prompts over {cycles} cycles.",
+      "inputs": [
+        {"id": "rating", "label": "Current rating", "type": "range", "min": 1, "max": 4.5, "step": 0.5, "value": 3},
+        {"id": "cycles", "label": "Tuning cycles", "type": "range", "min": 1, "max": 6, "step": 1, "value": 3}
+      ],
+      "steps": [
+        ["Collector", "Gathered 200 rated summaries and the comments left by agents."],
+        ["Critic", "Found the main complaints: missing order numbers and too much background."],
+        ["Prompt tuner", "Wrote a new prompt version each cycle and tested it on held-out tickets."],
+        ["Gatekeeper", "Kept a new version only if it beat the last one. {=max(1, cycles - 1)} of {cycles} versions passed."]
+      ],
+      "result": {
+        "title": "Tuning results",
+        "rows": [
+          ["Rating before", "{rating}"],
+          ["Projected rating after", "{=min(4.8, round(rating + cycles * 0.25, 1))}"],
+          ["Versions kept", "{=max(1, cycles - 1)}"],
+          ["Changes need approval", "Yes"]
+        ]
+      },
+      "followups": [
+        ["Can it make things worse?", "A version only replaces the current one if it scores better on held-out tickets, and you approve the switch. The old version is kept for rollback."],
+        ["Is the projected rating certain?", "No. It comes from test tickets. The real rating is measured after the new prompt runs live for a week."]
+      ]
+    }
+  ]
+}

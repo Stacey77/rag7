@@ -1,0 +1,290 @@
+{
+  "name": "Pricing Floor",
+  "tag": "Shows the lowest price you can quote for a job and still keep the margin you need.",
+  "scenarios": [
+    {
+      "title": "Price a service job",
+      "ask": "Quote a job that takes {hours} of labor at ${=rate} an hour plus ${=materials} in materials. We need a {=margin}% margin.",
+      "inputs": [
+        {
+          "id": "hours",
+          "label": "Labor hours",
+          "type": "range",
+          "min": 1,
+          "max": 80,
+          "step": 1,
+          "value": 12,
+          "unit": "hours"
+        },
+        {
+          "id": "rate",
+          "label": "Labor cost per hour ($)",
+          "type": "range",
+          "min": 20,
+          "max": 150,
+          "step": 5,
+          "value": 45
+        },
+        {
+          "id": "materials",
+          "label": "Materials ($)",
+          "type": "range",
+          "min": 0,
+          "max": 5000,
+          "step": 50,
+          "value": 400
+        },
+        {
+          "id": "margin",
+          "label": "Target margin",
+          "type": "range",
+          "min": 10,
+          "max": 60,
+          "step": 5,
+          "value": 30,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Cost builder",
+          "Labor costs ${=hours * rate} and materials ${=materials}, for a direct cost of ${=hours * rate + materials}."
+        ],
+        [
+          "Overhead agent",
+          "Added 15% for overhead such as vehicles, insurance and admin: ${=round((hours * rate + materials) * 0.15)}."
+        ],
+        [
+          "Floor calculator",
+          "Divided full cost by (1 minus margin) to find the lowest price that keeps a {=margin}% margin."
+        ],
+        [
+          "Checker",
+          "Compared the floor with a sample market range for similar jobs."
+        ]
+      ],
+      "result": {
+        "title": "Your price floor",
+        "rows": [
+          [
+            "Full cost",
+            "${=round((hours * rate + materials) * 1.15)}"
+          ],
+          [
+            "Lowest price at target margin",
+            "${=ceil((hours * rate + materials) * 1.15 / (1 - margin / 100))}"
+          ],
+          [
+            "Profit at the floor",
+            "${=ceil((hours * rate + materials) * 1.15 / (1 - margin / 100)) - round((hours * rate + materials) * 1.15)}"
+          ],
+          [
+            "Same as a markup on cost of",
+            "{=round(100 / (1 - margin / 100) - 100)}%"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why not just add the margin to cost?",
+          "Adding {=margin}% to cost gives a smaller margin than {=margin}% of the price. Dividing by (1 minus margin) is what keeps the margin on the final price."
+        ],
+        [
+          "Should I quote the floor?",
+          "The floor is the lowest you should go, not the target. Most owners quote above it and treat the floor as the walk-away number."
+        ],
+        [
+          "What if the job runs over by 20%?",
+          "Labor would cost about ${=round(hours * rate * 0.2)} more and your margin at the floor would drop to about {=max(0, round((1 - (hours * rate * 1.2 + materials) * 1.15 / ((hours * rate + materials) * 1.15 / (1 - margin / 100))) * 100))}%. That is why many owners add a small contingency for jobs that often run long."
+        ]
+      ]
+    },
+    {
+      "title": "Set a monthly retainer",
+      "ask": "Set a monthly retainer for {hours} of work at a team cost of ${=rate} an hour, plus ${=tools} in tools, at a {=margin}% margin.",
+      "inputs": [
+        {
+          "id": "hours",
+          "label": "Hours per month",
+          "type": "range",
+          "min": 5,
+          "max": 160,
+          "step": 5,
+          "value": 30,
+          "unit": "hours"
+        },
+        {
+          "id": "rate",
+          "label": "Team cost per hour ($)",
+          "type": "range",
+          "min": 25,
+          "max": 150,
+          "step": 5,
+          "value": 55
+        },
+        {
+          "id": "tools",
+          "label": "Software and tools ($ per month)",
+          "type": "range",
+          "min": 0,
+          "max": 2000,
+          "step": 50,
+          "value": 150
+        },
+        {
+          "id": "margin",
+          "label": "Target margin",
+          "type": "range",
+          "min": 15,
+          "max": 60,
+          "step": 5,
+          "value": 40,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Cost builder",
+          "Monthly cost: ${=hours * rate} in team time plus ${=tools} in tools."
+        ],
+        [
+          "Buffer agent",
+          "Added 10% for unplanned requests that retainers usually attract."
+        ],
+        [
+          "Floor calculator",
+          "Found the lowest retainer that keeps a {=margin}% margin."
+        ],
+        [
+          "Packager",
+          "Turned the floor into an effective hourly rate you can explain to the client."
+        ]
+      ],
+      "result": {
+        "title": "Retainer floor",
+        "rows": [
+          [
+            "Monthly cost with buffer",
+            "${=round((hours * rate + tools) * 1.1)}"
+          ],
+          [
+            "Lowest retainer",
+            "${=ceil((hours * rate + tools) * 1.1 / (1 - margin / 100))} a month"
+          ],
+          [
+            "Effective hourly rate",
+            "${=round(ceil((hours * rate + tools) * 1.1 / (1 - margin / 100)) / hours)}"
+          ],
+          [
+            "Yearly value at the floor",
+            "${=ceil((hours * rate + tools) * 1.1 / (1 - margin / 100)) * 12}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if the client wants fewer hours?",
+          "The floor scales with hours, but tool costs do not. At half the hours, tools take a bigger share, so the effective hourly rate goes up."
+        ],
+        [
+          "Should the buffer be higher?",
+          "If past clients regularly went over their hours, yes. Pricing Floor can read your time logs and suggest a buffer from real overruns."
+        ]
+      ]
+    },
+    {
+      "title": "Check a discount request",
+      "ask": "A client asks for {=discount}% off a ${=price} quote. Our costs are {=cost}% of the quoted price. Can we say yes?",
+      "inputs": [
+        {
+          "id": "price",
+          "label": "Quoted price ($)",
+          "type": "range",
+          "min": 500,
+          "max": 20000,
+          "step": 500,
+          "value": 4000
+        },
+        {
+          "id": "cost",
+          "label": "Costs as share of quote",
+          "type": "range",
+          "min": 30,
+          "max": 85,
+          "step": 5,
+          "value": 60,
+          "unit": "%"
+        },
+        {
+          "id": "discount",
+          "label": "Discount requested",
+          "type": "range",
+          "min": 0,
+          "max": 30,
+          "step": 5,
+          "value": 10,
+          "unit": "%"
+        },
+        {
+          "id": "target",
+          "label": "Minimum margin you accept",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 5,
+          "value": 20,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Reader",
+          "Price after discount would be ${=round(price * (1 - discount / 100))}. Costs stay at ${=round(price * cost / 100)}."
+        ],
+        [
+          "Margin checker",
+          "Margin after the discount would be {=max(0, round((1 - discount / 100 - cost / 100) / (1 - discount / 100) * 100))}%. Zero means at or below cost."
+        ],
+        [
+          "Limit finder",
+          "The largest discount that keeps a {=target}% margin is {=max(0, floor(100 - cost / (1 - target / 100)))}%."
+        ],
+        [
+          "Advisor",
+          "Suggested trading the discount for something of value, like faster payment or a longer term."
+        ]
+      ],
+      "result": {
+        "title": "Discount check",
+        "rows": [
+          [
+            "Price after discount",
+            "${=round(price * (1 - discount / 100))}"
+          ],
+          [
+            "Margin after discount",
+            "{=max(0, round((1 - discount / 100 - cost / 100) / (1 - discount / 100) * 100))}%"
+          ],
+          [
+            "Largest safe discount",
+            "{=max(0, floor(100 - cost / (1 - target / 100)))}%"
+          ],
+          [
+            "Profit given up",
+            "${=round(price * discount / 100)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if costs already eat the margin?",
+          "If the largest safe discount shows 0%, the quote is already at or below your minimum margin. The honest answer is to hold the price or reduce scope."
+        ],
+        [
+          "How do I say no without losing the client?",
+          "Offer a smaller discount for a clear reason, such as payment upfront, or remove a part of the scope so the price drops but the margin holds."
+        ]
+      ]
+    }
+  ]
+}

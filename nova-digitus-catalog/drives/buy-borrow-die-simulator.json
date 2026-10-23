@@ -1,0 +1,306 @@
+{
+  "name": "Buy Borrow Die Simulator",
+  "tag": "See how buying assets, borrowing against them and passing them on could play out over time.",
+  "scenarios": [
+    {
+      "title": "Model a portfolio over 10 years",
+      "ask": "I hold ${value} in assets growing {growth} a year. If I borrow at {rate} instead of selling, what does it look like in 10 years?",
+      "inputs": [
+        {
+          "id": "value",
+          "label": "Asset value today ($)",
+          "type": "range",
+          "min": 100000,
+          "max": 5000000,
+          "step": 50000,
+          "value": 1000000
+        },
+        {
+          "id": "growth",
+          "label": "Yearly growth",
+          "type": "range",
+          "min": 0,
+          "max": 10,
+          "step": 0.5,
+          "value": 5,
+          "unit": "%"
+        },
+        {
+          "id": "rate",
+          "label": "Borrowing rate",
+          "type": "range",
+          "min": 3,
+          "max": 10,
+          "step": 0.5,
+          "value": 6.5,
+          "unit": "%"
+        },
+        {
+          "id": "ltv",
+          "label": "Amount borrowed (share of value)",
+          "type": "range",
+          "min": 10,
+          "max": 50,
+          "step": 5,
+          "value": 25,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Growth model",
+          "Projected value after 10 years with simple growth: ${=round(value * (1 + growth * 10 / 100))}."
+        ],
+        [
+          "Borrow model",
+          "Borrowed ${=round(value * ltv / 100)} today. Interest-only cost over 10 years: ${=round(value * ltv / 100 * rate / 100 * 10)}."
+        ],
+        [
+          "Loan check",
+          "Loan-to-value in year 10: {=round(value * ltv / 100 / (value * (1 + growth * 10 / 100)) * 100, 1)}%."
+        ],
+        [
+          "Estate view",
+          "Showed how a step-up in basis at death can reset the taxable gain for heirs under current U.S. rules."
+        ]
+      ],
+      "result": {
+        "title": "10-year illustration",
+        "rows": [
+          [
+            "Value in year 10",
+            "${=round(value * (1 + growth * 10 / 100))}"
+          ],
+          [
+            "Cash borrowed",
+            "${=round(value * ltv / 100)}"
+          ],
+          [
+            "Total interest paid",
+            "${=round(value * ltv / 100 * rate / 100 * 10)}"
+          ],
+          [
+            "Equity left",
+            "${=round(value * (1 + growth * 10 / 100) - value * ltv / 100)}"
+          ],
+          [
+            "Note",
+            "Illustration only, not tax or financial advice"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if growth is zero?",
+          "Then the asset never outgrows the loan and you pay interest of about ${=round(value * ltv / 100 * rate / 100)} a year. Borrowing only makes sense if growth and income cover that cost over time."
+        ],
+        [
+          "Is the step-up in basis guaranteed?",
+          "It is part of current federal tax law, which can change. Estate size, state rules and how assets are titled all matter, so review your plan with a CPA and estate attorney."
+        ]
+      ]
+    },
+    {
+      "title": "Stress test the loan",
+      "ask": "My ${value} portfolio carries a loan worth {loanpct} of its value. The lender calls at {call} loan-to-value. What price drop can I survive?",
+      "inputs": [
+        {
+          "id": "value",
+          "label": "Portfolio value ($)",
+          "type": "range",
+          "min": 100000,
+          "max": 5000000,
+          "step": 50000,
+          "value": 1000000
+        },
+        {
+          "id": "loanpct",
+          "label": "Loan as share of value",
+          "type": "range",
+          "min": 0,
+          "max": 60,
+          "step": 5,
+          "value": 30,
+          "unit": "%"
+        },
+        {
+          "id": "call",
+          "label": "Lender's limit",
+          "type": "range",
+          "min": 40,
+          "max": 80,
+          "step": 5,
+          "value": 60,
+          "unit": "%"
+        },
+        {
+          "id": "drop",
+          "label": "Price drop to test",
+          "type": "range",
+          "min": 0,
+          "max": 50,
+          "step": 5,
+          "value": 30,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Loan check",
+          "Loan balance is ${=round(value * loanpct / 100)}, a loan-to-value of {loanpct}."
+        ],
+        [
+          "Shock model",
+          "Applied a {drop} fall. Portfolio value becomes ${=round(value * (1 - drop / 100))}."
+        ],
+        [
+          "Limit check",
+          "Loan-to-value after the drop: {=round(loanpct / max(1, 100 - drop) * 100, 1)}% against a {call} limit."
+        ],
+        [
+          "Cushion",
+          "Worked out the largest drop before the lender's limit is reached."
+        ]
+      ],
+      "result": {
+        "title": "Stress test",
+        "rows": [
+          [
+            "Loan-to-value today",
+            "{loanpct}"
+          ],
+          [
+            "Loan-to-value after the drop",
+            "{=round(loanpct / max(1, 100 - drop) * 100, 1)}%"
+          ],
+          [
+            "Largest drop before the limit",
+            "{=max(0, round(100 - loanpct / call * 100, 1))}%"
+          ],
+          [
+            "Cash needed to cure",
+            "${=max(0, round(value * loanpct / 100 - value * (1 - drop / 100) * call / 100))}"
+          ],
+          [
+            "Note",
+            "Illustration only"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What does cash needed to cure mean?",
+          "It is how much of the loan you would need to pay down to get back under the {call} limit after the drop. Zero means you stay under the limit."
+        ],
+        [
+          "How do people lower this risk?",
+          "Common approaches are borrowing less, keeping a cash reserve, and spreading the loan across assets that don't move together. The simulator lets you test each one."
+        ]
+      ]
+    },
+    {
+      "title": "Borrow or sell for living costs",
+      "ask": "I need ${need} this year. Compare selling assets with a {gain} gain versus borrowing at {rate}.",
+      "inputs": [
+        {
+          "id": "need",
+          "label": "Cash needed ($)",
+          "type": "range",
+          "min": 10000,
+          "max": 500000,
+          "step": 10000,
+          "value": 100000
+        },
+        {
+          "id": "gain",
+          "label": "Share of sale that is gain",
+          "type": "range",
+          "min": 0,
+          "max": 90,
+          "step": 5,
+          "value": 60,
+          "unit": "%"
+        },
+        {
+          "id": "taxrate",
+          "label": "Capital gains rate",
+          "type": "select",
+          "value": "20%",
+          "options": [
+            {
+              "label": "15%",
+              "n": 15
+            },
+            {
+              "label": "20%",
+              "n": 20
+            },
+            {
+              "label": "23.8%",
+              "n": 23.8
+            }
+          ]
+        },
+        {
+          "id": "rate",
+          "label": "Borrowing rate",
+          "type": "range",
+          "min": 3,
+          "max": 10,
+          "step": 0.5,
+          "value": 6.5,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Sale model",
+          "Selling to raise ${need} creates a taxable gain of about ${=round(need * gain / 100)}."
+        ],
+        [
+          "Tax estimate",
+          "Estimated federal tax at {taxrate}: ${=round(need * gain / 100 * taxrate / 100)}."
+        ],
+        [
+          "Borrow model",
+          "Borrowing ${need} at {rate} costs about ${=round(need * rate / 100)} a year in interest."
+        ],
+        [
+          "Comparison",
+          "Shows how many years of interest equal the one-time tax bill."
+        ]
+      ],
+      "result": {
+        "title": "Sell vs borrow",
+        "rows": [
+          [
+            "Tax if you sell",
+            "${=round(need * gain / 100 * taxrate / 100)}"
+          ],
+          [
+            "Interest per year if you borrow",
+            "${=round(need * rate / 100)}"
+          ],
+          [
+            "Years of interest to equal the tax",
+            "{=round(need * gain / 100 * taxrate / 100 / max(1, need * rate / 100), 1)}"
+          ],
+          [
+            "Note",
+            "Federal estimate only; state tax not included"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "So borrowing is always cheaper?",
+          "No. Interest repeats every year while the tax is paid once. If you borrow for longer than about {=round(need * gain / 100 * taxrate / 100 / max(1, need * rate / 100), 1)} years, interest can cost more than the tax would have."
+        ],
+        [
+          "Where does 23.8% come from?",
+          "It is the top 20% federal long-term rate plus the 3.8% net investment income tax that applies at higher incomes. Your CPA can confirm which rate fits you."
+        ]
+      ]
+    }
+  ]
+}

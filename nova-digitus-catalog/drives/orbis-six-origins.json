@@ -1,0 +1,268 @@
+{
+  "name": "Orbis Six Origins",
+  "tag": "Builds and runs a curated store of goods from six origins, from sourcing to listings to delivery dates.",
+  "scenarios": [
+    {
+      "title": "Build the launch catalog",
+      "ask": "Build a launch catalog with {per} products from each of our six origins, average price ${=price}, at a {markup} markup.",
+      "inputs": [
+        {
+          "id": "per",
+          "label": "Products per origin",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 5,
+          "value": 15
+        },
+        {
+          "id": "price",
+          "label": "Average retail price ($)",
+          "type": "range",
+          "min": 15,
+          "max": 150,
+          "step": 5,
+          "value": 45
+        },
+        {
+          "id": "markup",
+          "label": "Markup level",
+          "type": "select",
+          "value": "standard",
+          "options": [
+            {
+              "label": "lean",
+              "n": 1.8
+            },
+            {
+              "label": "standard",
+              "n": 2.2
+            },
+            {
+              "label": "premium",
+              "n": 2.8
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Sourcing agent",
+          "Shortlisted {=per * 6} products from supplier lists for China, Japan, Africa, Canada, Mexico and Thailand, {per} per origin."
+        ],
+        [
+          "Story writer",
+          "Wrote a short origin note for each product: where it is made, what it is made of and how to care for it."
+        ],
+        [
+          "Pricing agent",
+          "Set prices at a {markup} markup. Average landed cost is about ${=round(price / markup, 2)} per item."
+        ],
+        [
+          "Shipping agent",
+          "Grouped products by delivery window so each listing shows an honest arrival estimate."
+        ],
+        [
+          "Reviewer",
+          "Flagged {=max(1, round(per * 6 * 0.05))} listings that need better photos before launch."
+        ]
+      ],
+      "result": {
+        "title": "Launch catalog",
+        "rows": [
+          [
+            "Products",
+            "{=per * 6}"
+          ],
+          [
+            "Average landed cost",
+            "${=round(price / markup, 2)}"
+          ],
+          [
+            "Average gross profit per sale",
+            "${=round(price - price / markup, 2)}"
+          ],
+          [
+            "Gross margin",
+            "{=round((1 - 1 / markup) * 100)}%"
+          ],
+          [
+            "Listings needing photos",
+            "{=max(1, round(per * 6 * 0.05))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Do I need to hold inventory?",
+          "Not for every item. The store supports supplier-shipped products alongside a small stock of your best sellers, and each listing shows which is which so delivery dates stay accurate."
+        ],
+        [
+          "Why does the margin matter so much?",
+          "International shipping, returns and payment fees come out of gross profit. At ${=round(price - price / markup, 2)} per sale you can see quickly whether a product can carry those costs."
+        ],
+        [
+          "Can I keep the catalog balanced across origins?",
+          "Yes. The Sourcing agent keeps the same number of products per origin unless you change it, so no region crowds out the others."
+        ]
+      ]
+    },
+    {
+      "title": "Plan a holiday campaign",
+      "ask": "We expect {visitors} visitors in December. Plan a gift campaign and estimate sales at a {=conv}% conversion rate.",
+      "inputs": [
+        {
+          "id": "visitors",
+          "label": "Expected visitors",
+          "type": "range",
+          "min": 2000,
+          "max": 100000,
+          "step": 2000,
+          "value": 20000
+        },
+        {
+          "id": "conv",
+          "label": "Conversion rate",
+          "type": "range",
+          "min": 0.5,
+          "max": 4,
+          "step": 0.5,
+          "value": 1.5,
+          "unit": "%"
+        },
+        {
+          "id": "aov",
+          "label": "Average order ($)",
+          "type": "range",
+          "min": 30,
+          "max": 200,
+          "step": 10,
+          "value": 70
+        }
+      ],
+      "steps": [
+        [
+          "Merch agent",
+          "Built six gift guides, one per origin, plus a mixed 'around the world' set."
+        ],
+        [
+          "Copy agent",
+          "Wrote email and social copy that leads with the maker stories."
+        ],
+        [
+          "Shipping agent",
+          "Set order-by dates per origin so gifts arrive before the holiday."
+        ],
+        [
+          "Forecast",
+          "Estimated orders and revenue from your inputs. This is a planning estimate, not a promise."
+        ]
+      ],
+      "result": {
+        "title": "Campaign forecast (estimate)",
+        "rows": [
+          [
+            "Estimated orders",
+            "{=round(visitors * conv / 100)}"
+          ],
+          [
+            "Estimated revenue",
+            "${=round(visitors * conv / 100 * aov)}"
+          ],
+          [
+            "Gift guides",
+            "7"
+          ],
+          [
+            "Order-by dates",
+            "One per origin"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Which origin should lead the campaign?",
+          "The forecast ranks origins by past add-to-cart rates. In this sample, Japan and Mexico lead for gifts under ${=aov}."
+        ],
+        [
+          "What if conversion is only half?",
+          "Then you would expect about {=round(visitors * conv / 200)} orders and ${=round(visitors * conv / 200 * aov)}. Plan ad spend against that lower case."
+        ]
+      ]
+    },
+    {
+      "title": "Check supplier reliability",
+      "ask": "We place about {orders} supplier orders a month and {=late}% arrive late. Which suppliers are the problem?",
+      "inputs": [
+        {
+          "id": "orders",
+          "label": "Supplier orders per month",
+          "type": "range",
+          "min": 20,
+          "max": 600,
+          "step": 20,
+          "value": 120
+        },
+        {
+          "id": "late",
+          "label": "Orders arriving late",
+          "type": "range",
+          "min": 2,
+          "max": 40,
+          "step": 2,
+          "value": 12,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Tracker",
+          "Matched {orders} orders to promised and actual arrival dates."
+        ],
+        [
+          "Analyst",
+          "{=max(1, round(orders * late / 100))} late orders. About 70% come from 3 suppliers."
+        ],
+        [
+          "Shipping agent",
+          "Two of those suppliers ship by sea without saying so on the quote."
+        ],
+        [
+          "Planner",
+          "Suggested backup suppliers for the worst one and longer delivery windows on affected listings."
+        ]
+      ],
+      "result": {
+        "title": "Supplier review",
+        "rows": [
+          [
+            "Late orders a month",
+            "{=max(1, round(orders * late / 100))}"
+          ],
+          [
+            "From the top 3 suppliers",
+            "{=max(1, round(orders * late / 100 * 0.7))}"
+          ],
+          [
+            "Listings to update",
+            "{=max(1, round(orders * 0.1))}"
+          ],
+          [
+            "Expected late rate after changes",
+            "{=max(1, round(late * 0.5))}%"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will it contact suppliers?",
+          "It drafts the message with the late-order evidence. You review and send it."
+        ],
+        [
+          "Why update listings instead of only switching suppliers?",
+          "Customers mind late surprises more than longer honest estimates. Fixing the estimate protects reviews while you test backups."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "name": "Radio Broadcast Hub",
+  "tag": "Drafts broadcast bulletins and runs practice on-air segments with AI voices, so your desk is ready before it matters.",
+  "scenarios": [
+    {
+      "title": "Severe weather bulletin",
+      "ask": "A high wind warning covers {counties} counties in our listening area. Draft the bulletin, voice it in {languages}, and repeat it every {interval}.",
+      "inputs": [
+        {
+          "id": "counties",
+          "label": "Counties affected",
+          "type": "range",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "languages",
+          "label": "Languages",
+          "type": "select",
+          "value": "English and Spanish",
+          "options": [
+            {
+              "label": "English only",
+              "n": 1
+            },
+            {
+              "label": "English and Spanish",
+              "n": 2
+            },
+            {
+              "label": "Three languages",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "interval",
+          "label": "Repeat every",
+          "type": "range",
+          "min": 10,
+          "max": 60,
+          "step": 5,
+          "value": 20,
+          "unit": "minutes"
+        }
+      ],
+      "steps": [
+        [
+          "Intake",
+          "Read the sample weather alert: winds up to 60 mph, outages likely, {counties} counties named."
+        ],
+        [
+          "Writer",
+          "Drafted a {=30 + counties * 4}-second bulletin: headline, areas, what to do, source and next update time."
+        ],
+        [
+          "Translator",
+          "Produced {=languages} language versions and kept the county names and times identical in each."
+        ],
+        [
+          "Voice studio",
+          "Rendered each version with a calm AI news voice. You can play every take before it airs."
+        ],
+        [
+          "Scheduler",
+          "Built a 3-hour repeat plan: {=floor(180 / interval)} airings per language, placed between songs and ad breaks."
+        ]
+      ],
+      "result": {
+        "title": "Bulletin package ready",
+        "rows": [
+          [
+            "Bulletin length",
+            "{=30 + counties * 4} seconds"
+          ],
+          [
+            "Language versions",
+            "{=languages}"
+          ],
+          [
+            "Airings over 3 hours",
+            "{=floor(180 / interval) * languages}"
+          ],
+          [
+            "Airtime used",
+            "{=round(floor(180 / interval) * languages * (30 + counties * 4) / 60, 1)} minutes"
+          ],
+          [
+            "Goes on air",
+            "Only after your approval"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is this an official Emergency Alert System message?",
+          "No. The hub drafts and voices bulletins for your own programming. Official EAS activations still run through your station's EAS equipment and procedures."
+        ],
+        [
+          "What if the warning gets updated?",
+          "Paste or import the new alert and the Writer marks what changed. The new versions replace the old ones in the repeat plan once you approve them."
+        ],
+        [
+          "Can a person read it instead?",
+          "Yes. The script prints with timing marks, so a host can read it live and the AI voice stays as a backup."
+        ]
+      ]
+    },
+    {
+      "title": "Daily commercial log",
+      "ask": "Build tomorrow's log for {stations} stations: {spots} ad spots an hour across {hours} hours of programming.",
+      "inputs": [
+        {
+          "id": "stations",
+          "label": "Stations",
+          "type": "range",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "value": 2
+        },
+        {
+          "id": "spots",
+          "label": "Ad spots per hour",
+          "type": "range",
+          "min": 2,
+          "max": 16,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "hours",
+          "label": "Programmed hours",
+          "type": "range",
+          "min": 4,
+          "max": 24,
+          "step": 1,
+          "value": 18,
+          "unit": "hours"
+        }
+      ],
+      "steps": [
+        [
+          "Traffic agent",
+          "Placed {=spots * hours * stations} spots across {stations} stations and checked each against its contract run dates."
+        ],
+        [
+          "Separation check",
+          "Kept competing advertisers apart. Moved {=max(1, round(spots * hours * stations * 0.02))} spots that landed in the same break as a competitor."
+        ],
+        [
+          "Copy desk",
+          "Matched every spot to its current audio file. {=max(1, round(stations * 1.5))} spots point to expired copy and were flagged."
+        ],
+        [
+          "Voice studio",
+          "Recorded fresh station IDs and liners with the house AI voice for each hour."
+        ]
+      ],
+      "result": {
+        "title": "Log ready for review",
+        "rows": [
+          [
+            "Spots scheduled",
+            "{=spots * hours * stations}"
+          ],
+          [
+            "Ad time per hour",
+            "{=round(spots * 0.5, 1)} minutes (30-second spots)"
+          ],
+          [
+            "Competitor clashes fixed",
+            "{=max(1, round(spots * hours * stations * 0.02))}"
+          ],
+          [
+            "Expired copy flagged",
+            "{=max(1, round(stations * 1.5))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can it export to our playout system?",
+          "Yes. The log exports as a standard text or CSV file that most playout and traffic systems can import. Sample data here, of course."
+        ],
+        [
+          "What happens to the flagged spots?",
+          "They stay in the log with a warning until sales sends new copy. If nothing arrives, the agent suggests a filler spot of the same length."
+        ]
+      ]
+    },
+    {
+      "title": "Practice a live broadcast",
+      "ask": "Run a {length} practice show with {hosts} AI co-hosts and {calls} simulated listener calls so our new producer can train.",
+      "inputs": [
+        {
+          "id": "length",
+          "label": "Show length",
+          "type": "range",
+          "min": 10,
+          "max": 60,
+          "step": 5,
+          "value": 30,
+          "unit": "minutes"
+        },
+        {
+          "id": "hosts",
+          "label": "AI co-hosts",
+          "type": "range",
+          "min": 1,
+          "max": 3,
+          "step": 1,
+          "value": 2
+        },
+        {
+          "id": "calls",
+          "label": "Simulated calls",
+          "type": "range",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "value": 3
+        }
+      ],
+      "steps": [
+        [
+          "Show planner",
+          "Built a run-down with {=max(2, round(length / 10))} segments, a news break and a traffic slot."
+        ],
+        [
+          "Script writer",
+          "Wrote banter and transitions for {hosts} co-host voices, about {=round(length * 0.6)} minutes of talk."
+        ],
+        [
+          "Caller simulator",
+          "Prepared {calls} listener calls, including one with a bad line and one that runs long."
+        ],
+        [
+          "Coach",
+          "Logs every late cue and dead-air gap so the producer can review the run afterward."
+        ]
+      ],
+      "result": {
+        "title": "Practice show ready",
+        "rows": [
+          [
+            "Segments",
+            "{=max(2, round(length / 10))}"
+          ],
+          [
+            "Talk time",
+            "About {=round(length * 0.6)} minutes"
+          ],
+          [
+            "Calls to handle",
+            "{calls}"
+          ],
+          [
+            "Producer cues to hit",
+            "{=max(2, round(length / 10)) * 2 + calls}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does this go out over the air?",
+          "No. Practice shows run inside the hub only. Nothing reaches your transmitter or stream unless you send it there on purpose."
+        ],
+        [
+          "How does the coach score the run?",
+          "It counts missed cues and gaps over 3 seconds and lists them with timestamps. It's a training aid, not a formal grade."
+        ]
+      ]
+    }
+  ]
+}

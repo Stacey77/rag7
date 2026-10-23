@@ -1,0 +1,247 @@
+{
+  "name": "KAO Master Command Hub",
+  "tag": "One dashboard to watch and manage appliances across all your sites.",
+  "scenarios": [
+    {
+      "title": "Bring a fleet online",
+      "ask": "Connect {sites} sites with about {per} appliances each. Most use {proto}.",
+      "inputs": [
+        {
+          "id": "sites",
+          "label": "Sites",
+          "type": "range",
+          "min": 1,
+          "max": 50,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "per",
+          "label": "Appliances per site",
+          "type": "range",
+          "min": 5,
+          "max": 100,
+          "step": 5,
+          "value": 25
+        },
+        {
+          "id": "proto",
+          "label": "Main connection type",
+          "type": "select",
+          "value": "MQTT",
+          "options": [
+            {
+              "label": "MQTT",
+              "n": 1
+            },
+            {
+              "label": "Modbus",
+              "n": 2
+            },
+            {
+              "label": "Vendor cloud API",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Discovery",
+          "Found {=sites * per} appliances and grouped them by site and type."
+        ],
+        [
+          "Connector",
+          "Set up {proto} connectors. {=round(sites * per * 0.06)} devices need a firmware update first."
+        ],
+        [
+          "Mapper",
+          "Mapped readings like power, temperature and run hours to one standard format."
+        ],
+        [
+          "Dashboard",
+          "Built a site map with live status and a fleet health score."
+        ]
+      ],
+      "result": {
+        "title": "Fleet online",
+        "rows": [
+          [
+            "Appliances",
+            "{=sites * per}"
+          ],
+          [
+            "Connected today",
+            "{=sites * per - round(sites * per * 0.06)}"
+          ],
+          [
+            "Need firmware",
+            "{=round(sites * per * 0.06)}"
+          ],
+          [
+            "Setup time",
+            "About {=ceil(2 + sites * (0.2 + proto * 0.1))} days"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can it control devices or only watch them?",
+          "Both. Control actions like restarts or set-point changes need a named approver unless you allow them for a device type."
+        ],
+        [
+          "What if a site loses internet?",
+          "A small local gateway keeps logging and sends the data when the link returns."
+        ]
+      ]
+    },
+    {
+      "title": "Find an energy spike",
+      "ask": "Power use jumped {jump} last week across {devices} appliances. Find out why.",
+      "inputs": [
+        {
+          "id": "devices",
+          "label": "Appliances",
+          "type": "range",
+          "min": 20,
+          "max": 2000,
+          "step": 20,
+          "value": 300
+        },
+        {
+          "id": "jump",
+          "label": "Increase in power use",
+          "type": "range",
+          "min": 5,
+          "max": 50,
+          "step": 5,
+          "value": 18,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Analyzer",
+          "Compared last week to the 4 weeks before across {devices} appliances."
+        ],
+        [
+          "Finder",
+          "{=max(1, round(devices * 0.04))} units account for most of the jump. Most are walk-in coolers."
+        ],
+        [
+          "Cause",
+          "Their compressors run {=round(jump * 2.5)}% longer than normal. Door seal or coil fouling is likely."
+        ],
+        [
+          "Work orders",
+          "Drafted {=max(1, round(devices * 0.04))} inspection orders for approval."
+        ]
+      ],
+      "result": {
+        "title": "Spike explained",
+        "rows": [
+          [
+            "Increase",
+            "{jump}"
+          ],
+          [
+            "Units responsible",
+            "{=max(1, round(devices * 0.04))}"
+          ],
+          [
+            "Likely cause",
+            "Seals or dirty coils"
+          ],
+          [
+            "Sample monthly cost of the spike",
+            "${=round(devices * jump * 0.9)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How sure is the cause?",
+          "It is the most likely cause from the run-time pattern. A technician confirms it on site, and the result trains future alerts."
+        ],
+        [
+          "Can we get alerted sooner next time?",
+          "Yes. Set a threshold and any unit drifting more than a set amount from its normal pattern is flagged within a day."
+        ]
+      ]
+    },
+    {
+      "title": "Plan preventive maintenance",
+      "ask": "We have {units} units and about {fail} fail each year. Plan maintenance to cut that.",
+      "inputs": [
+        {
+          "id": "units",
+          "label": "Units",
+          "type": "range",
+          "min": 50,
+          "max": 2000,
+          "step": 50,
+          "value": 400
+        },
+        {
+          "id": "fail",
+          "label": "Failures per year",
+          "type": "range",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "value": 8,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "History",
+          "Read 2 years of alarms and repair notes."
+        ],
+        [
+          "Risk model",
+          "Ranked units by failure risk. {=round(units * 0.1)} are in the top risk group."
+        ],
+        [
+          "Scheduler",
+          "Grouped visits by site so one technician trip covers several units."
+        ],
+        [
+          "Forecast",
+          "Estimated failures after the plan settles in."
+        ]
+      ],
+      "result": {
+        "title": "Maintenance plan",
+        "rows": [
+          [
+            "Failures today",
+            "About {=round(units * fail / 100)} a year"
+          ],
+          [
+            "Expected after plan",
+            "About {=round(units * fail / 100 * 0.6)} a year (estimate)"
+          ],
+          [
+            "High-risk units",
+            "{=round(units * 0.1)}"
+          ],
+          [
+            "Visits scheduled",
+            "{=ceil(units * 0.1 / 3)} per quarter"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why only some units?",
+          "Servicing the riskiest 10% first gives most of the benefit for the least technician time."
+        ],
+        [
+          "Does it work with our service company?",
+          "Yes. Work orders export to email, a spreadsheet or your service tool."
+        ]
+      ]
+    }
+  ]
+}

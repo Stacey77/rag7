@@ -1,0 +1,238 @@
+{
+  "name": "Platinum Agent Console",
+  "tag": "Build, run and watch a team of business AI agents from one console, with costs and errors in plain view.",
+  "scenarios": [
+    {
+      "title": "Build a sales support team",
+      "ask": "Set up {agents} agents to handle {leads} inbound leads a week: qualify, research, draft replies and book calls.",
+      "inputs": [
+        {
+          "id": "agents",
+          "label": "Agents in the team",
+          "type": "range",
+          "min": 3,
+          "max": 10,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "leads",
+          "label": "Inbound leads per week",
+          "type": "range",
+          "min": 10,
+          "max": 500,
+          "step": 10,
+          "value": 80
+        }
+      ],
+      "steps": [
+        [
+          "Builder",
+          "Created {agents} agents from templates: Qualifier, Researcher, Reply writer, Scheduler."
+        ],
+        [
+          "Qualifier",
+          "Scores each lead on fit and urgency. In this sample, {=round(leads * 0.35)} of {leads} leads pass."
+        ],
+        [
+          "Researcher",
+          "Adds a short company profile to each qualified lead."
+        ],
+        [
+          "Reply writer",
+          "Drafts a first reply for review in the console."
+        ],
+        [
+          "Scheduler",
+          "Offers call times from your calendar once you approve the reply."
+        ]
+      ],
+      "result": {
+        "title": "Team ready",
+        "rows": [
+          [
+            "Agents running",
+            "{agents}"
+          ],
+          [
+            "Qualified leads a week",
+            "{=round(leads * 0.35)}"
+          ],
+          [
+            "Replies drafted a week",
+            "{=round(leads * 0.35)}"
+          ],
+          [
+            "Estimated run cost",
+            "${=round(leads * 0.06 + agents * 2)} a week"
+          ],
+          [
+            "Rep time saved",
+            "About {=round(leads * 0.35 * 12 / 60)} hours a week"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I change how leads are scored?",
+          "Yes. The Qualifier uses a short rule list you can edit in plain words, like company size or budget mentioned. Changes apply to new leads right away."
+        ],
+        [
+          "What if an agent goes wrong?",
+          "Every run is logged with inputs and outputs. You can pause one agent without stopping the rest."
+        ],
+        [
+          "Why does cost depend on lead count?",
+          "Each lead uses a few model calls for scoring, research and a draft. The console shows cost per run so you can see where money goes."
+        ]
+      ]
+    },
+    {
+      "title": "Monitor agent health",
+      "ask": "Our agents run {runs} times a day and about {=errors}% of runs fail. Show me where and why.",
+      "inputs": [
+        {
+          "id": "runs",
+          "label": "Runs per day",
+          "type": "range",
+          "min": 50,
+          "max": 5000,
+          "step": 50,
+          "value": 600
+        },
+        {
+          "id": "errors",
+          "label": "Failed runs",
+          "type": "range",
+          "min": 0.5,
+          "max": 10,
+          "step": 0.5,
+          "value": 3,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Monitor",
+          "Grouped {=max(1, round(runs * errors / 100))} failed runs from the last day by agent and error type."
+        ],
+        [
+          "Analyst",
+          "About 60% fail on one tool call: the CRM rate limit is hit at the top of each hour."
+        ],
+        [
+          "Fixer",
+          "Proposed spreading scheduled runs across the hour and adding a retry with a short wait."
+        ],
+        [
+          "Alerting",
+          "Set an alert if failures pass {=round(errors * 1.5, 1)}% in any hour."
+        ]
+      ],
+      "result": {
+        "title": "Health report",
+        "rows": [
+          [
+            "Failed runs a day",
+            "{=max(1, round(runs * errors / 100))}"
+          ],
+          [
+            "Caused by rate limit",
+            "{=round(runs * errors / 100 * 0.6)}"
+          ],
+          [
+            "Expected failures after fix",
+            "{=round(runs * errors / 100 * 0.4)} a day"
+          ],
+          [
+            "Alert threshold",
+            "{=round(errors * 1.5, 1)}% per hour"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does the console retry failed runs?",
+          "Only if you turn on retries for that agent. Retries are limited and logged so a broken agent does not run up costs."
+        ],
+        [
+          "Can it notify us in chat?",
+          "Yes. Alerts can go to email or a team chat channel with a link to the failing run."
+        ]
+      ]
+    },
+    {
+      "title": "Keep costs inside a budget",
+      "ask": "We have a ${=budget} monthly AI budget across {agents} agents. Make sure we stay inside it.",
+      "inputs": [
+        {
+          "id": "budget",
+          "label": "Monthly budget ($)",
+          "type": "range",
+          "min": 100,
+          "max": 10000,
+          "step": 100,
+          "value": 1500
+        },
+        {
+          "id": "agents",
+          "label": "Agents running",
+          "type": "range",
+          "min": 2,
+          "max": 40,
+          "step": 1,
+          "value": 12
+        }
+      ],
+      "steps": [
+        [
+          "Meter",
+          "Tracked spend per agent. Current pace is about ${=round(budget * 1.2)} for the month."
+        ],
+        [
+          "Analyst",
+          "Two agents use a large model for simple sorting tasks."
+        ],
+        [
+          "Optimizer",
+          "Suggested a smaller model for those two and caching repeat lookups."
+        ],
+        [
+          "Guard",
+          "Set a soft cap at 90% of budget that pauses non-urgent agents and asks you first."
+        ]
+      ],
+      "result": {
+        "title": "Budget plan",
+        "rows": [
+          [
+            "Current monthly pace",
+            "${=round(budget * 1.2)}"
+          ],
+          [
+            "Pace after changes",
+            "${=round(budget * 0.85)}"
+          ],
+          [
+            "Average per agent",
+            "${=round(budget * 0.85 / agents)}"
+          ],
+          [
+            "Soft cap",
+            "${=round(budget * 0.9)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will a cheaper model hurt quality?",
+          "For sorting and routing, usually not. The console runs both models on a sample first and shows the results side by side before switching."
+        ],
+        [
+          "What does pausing non-urgent agents mean?",
+          "You mark agents as urgent or not. At the soft cap, non-urgent ones wait until you approve more spend or the month resets."
+        ]
+      ]
+    }
+  ]
+}

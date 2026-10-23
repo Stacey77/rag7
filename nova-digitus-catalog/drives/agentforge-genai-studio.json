@@ -1,0 +1,92 @@
+{
+  "name": "AgentForge: GenAI Studio",
+  "tag": "Build multi-agent workflows with retrieval, tools and monitoring, then ship them with a ready deployment plan.",
+  "scenarios": [
+    {
+      "title": "HR policy answer agent",
+      "ask": "Build an agent that answers HR policy questions from our {pages}-page handbook for {staff} employees.",
+      "inputs": [
+        {"id": "pages", "label": "Handbook pages", "type": "range", "min": 20, "max": 400, "step": 4, "value": 84},
+        {"id": "staff", "label": "Employees who will ask", "type": "range", "min": 25, "max": 5000, "step": 25, "value": 400},
+        {"id": "tests", "label": "Test questions to run", "type": "range", "min": 10, "max": 100, "step": 5, "value": 25}
+      ],
+      "steps": [
+        ["Ingest", "Indexed the {pages}-page handbook into {=round(pages * 4.9)} searchable passages."],
+        ["Builder", "Created an answer agent and a checker agent that verifies every citation."],
+        ["Test", "Ran {tests} sample questions. {=tests - ceil(tests * 0.04)} correct with page citations, {=ceil(tests * 0.04)} sent to HR."],
+        ["Deploy", "Generated a deployment blueprint with logging and a monthly accuracy report."]
+      ],
+      "result": {
+        "title": "Agent ready",
+        "rows": [
+          ["Accuracy on test set", "{=round((tests - ceil(tests * 0.04)) / tests * 100)}%"],
+          ["Citations", "Every answer"],
+          ["Hand-offs to HR", "Unclear questions only"],
+          ["Expected questions per month", "about {=round(staff * 0.3)}"],
+          ["Setup time", "Under {=max(1, ceil(pages / 150))} hours"]
+        ]
+      },
+      "followups": [
+        ["What happens when the handbook changes?", "Upload the new version and the Ingest step re-indexes only the changed pages. The test set re-runs automatically before the update goes live."],
+        ["Can it see salary or personal records?", "No. It only reads the documents you give it. Personal questions are routed to HR by the checker agent."],
+        ["How much HR time could it save?", "If each question takes HR about 6 minutes, {=round(staff * 0.3)} questions a month is roughly {=round(staff * 0.3 * 6 / 60)} hours. Treat that as an estimate until you have a month of logs."]
+      ]
+    },
+    {
+      "title": "Sales research assistant",
+      "ask": "Build a workflow that researches {accounts} target accounts a week and drafts a brief for each rep.",
+      "inputs": [
+        {"id": "accounts", "label": "Accounts per week", "type": "range", "min": 10, "max": 500, "step": 10, "value": 80},
+        {"id": "tools", "label": "Tools to call (CRM, web search, news...)", "type": "range", "min": 1, "max": 6, "step": 1, "value": 3}
+      ],
+      "steps": [
+        ["Builder", "Set up a Researcher agent with {tools} tools and a Writer agent that turns notes into a one-page brief."],
+        ["Retrieval", "Connected past call notes so briefs mention earlier conversations."],
+        ["Monitor", "Added tracing for every tool call and a cost cap per brief."],
+        ["Test", "Ran 10 sample accounts. Reps rated 8 briefs ready to use, 2 needed edits."],
+        ["Deploy", "Scheduled the workflow for Monday mornings."]
+      ],
+      "result": {
+        "title": "Workflow ready",
+        "rows": [
+          ["Briefs per week", "{accounts}"],
+          ["Cost per brief", "about ${=round(0.04 + tools * 0.03, 2)}"],
+          ["Weekly cost", "about ${=round(accounts * (0.04 + tools * 0.03), 2)}"],
+          ["Rep time saved", "about {=round(accounts * 20 / 60)} hours a week"]
+        ]
+      },
+      "followups": [
+        ["Where does the 20 minutes per account come from?", "It is a typical time for a rep to research an account by hand. Replace it with your team's number for a better estimate."],
+        ["Can reps give feedback?", "Yes. A thumbs up or down on each brief is logged, and the monthly report shows which sections get edited most."]
+      ]
+    },
+    {
+      "title": "Move a prototype to production",
+      "ask": "We have a notebook prototype. Get it ready for {users} users with a {sla} response target.",
+      "inputs": [
+        {"id": "users", "label": "Daily users", "type": "range", "min": 50, "max": 20000, "step": 50, "value": 2000},
+        {"id": "sla", "label": "Response target", "type": "select", "value": "Under 5 seconds",
+         "options": [{"label": "Under 10 seconds", "n": 10}, {"label": "Under 5 seconds", "n": 5}, {"label": "Under 2 seconds", "n": 2}]}
+      ],
+      "steps": [
+        ["Importer", "Turned the notebook into a workflow with 4 named steps."],
+        ["Load test", "Simulated {users} users. Peak of about {=ceil(users * 0.02)} requests a minute."],
+        ["Optimizer", "Added caching for repeat questions and a smaller model for routing to hit {sla}."],
+        ["Blueprint", "Wrote the deployment plan: {=max(2, ceil(users / 4000 * 10 / sla))} replicas, alerts and a rollback step."]
+      ],
+      "result": {
+        "title": "Production plan",
+        "rows": [
+          ["Replicas", "{=max(2, ceil(users / 4000 * 10 / sla))}"],
+          ["Peak requests per minute", "{=ceil(users * 0.02)}"],
+          ["Cache hit rate (estimate)", "about 30%"],
+          ["Monitoring", "Latency, cost and answer quality"]
+        ]
+      },
+      "followups": [
+        ["Which cloud does the blueprint target?", "It can target AWS, Azure or Google Cloud. The workflow itself stays the same, only the deployment files change."],
+        ["What triggers a rollback?", "Error rate or latency above your limit for 5 minutes, or a drop in the quality score on the live test set."]
+      ]
+    }
+  ]
+}

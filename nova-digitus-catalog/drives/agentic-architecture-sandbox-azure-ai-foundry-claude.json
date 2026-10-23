@@ -1,0 +1,90 @@
+{
+  "name": "Agentic Architecture Sandbox (Azure AI Foundry + Claude)",
+  "tag": "Design a multi-step agent system on Azure AI Foundry with Claude and see cost and speed before you build it.",
+  "scenarios": [
+    {
+      "title": "Claims intake pipeline",
+      "ask": "Design an insurance claims intake flow with {agents} agents handling {claims} claims a day, using {model} for the reasoning step.",
+      "inputs": [
+        {"id": "agents", "label": "Agents in the flow", "type": "range", "min": 4, "max": 8, "step": 1, "value": 5},
+        {"id": "claims", "label": "Claims per day", "type": "range", "min": 100, "max": 20000, "step": 100, "value": 1500},
+        {"id": "model", "label": "Reasoning model tier", "type": "select", "value": "Claude mid tier",
+         "options": [{"label": "Claude small tier", "n": 1}, {"label": "Claude mid tier", "n": 3}, {"label": "Claude top tier", "n": 8}]}
+      ],
+      "steps": [
+        ["Canvas", "Laid out {agents} agents: the core four (Intake, Document reader, Policy checker, Router) plus {=agents - 4} specialists for fraud and medical bills."],
+        ["Foundry mapping", "Mapped each agent to an Azure AI Foundry agent with its own tools and a shared thread store."],
+        ["Simulator", "Ran {=min(500, claims)} synthetic claims through the flow. Median time {=round(3 + agents * 1.5 + model * 0.5, 1)} seconds per claim."],
+        ["Cost model", "Estimated model and hosting cost per claim at about ${=round(0.002 * agents + 0.006 * model, 3)}."],
+        ["Reviewer", "Flagged that the Router has no fallback if the Policy checker times out."]
+      ],
+      "result": {
+        "title": "Simulation results",
+        "rows": [
+          ["Median time per claim", "{=round(3 + agents * 1.5 + model * 0.5, 1)} seconds"],
+          ["Cost per claim", "about ${=round(0.002 * agents + 0.006 * model, 3)}"],
+          ["Monthly cost", "about ${=round(claims * 30 * (0.002 * agents + 0.006 * model))}"],
+          ["Design issues found", "1"]
+        ]
+      },
+      "followups": [
+        ["Why not use the top model everywhere?", "Most steps are reading and routing, where a smaller model does the job. Keeping the top tier for the reasoning step usually gives most of the quality for a fraction of the cost."],
+        ["Is this deployed to our Azure tenant?", "Not in the sandbox. When you are ready, it exports templates you can deploy into your own subscription after your team reviews them."]
+      ]
+    },
+    {
+      "title": "Compare two agent patterns",
+      "ask": "Should our contract-review system use one supervisor with workers or a fixed pipeline? We review {contracts} contracts a week.",
+      "inputs": [
+        {"id": "contracts", "label": "Contracts per week", "type": "range", "min": 10, "max": 2000, "step": 10, "value": 200},
+        {"id": "pages", "label": "Average pages per contract", "type": "range", "min": 2, "max": 80, "step": 2, "value": 18}
+      ],
+      "steps": [
+        ["Canvas", "Built both designs side by side: Supervisor with 3 workers, and a 4-stage pipeline."],
+        ["Simulator", "Ran 50 sample contracts of about {pages} pages through each."],
+        ["Analyzer", "Supervisor caught {=min(9, 3 + round(pages / 15))} more unusual clauses per 100 contracts. The pipeline was {=round(20 + pages / 4)}% cheaper."],
+        ["Advisor", "Suggested the pipeline for standard contracts and the supervisor only for contracts flagged as unusual."]
+      ],
+      "result": {
+        "title": "Pattern comparison",
+        "rows": [
+          ["Pipeline cost per contract", "about ${=round(pages * 0.01, 2)}"],
+          ["Supervisor cost per contract", "about ${=round(pages * 0.01 * (1 + (20 + pages / 4) / 100), 2)}"],
+          ["Extra unusual clauses caught", "{=min(9, 3 + round(pages / 15))} per 100"],
+          ["Recommended", "Hybrid: pipeline first, supervisor for flagged ones"]
+        ]
+      },
+      "followups": [
+        ["How many contracts would go to the supervisor?", "In the simulation about 15% were flagged, so roughly {=round(contracts * 0.15)} a week at your volume."],
+        ["Can lawyers see the reasoning?", "Yes. Every clause finding links to the passage and the step that raised it."]
+      ]
+    },
+    {
+      "title": "Plan for a traffic spike",
+      "ask": "Our support agents normally handle {base} requests an hour. What happens at {spike}x during a launch?",
+      "inputs": [
+        {"id": "base", "label": "Normal requests per hour", "type": "range", "min": 100, "max": 10000, "step": 100, "value": 800},
+        {"id": "spike", "label": "Spike multiplier", "type": "range", "min": 2, "max": 10, "step": 1, "value": 4}
+      ],
+      "steps": [
+        ["Simulator", "Replayed {=base * spike} requests an hour through the current design."],
+        ["Bottleneck finder", "The retrieval step saturates first at about {=round(base * 2.5)} requests an hour."],
+        ["Advisor", "Suggested a response cache and a queue with a friendly wait message above the limit."],
+        ["Re-run", "With changes, the flow held {=base * spike} requests an hour with no dropped requests in the simulation."]
+      ],
+      "result": {
+        "title": "Spike plan",
+        "rows": [
+          ["Peak load", "{=base * spike} requests an hour"],
+          ["Current limit", "about {=round(base * 2.5)} an hour"],
+          ["Extra retrieval capacity needed", "{=max(0, ceil((base * spike - base * 2.5) / (base * 2.5) * 10) / 10)}x"],
+          ["Dropped requests after changes", "0 in simulation"]
+        ]
+      },
+      "followups": [
+        ["Will real traffic behave like the simulation?", "Not exactly. The sandbox uses your traffic shape from the last month, but a real launch can differ. Plan a load test before the date."],
+        ["What does the wait message say?", "You write it. A common choice is an honest estimate of wait time and an option to get an email reply instead."]
+      ]
+    }
+  ]
+}

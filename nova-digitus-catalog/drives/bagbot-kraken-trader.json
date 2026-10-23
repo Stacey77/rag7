@@ -1,0 +1,91 @@
+{
+  "name": "BagBot Kraken Trader",
+  "tag": "A command-line crypto bot for Kraken with clear strategy settings, paper mode and safety limits.",
+  "scenarios": [
+    {
+      "title": "Configure a strategy in paper mode",
+      "ask": "Set up a {strategy} strategy on a ${balance} paper balance with {size} per order.",
+      "inputs": [
+        {"id": "balance", "label": "Paper balance ($)", "type": "range", "min": 500, "max": 100000, "step": 500, "value": 5000},
+        {"id": "size", "label": "Order size", "type": "range", "min": 1, "max": 20, "step": 1, "value": 5, "unit": "% of balance"},
+        {"id": "strategy", "label": "Strategy", "type": "select", "value": "Grid", "options": [{"label": "Grid", "n": 1}, {"label": "Trend follow", "n": 2}, {"label": "Dollar-cost average", "n": 3}]}
+      ],
+      "steps": [
+        ["Config", "Wrote the settings file: {strategy}, ${=round(balance * size / 100)} per order, paper mode on."],
+        ["Market data", "Connected to sample price feeds for 3 trading pairs."],
+        ["Safety", "Set a stop for the bot if paper losses reach ${=round(balance * 0.1)} in a day."],
+        ["Logger", "Every simulated order and fee is written to a CSV log."]
+      ],
+      "result": {
+        "title": "Paper bot ready",
+        "rows": [
+          ["Order size", "${=round(balance * size / 100)}"],
+          ["Max open orders", "{=min(20, floor(100 / size))}"],
+          ["Daily stop", "${=round(balance * 0.1)}"],
+          ["Mode", "Paper, not real money"],
+          ["Note", "Illustration only, not financial advice"]
+        ]
+      },
+      "followups": [
+        ["How long should I run paper mode?", "Long enough to see the strategy in calm and busy markets, often several weeks. Paper results still don't predict live results."],
+        ["Where are API keys kept?", "In a local environment file on your machine that is never committed or shared. Paper mode needs no keys at all."]
+      ]
+    },
+    {
+      "title": "Switch to live mode safely",
+      "ask": "I want to go live with ${live} of real funds. Check my limits before switching.",
+      "inputs": [
+        {"id": "live", "label": "Live balance ($)", "type": "range", "min": 100, "max": 50000, "step": 100, "value": 1000},
+        {"id": "dailyloss", "label": "Daily loss limit", "type": "range", "min": 1, "max": 10, "step": 1, "value": 3, "unit": "%"},
+        {"id": "maxorder", "label": "Max single order", "type": "range", "min": 1, "max": 25, "step": 1, "value": 5, "unit": "%"}
+      ],
+      "steps": [
+        ["Preflight", "Checked that the API key has trade rights only and no withdrawal rights."],
+        ["Limits", "Daily loss limit ${=round(live * dailyloss / 100)}; largest order ${=round(live * maxorder / 100)}."],
+        ["Confirm", "Live mode needs a typed confirmation and starts with the smallest order size."],
+        ["Kill switch", "One command cancels open orders and stops the bot."]
+      ],
+      "result": {
+        "title": "Live preflight",
+        "rows": [
+          ["Daily loss limit", "${=round(live * dailyloss / 100)}"],
+          ["Largest order", "${=round(live * maxorder / 100)}"],
+          ["Withdrawal rights on key", "None"],
+          ["Note", "Crypto is volatile; you can lose money"]
+        ]
+      },
+      "followups": [
+        ["Why no withdrawal rights?", "If the key were ever exposed, no one could move funds out of the account with it. It can only place and cancel orders."],
+        ["What does the kill switch do?", "It cancels all open orders and stops the bot. It does not sell your holdings unless you ask it to."]
+      ]
+    },
+    {
+      "title": "Backtest a grid",
+      "ask": "Backtest a grid with {levels} levels spaced {spacing} apart over {days} days of sample data.",
+      "inputs": [
+        {"id": "levels", "label": "Grid levels", "type": "range", "min": 4, "max": 40, "step": 2, "value": 12},
+        {"id": "spacing", "label": "Spacing", "type": "range", "min": 0.5, "max": 5, "step": 0.5, "value": 1.5, "unit": "%"},
+        {"id": "days", "label": "Days of data", "type": "range", "min": 7, "max": 365, "step": 7, "value": 90, "unit": "days"}
+      ],
+      "steps": [
+        ["Data", "Loaded {days} of sample hourly prices."],
+        ["Grid", "Placed {levels} buy and sell levels covering a {=levels * spacing}% price range."],
+        ["Simulator", "Counted about {=round(days * 3 / spacing)} simulated grid fills, including sample fees."],
+        ["Report", "Summarized fills, fees and time spent outside the grid."]
+      ],
+      "result": {
+        "title": "Backtest (sample)",
+        "rows": [
+          ["Range covered", "{=levels * spacing}%"],
+          ["Simulated fills", "{=round(days * 3 / spacing)}"],
+          ["Time outside range", "{=max(5, round(60 - levels * spacing * 2))}%"],
+          ["Note", "Past data doesn't predict future results"]
+        ]
+      },
+      "followups": [
+        ["Why does time outside the range matter?", "When price leaves the grid, the bot stops trading or holds a one-sided position. A wider range lowers that time but spreads trades thinner."],
+        ["Do fees matter at tight spacing?", "Yes. At {spacing} spacing, each round trip must earn more than the fees on both sides. The report shows net results after fees."]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "name": "Nova Multi-Agent Core",
+  "tag": "Five agent hubs that run robots, tune operations and fix support tickets, all from one core.",
+  "scenarios": [
+    {
+      "title": "Self-repairing support tickets",
+      "ask": "Route our {tickets} weekly support tickets through the Support hub and auto-fix the common ones.",
+      "inputs": [
+        {"id": "tickets", "label": "Tickets per week", "type": "range", "min": 50, "max": 5000, "step": 50, "value": 700},
+        {"id": "known", "label": "Tickets matching a known fix (%)", "type": "range", "min": 10, "max": 70, "step": 5, "value": 35}
+      ],
+      "steps": [
+        ["Support hub", "Classified {tickets} tickets by product and problem."],
+        ["Repair agent", "Matched {=round(tickets * known / 100)} tickets to known fixes, such as password resets and stuck orders."],
+        ["Verifier", "Confirmed each fix worked by checking the account state afterward."],
+        ["Escalation", "Sent {=tickets - round(tickets * known / 100)} tickets to people with a suggested first step."]
+      ],
+      "result": {
+        "title": "Weekly ticket run",
+        "rows": [
+          ["Fixed automatically", "{=round(tickets * known / 100 * 0.92)}"],
+          ["Fix attempted, sent to a person", "{=round(tickets * known / 100) - round(tickets * known / 100 * 0.92)}"],
+          ["Escalated with a suggestion", "{=tickets - round(tickets * known / 100)}"],
+          ["Staff hours saved", "about {=round(tickets * known / 100 * 0.92 * 12 / 60)}"]
+        ]
+      },
+      "followups": [
+        ["What if a fix fails?", "The Verifier catches it, the change is rolled back where possible, and the ticket goes to a person with a note on what was tried."],
+        ["How does it learn new fixes?", "When staff solve the same issue several times, the hub proposes a new fix recipe. A person approves it before it is used."]
+      ]
+    },
+    {
+      "title": "Coordinate warehouse robots",
+      "ask": "Coordinate {robots} picking robots for {orders} orders in a shift.",
+      "inputs": [
+        {"id": "robots", "label": "Robots", "type": "range", "min": 2, "max": 50, "step": 1, "value": 12},
+        {"id": "orders", "label": "Orders per shift", "type": "range", "min": 100, "max": 10000, "step": 100, "value": 2400}
+      ],
+      "steps": [
+        ["Robot hub", "Assigned orders to {robots} robots by zone and battery level."],
+        ["Path planner", "Planned routes to avoid aisle conflicts. Average trip {=round(4 + 30 / robots, 1)} minutes."],
+        ["Optimization hub", "Batched orders that share shelves so robots pick several at once."],
+        ["Safety monitor", "Paused robots in any aisle where a person scans in."]
+      ],
+      "result": {
+        "title": "Shift plan",
+        "rows": [
+          ["Orders per robot", "{=ceil(orders / robots)}"],
+          ["Shift capacity", "about {=robots * 8 * 30} orders"],
+          ["Shortfall", "{=max(0, orders - robots * 8 * 30)} orders"],
+          ["Charging breaks", "Staggered, {=max(1, ceil(robots / 6))} robots at a time"]
+        ]
+      },
+      "followups": [
+        ["What happens with a shortfall?", "The hub flags it at the start of the shift so you can add pickers or move orders to the next shift."],
+        ["Does it work with our robots?", "It connects through standard robot fleet interfaces. A short integration check confirms your models before go-live."]
+      ]
+    },
+    {
+      "title": "Tune a production line",
+      "ask": "Our packaging line runs at {speed} units a minute with {scrap}% scrap. Find better settings.",
+      "inputs": [
+        {"id": "speed", "label": "Line speed (units per minute)", "type": "range", "min": 20, "max": 300, "step": 10, "value": 120},
+        {"id": "scrap", "label": "Scrap rate (%)", "type": "range", "min": 1, "max": 15, "step": 0.5, "value": 4}
+      ],
+      "steps": [
+        ["Data hub", "Pulled 30 days of sensor data: temperature, speed, seal pressure and scrap."],
+        ["Optimization hub", "Tested {=round(40 + scrap * 10)} setting combinations on a model of the line."],
+        ["Advisor", "Best result: seal temperature up 4 degrees and speed down 5%, which cut scrap in the model."],
+        ["Safety check", "Confirmed all settings stay inside the machine's rated limits."]
+      ],
+      "result": {
+        "title": "Suggested settings",
+        "rows": [
+          ["Scrap now", "{scrap}%"],
+          ["Scrap in the model", "{=round(scrap * 0.6, 1)}%"],
+          ["Good units per hour now", "{=round(speed * 60 * (1 - scrap / 100))}"],
+          ["Good units per hour, model", "{=round(speed * 0.95 * 60 * (1 - scrap * 0.6 / 100))}"]
+        ]
+      },
+      "followups": [
+        ["Will it change the machine settings itself?", "No. It recommends settings and a person applies them. A trial run on one shift is the usual next step."],
+        ["How accurate is the line model?", "It is fit to your last 30 days of data. Treat the gains as an estimate until a trial run confirms them."]
+      ]
+    }
+  ]
+}

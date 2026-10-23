@@ -1,0 +1,257 @@
+{
+  "name": "AI Worker Workspace",
+  "tag": "Train a personal AI worker on how you do things, including your wins and mistakes, then hand it real work.",
+  "scenarios": [
+    {
+      "title": "Teach it how you write proposals",
+      "ask": "Learn from my {samples} past proposals, {=min(wins, samples)} of which won, and draft the next one for a new client.",
+      "inputs": [
+        {
+          "id": "samples",
+          "label": "Past proposals uploaded",
+          "type": "range",
+          "min": 5,
+          "max": 60,
+          "step": 1,
+          "value": 15
+        },
+        {
+          "id": "wins",
+          "label": "How many of them won",
+          "type": "range",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "value": 6
+        },
+        {
+          "id": "detail",
+          "label": "How much it asks you",
+          "type": "select",
+          "value": "Some questions",
+          "options": [
+            {
+              "label": "Few questions",
+              "n": 1
+            },
+            {
+              "label": "Some questions",
+              "n": 2
+            },
+            {
+              "label": "Many questions",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Trainer",
+          "Read {samples} proposals and noted your structure, pricing style and phrases you use often."
+        ],
+        [
+          "Pattern finder",
+          "Winning proposals were about {=min(40, 10 + wins * 2)}% shorter and named a start date. Saved that as a rule."
+        ],
+        [
+          "Interviewer",
+          "Asked you {=detail * 3} questions about the new client before drafting."
+        ],
+        [
+          "Drafter",
+          "Wrote the proposal in your voice and marked {=4 - detail} spots it wasn't sure about."
+        ]
+      ],
+      "result": {
+        "title": "Draft proposal ready",
+        "rows": [
+          [
+            "Rules learned",
+            "{=6 + min(wins, samples)}"
+          ],
+          [
+            "Questions asked",
+            "{=detail * 3}"
+          ],
+          [
+            "Spots marked for you",
+            "{=4 - detail}"
+          ],
+          [
+            "Your time",
+            "About {=10 + detail * 5} minutes instead of 2 hours"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it learn from my edits?",
+          "Yes. When you change a draft, it asks if the change is a one-off or a new rule, then saves rules to its playbook."
+        ],
+        [
+          "Can I see what it learned?",
+          "Everything sits in a plain-English playbook you can read, edit or delete line by line."
+        ]
+      ]
+    },
+    {
+      "title": "Log a mistake so it never repeats",
+      "ask": "Last month we quoted {jobs} jobs without a travel fee. Teach my worker to catch that.",
+      "inputs": [
+        {
+          "id": "jobs",
+          "label": "Jobs affected",
+          "type": "range",
+          "min": 1,
+          "max": 40,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "fee",
+          "label": "Travel fee you missed",
+          "type": "range",
+          "min": 25,
+          "max": 300,
+          "step": 5,
+          "value": 75,
+          "unit": "dollars"
+        }
+      ],
+      "steps": [
+        [
+          "Mistake log",
+          "Recorded the mistake: {jobs} quotes over 20 miles with no travel fee."
+        ],
+        [
+          "Rule writer",
+          "Added a rule: any job over 20 miles gets a travel fee line."
+        ],
+        [
+          "Checker",
+          "Rechecked open quotes and found {=max(1, round(jobs / 2))} with the same gap."
+        ],
+        [
+          "Drafter",
+          "Prepared corrected quotes for your review."
+        ]
+      ],
+      "result": {
+        "title": "Mistake turned into a rule",
+        "rows": [
+          [
+            "Money missed last month",
+            "${=jobs * fee}"
+          ],
+          [
+            "Open quotes fixed",
+            "{=max(1, round(jobs / 2))}"
+          ],
+          [
+            "Recovered on open quotes",
+            "${=max(1, round(jobs / 2)) * fee}"
+          ],
+          [
+            "New rule active",
+            "Yes"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will it apply this to every quote now?",
+          "Yes, every quote it drafts or checks. It will also mention the rule when it adds the fee, so you know why."
+        ],
+        [
+          "What if the rule is wrong sometimes?",
+          "Tell it the exception, such as 'not for repeat clients', and it updates the rule."
+        ]
+      ]
+    },
+    {
+      "title": "Hand it a week of inbox work",
+      "ask": "Take my inbox: about {emails} emails a day. Sort them and draft the replies you're confident about.",
+      "inputs": [
+        {
+          "id": "emails",
+          "label": "Emails per day",
+          "type": "range",
+          "min": 10,
+          "max": 300,
+          "step": 10,
+          "value": 60
+        },
+        {
+          "id": "trust",
+          "label": "Trust level",
+          "type": "select",
+          "value": "Draft only",
+          "options": [
+            {
+              "label": "Sort only",
+              "n": 1
+            },
+            {
+              "label": "Draft only",
+              "n": 2
+            },
+            {
+              "label": "Send routine replies",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Sorter",
+          "Sorted {emails} emails into reply, read later, file and ignore."
+        ],
+        [
+          "Drafter",
+          "Drafted replies for {=round(emails * 0.35)} emails using your past answers."
+        ],
+        [
+          "Confidence check",
+          "Held back {=round(emails * 0.08)} it wasn't sure about, with a note on why."
+        ],
+        [
+          "Trust level",
+          "Following your setting: {trust}."
+        ]
+      ],
+      "result": {
+        "title": "Inbox handled",
+        "rows": [
+          [
+            "Emails sorted",
+            "{emails}"
+          ],
+          [
+            "Replies drafted",
+            "{=round(emails * 0.35)}"
+          ],
+          [
+            "Sent without you",
+            "{=floor(trust / 3) * round(emails * 0.2)}"
+          ],
+          [
+            "Time saved per day",
+            "About {=round(emails * trust * 0.4)} minutes"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How does it decide what's routine?",
+          "Routine means you've answered the same type of email the same way many times. Anything new, emotional or about money stays with you."
+        ],
+        [
+          "Can I take back control quickly?",
+          "Yes. One switch drops it back to sort only, and it keeps a log of everything it did."
+        ]
+      ]
+    }
+  ]
+}

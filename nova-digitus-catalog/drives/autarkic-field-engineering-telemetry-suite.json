@@ -1,0 +1,296 @@
+{
+  "name": "Autarkic Field Engineering & Telemetry Suite",
+  "tag": "Designs off-grid water, power and storage systems, then watches them from your phone.",
+  "scenarios": [
+    {
+      "title": "Size a solar and battery system",
+      "ask": "Size a solar and battery system for a {people}-person off-grid cabin with {days} cloudy day(s) of backup. Sun: {sun}.",
+      "inputs": [
+        {
+          "id": "people",
+          "label": "People in the cabin",
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "days",
+          "label": "Cloudy days of backup",
+          "type": "range",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "value": 2,
+          "unit": "days"
+        },
+        {
+          "id": "sun",
+          "label": "Sun at the site",
+          "type": "select",
+          "value": "Average (4.5 sun hours)",
+          "options": [
+            {
+              "label": "Low (3 sun hours)",
+              "n": 3
+            },
+            {
+              "label": "Average (4.5 sun hours)",
+              "n": 4.5
+            },
+            {
+              "label": "High (6 sun hours)",
+              "n": 6
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Load model",
+          "Estimated {=round(people * 2.3, 1)} kWh a day, peak {=round(0.6 + people * 0.625, 1)} kW, from typical appliances."
+        ],
+        [
+          "Sizing",
+          "Chose {=round(people * 2.3 / (sun * 0.75) * 2, 1)} kW of panels, with a 2x winter margin, and {=round(people * 2.3 * days / 0.8, 1)} kWh of battery."
+        ],
+        [
+          "Water",
+          "Added a ram pump from the creek: about 1,100 liters a day, no electricity."
+        ],
+        [
+          "Telemetry",
+          "Set phone alerts for battery under 30% and pump stalls."
+        ]
+      ],
+      "result": {
+        "title": "System design",
+        "rows": [
+          [
+            "Solar",
+            "{=round(people * 2.3 / (sun * 0.75) * 2, 1)} kW"
+          ],
+          [
+            "Battery",
+            "{=round(people * 2.3 * days / 0.8, 1)} kWh"
+          ],
+          [
+            "Daily load",
+            "{=round(people * 2.3, 1)} kWh"
+          ],
+          [
+            "Autonomy",
+            "{days} on battery alone"
+          ],
+          [
+            "Water",
+            "About 1,100 L/day by ram pump"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why size the battery above the daily load?",
+          "The plan only uses 80% of the battery so it lasts longer. That is why {=round(people * 2.3 * days, 1)} kWh of need becomes {=round(people * 2.3 * days / 0.8, 1)} kWh of battery."
+        ],
+        [
+          "What does the phone app show?",
+          "Battery charge, solar output, pump strokes and tank level, with alerts you set. It works over Wi-Fi, cellular or a low-power radio link."
+        ],
+        [
+          "Is this a final design?",
+          "It is a planning estimate. A local installer should confirm wiring, code rules and site sun before you buy."
+        ]
+      ]
+    },
+    {
+      "title": "Plan a micro-hydro site",
+      "ask": "We have a stream with {head} of head and {flow} of flow. What can a micro-hydro turbine give us?",
+      "inputs": [
+        {
+          "id": "head",
+          "label": "Head (vertical drop)",
+          "type": "range",
+          "min": 2,
+          "max": 50,
+          "step": 1,
+          "value": 12,
+          "unit": "m"
+        },
+        {
+          "id": "flow",
+          "label": "Usable flow",
+          "type": "range",
+          "min": 2,
+          "max": 50,
+          "step": 1,
+          "value": 10,
+          "unit": "L/s"
+        },
+        {
+          "id": "eff",
+          "label": "Turbine type",
+          "type": "select",
+          "value": "Crossflow",
+          "options": [
+            {
+              "label": "Pump-as-turbine",
+              "n": 0.45
+            },
+            {
+              "label": "Crossflow",
+              "n": 0.6
+            },
+            {
+              "label": "Pelton",
+              "n": 0.7
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Site survey",
+          "Logged {head} of head and {flow} of usable flow, leaving water in the stream for wildlife."
+        ],
+        [
+          "Power model",
+          "Power = 9.81 x head x flow x efficiency, about {=round(9.81 * head * flow * eff)} watts."
+        ],
+        [
+          "Pipe sizing",
+          "Sized the intake pipe to keep friction loss under 10% of head."
+        ],
+        [
+          "Telemetry",
+          "Added sensors for turbine speed, output and intake blockage."
+        ]
+      ],
+      "result": {
+        "title": "Micro-hydro estimate",
+        "rows": [
+          [
+            "Continuous power",
+            "{=round(9.81 * head * flow * eff)} W"
+          ],
+          [
+            "Energy per day",
+            "{=round(9.81 * head * flow * eff * 24 / 1000, 1)} kWh"
+          ],
+          [
+            "Turbine efficiency",
+            "{=round(eff * 100)}%"
+          ],
+          [
+            "Homes covered",
+            "About {=round(9.81 * head * flow * eff * 24 / 1000 / 9.2, 1)} (at 9.2 kWh/day each)"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why is hydro better than solar here?",
+          "Hydro runs day and night, so {=round(9.81 * head * flow * eff)} W around the clock often beats a much larger solar array."
+        ],
+        [
+          "What if the stream drops in summer?",
+          "Enter the dry-season flow and the plan shows the low-season output. Most sites pair hydro with a small battery bank."
+        ],
+        [
+          "Do I need a permit?",
+          "Often yes. Rules on diverting water differ by area, so check with your local water authority first."
+        ]
+      ]
+    },
+    {
+      "title": "Design a water purification line",
+      "ask": "Purify {liters} a day from a {source} for the homestead and alert me if anything fails.",
+      "inputs": [
+        {
+          "id": "liters",
+          "label": "Water per day",
+          "type": "range",
+          "min": 200,
+          "max": 3000,
+          "step": 100,
+          "value": 800,
+          "unit": "L"
+        },
+        {
+          "id": "source",
+          "label": "Source",
+          "type": "select",
+          "value": "creek",
+          "options": [
+            {
+              "label": "rain tank",
+              "n": 3
+            },
+            {
+              "label": "creek",
+              "n": 4
+            },
+            {
+              "label": "well",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Source check",
+          "Matched treatment to a {source}: {=source} stages."
+        ],
+        [
+          "Treatment",
+          "Built the line from sediment and carbon filters to a final UV lamp, sized for {liters} a day."
+        ],
+        [
+          "Maintenance",
+          "Sediment filter changes every {=round(30000 / liters)} days at this flow."
+        ],
+        [
+          "Telemetry",
+          "Phone alerts for UV lamp failure, low flow and filter pressure drop."
+        ]
+      ],
+      "result": {
+        "title": "Purification plan",
+        "rows": [
+          [
+            "Treatment stages",
+            "{=source}"
+          ],
+          [
+            "Daily capacity",
+            "{liters}"
+          ],
+          [
+            "Filter change",
+            "Every {=round(30000 / liters)} days"
+          ],
+          [
+            "UV power use",
+            "About 1 kWh a day"
+          ],
+          [
+            "Water testing",
+            "Lab test before first use, then yearly"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is the water safe once this runs?",
+          "The design targets common risks, but only a lab test confirms it. The app reminds you when tests are due."
+        ],
+        [
+          "What happens if the UV lamp fails?",
+          "The app alerts you and can close a valve so untreated water does not reach the tap."
+        ]
+      ]
+    }
+  ]
+}

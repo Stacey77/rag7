@@ -1,0 +1,266 @@
+{
+  "name": "AI Swarm Problem Solver",
+  "tag": "A team of AI agents takes a business problem apart, tests causes against your data and ranks the fixes.",
+  "scenarios": [
+    {
+      "title": "Fix late warehouse shipments",
+      "ask": "Our warehouse ships {orders} orders a week and {=late}% go out late. Why, and what should we fix first?",
+      "inputs": [
+        {
+          "id": "orders",
+          "label": "Orders per week",
+          "type": "range",
+          "min": 500,
+          "max": 20000,
+          "step": 100,
+          "value": 4800
+        },
+        {
+          "id": "late",
+          "label": "Orders shipped late",
+          "type": "range",
+          "min": 3,
+          "max": 25,
+          "step": 1,
+          "value": 9,
+          "unit": "%"
+        },
+        {
+          "id": "staff",
+          "label": "Staff for a Saturday half-shift",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 4
+        }
+      ],
+      "steps": [
+        [
+          "Data agent",
+          "Read {orders} sample orders. Late orders cluster on Mondays and on multi-item picks."
+        ],
+        [
+          "Hypothesis agent",
+          "Tested 5 explanations. Weekend backlog and pick-path length explain 78% of delays."
+        ],
+        [
+          "Critic agent",
+          "Rejected 'carrier delays': on-time rate is the same across carriers."
+        ],
+        [
+          "Cost agent",
+          "A Saturday half-shift for {staff} people costs about ${=staff * 4 * 22} a week at a sample $22 an hour."
+        ],
+        [
+          "Planner",
+          "Ranked fixes by impact and effort."
+        ]
+      ],
+      "result": {
+        "title": "Top fix",
+        "rows": [
+          [
+            "Fix",
+            "Saturday half-shift for pick backlog"
+          ],
+          [
+            "Expected late rate",
+            "{=late}% to {=round(late * max(0.35, 0.6 - staff * 0.03), 1)}%"
+          ],
+          [
+            "Late orders avoided",
+            "About {=round(orders * late / 100 * (1 - max(0.35, 0.6 - staff * 0.03)))} a week"
+          ],
+          [
+            "Shift cost",
+            "${=staff * 4 * 22} a week"
+          ],
+          [
+            "Effort",
+            "Low"
+          ],
+          [
+            "Next best",
+            "Re-slot top 50 SKUs near packing"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How sure are you about the cause?",
+          "The two causes explain 78% of delays in this sample. The swarm shows the data behind each, and the Critic agent lists what it could not rule out."
+        ],
+        [
+          "Why not just switch carriers?",
+          "The Critic agent checked: on-time pickup is the same across carriers, so switching would add cost without fixing the backlog."
+        ],
+        [
+          "What would re-slotting add?",
+          "Moving the top 50 SKUs near packing shortens pick paths. Together with the shift, the sample model puts the late rate near {=round(late * max(0.25, 0.5 - staff * 0.03), 1)}%."
+        ]
+      ]
+    },
+    {
+      "title": "Find why customers are leaving",
+      "ask": "We have {customers} customers and monthly churn rose to {=churn}%. What is driving it?",
+      "inputs": [
+        {
+          "id": "customers",
+          "label": "Active customers",
+          "type": "range",
+          "min": 200,
+          "max": 20000,
+          "step": 100,
+          "value": 2400
+        },
+        {
+          "id": "churn",
+          "label": "Monthly churn",
+          "type": "range",
+          "min": 1,
+          "max": 12,
+          "step": 0.5,
+          "value": 4,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Data agent",
+          "Joined account, billing and support data for {customers} customers."
+        ],
+        [
+          "Hypothesis agent",
+          "Tested 6 explanations. Customers who never set up the second feature leave 3 times as often."
+        ],
+        [
+          "Critic agent",
+          "Rejected 'the price rise': churn rose the same for customers who were not affected by it."
+        ],
+        [
+          "Planner",
+          "Ranked fixes: an onboarding nudge for the second feature first, a check-in call for large accounts second."
+        ]
+      ],
+      "result": {
+        "title": "Top fix",
+        "rows": [
+          [
+            "Customers leaving a month",
+            "{=round(customers * churn / 100)}"
+          ],
+          [
+            "Main driver",
+            "Second feature never set up"
+          ],
+          [
+            "Expected churn after fix",
+            "{=round(churn * 0.75, 1)}%"
+          ],
+          [
+            "Customers kept a month",
+            "About {=max(1, round(customers * churn / 100 * 0.25))}"
+          ],
+          [
+            "Confidence",
+            "Medium: test on half of new accounts first"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why test on half first?",
+          "Splitting new accounts lets you see if the nudge itself lowers churn, instead of a change that happened at the same time."
+        ],
+        [
+          "Can the swarm read support tickets?",
+          "Yes. It groups tickets by topic and checks whether any topic shows up more often before a customer leaves."
+        ]
+      ]
+    },
+    {
+      "title": "Explain a regional sales drop",
+      "ask": "Sales in one of our {regions} regions fell {=drop}% this quarter. Find out why.",
+      "inputs": [
+        {
+          "id": "regions",
+          "label": "Sales regions",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "drop",
+          "label": "Drop in that region",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 5,
+          "value": 15,
+          "unit": "%"
+        },
+        {
+          "id": "reps",
+          "label": "Reps in that region",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 4
+        }
+      ],
+      "steps": [
+        [
+          "Data agent",
+          "Compared deals, pipeline and pricing across all {regions} regions."
+        ],
+        [
+          "Hypothesis agent",
+          "Tested 4 explanations. New pipeline fell after {=max(1, round(reps * 0.25))} rep(s) left in month one."
+        ],
+        [
+          "Critic agent",
+          "Rejected 'a competitor price cut': win rates against that competitor did not change."
+        ],
+        [
+          "Planner",
+          "Suggested moving accounts from departed reps within a week and a short lead-generation push."
+        ]
+      ],
+      "result": {
+        "title": "Findings",
+        "rows": [
+          [
+            "Main cause",
+            "Pipeline gap after rep departures"
+          ],
+          [
+            "Accounts without an owner",
+            "{=max(5, round(reps * 12 * 0.25))}"
+          ],
+          [
+            "Share of the drop explained",
+            "About {=min(85, 50 + drop)}%"
+          ],
+          [
+            "Expected recovery",
+            "Two quarters if accounts are reassigned now"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What else could be going on?",
+          "The Critic agent lists what it could not test, such as local economic changes. You can add that data and rerun."
+        ],
+        [
+          "Does it replace a sales review?",
+          "No. It gives the review a ranked list of causes and evidence so the meeting can focus on decisions."
+        ]
+      ]
+    }
+  ]
+}

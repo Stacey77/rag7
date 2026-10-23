@@ -1,0 +1,287 @@
+{
+  "name": "Nova Trading Platform",
+  "tag": "Lets strategy and risk agents test trading ideas and size positions, with a live portfolio view.",
+  "scenarios": [
+    {
+      "title": "Test a strategy with risk limits",
+      "ask": "Test a {strategy} strategy on a ${=account} sample account, risking {=risk}% per trade.",
+      "inputs": [
+        {
+          "id": "account",
+          "label": "Account size ($)",
+          "type": "range",
+          "min": 10000,
+          "max": 500000,
+          "step": 10000,
+          "value": 50000
+        },
+        {
+          "id": "risk",
+          "label": "Risk per trade",
+          "type": "range",
+          "min": 0.5,
+          "max": 3,
+          "step": 0.5,
+          "value": 1,
+          "unit": "%"
+        },
+        {
+          "id": "strategy",
+          "label": "Strategy type",
+          "type": "select",
+          "value": "Trend following",
+          "options": [
+            {
+              "label": "Trend following",
+              "n": 38
+            },
+            {
+              "label": "Mean reversion",
+              "n": 55
+            },
+            {
+              "label": "Breakout",
+              "n": 42
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Strategy agent",
+          "Set entry and exit rules for {strategy} on a sample of 40 liquid stocks."
+        ],
+        [
+          "Backtester",
+          "Replayed five years of sample price history. Illustrative win rate: {=strategy}%."
+        ],
+        [
+          "Risk agent",
+          "Sized each trade so a stop-out loses ${=round(account * risk / 100)} or less."
+        ],
+        [
+          "Portfolio agent",
+          "Capped total open risk at 6% of the account, or {=floor(6 / risk)} full-size positions at once."
+        ],
+        [
+          "Reporter",
+          "Labeled every number as a backtest illustration with costs and slippage estimated."
+        ]
+      ],
+      "result": {
+        "title": "Backtest summary (illustration)",
+        "rows": [
+          [
+            "Max loss per trade",
+            "${=round(account * risk / 100)}"
+          ],
+          [
+            "Max positions at full size",
+            "{=floor(6 / risk)}"
+          ],
+          [
+            "Illustrative win rate",
+            "{=strategy}%"
+          ],
+          [
+            "Worst losing streak in sample",
+            "{=round(14 - strategy / 7)} trades"
+          ],
+          [
+            "Drawdown at that streak",
+            "About {=round((14 - strategy / 7) * risk, 1)}% of the account"
+          ],
+          [
+            "Note",
+            "Past results do not predict future results. Not financial advice."
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is a higher win rate always better?",
+          "No. Mean reversion often wins more often but with smaller gains per trade. What matters is win rate together with average win and average loss."
+        ],
+        [
+          "What if I risk 2% instead?",
+          "A stop-out would cost ${=round(account * 0.02)}, and the same losing streak would take about {=round((14 - strategy / 7) * 2, 1)}% off the account."
+        ],
+        [
+          "Can it place trades for me?",
+          "It can send orders to a connected broker, but only after you approve each one, and the risk agent blocks orders that break your limits."
+        ]
+      ]
+    },
+    {
+      "title": "Check portfolio risk",
+      "ask": "Review my {positions} open positions. The largest is {=largest}% of the portfolio. Flag risks.",
+      "inputs": [
+        {
+          "id": "positions",
+          "label": "Open positions",
+          "type": "range",
+          "min": 3,
+          "max": 40,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "largest",
+          "label": "Largest position",
+          "type": "range",
+          "min": 5,
+          "max": 50,
+          "step": 5,
+          "value": 20,
+          "unit": "%"
+        },
+        {
+          "id": "sectors",
+          "label": "Sectors held",
+          "type": "range",
+          "min": 1,
+          "max": 11,
+          "step": 1,
+          "value": 4
+        }
+      ],
+      "steps": [
+        [
+          "Portfolio agent",
+          "Loaded {positions} positions across {sectors} sectors from the live view."
+        ],
+        [
+          "Concentration check",
+          "The largest position is {=largest}% against a sample limit of 15%."
+        ],
+        [
+          "Correlation check",
+          "About {=min(positions, max(2, round(positions / sectors)))} positions tend to move together in the sample data."
+        ],
+        [
+          "Risk agent",
+          "Listed changes that would bring the portfolio inside your limits, for you to review."
+        ]
+      ],
+      "result": {
+        "title": "Risk review (illustration)",
+        "rows": [
+          [
+            "Positions",
+            "{positions}"
+          ],
+          [
+            "Over concentration limit",
+            "{=max(0, largest - 15)} points above 15%"
+          ],
+          [
+            "Average per sector",
+            "{=round(100 / sectors)}%"
+          ],
+          [
+            "Closely linked positions",
+            "{=min(positions, max(2, round(positions / sectors)))}"
+          ],
+          [
+            "Note",
+            "Educational check only. Not financial advice."
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Where does the 15% limit come from?",
+          "It is a sample setting. You set your own limits per position, sector and total risk, and the checks use those."
+        ],
+        [
+          "Will it sell anything automatically?",
+          "No. It suggests changes and shows their effect. Nothing trades without your approval."
+        ]
+      ]
+    },
+    {
+      "title": "Prepare the morning watchlist",
+      "ask": "Scan my {watch} watchlist names before the open and tell me which match my {strategy} setups.",
+      "inputs": [
+        {
+          "id": "watch",
+          "label": "Watchlist size",
+          "type": "range",
+          "min": 10,
+          "max": 200,
+          "step": 10,
+          "value": 50
+        },
+        {
+          "id": "strategy",
+          "label": "Setup type",
+          "type": "select",
+          "value": "Breakout",
+          "options": [
+            {
+              "label": "Breakout",
+              "n": 8
+            },
+            {
+              "label": "Pullback",
+              "n": 12
+            },
+            {
+              "label": "Mean reversion",
+              "n": 6
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Data agent",
+          "Pulled overnight prices and news for {watch} names."
+        ],
+        [
+          "Signal agent",
+          "{=max(1, round(watch * strategy / 100))} names match your {strategy} rules."
+        ],
+        [
+          "Risk agent",
+          "Removed names with earnings in the next two days."
+        ],
+        [
+          "Reporter",
+          "Sorted the remaining names by how close they are to an entry level."
+        ]
+      ],
+      "result": {
+        "title": "Morning list (illustration)",
+        "rows": [
+          [
+            "Names scanned",
+            "{watch}"
+          ],
+          [
+            "Setups found",
+            "{=max(1, round(watch * strategy / 100))}"
+          ],
+          [
+            "Removed for earnings risk",
+            "{=max(0, round(watch * strategy / 100 * 0.2))}"
+          ],
+          [
+            "Ready to review",
+            "{=max(1, round(watch * strategy / 100) - round(watch * strategy / 100 * 0.2))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How are setups defined?",
+          "You write the rules in plain terms, like price above the 50-day average and volume above normal. The Signal agent turns them into checks you can read and edit."
+        ],
+        [
+          "Is this a buy list?",
+          "No. It is a short list to research. Decisions stay with you, and nothing here is financial advice."
+        ]
+      ]
+    }
+  ]
+}

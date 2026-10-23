@@ -1,0 +1,91 @@
+{
+  "name": "ARC AGI Explorer",
+  "tag": "Browse, study and solve abstract reasoning grid puzzles, with hints that explain the pattern.",
+  "scenarios": [
+    {
+      "title": "Solve a puzzle with hints",
+      "ask": "Give me a {level} puzzle with {examples} worked examples. Let me try before showing hints.",
+      "inputs": [
+        {"id": "level", "label": "Difficulty", "type": "select", "value": "Medium",
+         "options": [{"label": "Easy", "n": 1}, {"label": "Medium", "n": 2}, {"label": "Hard", "n": 3}]},
+        {"id": "examples", "label": "Worked examples shown", "type": "range", "min": 2, "max": 5, "step": 1, "value": 3},
+        {"id": "hints", "label": "Hints allowed", "type": "range", "min": 0, "max": 3, "step": 1, "value": 2}
+      ],
+      "steps": [
+        ["Puzzle picker", "Chose a {level} puzzle on a {=6 + level * 4} by {=6 + level * 4} grid with {examples} input and output pairs."],
+        ["Grid editor", "Opened a blank output grid with the 10-color palette and fill, copy and flood tools."],
+        ["Pattern coach", "Hint 1 (if asked): compare the object counts between input and output."],
+        ["Checker", "Compared your grid cell by cell and highlighted the cells that differ."],
+        ["Explainer", "After solving, showed the rule in plain words: each shape is mirrored and recolored by its size."]
+      ],
+      "result": {
+        "title": "Attempt summary",
+        "rows": [
+          ["Grid size", "{=6 + level * 4} x {=6 + level * 4}"],
+          ["Cells to fill", "{=(6 + level * 4) * (6 + level * 4)}"],
+          ["Hints available", "{hints}"],
+          ["Attempts allowed", "3 (you can change this)"]
+        ]
+      },
+      "followups": [
+        ["Why do more examples make it easier?", "Each example rules out some candidate rules. With {examples} examples there are fewer rules that fit all of them, so the pattern is easier to spot."],
+        ["Are these the official puzzles?", "The explorer works with the public training and evaluation sets and lets you add your own puzzles in the same format."]
+      ]
+    },
+    {
+      "title": "Train a study group",
+      "ask": "Set up a {weeks}-week practice plan for {people} people learning abstract reasoning puzzles.",
+      "inputs": [
+        {"id": "weeks", "label": "Weeks in the plan", "type": "range", "min": 1, "max": 12, "step": 1, "value": 4},
+        {"id": "people", "label": "People in the group", "type": "range", "min": 1, "max": 40, "step": 1, "value": 8},
+        {"id": "per_week", "label": "Puzzles per person per week", "type": "range", "min": 3, "max": 30, "step": 1, "value": 10}
+      ],
+      "steps": [
+        ["Curriculum", "Grouped puzzles by idea: symmetry, counting, gravity, color mapping and object copying."],
+        ["Scheduler", "Assigned {per_week} puzzles a week, getting harder each week."],
+        ["Leaderboard", "Set up a shared board with solve rate and average time, no names shown by default."],
+        ["Review", "Added a weekly discussion pick: the puzzle the most people missed."]
+      ],
+      "result": {
+        "title": "Practice plan",
+        "rows": [
+          ["Puzzles per person", "{=weeks * per_week}"],
+          ["Group total", "{=weeks * per_week * people}"],
+          ["Concept groups covered", "{=min(5, weeks + 1)} of 5"],
+          ["Time per week", "about {=round(per_week * 6 / 60, 1)} hours each"]
+        ]
+      },
+      "followups": [
+        ["Is six minutes per puzzle realistic?", "For easy and medium puzzles, often yes. Hard ones can take much longer. The plan tracks real times and adjusts after week one."],
+        ["Can people work offline?", "Puzzles can be printed as grids, but checking answers and hints needs the app."]
+      ]
+    },
+    {
+      "title": "Test a solver program",
+      "ask": "Run our solver on {tasks} evaluation puzzles with a {secs}-second limit per puzzle.",
+      "inputs": [
+        {"id": "tasks", "label": "Puzzles to run", "type": "range", "min": 20, "max": 400, "step": 20, "value": 100},
+        {"id": "secs", "label": "Time limit per puzzle in seconds", "type": "range", "min": 5, "max": 120, "step": 5, "value": 30}
+      ],
+      "steps": [
+        ["Runner", "Fed {tasks} puzzles to your solver through the local API."],
+        ["Checker", "Scored exact-match answers. Partial grids count as wrong."],
+        ["Analyzer", "Broke results down by concept group to show where the solver is weak."],
+        ["Viewer", "Saved every failed attempt next to the correct answer for side-by-side review."]
+      ],
+      "result": {
+        "title": "Solver report",
+        "rows": [
+          ["Puzzles run", "{tasks}"],
+          ["Solved (sample run)", "{=round(tasks * min(0.4, 0.12 + secs / 600))}"],
+          ["Total run time", "up to {=round(tasks * secs / 60)} minutes"],
+          ["Weakest group", "Counting and object copying"]
+        ]
+      },
+      "followups": [
+        ["Why exact match only?", "That is how the benchmark scores answers. A grid that is one cell off counts as a miss, so the explorer does the same."],
+        ["Are these scores typical?", "They are sample numbers for the demo. Your solver's real score shows up after a real run."]
+      ]
+    }
+  ]
+}

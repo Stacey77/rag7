@@ -1,0 +1,228 @@
+{
+  "name": "Donor Services Resolution Swarm",
+  "tag": "AI agents that clear donor receipt delays, missed gift confirmations and urgent donor questions for nonprofits.",
+  "scenarios": [
+    {
+      "title": "Clear the receipt backlog",
+      "ask": "{backlog} donors are waiting on gift receipts. Clear the backlog before the end of the month.",
+      "inputs": [
+        {
+          "id": "backlog",
+          "label": "Receipts waiting",
+          "type": "range",
+          "min": 20,
+          "max": 3000,
+          "step": 10,
+          "value": 340
+        },
+        {
+          "id": "days",
+          "label": "Average days waiting",
+          "type": "range",
+          "min": 3,
+          "max": 60,
+          "step": 1,
+          "value": 18,
+          "unit": "days"
+        }
+      ],
+      "steps": [
+        [
+          "Matcher",
+          "Matched {=round(backlog * 0.9)} gifts to donor records. {=backlog - round(backlog * 0.9)} have a name or address mismatch."
+        ],
+        [
+          "Receipt writer",
+          "Generated receipts from your approved template with gift date and amount."
+        ],
+        [
+          "Quality check",
+          "Checked each against the payment record before sending."
+        ],
+        [
+          "Follow-up",
+          "Drafted a short apology note for donors waiting more than 14 days."
+        ]
+      ],
+      "result": {
+        "title": "Backlog plan",
+        "rows": [
+          [
+            "Receipts ready to send",
+            "{=round(backlog * 0.9)}"
+          ],
+          [
+            "Need a person to fix",
+            "{=backlog - round(backlog * 0.9)}"
+          ],
+          [
+            "Staff hours saved",
+            "About {=round(backlog * 6 / 60)}"
+          ],
+          [
+            "Average wait after",
+            "Under 2 days, down from {days}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it decide what's tax-deductible?",
+          "No. It uses the receipt wording your organization and its advisors approved. It doesn't give tax advice to donors."
+        ],
+        [
+          "What happens to the mismatches?",
+          "They go to a short review list with the likely match suggested, so a staff member can fix each in a minute or two."
+        ]
+      ]
+    },
+    {
+      "title": "Missed recurring gift confirmations",
+      "ask": "About {missed}% of our {donors} monthly donors didn't get a confirmation last month.",
+      "inputs": [
+        {
+          "id": "donors",
+          "label": "Monthly donors",
+          "type": "range",
+          "min": 50,
+          "max": 5000,
+          "step": 50,
+          "value": 800
+        },
+        {
+          "id": "missed",
+          "label": "Missed confirmations",
+          "type": "range",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "value": 6,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Investigator",
+          "Traced the gap: a payment processor update changed the email trigger on the 12th."
+        ],
+        [
+          "Fixer",
+          "Prepared {=round(donors * missed / 100)} confirmations to resend."
+        ],
+        [
+          "Writer",
+          "Drafted a thank-you that explains the delay plainly."
+        ],
+        [
+          "Monitor",
+          "Added a daily check that every processed gift has a confirmation."
+        ]
+      ],
+      "result": {
+        "title": "Confirmations fixed",
+        "rows": [
+          [
+            "Donors affected",
+            "{=round(donors * missed / 100)}"
+          ],
+          [
+            "Confirmations ready",
+            "{=round(donors * missed / 100)}"
+          ],
+          [
+            "Root cause",
+            "Email trigger changed"
+          ],
+          [
+            "Daily check",
+            "On"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will donors be annoyed by a late email?",
+          "A short, honest note usually lands well. Donors are more upset by silence than a late thank-you."
+        ],
+        [
+          "Can it catch this sooner next time?",
+          "Yes. The daily check would flag the gap within 24 hours."
+        ]
+      ]
+    },
+    {
+      "title": "Urgent donor questions",
+      "ask": "We get about {questions} donor questions a week, and {urgent}% are urgent, like duplicate charges.",
+      "inputs": [
+        {
+          "id": "questions",
+          "label": "Questions per week",
+          "type": "range",
+          "min": 10,
+          "max": 500,
+          "step": 10,
+          "value": 90
+        },
+        {
+          "id": "urgent",
+          "label": "Urgent share",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 5,
+          "value": 15,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Triage",
+          "Sorted questions. {=round(questions * urgent / 100)} urgent, such as duplicate charges and cancel requests."
+        ],
+        [
+          "Lookup",
+          "Pulled the donor's gift history for each case."
+        ],
+        [
+          "Responder",
+          "Drafted replies for routine questions like address changes."
+        ],
+        [
+          "Escalation",
+          "Sent urgent money issues to a staff member with all details attached."
+        ]
+      ],
+      "result": {
+        "title": "Donor desk",
+        "rows": [
+          [
+            "Urgent cases to staff",
+            "{=round(questions * urgent / 100)}"
+          ],
+          [
+            "Routine replies drafted",
+            "{=questions - round(questions * urgent / 100)}"
+          ],
+          [
+            "First response time",
+            "Under 1 hour"
+          ],
+          [
+            "Refunds issued by agents",
+            "None, staff only"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can agents issue refunds?",
+          "No. Agents gather the facts and draft the reply, and a staff member approves any refund."
+        ],
+        [
+          "Does it work with our donor database?",
+          "It connects to common donor databases or works from exports, with read-only access to start."
+        ]
+      ]
+    }
+  ]
+}

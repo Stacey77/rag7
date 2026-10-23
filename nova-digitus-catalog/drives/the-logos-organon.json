@@ -1,0 +1,241 @@
+{
+  "name": "The Logos Organon",
+  "tag": "Traces where words come from and what numbers they carry, all in one place.",
+  "scenarios": [
+    {
+      "title": "Trace a word",
+      "ask": "Trace the word 'companion' through {langs} languages and score it with the {cipher} cipher.",
+      "inputs": [
+        {
+          "id": "langs",
+          "label": "Languages to trace",
+          "type": "range",
+          "min": 2,
+          "max": 6,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "cipher",
+          "label": "Number cipher",
+          "type": "select",
+          "value": "simple (A=1 to Z=26)",
+          "options": [
+            {
+              "label": "simple (A=1 to Z=26)",
+              "n": 1
+            },
+            {
+              "label": "reduced (1 to 9)",
+              "n": 2
+            }
+          ]
+        },
+        {
+          "id": "related",
+          "label": "Related words to show",
+          "type": "range",
+          "min": 3,
+          "max": 20,
+          "step": 1,
+          "value": 8
+        }
+      ],
+      "steps": [
+        [
+          "Root tracer",
+          "Found Latin com- 'together' plus panis 'bread': one who shares bread."
+        ],
+        [
+          "Language map",
+          "Followed the word through {langs} languages, from Latin through Old French to English."
+        ],
+        [
+          "Number",
+          "Scored 'companion' at {=100 * (2 - cipher) + 46 * (cipher - 1)}, which reduces to 1."
+        ],
+        [
+          "Related words",
+          "Listed {related} words from the same roots, such as 'company' and 'pantry'."
+        ]
+      ],
+      "result": {
+        "title": "Word profile",
+        "rows": [
+          [
+            "Root meaning",
+            "One who shares bread"
+          ],
+          [
+            "Languages traced",
+            "{langs}"
+          ],
+          [
+            "Number value",
+            "{=100 * (2 - cipher) + 46 * (cipher - 1)}"
+          ],
+          [
+            "Related words",
+            "{related}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Where does the etymology come from?",
+          "From published dictionaries of word origins. Each step shows its source and dates where known."
+        ],
+        [
+          "What do the numbers mean?",
+          "The app shows letter-number values as a study tool and tradition. It does not claim the numbers prove anything about a word."
+        ]
+      ]
+    },
+    {
+      "title": "Check names for a new brand",
+      "ask": "We have {names} name ideas. Check their roots and meanings in {langs} languages.",
+      "inputs": [
+        {
+          "id": "names",
+          "label": "Name ideas",
+          "type": "range",
+          "min": 2,
+          "max": 10,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "langs",
+          "label": "Languages to check",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 6
+        }
+      ],
+      "steps": [
+        [
+          "Root tracer",
+          "Broke each name into roots and gave the plain meaning of each part."
+        ],
+        [
+          "Meaning check",
+          "Ran {=names * langs} checks for awkward or negative meanings in other languages."
+        ],
+        [
+          "Number",
+          "Added the letter-number value of each name for teams that care about it."
+        ],
+        [
+          "Shortlist",
+          "Ranked names by clear meaning and ease of saying."
+        ]
+      ],
+      "result": {
+        "title": "Name report",
+        "rows": [
+          [
+            "Names checked",
+            "{names}"
+          ],
+          [
+            "Language checks",
+            "{=names * langs}"
+          ],
+          [
+            "Flags found",
+            "{=floor(names * langs / 15)} (sample)"
+          ],
+          [
+            "Shortlist",
+            "Top {=min(3, names)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does this replace a trademark search?",
+          "No. It checks meaning and roots only. A trademark search is a separate legal step."
+        ],
+        [
+          "Can I add a language?",
+          "Yes. Pick any supported language and the checks re-run in seconds."
+        ]
+      ]
+    },
+    {
+      "title": "Build a vocabulary lesson",
+      "ask": "Make a lesson on Latin and Greek roots: {words} words for {students} students.",
+      "inputs": [
+        {
+          "id": "words",
+          "label": "Words in the lesson",
+          "type": "range",
+          "min": 5,
+          "max": 30,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "students",
+          "label": "Students",
+          "type": "range",
+          "min": 1,
+          "max": 40,
+          "step": 1,
+          "value": 20
+        }
+      ],
+      "steps": [
+        [
+          "Root picker",
+          "Picked words built from common roots, such as 'etymology' from Greek etymon, 'true sense', plus -logia, 'study of'."
+        ],
+        [
+          "Word tree",
+          "Drew a tree linking each root to {=ceil(words / 3)} word families."
+        ],
+        [
+          "Practice",
+          "Wrote a matching game and {words} fill-in sentences."
+        ],
+        [
+          "Tracker",
+          "Set up scores for {students} students."
+        ]
+      ],
+      "result": {
+        "title": "Lesson ready",
+        "rows": [
+          [
+            "Words",
+            "{words}"
+          ],
+          [
+            "Word families",
+            "{=ceil(words / 3)}"
+          ],
+          [
+            "Practice items",
+            "{=words * 2}"
+          ],
+          [
+            "Lesson time",
+            "About {=round(words * 2.5)} minutes"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it show disputed origins?",
+          "Yes. When an origin is uncertain, such as the popular story that 'salary' comes from soldiers being paid in salt, the app labels it as uncertain."
+        ],
+        [
+          "Can students explore on their own?",
+          "Yes. Any word in the lesson opens its full root history."
+        ]
+      ]
+    }
+  ]
+}

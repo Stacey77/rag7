@@ -1,0 +1,258 @@
+{
+  "name": "Skywave Gateway · Reticulum HF Mesh Bridge",
+  "tag": "Plans long-range off-grid radio links, from HF propagation to a Reticulum-to-LoRa bridge.",
+  "scenarios": [
+    {
+      "title": "Plan a regional HF link",
+      "ask": "Link two off-grid sites {dist} apart, mostly during the {tod}, at {power}.",
+      "inputs": [
+        {
+          "id": "dist",
+          "label": "Distance",
+          "type": "range",
+          "min": 50,
+          "max": 500,
+          "step": 25,
+          "value": 200,
+          "unit": "km"
+        },
+        {
+          "id": "tod",
+          "label": "Time of use",
+          "type": "select",
+          "value": "day",
+          "options": [
+            {
+              "label": "day",
+              "n": 7
+            },
+            {
+              "label": "night",
+              "n": 3.5
+            }
+          ]
+        },
+        {
+          "id": "power",
+          "label": "Transmit power",
+          "type": "range",
+          "min": 10,
+          "max": 100,
+          "step": 10,
+          "value": 50,
+          "unit": "W"
+        }
+      ],
+      "steps": [
+        [
+          "Propagation",
+          "At {dist}, near-vertical skywave (NVIS) fits best: signals go up and bounce down over the region."
+        ],
+        [
+          "Frequency",
+          "Suggested about {=tod} MHz for {tod} use, below the usual maximum usable frequency."
+        ],
+        [
+          "Antenna",
+          "A half-wave dipole of about {=round(143 / tod, 1)} m, mounted low at about {=round(0.15 * 300 / tod)} m for NVIS."
+        ],
+        [
+          "Link budget",
+          "At {power}, estimated {=round(min(99, 70 + power / 5))}% link reliability in typical conditions."
+        ]
+      ],
+      "result": {
+        "title": "Link plan",
+        "rows": [
+          [
+            "Mode",
+            "NVIS skywave"
+          ],
+          [
+            "Frequency",
+            "About {=tod} MHz"
+          ],
+          [
+            "Dipole length",
+            "{=round(143 / tod, 1)} m"
+          ],
+          [
+            "Mount height",
+            "About {=round(0.15 * 300 / tod)} m"
+          ],
+          [
+            "Estimated reliability",
+            "{=round(min(99, 70 + power / 5))}%"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Do I need a license?",
+          "Yes, for transmitting on HF in almost every country. The app asks for your license class and only suggests frequencies it allows."
+        ],
+        [
+          "Why mount the antenna low?",
+          "For NVIS, a low dipole sends more energy straight up, which is what covers a region without a skip zone."
+        ]
+      ]
+    },
+    {
+      "title": "Bridge a LoRa mesh over HF",
+      "ask": "Bridge our {nodes}-node LoRa mesh to a distant site over HF. We send about {msgs} messages an hour.",
+      "inputs": [
+        {
+          "id": "nodes",
+          "label": "LoRa nodes",
+          "type": "range",
+          "min": 2,
+          "max": 30,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "msgs",
+          "label": "Messages per hour",
+          "type": "range",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "bps",
+          "label": "HF modem speed",
+          "type": "range",
+          "min": 300,
+          "max": 2400,
+          "step": 300,
+          "value": 1200,
+          "unit": "bps"
+        }
+      ],
+      "steps": [
+        [
+          "Bridge",
+          "Set up a Reticulum gateway that joins the local LoRa mesh and the HF link."
+        ],
+        [
+          "Traffic",
+          "{msgs} messages an hour at about 200 bytes each is {=round(msgs * 1600 / bps, 1)} seconds of HF airtime."
+        ],
+        [
+          "Scheduler",
+          "Batched messages so the HF radio transmits in short bursts."
+        ],
+        [
+          "Monitor",
+          "Added a status page showing queued, sent and delivered messages for {nodes} nodes."
+        ]
+      ],
+      "result": {
+        "title": "Bridge plan",
+        "rows": [
+          [
+            "HF airtime",
+            "{=round(msgs * 1600 / bps, 1)} seconds an hour"
+          ],
+          [
+            "Link use",
+            "{=round(msgs * 1600 / bps / 36, 2)}% of the hour"
+          ],
+          [
+            "Seconds per message",
+            "{=round(1600 / bps, 2)}"
+          ],
+          [
+            "Local nodes",
+            "{nodes}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can Reticulum run this slowly?",
+          "Yes. Reticulum is designed to work over very slow links, so a {bps} modem is enough for short text messages."
+        ],
+        [
+          "What about encryption on amateur bands?",
+          "Many countries limit encryption on amateur bands. The app flags your settings so you can stay within your license rules."
+        ]
+      ]
+    },
+    {
+      "title": "Survey noise with an SDR",
+      "ask": "Scan {bands} bands at our site for {hours} and find the quietest frequencies.",
+      "inputs": [
+        {
+          "id": "bands",
+          "label": "Bands to scan",
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "hours",
+          "label": "Scan length",
+          "type": "range",
+          "min": 1,
+          "max": 48,
+          "step": 1,
+          "value": 24,
+          "unit": "hours"
+        }
+      ],
+      "steps": [
+        [
+          "SDR workbench",
+          "Scanned {bands} band(s) for {hours}, logging noise every 10 seconds."
+        ],
+        [
+          "Analyzer",
+          "Found a repeating noise spike, likely from a nearby power supply."
+        ],
+        [
+          "Ranker",
+          "Ranked channels by noise at each hour of the day."
+        ],
+        [
+          "Planner",
+          "Suggested a primary and backup channel for each band."
+        ]
+      ],
+      "result": {
+        "title": "Noise survey",
+        "rows": [
+          [
+            "Readings logged",
+            "{=bands * hours * 360}"
+          ],
+          [
+            "Channels ranked",
+            "{=bands * 12}"
+          ],
+          [
+            "Noise sources found",
+            "{=1 + floor(hours / 24)}"
+          ],
+          [
+            "Channel pairs suggested",
+            "{bands}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How do I find the noise source?",
+          "Turn off circuits one at a time while the workbench watches. The noise drop shows which one it is."
+        ],
+        [
+          "Does this need a license?",
+          "No. Listening needs no transmit license in most places."
+        ]
+      ]
+    }
+  ]
+}

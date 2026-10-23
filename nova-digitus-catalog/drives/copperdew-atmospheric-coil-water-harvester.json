@@ -1,0 +1,260 @@
+{
+  "name": "CopperDew: Atmospheric Coil Water Harvester",
+  "tag": "Simulates, plans and monitors a copper-coil system that condenses water from humid air.",
+  "scenarios": [
+    {
+      "title": "Estimate daily water",
+      "ask": "How much water can {coil} of copper coil pull at {rh} humidity with {cool}?",
+      "inputs": [
+        {
+          "id": "coil",
+          "label": "Coil length",
+          "type": "range",
+          "min": 5,
+          "max": 50,
+          "step": 5,
+          "value": 20,
+          "unit": "m"
+        },
+        {
+          "id": "rh",
+          "label": "Average humidity",
+          "type": "range",
+          "min": 30,
+          "max": 95,
+          "step": 5,
+          "value": 70,
+          "unit": "%"
+        },
+        {
+          "id": "cool",
+          "label": "Cooling method",
+          "type": "select",
+          "value": "a buried ground loop",
+          "options": [
+            {
+              "label": "passive night cooling",
+              "n": 1
+            },
+            {
+              "label": "a buried ground loop",
+              "n": 2
+            },
+            {
+              "label": "a small chiller",
+              "n": 4
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Climate",
+          "At {rh} humidity, the coil must stay below the dew point for water to form."
+        ],
+        [
+          "Thermal model",
+          "With {cool}, the coil stays below dew point for about {=min(24, 4 + cool * 3)} hours a day."
+        ],
+        [
+          "Yield",
+          "Estimated {=round(coil * 0.02 * (rh - 25) / 50 * cool, 2)} liters a day."
+        ],
+        [
+          "Collection",
+          "Sized a drip tray and a {=ceil(coil * 0.02 * (rh - 25) / 50 * cool * 3 + 5)}-liter food-grade tank."
+        ]
+      ],
+      "result": {
+        "title": "Yield estimate",
+        "rows": [
+          [
+            "Water per day",
+            "{=round(coil * 0.02 * (rh - 25) / 50 * cool, 2)} L"
+          ],
+          [
+            "Water per month",
+            "{=round(coil * 0.02 * (rh - 25) / 50 * cool * 30, 1)} L"
+          ],
+          [
+            "Hours below dew point",
+            "{=min(24, 4 + cool * 3)}"
+          ],
+          [
+            "Tank size",
+            "{=ceil(coil * 0.02 * (rh - 25) / 50 * cool * 3 + 5)} L"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why so little water in dry air?",
+          "Below about 30% humidity, the dew point is so low the coil rarely reaches it. The simulator shows this so you don't overbuild."
+        ],
+        [
+          "Is the water safe to drink?",
+          "Condensed water still needs a filter and a test, and copper can dissolve into water that sits in the coil. The app includes a treatment step and test reminders."
+        ]
+      ]
+    },
+    {
+      "title": "Plan the build",
+      "ask": "Build a {coil} coil from {tube} copper tube. Give me a parts list.",
+      "inputs": [
+        {
+          "id": "coil",
+          "label": "Coil length",
+          "type": "range",
+          "min": 5,
+          "max": 50,
+          "step": 5,
+          "value": 20,
+          "unit": "m"
+        },
+        {
+          "id": "tube",
+          "label": "Tube size",
+          "type": "select",
+          "value": "3/8 inch",
+          "options": [
+            {
+              "label": "1/4 inch",
+              "n": 0.2
+            },
+            {
+              "label": "3/8 inch",
+              "n": 0.29
+            },
+            {
+              "label": "1/2 inch",
+              "n": 0.42
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Designer",
+          "Laid out a spiral of {coil} with fins to add surface area."
+        ],
+        [
+          "Materials",
+          "Estimated {=round(coil * tube, 1)} kg of copper tube."
+        ],
+        [
+          "Parts list",
+          "Added fittings, a drip tray, food-grade tubing, a pre-filter and a tank."
+        ],
+        [
+          "Guide",
+          "Wrote {=6 + ceil(coil / 10)} build steps with photos."
+        ]
+      ],
+      "result": {
+        "title": "Build plan",
+        "rows": [
+          [
+            "Copper tube",
+            "{coil}, {=round(coil * tube, 1)} kg"
+          ],
+          [
+            "Sample parts cost",
+            "About ${=round(coil * tube * 14 + 60)}"
+          ],
+          [
+            "Build steps",
+            "{=6 + ceil(coil / 10)}"
+          ],
+          [
+            "Build time",
+            "About {=round(3 + coil / 10, 1)} hours"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why copper?",
+          "Copper moves heat quickly, so the coil cools evenly. The trade-off is cost and the need to treat the water."
+        ],
+        [
+          "Can I use a different metal?",
+          "Yes. Aluminum or stainless options are in the simulator so you can compare yield and cost."
+        ]
+      ]
+    },
+    {
+      "title": "Monitor several units",
+      "ask": "We run {units} units. Alert us when yield drops more than {drop}.",
+      "inputs": [
+        {
+          "id": "units",
+          "label": "Units",
+          "type": "range",
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "drop",
+          "label": "Alert when yield drops",
+          "type": "range",
+          "min": 10,
+          "max": 50,
+          "step": 5,
+          "value": 25,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Sensors",
+          "Connected humidity, coil temperature and tank level sensors on {units} unit(s)."
+        ],
+        [
+          "Baseline",
+          "Learned each unit's normal yield for its weather over 7 days."
+        ],
+        [
+          "Watcher",
+          "Flags any unit whose yield drops {drop} below what the weather predicts."
+        ],
+        [
+          "Report",
+          "Sends a weekly summary of water collected per unit."
+        ]
+      ],
+      "result": {
+        "title": "Monitoring set up",
+        "rows": [
+          [
+            "Units monitored",
+            "{units}"
+          ],
+          [
+            "Sensors",
+            "{=units * 3}"
+          ],
+          [
+            "Alert threshold",
+            "{drop} below expected"
+          ],
+          [
+            "Sample alerts per month",
+            "About {=max(1, round(units * (60 - drop) / 50))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What usually causes a drop?",
+          "Dust on the coil, a blocked drip line, or a cooling fault. The alert says which sensor changed first."
+        ],
+        [
+          "Does it need internet?",
+          "No. Units can report over a low-power radio link to one gateway."
+        ]
+      ]
+    }
+  ]
+}

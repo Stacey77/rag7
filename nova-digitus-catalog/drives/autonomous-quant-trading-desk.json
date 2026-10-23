@@ -1,0 +1,91 @@
+{
+  "name": "Autonomous Quant Trading Desk",
+  "tag": "A simulated trading desk where AI agents research, paper trade, check risk and write the daily close.",
+  "scenarios": [
+    {
+      "title": "Run one simulated trading day",
+      "ask": "Run today's session on a ${capital} paper account with a {strategy} strategy, risking {risk} per trade.",
+      "inputs": [
+        {"id": "capital", "label": "Paper account size ($)", "type": "range", "min": 10000, "max": 1000000, "step": 10000, "value": 100000},
+        {"id": "risk", "label": "Risk per trade", "type": "range", "min": 0.25, "max": 2, "step": 0.25, "value": 1, "unit": "%"},
+        {"id": "strategy", "label": "Strategy", "type": "select", "value": "Momentum", "options": [{"label": "Momentum", "n": 1}, {"label": "Mean reversion", "n": 2}, {"label": "Pairs", "n": 3}]}
+      ],
+      "steps": [
+        ["Research agent", "Scanned 500 sample tickers before the open and shortlisted {=6 + strategy * 2} setups that fit {strategy}."],
+        ["Trader agent", "Placed {=4 + strategy} simulated orders, each sized so a stop-out loses no more than ${=round(capital * risk / 100)}."],
+        ["Risk agent", "Checked exposure every 15 minutes against a daily loss limit of ${=round(capital * risk * 3 / 100)}."],
+        ["Close writer", "Wrote the end-of-day summary: fills, open positions, rule breaks and notes for tomorrow."]
+      ],
+      "result": {
+        "title": "Simulated session closed",
+        "rows": [
+          ["Setups reviewed", "{=6 + strategy * 2}"],
+          ["Paper trades", "{=4 + strategy}"],
+          ["Max loss per trade", "${=round(capital * risk / 100)}"],
+          ["Daily loss limit", "${=round(capital * risk * 3 / 100)}"],
+          ["Mode", "Simulation only, not financial advice"]
+        ]
+      },
+      "followups": [
+        ["Does it ever place real orders?", "No. This desk runs on simulated fills only. It is built for testing ideas and process, not for live trading."],
+        ["Why size trades by risk instead of dollars?", "Sizing by risk means every trade can lose about the same amount, ${=round(capital * risk / 100)} here, no matter how far away the stop is. That keeps one bad trade from dominating the day."]
+      ]
+    },
+    {
+      "title": "Test a risk limit breach",
+      "ask": "We hold {positions} paper positions. What happens if the account falls {drop} in one day?",
+      "inputs": [
+        {"id": "positions", "label": "Open paper positions", "type": "range", "min": 2, "max": 30, "step": 1, "value": 10},
+        {"id": "drop", "label": "One-day drop", "type": "range", "min": 1, "max": 10, "step": 1, "value": 4, "unit": "%"},
+        {"id": "limit", "label": "Daily loss limit", "type": "range", "min": 1, "max": 5, "step": 0.5, "value": 3, "unit": "%"}
+      ],
+      "steps": [
+        ["Scenario builder", "Applied a {drop} drop across all {positions} positions using sample prices."],
+        ["Risk agent", "Compared the loss with the {limit} daily limit."],
+        ["Trader agent", "Under the rules, closes the weakest {=ceil(positions * 0.4)} positions first if the limit is crossed."],
+        ["Close writer", "Logged the event with times, prices and which rule fired."]
+      ],
+      "result": {
+        "title": "Breach drill results",
+        "rows": [
+          ["Simulated loss", "{drop}"],
+          ["Limit", "{limit}"],
+          ["Over the limit by", "{=max(0, drop - limit)} points"],
+          ["Positions closed by rule", "{=ceil(positions * 0.4)}"],
+          ["Note", "Illustration with sample data"]
+        ]
+      },
+      "followups": [
+        ["Can we change the rules?", "Yes. Limits, which positions close first and cool-down periods are plain settings. Each change is logged so you can compare runs."],
+        ["Does the desk stop for the day after a breach?", "By default it stops opening new trades for the rest of the session and flags the breach in the close summary."]
+      ]
+    },
+    {
+      "title": "Review a week of simulated trading",
+      "ask": "Summarize the last {days} sessions across {agents} agent schedules.",
+      "inputs": [
+        {"id": "days", "label": "Sessions to review", "type": "range", "min": 1, "max": 20, "step": 1, "value": 5},
+        {"id": "agents", "label": "Scheduled agents", "type": "range", "min": 2, "max": 8, "step": 1, "value": 4}
+      ],
+      "steps": [
+        ["Scheduler", "Confirmed {=days * agents} scheduled agent runs. {=max(0, round(days * agents * 0.03))} ran late."],
+        ["Analyst", "Grouped {=days * 6} paper trades by setup type and time of day."],
+        ["Risk agent", "Counted rule breaks and near misses for each session."],
+        ["Close writer", "Wrote a one-page weekly review with what to keep, cut or test next."]
+      ],
+      "result": {
+        "title": "Weekly review",
+        "rows": [
+          ["Agent runs", "{=days * agents}"],
+          ["Late runs", "{=max(0, round(days * agents * 0.03))}"],
+          ["Paper trades reviewed", "{=days * 6}"],
+          ["Format", "One page, plain English"]
+        ]
+      },
+      "followups": [
+        ["Can I see why the agent took a trade?", "Yes. Every simulated trade keeps the research note, the rule that triggered it and the risk check that approved it."],
+        ["Is past simulated performance meaningful?", "It helps test process and rules. It does not predict future results, and simulated fills can be kinder than real markets."]
+      ]
+    }
+  ]
+}

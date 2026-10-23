@@ -1,0 +1,92 @@
+{
+  "name": "Dev Ecosystem Dashboard",
+  "tag": "Sets up rules, skills, guardrail hooks, subagents and plugins so your coding agents work your way.",
+  "scenarios": [
+    {
+      "title": "Set up a team repo for agents",
+      "ask": "Set up our main repo for coding agents. {devs} developers, {lang}, with {strict} guardrails.",
+      "inputs": [
+        {"id": "devs", "label": "Developers", "type": "range", "min": 1, "max": 50, "step": 1, "value": 8},
+        {"id": "lang", "label": "Main stack", "type": "select", "value": "TypeScript",
+         "options": [{"label": "TypeScript", "n": 1}, {"label": "Python", "n": 2}, {"label": "Go", "n": 3}]},
+        {"id": "strict", "label": "Guardrail level", "type": "select", "value": "Standard",
+         "options": [{"label": "Relaxed", "n": 1}, {"label": "Standard", "n": 2}, {"label": "Strict", "n": 3}]}
+      ],
+      "steps": [
+        ["Rules writer", "Wrote a project rules file: build and test commands, folder layout and code style for {lang}."],
+        ["Skills", "Added 4 skills: write a migration, add an API route, update the changelog, release notes."],
+        ["Hooks", "Installed {=strict * 2 + 1} guardrail hooks, such as blocking edits to secrets files and running the linter before commits."],
+        ["Subagents", "Created a Test writer and a Reviewer subagent with read-only access to production configs."],
+        ["Plugins", "Bundled everything as one plugin so all {devs} developers get the same setup."]
+      ],
+      "result": {
+        "title": "Environment ready",
+        "rows": [
+          ["Rules file", "1, checked into the repo"],
+          ["Skills", "4"],
+          ["Guardrail hooks", "{=strict * 2 + 1}"],
+          ["Subagents", "2"],
+          ["Setup time per developer", "under 5 minutes"]
+        ]
+      },
+      "followups": [
+        ["What does a guardrail hook do?", "It runs before or after an agent action. For example, it can stop the agent from editing files that hold secrets, or run tests after every change."],
+        ["How do updates reach everyone?", "Update the plugin once. Developers get the new version the next time they start a session."]
+      ]
+    },
+    {
+      "title": "Stop agents breaking the build",
+      "ask": "Agent changes broke the main build {breaks} times last month. Add hooks to catch this earlier.",
+      "inputs": [
+        {"id": "breaks", "label": "Build breaks last month", "type": "range", "min": 1, "max": 40, "step": 1, "value": 9},
+        {"id": "test_min", "label": "Test suite run time in minutes", "type": "range", "min": 1, "max": 30, "step": 1, "value": 6}
+      ],
+      "steps": [
+        ["Log reader", "Matched {breaks} breaks to their causes: type errors, missing imports and a skipped migration."],
+        ["Hook designer", "Added a post-edit hook for type checks and a pre-commit hook that runs fast tests."],
+        ["Rules update", "Added a rule: always run the migration check when touching the schema folder."],
+        ["Estimator", "Estimated how many breaks the new hooks would have caught."]
+      ],
+      "result": {
+        "title": "Guardrails added",
+        "rows": [
+          ["Hooks added", "2"],
+          ["Breaks that would have been caught", "about {=round(breaks * 0.75)} of {breaks}"],
+          ["Extra wait per commit", "about {=round(min(test_min, 3) * 0.5 + 0.5, 1)} minutes"],
+          ["Full suite", "Still runs in CI"]
+        ]
+      },
+      "followups": [
+        ["Won't hooks slow the agent down?", "A little. The pre-commit hook runs only fast tests, capped at a few minutes, and the full suite stays in CI."],
+        ["Can developers turn a hook off?", "Admins choose which hooks are required and which developers can switch off locally."]
+      ]
+    },
+    {
+      "title": "Audit installed plugins",
+      "ask": "Our developers installed {plugins} plugins and {servers} MCP servers. Which ones are risky?",
+      "inputs": [
+        {"id": "plugins", "label": "Plugins installed", "type": "range", "min": 1, "max": 40, "step": 1, "value": 12},
+        {"id": "servers", "label": "MCP servers", "type": "range", "min": 0, "max": 30, "step": 1, "value": 7}
+      ],
+      "steps": [
+        ["Inventory", "Listed {plugins} plugins and {servers} MCP servers across all machines."],
+        ["Permission check", "Found {=max(1, round((plugins + servers) * 0.15))} with write access to files outside the repo."],
+        ["Source check", "Flagged {=round(servers * 0.2)} servers from unverified sources."],
+        ["Policy", "Drafted an allow-list. Nothing is removed until an admin approves."]
+      ],
+      "result": {
+        "title": "Plugin audit",
+        "rows": [
+          ["Items reviewed", "{=plugins + servers}"],
+          ["Broad write access", "{=max(1, round((plugins + servers) * 0.15))}"],
+          ["Unverified servers", "{=round(servers * 0.2)}"],
+          ["Allow-list entries proposed", "{=plugins + servers - round(servers * 0.2)}"]
+        ]
+      },
+      "followups": [
+        ["Why do MCP servers need checking?", "A server can give the agent new abilities, like reading files or calling services. Knowing who made it and what it can touch matters."],
+        ["Can it check new installs?", "Yes. With the allow-list on, new plugins outside the list need an admin's approval."]
+      ]
+    }
+  ]
+}

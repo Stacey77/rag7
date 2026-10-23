@@ -1,0 +1,266 @@
+{
+  "name": "Pleroma Codex",
+  "tag": "A guided way to study Gnostic texts and ideas, with readings, a glossary and notes on how scholars read them.",
+  "scenarios": [
+    {
+      "title": "Start a guided study path",
+      "ask": "I am {level} with Gnostic texts. Build me a {weeks} study path with {mins} a day.",
+      "inputs": [
+        {
+          "id": "weeks",
+          "label": "Length of the path",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 6,
+          "unit": "weeks"
+        },
+        {
+          "id": "mins",
+          "label": "Study time per day",
+          "type": "range",
+          "min": 10,
+          "max": 60,
+          "step": 5,
+          "value": 20,
+          "unit": "minutes"
+        },
+        {
+          "id": "level",
+          "label": "Your background",
+          "type": "select",
+          "value": "new",
+          "options": [
+            {
+              "label": "new",
+              "n": 1
+            },
+            {
+              "label": "somewhat familiar",
+              "n": 2
+            },
+            {
+              "label": "well read",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Path builder",
+          "Planned {=weeks * 5} sessions, five a week, starting with short passages and moving to longer texts."
+        ],
+        [
+          "Reading guide",
+          "Opens with selected sayings from the Gospel of Thomas, which survives in a Coptic copy found among the Nag Hammadi codices in Egypt in 1945."
+        ],
+        [
+          "Glossary agent",
+          "Introduces about {=weeks * (2 + level)} key terms, such as Pleroma, Aeon, Sophia and Demiurge, each in plain words."
+        ],
+        [
+          "Context agent",
+          "Adds a note where scholars disagree, so you see more than one reading of a passage."
+        ],
+        [
+          "Review agent",
+          "Sets a short recall question at the end of each week."
+        ]
+      ],
+      "result": {
+        "title": "Your study path",
+        "rows": [
+          [
+            "Sessions",
+            "{=weeks * 5}"
+          ],
+          [
+            "Total study time",
+            "{=round(weeks * 5 * mins / 60, 1)} hours"
+          ],
+          [
+            "Terms covered",
+            "{=weeks * (2 + level)}"
+          ],
+          [
+            "Weekly reviews",
+            "{weeks}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What does Pleroma mean?",
+          "It is a Greek word meaning 'fullness'. In many Gnostic texts it names the divine realm. The codex shows how different texts use it rather than giving one fixed definition."
+        ],
+        [
+          "Is this a religious course?",
+          "No. The codex is educational. It presents the texts, their context and scholarly views, and leaves belief to you."
+        ],
+        [
+          "Can I go faster?",
+          "Yes. At {=mins * 2} minutes a day the same path takes about {=ceil(weeks / 2)} weeks."
+        ]
+      ]
+    },
+    {
+      "title": "Compare one idea across texts",
+      "ask": "Show me how the idea of {concept} appears across {texts} texts in the codex.",
+      "inputs": [
+        {
+          "id": "texts",
+          "label": "Texts to compare",
+          "type": "range",
+          "min": 2,
+          "max": 8,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "concept",
+          "label": "Idea to trace",
+          "type": "select",
+          "value": "Sophia",
+          "options": [
+            {
+              "label": "Sophia",
+              "n": 3
+            },
+            {
+              "label": "the Demiurge",
+              "n": 2
+            },
+            {
+              "label": "the Pleroma",
+              "n": 4
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Search agent",
+          "Found {=texts * concept} passages that mention or describe {concept} across {texts} texts."
+        ],
+        [
+          "Comparer",
+          "Lined up the passages side by side and marked shared themes and clear differences."
+        ],
+        [
+          "Context agent",
+          "Added short notes on each text's likely setting and how scholars group it."
+        ],
+        [
+          "Glossary agent",
+          "Linked related terms so you can follow the idea into other parts of the codex."
+        ]
+      ],
+      "result": {
+        "title": "Comparison view",
+        "rows": [
+          [
+            "Texts compared",
+            "{texts}"
+          ],
+          [
+            "Passages found",
+            "{=texts * concept}"
+          ],
+          [
+            "Shared themes",
+            "{=max(2, texts - 1)}"
+          ],
+          [
+            "Scholar notes",
+            "{=texts}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Do all Gnostic texts tell the same story?",
+          "No. 'Gnostic' covers a range of groups and writings, and they differ a lot. That is why the codex shows passages side by side instead of one summary."
+        ],
+        [
+          "Which translations does it use?",
+          "The codex marks the translation used for each passage and lets you load another one you have access to."
+        ]
+      ]
+    },
+    {
+      "title": "Prepare a study group",
+      "ask": "I lead a study group of {people} people meeting for {sessions} sessions. Prepare guides for each meeting.",
+      "inputs": [
+        {
+          "id": "people",
+          "label": "Group size",
+          "type": "range",
+          "min": 3,
+          "max": 30,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "sessions",
+          "label": "Meetings",
+          "type": "range",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "value": 6
+        }
+      ],
+      "steps": [
+        [
+          "Path builder",
+          "Chose one reading per meeting, kept short enough to read aloud in about 10 minutes."
+        ],
+        [
+          "Question writer",
+          "Wrote {=sessions * 4} discussion questions, mixing close reading with open reflection."
+        ],
+        [
+          "Context agent",
+          "Added a one-page background sheet for each reading."
+        ],
+        [
+          "Planner",
+          "Suggested pairs for small-group talk: {=floor(people / 2)} pairs per meeting."
+        ]
+      ],
+      "result": {
+        "title": "Group kit",
+        "rows": [
+          [
+            "Meeting guides",
+            "{sessions}"
+          ],
+          [
+            "Discussion questions",
+            "{=sessions * 4}"
+          ],
+          [
+            "Background sheets",
+            "{sessions}"
+          ],
+          [
+            "Pairs per meeting",
+            "{=floor(people / 2)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can members use the codex at home?",
+          "Yes. Each member can follow the same path on their own and add private notes."
+        ],
+        [
+          "How do you keep discussion balanced?",
+          "The guides include questions that ask what the text says before asking what people think, which keeps the group anchored in the reading."
+        ]
+      ]
+    }
+  ]
+}

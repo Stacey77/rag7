@@ -1,0 +1,91 @@
+{
+  "name": "AI Roadmap Architect",
+  "tag": "Walks your team from the first business problem to governed AI at scale, one stage at a time.",
+  "scenarios": [
+    {
+      "title": "Pick the first AI project",
+      "ask": "We have {ideas} AI ideas from {depts} departments. Help us choose where to start.",
+      "inputs": [
+        {"id": "ideas", "label": "Ideas collected", "type": "range", "min": 3, "max": 60, "step": 1, "value": 18},
+        {"id": "depts", "label": "Departments", "type": "range", "min": 1, "max": 12, "step": 1, "value": 5},
+        {"id": "data", "label": "Data readiness", "type": "select", "value": "Some clean data",
+         "options": [{"label": "Mostly spreadsheets", "n": 1}, {"label": "Some clean data", "n": 2}, {"label": "Central data warehouse", "n": 3}]}
+      ],
+      "steps": [
+        ["Intake", "Collected {ideas} ideas with owner, problem and expected benefit."],
+        ["Scorer", "Rated each idea on value, feasibility, data readiness and risk."],
+        ["Filter", "Set aside {=round(ideas * (0.5 - data * 0.1))} ideas that need data you do not have yet."],
+        ["Shortlist", "Picked the top {=min(3, max(1, round(ideas * (0.15 + data * 0.1))))} that can show results in under 90 days."]
+      ],
+      "result": {
+        "title": "Starting point",
+        "rows": [
+          ["Ideas scored", "{ideas}"],
+          ["Ready now", "{=round(ideas * (0.15 + data * 0.1))}"],
+          ["Shortlist", "{=min(3, max(1, round(ideas * (0.15 + data * 0.1))))}"],
+          ["Top pick", "Invoice matching in Finance"],
+          ["Stage", "1 of 5: Problem selection"]
+        ]
+      },
+      "followups": [
+        ["What are the five stages?", "Problem selection, pilot, production, scale and governance. The tool keeps a checklist for each and only marks a stage done when its checks pass."],
+        ["Why not start with the biggest idea?", "Big ideas usually need more data and change. A quick, visible win builds trust and funding for the bigger ones."]
+      ]
+    },
+    {
+      "title": "Plan a pilot",
+      "ask": "Plan a {weeks}-week pilot for invoice matching with {users} users.",
+      "inputs": [
+        {"id": "weeks", "label": "Pilot length in weeks", "type": "range", "min": 4, "max": 16, "step": 1, "value": 8},
+        {"id": "users", "label": "Pilot users", "type": "range", "min": 2, "max": 50, "step": 1, "value": 6}
+      ],
+      "steps": [
+        ["Goal setter", "Defined success: 80% of invoices matched with no edits, measured weekly."],
+        ["Planner", "Split {weeks} weeks into setup, shadow mode and live use."],
+        ["Risk check", "Listed 4 risks, including vendor names that change format."],
+        ["Comms", "Drafted a kickoff note and a weekly update template for {users} users."]
+      ],
+      "result": {
+        "title": "Pilot plan",
+        "rows": [
+          ["Setup", "{=max(1, round(weeks * 0.25))} weeks"],
+          ["Shadow mode", "{=max(1, round(weeks * 0.25))} weeks"],
+          ["Live use", "{=weeks - 2 * max(1, round(weeks * 0.25))} weeks"],
+          ["Success target", "80% matched with no edits"]
+        ]
+      },
+      "followups": [
+        ["What is shadow mode?", "The AI suggests matches but people still do the work as usual. You compare the two before trusting the AI with real decisions."],
+        ["What if we miss the target?", "The plan includes a review at the end. Missing the target is a result too, and the tool records what you learned before the next idea."]
+      ]
+    },
+    {
+      "title": "Set up governance at scale",
+      "ask": "We now run {systems} AI systems. Set up governance with a {cadence} review cycle.",
+      "inputs": [
+        {"id": "systems", "label": "AI systems in use", "type": "range", "min": 2, "max": 80, "step": 1, "value": 14},
+        {"id": "cadence", "label": "Review cycle", "type": "select", "value": "Quarterly",
+         "options": [{"label": "Monthly", "n": 12}, {"label": "Quarterly", "n": 4}, {"label": "Twice a year", "n": 2}]}
+      ],
+      "steps": [
+        ["Inventory", "Listed {systems} systems with owner, data used and decisions they affect."],
+        ["Risk tiers", "Rated {=max(1, round(systems * 0.2))} as high risk because they affect customers or money."],
+        ["Policy", "Drafted rules for testing, human review and incident reporting per tier."],
+        ["Calendar", "Scheduled reviews {cadence} for high-risk systems and yearly for the rest."]
+      ],
+      "result": {
+        "title": "Governance setup",
+        "rows": [
+          ["Systems in inventory", "{systems}"],
+          ["High risk", "{=max(1, round(systems * 0.2))}"],
+          ["Reviews per year", "{=max(1, round(systems * 0.2)) * cadence + (systems - max(1, round(systems * 0.2)))}"],
+          ["Stage", "5 of 5: Governance"]
+        ]
+      },
+      "followups": [
+        ["Does this cover regulations?", "It gives a structure that maps to common frameworks. Your legal team should confirm what applies to you."],
+        ["Who owns each system?", "Every system must have a named business owner and a technical owner before it can be marked compliant."]
+      ]
+    }
+  ]
+}

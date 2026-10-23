@@ -1,0 +1,250 @@
+{
+  "name": "Cerebrum Magnum",
+  "tag": "Pulls your organization's knowledge into one place, then gives AI agents the context to carry out real work.",
+  "scenarios": [
+    {
+      "title": "Weekly organization brief",
+      "ask": "Give me a weekly brief for our {org} of {people} people, with the top issues and who owns them.",
+      "inputs": [
+        {
+          "id": "org",
+          "label": "Organization type",
+          "type": "select",
+          "value": "family business",
+          "options": [
+            {
+              "label": "startup",
+              "n": 1
+            },
+            {
+              "label": "nonprofit",
+              "n": 2
+            },
+            {
+              "label": "family business",
+              "n": 3
+            },
+            {
+              "label": "enterprise team",
+              "n": 4
+            }
+          ]
+        },
+        {
+          "id": "people",
+          "label": "People",
+          "type": "range",
+          "min": 3,
+          "max": 2000,
+          "step": 1,
+          "value": 40
+        },
+        {
+          "id": "sources",
+          "label": "Connected sources",
+          "type": "range",
+          "min": 2,
+          "max": 20,
+          "step": 1,
+          "value": 6
+        }
+      ],
+      "steps": [
+        [
+          "Knowledge reader",
+          "Read this week's updates from {sources} sources: email threads, shared drives, tasks and finance."
+        ],
+        [
+          "Analyst",
+          "Found {=3 + round(sources / 2)} issues worth attention, such as a supplier price rise and two stalled tasks."
+        ],
+        [
+          "Owner matcher",
+          "Linked each issue to its likely owner using past work."
+        ],
+        [
+          "Executor",
+          "Drafted the next action for each, ready to assign."
+        ]
+      ],
+      "result": {
+        "title": "Weekly brief",
+        "rows": [
+          [
+            "Sources read",
+            "{sources}"
+          ],
+          [
+            "Issues found",
+            "{=3 + round(sources / 2)}"
+          ],
+          [
+            "Owners assigned",
+            "{=min(people, 3 + round(sources / 2))}"
+          ],
+          [
+            "Reading time",
+            "About 5 minutes"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it work differently for a nonprofit?",
+          "The brief adds grant deadlines, donor follow-ups and board items for nonprofits, and investor updates for startups. The core is the same."
+        ],
+        [
+          "Who can see the brief?",
+          "You set it. Leaders can get the full brief and teams get only their own items."
+        ]
+      ]
+    },
+    {
+      "title": "Capture know-how before someone retires",
+      "ask": "Our operations lead retires in {months}. Capture what they know so the next person can pick it up.",
+      "inputs": [
+        {
+          "id": "months",
+          "label": "Time until they leave",
+          "type": "range",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "value": 4,
+          "unit": "months"
+        },
+        {
+          "id": "processes",
+          "label": "Processes they run",
+          "type": "range",
+          "min": 5,
+          "max": 60,
+          "step": 1,
+          "value": 18
+        }
+      ],
+      "steps": [
+        [
+          "Interviewer",
+          "Scheduled {=ceil(processes / 3)} short recorded interviews, 3 processes each."
+        ],
+        [
+          "Knowledge reader",
+          "Pulled related emails, files and checklists for each process."
+        ],
+        [
+          "Writer",
+          "Turned each interview into a step-by-step guide with the who, when and why."
+        ],
+        [
+          "Agent builder",
+          "Set up an assistant the successor can ask questions, answering from those guides."
+        ]
+      ],
+      "result": {
+        "title": "Handover plan",
+        "rows": [
+          [
+            "Processes to capture",
+            "{processes}"
+          ],
+          [
+            "Interviews needed",
+            "{=ceil(processes / 3)}"
+          ],
+          [
+            "Interviews per month",
+            "{=ceil(ceil(processes / 3) / months)}"
+          ],
+          [
+            "Guides produced",
+            "{processes}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if they can't spare the time?",
+          "Interviews are 30 minutes and the agent drafts from their files first, so they mostly confirm and correct."
+        ],
+        [
+          "Can family members in the business use it too?",
+          "Yes. Anyone you add can ask the assistant, and private items stay with the people you choose."
+        ]
+      ]
+    },
+    {
+      "title": "Prepare a board meeting",
+      "ask": "Prepare our board pack for next month: {items} agenda items and {members} board members.",
+      "inputs": [
+        {
+          "id": "items",
+          "label": "Agenda items",
+          "type": "range",
+          "min": 3,
+          "max": 15,
+          "step": 1,
+          "value": 6
+        },
+        {
+          "id": "members",
+          "label": "Board members",
+          "type": "range",
+          "min": 3,
+          "max": 15,
+          "step": 1,
+          "value": 7
+        }
+      ],
+      "steps": [
+        [
+          "Collector",
+          "Gathered the numbers, minutes and open actions from last meeting."
+        ],
+        [
+          "Writer",
+          "Drafted a one-page summary for each of {items} items."
+        ],
+        [
+          "Checker",
+          "Found {=max(1, round(items / 3))} open actions from last time still not done and listed owners."
+        ],
+        [
+          "Scheduler",
+          "Sent the pack and a poll for dates to {members} members."
+        ]
+      ],
+      "result": {
+        "title": "Board pack ready",
+        "rows": [
+          [
+            "Pages",
+            "{=items + 3}"
+          ],
+          [
+            "Open actions to chase",
+            "{=max(1, round(items / 3))}"
+          ],
+          [
+            "Members sent the pack",
+            "{members}"
+          ],
+          [
+            "Prep time saved",
+            "About {=items} hours"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can it take minutes too?",
+          "Yes. It can draft minutes from a recording or notes, and a person approves them before they're shared."
+        ],
+        [
+          "Is the pack sent automatically?",
+          "Only after you approve it."
+        ]
+      ]
+    }
+  ]
+}

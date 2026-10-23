@@ -1,0 +1,271 @@
+{
+  "name": "TenancyCore SaaS",
+  "tag": "A ready multi-tenant foundation that keeps each customer's data separate and tracks plans and compliance for you.",
+  "scenarios": [
+    {
+      "title": "Onboard a large customer",
+      "ask": "A new customer is joining on the {plan} plan with {users} users. They want their data kept in a separate store.",
+      "inputs": [
+        {
+          "id": "users",
+          "label": "Users at the new customer",
+          "type": "range",
+          "min": 10,
+          "max": 5000,
+          "step": 10,
+          "value": 600
+        },
+        {
+          "id": "plan",
+          "label": "Plan",
+          "type": "select",
+          "value": "Business",
+          "options": [
+            {
+              "label": "Starter",
+              "n": 1
+            },
+            {
+              "label": "Business",
+              "n": 2
+            },
+            {
+              "label": "Enterprise",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "isolation",
+          "label": "Data isolation",
+          "type": "select",
+          "value": "Separate schema",
+          "options": [
+            {
+              "label": "Shared tables with tenant key",
+              "n": 1
+            },
+            {
+              "label": "Separate schema",
+              "n": 2
+            },
+            {
+              "label": "Separate database",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Provisioner",
+          "Created the tenant record, a {isolation} data store and default roles."
+        ],
+        [
+          "Plan manager",
+          "Applied {plan} plan limits: {=plan * 25} GB storage and {=plan * plan * 50} API calls per minute."
+        ],
+        [
+          "Isolation test",
+          "Ran {=isolation * 40} cross-tenant access checks. None could read another tenant's data."
+        ],
+        [
+          "Compliance tracker",
+          "Logged the setup, the data location and who approved it for the audit trail."
+        ]
+      ],
+      "result": {
+        "title": "Tenant live",
+        "rows": [
+          [
+            "Users invited",
+            "{users}"
+          ],
+          [
+            "Storage included",
+            "{=plan * 25} GB"
+          ],
+          [
+            "Isolation checks passed",
+            "{=isolation * 40} of {=isolation * 40}"
+          ],
+          [
+            "Setup time",
+            "About {=5 + isolation * 5} minutes"
+          ],
+          [
+            "Seats over plan guidance",
+            "{=max(0, users - plan * plan * 250)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Which isolation level should we choose?",
+          "Shared tables cost least and suit small customers. Separate schemas or databases cost more but are easier to explain to security reviewers at larger customers."
+        ],
+        [
+          "What happens if they outgrow the plan?",
+          "The plan manager warns at 80% of each limit and shows the upgrade price. Nothing is cut off without notice."
+        ]
+      ]
+    },
+    {
+      "title": "Move customers to new pricing",
+      "ask": "We have {tenants} tenants and {legacy}% are still on retired plans. Plan the move to current pricing.",
+      "inputs": [
+        {
+          "id": "tenants",
+          "label": "Total tenants",
+          "type": "range",
+          "min": 20,
+          "max": 3000,
+          "step": 10,
+          "value": 420
+        },
+        {
+          "id": "legacy",
+          "label": "On retired plans",
+          "type": "range",
+          "min": 5,
+          "max": 80,
+          "step": 5,
+          "value": 30,
+          "unit": "%"
+        },
+        {
+          "id": "notice",
+          "label": "Notice period",
+          "type": "range",
+          "min": 30,
+          "max": 120,
+          "step": 15,
+          "value": 60,
+          "unit": "days"
+        }
+      ],
+      "steps": [
+        [
+          "Plan reader",
+          "Found {=round(tenants * legacy / 100)} tenants on 4 retired plans."
+        ],
+        [
+          "Matcher",
+          "Mapped each to the closest current plan by usage. {=round(tenants * legacy / 100 * 0.65)} pay the same or less after the move."
+        ],
+        [
+          "Messenger",
+          "Drafted notices with each tenant's old and new price and a {notice} effective date."
+        ],
+        [
+          "Billing sync",
+          "Staged the plan changes to switch on automatically at the end of the notice period."
+        ]
+      ],
+      "result": {
+        "title": "Migration plan",
+        "rows": [
+          [
+            "Tenants to move",
+            "{=round(tenants * legacy / 100)}"
+          ],
+          [
+            "Same price or lower",
+            "{=round(tenants * legacy / 100 * 0.65)}"
+          ],
+          [
+            "Price goes up",
+            "{=round(tenants * legacy / 100) - round(tenants * legacy / 100 * 0.65)}"
+          ],
+          [
+            "Switch date",
+            "{notice} after notices go out"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can we keep a few customers on old plans?",
+          "Yes. Mark any tenant as an exception and the plan manager leaves them alone and keeps a note of why."
+        ],
+        [
+          "Who checks the notices before they send?",
+          "You do. Every notice waits in a review queue, and you can send them in batches."
+        ]
+      ]
+    },
+    {
+      "title": "Prepare for a security review",
+      "ask": "A prospect sent a security questionnaire. Show what our {tenants} tenants' setup can prove today.",
+      "inputs": [
+        {
+          "id": "tenants",
+          "label": "Tenants",
+          "type": "range",
+          "min": 10,
+          "max": 3000,
+          "step": 10,
+          "value": 250
+        },
+        {
+          "id": "controls",
+          "label": "Controls you track",
+          "type": "range",
+          "min": 20,
+          "max": 120,
+          "step": 5,
+          "value": 60
+        }
+      ],
+      "steps": [
+        [
+          "Evidence collector",
+          "Pulled access logs, backup history and isolation test results for all {tenants} tenants."
+        ],
+        [
+          "Control mapper",
+          "Matched evidence to {controls} controls. {=round(controls * 0.85)} have current proof."
+        ],
+        [
+          "Gap finder",
+          "Listed {=controls - round(controls * 0.85)} controls with old or missing proof, such as last quarter's access review."
+        ],
+        [
+          "Writer",
+          "Drafted answers for the questionnaire with links to each piece of evidence."
+        ]
+      ],
+      "result": {
+        "title": "Review pack",
+        "rows": [
+          [
+            "Controls with current proof",
+            "{=round(controls * 0.85)} of {controls}"
+          ],
+          [
+            "Gaps to close",
+            "{=controls - round(controls * 0.85)}"
+          ],
+          [
+            "Questionnaire answers drafted",
+            "{=round(controls * 1.4)}"
+          ],
+          [
+            "Certification status",
+            "Tracking only, not a certification"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does this make us compliant?",
+          "No tool can do that alone. TenancyCore keeps the evidence organized and shows gaps, and your auditor makes the formal call."
+        ],
+        [
+          "How long to close the gaps?",
+          "Most gaps are overdue reviews. A small team usually closes {=controls - round(controls * 0.85)} items like these in two to three weeks."
+        ]
+      ]
+    }
+  ]
+}

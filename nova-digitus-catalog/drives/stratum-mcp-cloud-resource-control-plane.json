@@ -1,0 +1,275 @@
+{
+  "name": "Stratum MCP: Cloud Resource Control Plane",
+  "tag": "See and control every cloud resource from one AI-ready control plane, with nothing changed until you approve.",
+  "scenarios": [
+    {
+      "title": "Explain a bill spike",
+      "ask": "Why did our cloud bill jump this month? We run {accounts} accounts.",
+      "inputs": [
+        {
+          "id": "accounts",
+          "label": "Cloud accounts",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "servers",
+          "label": "Idle test servers left running",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "size",
+          "label": "Size of those servers",
+          "type": "select",
+          "value": "Large",
+          "options": [
+            {
+              "label": "Small",
+              "n": 0.16
+            },
+            {
+              "label": "Medium",
+              "n": 0.32
+            },
+            {
+              "label": "Large",
+              "n": 0.63
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Inventory",
+          "Read {accounts} accounts: {=accounts * 42} resources across compute, storage and databases."
+        ],
+        [
+          "Cost agent",
+          "Bill up {=round(servers * size * 730 / (accounts * 2000) * 100)}%. Most of it is {servers} test servers left running since the 3rd."
+        ],
+        [
+          "Policy",
+          "Those servers have no owner tag, which breaks your tagging rule."
+        ],
+        [
+          "Action",
+          "Prepared a shutdown plan. Waiting for your approval before anything changes."
+        ]
+      ],
+      "result": {
+        "title": "Savings found",
+        "rows": [
+          [
+            "Monthly waste",
+            "${=round(servers * size * 730)}"
+          ],
+          [
+            "Yearly at this rate",
+            "${=round(servers * size * 730 * 12)}"
+          ],
+          [
+            "Resources to stop",
+            "{servers}"
+          ],
+          [
+            "Policy breaks",
+            "{servers} untagged"
+          ],
+          [
+            "Changes made",
+            "None until you approve"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if someone still needs one of those servers?",
+          "The plan stops servers instead of deleting them, so any one can be restarted in minutes. Owners get a notice first and can reply to keep theirs."
+        ],
+        [
+          "How does it stop this from happening again?",
+          "Stratum can add a rule that pauses untagged test servers after 48 hours. You'd have saved about ${=round(servers * size * 24 * 25)} this month with that rule in place."
+        ],
+        [
+          "Which clouds does it read?",
+          "It works with the major public clouds through read-only access by default. Write access is added per action and only for what you approve."
+        ]
+      ]
+    },
+    {
+      "title": "Tagging clean-up",
+      "ask": "Audit our {resources} resources for missing owner and cost-center tags. About {untagged}% look untagged.",
+      "inputs": [
+        {
+          "id": "resources",
+          "label": "Resources in scope",
+          "type": "range",
+          "min": 50,
+          "max": 2000,
+          "step": 50,
+          "value": 400
+        },
+        {
+          "id": "untagged",
+          "label": "Share untagged",
+          "type": "range",
+          "min": 5,
+          "max": 60,
+          "step": 5,
+          "value": 20,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Inventory",
+          "Listed {resources} resources and their current tags."
+        ],
+        [
+          "Policy",
+          "Found {=round(resources * untagged / 100)} resources missing an owner or cost-center tag."
+        ],
+        [
+          "Owner finder",
+          "Matched {=round(resources * untagged / 100 * 0.7)} of them to an owner using creation logs and naming patterns."
+        ],
+        [
+          "Action",
+          "Drafted tag updates for the matched ones and a short list for a person to sort out."
+        ]
+      ],
+      "result": {
+        "title": "Tagging plan",
+        "rows": [
+          [
+            "Untagged resources",
+            "{=round(resources * untagged / 100)}"
+          ],
+          [
+            "Owner found automatically",
+            "{=round(resources * untagged / 100 * 0.7)}"
+          ],
+          [
+            "Need a person to decide",
+            "{=round(resources * untagged / 100) - round(resources * untagged / 100 * 0.7)}"
+          ],
+          [
+            "Changes made",
+            "None until you approve"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why do tags matter so much?",
+          "Without an owner tag nobody gets the bill, so idle resources stay on. Tags also let finance split cloud cost by team."
+        ],
+        [
+          "Can it apply the tags in bulk?",
+          "Yes, once you approve the list. Each change is logged with who approved it, so it can be undone."
+        ]
+      ]
+    },
+    {
+      "title": "Turn off dev at night",
+      "ask": "Our {devs} development servers only get used {usage} a day. Schedule them to sleep the rest of the time.",
+      "inputs": [
+        {
+          "id": "devs",
+          "label": "Development servers",
+          "type": "range",
+          "min": 2,
+          "max": 60,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "usage",
+          "label": "Hours in use per weekday",
+          "type": "range",
+          "min": 6,
+          "max": 16,
+          "step": 1,
+          "value": 10,
+          "unit": "hours"
+        },
+        {
+          "id": "size",
+          "label": "Typical server size",
+          "type": "select",
+          "value": "Medium",
+          "options": [
+            {
+              "label": "Small",
+              "n": 0.16
+            },
+            {
+              "label": "Medium",
+              "n": 0.32
+            },
+            {
+              "label": "Large",
+              "n": 0.63
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Usage reader",
+          "Checked 30 days of activity on {devs} servers. Busy hours cluster in a {usage}-hour window on weekdays."
+        ],
+        [
+          "Scheduler",
+          "Proposed a wake/sleep schedule: on {usage} hours each weekday, off nights and weekends."
+        ],
+        [
+          "Safety check",
+          "Excluded servers running long jobs or tagged as always-on."
+        ],
+        [
+          "Action",
+          "Prepared the schedule. Anyone can wake a server early from chat."
+        ]
+      ],
+      "result": {
+        "title": "Schedule proposal",
+        "rows": [
+          [
+            "Hours on per month",
+            "{=round(usage * 22)} instead of 730"
+          ],
+          [
+            "Monthly cost today",
+            "${=round(devs * size * 730)}"
+          ],
+          [
+            "Monthly cost with schedule",
+            "${=round(devs * size * usage * 22)}"
+          ],
+          [
+            "Estimated monthly saving",
+            "${=round(devs * size * (730 - usage * 22))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if a developer works late?",
+          "They ask the control plane to wake their server and it's up in a few minutes. The schedule resumes the next night."
+        ],
+        [
+          "Are those savings guaranteed?",
+          "No, they're an estimate from the hourly rate and the schedule. Actual savings depend on your pricing and how often servers get woken early."
+        ]
+      ]
+    }
+  ]
+}

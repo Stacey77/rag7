@@ -1,0 +1,89 @@
+{
+  "name": "Multi-Agent Orchestrator",
+  "tag": "Configure a team of AI agents, simulate the pipeline, then run it on real work.",
+  "scenarios": [
+    {
+      "title": "Process supplier onboarding forms",
+      "ask": "Set up a pipeline for {forms} supplier onboarding forms a week with {agents} agents and a {check} check.",
+      "inputs": [
+        {"id": "forms", "label": "Forms per week", "type": "range", "min": 10, "max": 2000, "step": 10, "value": 150},
+        {"id": "agents", "label": "Agents in the pipeline", "type": "range", "min": 3, "max": 6, "step": 1, "value": 4},
+        {"id": "check", "label": "Final check", "type": "select", "value": "Human sign-off",
+         "options": [{"label": "Human sign-off", "n": 2}, {"label": "Checker agent only", "n": 1}]}
+      ],
+      "steps": [
+        ["Configurator", "Built a {agents}-agent pipeline: Reader, Validator, Risk scorer{=0 * agents} and Filer, with roles and handoff rules."],
+        ["Simulator", "Ran 25 sample forms. {=25 - 3} passed, 3 stopped at the Validator for a missing tax ID."],
+        ["Tuner", "Adjusted the Risk scorer so new suppliers in high-risk categories always go to a person."],
+        ["Runner", "Switched to live mode for {forms} forms a week with a {check} at the end."]
+      ],
+      "result": {
+        "title": "Pipeline live",
+        "rows": [
+          ["Agents", "{agents}"],
+          ["Forms per week", "{forms}"],
+          ["Expected exceptions", "about {=ceil(forms * 0.12)} a week"],
+          ["Staff time per week", "about {=round(forms * check * 1.5 / 60, 1)} hours, down from {=round(forms * 20 / 60)}"]
+        ]
+      },
+      "followups": [
+        ["What is the simulation for?", "It lets you see how forms flow, where they stop and what each agent decides, before any real supplier data is touched."],
+        ["Can we add an agent later?", "Yes. Drag a new agent into the pipeline, set its handoff rule and re-run the simulation before going live."]
+      ]
+    },
+    {
+      "title": "Draft a weekly market brief",
+      "ask": "Have a Researcher, Analyst and Editor produce a weekly brief from {feeds} news feeds, in {words} words.",
+      "inputs": [
+        {"id": "feeds", "label": "News feeds", "type": "range", "min": 2, "max": 40, "step": 1, "value": 10},
+        {"id": "words", "label": "Brief length in words", "type": "range", "min": 300, "max": 2000, "step": 100, "value": 800}
+      ],
+      "steps": [
+        ["Researcher", "Read about {=feeds * 25} articles from {feeds} feeds and kept {=min(30, feeds * 3)} relevant ones."],
+        ["Analyst", "Grouped them into {=min(6, max(2, round(feeds / 4)))} themes and noted what changed since last week."],
+        ["Editor", "Wrote a {words}-word brief and cut repeated points."],
+        ["Orchestrator", "Checked every claim links to an article before publishing to the team channel."]
+      ],
+      "result": {
+        "title": "Brief published",
+        "rows": [
+          ["Articles read", "{=feeds * 25}"],
+          ["Articles cited", "{=min(30, feeds * 3)}"],
+          ["Themes", "{=min(6, max(2, round(feeds / 4)))}"],
+          ["Reading time", "about {=ceil(words / 230)} minutes"]
+        ]
+      },
+      "followups": [
+        ["Can each agent use a different model?", "Yes. A common setup uses a fast model for the Researcher and a stronger one for the Editor."],
+        ["What if a feed goes down?", "The Orchestrator notes the missing feed in the brief and runs with the rest."]
+      ]
+    },
+    {
+      "title": "Handle a spike in returns",
+      "ask": "Returns jumped to {returns} a day after a sale. Run the returns pipeline with {agents} parallel lanes.",
+      "inputs": [
+        {"id": "returns", "label": "Returns per day", "type": "range", "min": 50, "max": 5000, "step": 50, "value": 600},
+        {"id": "agents", "label": "Parallel lanes", "type": "range", "min": 1, "max": 10, "step": 1, "value": 3}
+      ],
+      "steps": [
+        ["Intake agent", "Read return requests and photos and sorted them by reason."],
+        ["Policy agent", "Approved {=round(returns * 0.8)} returns within the 30-day policy."],
+        ["Exception agent", "Sent {=round(returns * 0.2)} unusual cases, such as missing order numbers, to the support team."],
+        ["Orchestrator", "Balanced work across {agents} lanes. Queue clears in about {=ceil(returns * 0.5 / agents / 60)} hours."]
+      ],
+      "result": {
+        "title": "Returns run",
+        "rows": [
+          ["Auto-approved", "{=round(returns * 0.8)}"],
+          ["To support team", "{=round(returns * 0.2)}"],
+          ["Time to clear queue", "about {=ceil(returns * 0.5 / agents / 60)} hours"],
+          ["Refunds issued without approval", "0 above $200"]
+        ]
+      },
+      "followups": [
+        ["Who sets the approval limit?", "You do. The Policy agent can auto-approve only under a dollar limit you choose. Above it, a person signs off."],
+        ["Can lanes scale on their own?", "Yes. Set a target queue time and the Orchestrator adds lanes up to your cap when the queue grows."]
+      ]
+    }
+  ]
+}

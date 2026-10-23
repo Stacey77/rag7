@@ -6,8 +6,8 @@
       "title": "Label fewer product photos",
       "ask": "We have {pool} unlabeled product photos and budget for {budget} labels. Show how {strategy} sampling compares to labeling at random.",
       "inputs": [
-        {"id": "pool", "label": "Unlabeled photos", "type": "range", "min": 5000, "max": 100000, "step": 5000, "value": 40000, "unit": "photos"},
-        {"id": "budget", "label": "Labels you can afford", "type": "range", "min": 200, "max": 4000, "step": 200, "value": 1000, "unit": "labels"},
+        {"id": "pool", "label": "Unlabeled photos", "type": "range", "min": 5000, "max": 100000, "step": 5000, "value": 40000},
+        {"id": "budget", "label": "Labels you can afford", "type": "range", "min": 200, "max": 4000, "step": 200, "value": 1000},
         {"id": "strategy", "label": "Query strategy", "type": "select", "value": "Uncertainty",
          "options": [{"label": "Uncertainty", "n": 2}, {"label": "Diversity", "n": 1}, {"label": "Uncertainty plus diversity", "n": 3}]}
       ],
@@ -21,7 +21,7 @@
       "result": {
         "title": "Learning curve comparison",
         "rows": [
-          ["Labels used", "{budget} of {pool}"],
+          ["Labels used", "{budget} of {pool} photos"],
           ["Random sampling accuracy", "{=min(90, round(60 + budget / 150))}%"],
           ["Active learning accuracy", "{=min(94, round(60 + budget / 150 + strategy * 2))}%"],
           ["Labels saved for the same accuracy", "about {=round(budget * strategy * 0.12)}"],
@@ -36,7 +36,7 @@
     },
     {
       "title": "Triage support tickets",
-      "ask": "Train a ticket router for {classes} categories. Our agents can label {per_day} tickets a day. How long until it is useful?",
+      "ask": "Train a ticket router for {classes} categories. Our agents can label {per_day} a day. How long until it is useful?",
       "inputs": [
         {"id": "classes", "label": "Ticket categories", "type": "range", "min": 3, "max": 20, "step": 1, "value": 8},
         {"id": "per_day", "label": "Tickets labeled per day", "type": "range", "min": 20, "max": 300, "step": 10, "value": 80, "unit": "tickets"},
@@ -65,7 +65,7 @@
     },
     {
       "title": "Teach the concept to a team",
-      "ask": "Run a {minutes}-minute session for {people} analysts who are new to active learning.",
+      "ask": "Run a {minutes} session for {people} analysts who are new to active learning.",
       "inputs": [
         {"id": "minutes", "label": "Session length", "type": "range", "min": 20, "max": 90, "step": 10, "value": 45, "unit": "minutes"},
         {"id": "people", "label": "Attendees", "type": "range", "min": 2, "max": 30, "step": 1, "value": 10}

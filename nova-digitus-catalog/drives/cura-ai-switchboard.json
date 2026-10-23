@@ -1,0 +1,245 @@
+{
+  "name": "Cura AI Switchboard",
+  "tag": "A hospital front-desk agent that answers room lookups, relays nurse updates and keeps dispatch cases moving.",
+  "scenarios": [
+    {
+      "title": "Handle the visitor call rush",
+      "ask": "Our front desk gets about {calls} calls an hour at visiting time. Let the switchboard agent take routine room lookups.",
+      "inputs": [
+        {
+          "id": "calls",
+          "label": "Calls per hour",
+          "type": "range",
+          "min": 10,
+          "max": 200,
+          "step": 5,
+          "value": 60
+        },
+        {
+          "id": "staff",
+          "label": "Desk staff on shift",
+          "type": "range",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "value": 2
+        },
+        {
+          "id": "verify",
+          "label": "Caller check",
+          "type": "select",
+          "value": "Patient name and date of birth",
+          "options": [
+            {
+              "label": "Patient name only",
+              "n": 1
+            },
+            {
+              "label": "Patient name and date of birth",
+              "n": 2
+            },
+            {
+              "label": "Name, date of birth and passcode",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Intent",
+          "Sorted calls: about {=round(calls * 0.55)} room lookups, the rest directions, billing and transfers."
+        ],
+        [
+          "Privacy check",
+          "Asked for {verify} before sharing a room number, and checked each patient's privacy flag."
+        ],
+        [
+          "Lookup",
+          "Read the room from the bed board. Patients marked confidential are never disclosed."
+        ],
+        [
+          "Transfer",
+          "Sent anything clinical or unclear straight to a person."
+        ]
+      ],
+      "result": {
+        "title": "Desk load (sample)",
+        "rows": [
+          [
+            "Calls handled by agent",
+            "About {=round(calls * 0.55)} per hour"
+          ],
+          [
+            "Calls left for staff",
+            "{=calls - round(calls * 0.55)} per hour"
+          ],
+          [
+            "Calls per staff member",
+            "{=round((calls - round(calls * 0.55)) / staff)} per hour"
+          ],
+          [
+            "Clinical questions answered by agent",
+            "None, always transferred"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does the agent give medical information?",
+          "No. It shares room locations and general directions only. Any question about a patient's condition goes to clinical staff."
+        ],
+        [
+          "What about patients who opted out of the directory?",
+          "The agent checks the opt-out flag on every lookup and gives the same neutral answer a trained desk clerk would."
+        ]
+      ]
+    },
+    {
+      "title": "Relay nurse updates to families",
+      "ask": "Nurses on {units} units want a way to send short, approved updates to family contacts without stopping for calls.",
+      "inputs": [
+        {
+          "id": "units",
+          "label": "Units",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "updates",
+          "label": "Updates per unit per day",
+          "type": "range",
+          "min": 5,
+          "max": 60,
+          "step": 5,
+          "value": 20
+        }
+      ],
+      "steps": [
+        [
+          "Template builder",
+          "Set up approved message types, such as 'resting comfortably' and 'please call the unit'."
+        ],
+        [
+          "Consent check",
+          "Only sends to family contacts listed with the patient's permission."
+        ],
+        [
+          "Relay",
+          "Nurse taps a template and the agent sends it by text or voice."
+        ],
+        [
+          "Log",
+          "Records every message, sender and time."
+        ]
+      ],
+      "result": {
+        "title": "Update relay",
+        "rows": [
+          [
+            "Updates per day",
+            "{=units * updates}"
+          ],
+          [
+            "Nurse minutes saved per day",
+            "About {=round(units * updates * 4)}"
+          ],
+          [
+            "Free-text medical details sent",
+            "None, templates only"
+          ],
+          [
+            "Audit log",
+            "Every message"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can families reply?",
+          "Yes. Replies go to the unit desk queue, not to a nurse's phone, so they're handled when someone is free."
+        ],
+        [
+          "Is this a replacement for talking to the care team?",
+          "No. It cuts routine 'any news?' calls. Families can still request a call with the care team."
+        ]
+      ]
+    },
+    {
+      "title": "Dispatcher case board",
+      "ask": "Our dispatcher juggles about {cases} transport and support requests a shift. Organize them by urgency.",
+      "inputs": [
+        {
+          "id": "cases",
+          "label": "Requests per shift",
+          "type": "range",
+          "min": 10,
+          "max": 200,
+          "step": 5,
+          "value": 50
+        },
+        {
+          "id": "staff",
+          "label": "Transport staff on shift",
+          "type": "range",
+          "min": 1,
+          "max": 15,
+          "step": 1,
+          "value": 4
+        }
+      ],
+      "steps": [
+        [
+          "Intake",
+          "Turned calls and messages into {cases} case cards with location and request type."
+        ],
+        [
+          "Prioritizer",
+          "Ordered cases by urgency rules your team set, such as discharges waiting and tests booked."
+        ],
+        [
+          "Assigner",
+          "Suggested the nearest free staff member for each case."
+        ],
+        [
+          "Watcher",
+          "Flags any case waiting more than 20 minutes."
+        ]
+      ],
+      "result": {
+        "title": "Shift board",
+        "rows": [
+          [
+            "Cases per staff member",
+            "{=round(cases / staff, 1)}"
+          ],
+          [
+            "Urgent cases first",
+            "About {=max(1, round(cases * 0.2))}"
+          ],
+          [
+            "Wait alerts set",
+            "After 20 minutes"
+          ],
+          [
+            "Dispatcher stays in control",
+            "Yes, approves each assignment"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if the priority rules are wrong for a case?",
+          "The dispatcher can drag any card up or down. The agent notes the change and asks if the rule should be updated."
+        ],
+        [
+          "Does it connect to our existing systems?",
+          "It can read from common bed-board and request systems. Setup is planned with your IT team."
+        ]
+      ]
+    }
+  ]
+}

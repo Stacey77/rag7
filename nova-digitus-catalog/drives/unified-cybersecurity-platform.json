@@ -1,0 +1,251 @@
+{
+  "name": "Unified Cybersecurity Platform",
+  "tag": "Threat prevention, endpoint detection, admin access and patching in one console, with AI to sort what matters first.",
+  "scenarios": [
+    {
+      "title": "Suspicious activity on a laptop",
+      "ask": "One of our {endpoints} laptops started encrypting files in a shared folder. What's happening?",
+      "inputs": [
+        {
+          "id": "endpoints",
+          "label": "Managed endpoints",
+          "type": "range",
+          "min": 20,
+          "max": 2000,
+          "step": 10,
+          "value": 180
+        },
+        {
+          "id": "response",
+          "label": "Auto-response level",
+          "type": "select",
+          "value": "Isolate and alert",
+          "options": [
+            {
+              "label": "Alert only",
+              "n": 1
+            },
+            {
+              "label": "Isolate and alert",
+              "n": 2
+            },
+            {
+              "label": "Isolate, alert and roll back",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Endpoint detection",
+          "Saw one process rename {=120 * response} files in 40 seconds on a finance laptop. Pattern matches ransomware behavior."
+        ],
+        [
+          "Responder",
+          "Applied your setting: {response}. The laptop was cut off from the network in under 10 seconds."
+        ],
+        [
+          "Hunter",
+          "Checked the other {=endpoints - 1} endpoints for the same file hash and process. None found."
+        ],
+        [
+          "Analyst",
+          "Traced the start to an email attachment opened 12 minutes earlier and blocked the sender."
+        ]
+      ],
+      "result": {
+        "title": "Incident contained (sample)",
+        "rows": [
+          [
+            "Endpoints affected",
+            "1 of {endpoints}"
+          ],
+          [
+            "Files touched before stop",
+            "{=120 * response}"
+          ],
+          [
+            "Files restored",
+            "{=floor(response / 3) * 120 * response} from local snapshot"
+          ],
+          [
+            "Other devices with signs",
+            "0"
+          ],
+          [
+            "Next step",
+            "Reimage laptop, reset user password"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Would 'Alert only' have been enough?",
+          "With alert only, the process keeps running until a person acts. Most teams allow isolation for this kind of pattern because seconds matter."
+        ],
+        [
+          "Can it isolate the wrong machine?",
+          "It can, rarely. Isolation is one click to undo, and every automatic action is logged with the reason."
+        ]
+      ]
+    },
+    {
+      "title": "Patch backlog",
+      "ask": "We have {devices} devices and about {missing} critical patches missing on each. Our maintenance window is {window} on Sundays.",
+      "inputs": [
+        {
+          "id": "devices",
+          "label": "Devices",
+          "type": "range",
+          "min": 20,
+          "max": 2000,
+          "step": 10,
+          "value": 300
+        },
+        {
+          "id": "missing",
+          "label": "Critical patches missing per device",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "window",
+          "label": "Maintenance window",
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "value": 4,
+          "unit": "hours"
+        }
+      ],
+      "steps": [
+        [
+          "Inventory",
+          "Found {=devices * missing} missing critical patches across {devices} devices."
+        ],
+        [
+          "Prioritizer",
+          "Put first the {=max(1, round(devices * 0.12))} internet-facing devices and any patch with a known exploit."
+        ],
+        [
+          "Scheduler",
+          "Each window can patch about {=window * 90} devices. Split the work into {=ceil(devices / (window * 90))} Sunday waves."
+        ],
+        [
+          "Verifier",
+          "After each wave, rescans and reports any device that failed to update."
+        ]
+      ],
+      "result": {
+        "title": "Patch plan",
+        "rows": [
+          [
+            "Patches to install",
+            "{=devices * missing}"
+          ],
+          [
+            "Sunday waves needed",
+            "{=ceil(devices / (window * 90))}"
+          ],
+          [
+            "Exposed devices first",
+            "{=max(1, round(devices * 0.12))}"
+          ],
+          [
+            "Expected failures to retry",
+            "About {=max(1, round(devices * 0.03))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if a patch breaks something?",
+          "Wave one goes to a small test group. If anything fails, later waves pause and you can roll that patch back."
+        ],
+        [
+          "Can we shorten the backlog faster?",
+          "Adding a second weekly window roughly halves the number of weeks. The planner shows both options."
+        ]
+      ]
+    },
+    {
+      "title": "Admin access review",
+      "ask": "Review our {admins} admin accounts. Some haven't been checked in {days}.",
+      "inputs": [
+        {
+          "id": "admins",
+          "label": "Admin accounts",
+          "type": "range",
+          "min": 5,
+          "max": 300,
+          "step": 5,
+          "value": 40
+        },
+        {
+          "id": "days",
+          "label": "Days since last review",
+          "type": "range",
+          "min": 30,
+          "max": 365,
+          "step": 15,
+          "value": 180,
+          "unit": "days"
+        }
+      ],
+      "steps": [
+        [
+          "Access reader",
+          "Listed {admins} accounts with admin rights and their last sign-in."
+        ],
+        [
+          "Analyst",
+          "{=max(1, round(admins * 0.15))} accounts haven't signed in for 90 days. {=max(1, round(admins * 0.05))} belong to people who left."
+        ],
+        [
+          "Vault",
+          "Suggested moving shared admin passwords into the vault with check-out and auto-rotation."
+        ],
+        [
+          "Workflow",
+          "Sent each manager a list of their team's admin accounts to confirm or remove."
+        ]
+      ],
+      "result": {
+        "title": "Review results",
+        "rows": [
+          [
+            "Admin accounts",
+            "{admins}"
+          ],
+          [
+            "Unused for 90 days",
+            "{=max(1, round(admins * 0.15))}"
+          ],
+          [
+            "Owned by former staff",
+            "{=max(1, round(admins * 0.05))}"
+          ],
+          [
+            "Suggested review cycle",
+            "Every 90 days"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why is admin access such a risk?",
+          "Attackers who get an admin account can turn off defenses and reach everything. Fewer, monitored admin accounts shrink that risk."
+        ],
+        [
+          "Will removing accounts break anything?",
+          "Accounts are disabled first, not deleted, for 30 days. If a service needed one, it can be re-enabled quickly."
+        ]
+      ]
+    }
+  ]
+}

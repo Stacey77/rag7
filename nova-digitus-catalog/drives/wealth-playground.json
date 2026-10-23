@@ -1,0 +1,90 @@
+{
+  "name": "Wealth Playground",
+  "tag": "One command center for a consulting business and sustainable container home projects.",
+  "scenarios": [
+    {
+      "title": "Forecast consulting revenue",
+      "ask": "I have {proposals} open proposals averaging ${deal} and win about {win}. What does next quarter look like?",
+      "inputs": [
+        {"id": "proposals", "label": "Open proposals", "type": "range", "min": 1, "max": 40, "step": 1, "value": 10},
+        {"id": "deal", "label": "Average deal ($)", "type": "range", "min": 1000, "max": 100000, "step": 1000, "value": 12000},
+        {"id": "win", "label": "Win rate", "type": "range", "min": 5, "max": 80, "step": 5, "value": 30, "unit": "%"}
+      ],
+      "steps": [
+        ["Pipeline agent", "Read {proposals} sample proposals with amounts and expected close dates."],
+        ["Forecast agent", "Weighted each by the {win} win rate."],
+        ["Follow-up agent", "Flagged {=max(1, round(proposals * 0.3))} proposals with no contact in 14 days."],
+        ["Dashboard", "Added the forecast to the command center next to the container projects."]
+      ],
+      "result": {
+        "title": "Next quarter (sample)",
+        "rows": [
+          ["Pipeline value", "${=proposals * deal}"],
+          ["Weighted forecast", "${=round(proposals * deal * win / 100)}"],
+          ["Expected wins", "{=round(proposals * win / 100, 1)}"],
+          ["Need a follow-up", "{=max(1, round(proposals * 0.3))}"]
+        ]
+      },
+      "followups": [
+        ["How can I raise the forecast fastest?", "Follow up on the {=max(1, round(proposals * 0.3))} quiet proposals first. Stale proposals are the most common reason deals slip."],
+        ["Can it share cash with the container projects?", "It shows both side by side so you can see when consulting income can fund a build phase, without mixing the books."]
+      ]
+    },
+    {
+      "title": "Budget a container home",
+      "ask": "Budget a {containers}-container home with a {finish} finish and ${site} in site work.",
+      "inputs": [
+        {"id": "containers", "label": "Containers", "type": "range", "min": 1, "max": 6, "step": 1, "value": 2},
+        {"id": "finish", "label": "Finish level", "type": "select", "value": "Standard", "options": [{"label": "Basic", "n": 1}, {"label": "Standard", "n": 1.4}, {"label": "Premium", "n": 2}]},
+        {"id": "site", "label": "Site work and foundation ($)", "type": "range", "min": 5000, "max": 80000, "step": 1000, "value": 25000}
+      ],
+      "steps": [
+        ["Shell estimator", "Priced {containers} sample containers with cutting and framing: ${=containers * 9000}."],
+        ["Finish estimator", "Added insulation, electrical, plumbing and interior at a {finish} level: ${=round(containers * 30000 * finish)}."],
+        ["Site estimator", "Included ${site} for foundation, utilities and permits."],
+        ["Green options", "Listed solar, rainwater and spray insulation add-ons."]
+      ],
+      "result": {
+        "title": "Project budget (sample)",
+        "rows": [
+          ["Shells", "${=containers * 9000}"],
+          ["Finish work", "${=round(containers * 30000 * finish)}"],
+          ["Site work", "${site}"],
+          ["Total with 10% contingency", "${=round((containers * 9000 + containers * 30000 * finish + site) * 1.1)}"],
+          ["Living space", "About {=containers * 320} sq ft (40-ft units)"]
+        ]
+      },
+      "followups": [
+        ["Why add contingency?", "Container builds often meet surprises in permits and site prep. A 10% buffer, about ${=round((containers * 9000 + containers * 30000 * finish + site) * 0.1)} here, keeps the project moving."],
+        ["Are prices local?", "These are sample prices. Enter quotes from your builders and the budget updates."]
+      ]
+    },
+    {
+      "title": "Weekly owner review",
+      "ask": "Give me my weekly review across {clients} consulting clients and {builds} active builds.",
+      "inputs": [
+        {"id": "clients", "label": "Active consulting clients", "type": "range", "min": 1, "max": 20, "step": 1, "value": 5},
+        {"id": "builds", "label": "Active builds", "type": "range", "min": 0, "max": 6, "step": 1, "value": 2}
+      ],
+      "steps": [
+        ["Client agent", "Checked deliverables and hours for {clients} clients."],
+        ["Build agent", "Checked milestones and spending for {builds} builds."],
+        ["Cash agent", "Listed invoices due and build payments coming up."],
+        ["Writer", "Wrote a one-page review with the top 3 decisions for the week."]
+      ],
+      "result": {
+        "title": "Weekly review",
+        "rows": [
+          ["Client deliverables due", "{=clients * 2}"],
+          ["Build milestones due", "{builds}"],
+          ["Decisions needed", "3"],
+          ["Time to read", "About 4 minutes"]
+        ]
+      },
+      "followups": [
+        ["Can it send the review to my phone?", "Yes. It can arrive by email or as a pinned note every Monday morning."],
+        ["What counts as a decision?", "Anything that needs your approval: a change order, a proposal price or a late invoice to chase."]
+      ]
+    }
+  ]
+}

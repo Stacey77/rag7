@@ -1,0 +1,90 @@
+{
+  "name": "AGI System",
+  "tag": "A ready framework for building chatbots, writing assistants and research tools on LangChain and CrewAI.",
+  "scenarios": [
+    {
+      "title": "Launch a support chatbot",
+      "ask": "Build a support chatbot from our {docs} help documents. We get {questions} questions a month.",
+      "inputs": [
+        {"id": "docs", "label": "Help documents", "type": "range", "min": 10, "max": 2000, "step": 10, "value": 150},
+        {"id": "questions", "label": "Questions per month", "type": "range", "min": 100, "max": 20000, "step": 100, "value": 2500},
+        {"id": "handoff", "label": "Hand off to a person when unsure", "type": "select", "value": "Yes", "options": [{"label": "Yes", "n": 1}, {"label": "No", "n": 0}]}
+      ],
+      "steps": [
+        ["Loader", "Split {docs} sample documents into {=docs * 12} searchable passages."],
+        ["Retriever", "Set up search so each answer quotes the passages it used."],
+        ["Chat chain", "Built the LangChain conversation flow with memory for follow-up questions."],
+        ["Guardrails", "Answers only from your documents. Handoff to a person when unsure: {handoff}."],
+        ["Test runner", "Ran 50 sample questions and scored each answer against the source."]
+      ],
+      "result": {
+        "title": "Chatbot ready to test",
+        "rows": [
+          ["Passages indexed", "{=docs * 12}"],
+          ["Sample test score", "{=min(95, 78 + round(docs / 200))} of 100"],
+          ["Questions it could answer alone", "About {=round(questions * 0.65)} a month"],
+          ["Sent to a person", "About {=round(questions * 0.35 * handoff)} a month"]
+        ]
+      },
+      "followups": [
+        ["What happens with questions it can't answer?", "With handoff on, it says it isn't sure and passes the chat to your team with the conversation so far. Those questions also show where your documents have gaps."],
+        ["Can we use our own model?", "Yes. The framework works with hosted models or local ones. You change one setting, not the app."]
+      ]
+    },
+    {
+      "title": "Build a research crew",
+      "ask": "Set up a CrewAI research crew that reviews {sources} sources on a topic and writes a {pages}-page brief.",
+      "inputs": [
+        {"id": "sources", "label": "Sources to review", "type": "range", "min": 5, "max": 100, "step": 5, "value": 25},
+        {"id": "pages", "label": "Brief length", "type": "range", "min": 1, "max": 10, "step": 1, "value": 3, "unit": "pages"}
+      ],
+      "steps": [
+        ["Researcher", "Collected {sources} sources and pulled key claims from each."],
+        ["Fact checker", "Cross-checked claims and marked {=max(1, round(sources * 0.1))} that only one source supports."],
+        ["Analyst", "Grouped findings into {=min(8, 2 + pages)} themes."],
+        ["Writer", "Wrote a {pages} brief with a citation for every claim."]
+      ],
+      "result": {
+        "title": "Research brief",
+        "rows": [
+          ["Sources reviewed", "{sources}"],
+          ["Single-source claims flagged", "{=max(1, round(sources * 0.1))}"],
+          ["Themes", "{=min(8, 2 + pages)}"],
+          ["Estimated run time", "{=round(sources * 0.4 + pages * 2)} minutes"]
+        ]
+      },
+      "followups": [
+        ["Why flag single-source claims?", "They're the most likely to be wrong or out of date. You can decide to keep, verify or drop them before the brief goes out."],
+        ["Can I add my own agents?", "Yes. Each agent is a short config with a role, tools and goal. Add an editor or a domain expert and the crew includes it."]
+      ]
+    },
+    {
+      "title": "Set up a writing assistant",
+      "ask": "Help our team of {writers} write {posts} posts a week in our brand voice.",
+      "inputs": [
+        {"id": "writers", "label": "Writers", "type": "range", "min": 1, "max": 20, "step": 1, "value": 3},
+        {"id": "posts", "label": "Posts per week", "type": "range", "min": 1, "max": 30, "step": 1, "value": 6},
+        {"id": "samples", "label": "Past posts to learn the voice", "type": "range", "min": 5, "max": 200, "step": 5, "value": 40}
+      ],
+      "steps": [
+        ["Voice builder", "Read {samples} past posts and wrote a style guide: tone, sentence length, words to avoid."],
+        ["Outline agent", "Drafts outlines from a topic and a few notes."],
+        ["Draft agent", "Writes first drafts in the brand voice for review."],
+        ["Editor agent", "Checks facts against your sources and flags anything unsupported."]
+      ],
+      "result": {
+        "title": "Writing assistant ready",
+        "rows": [
+          ["Style rules learned", "{=min(40, 10 + round(samples / 5))}"],
+          ["Posts per writer", "{=round(posts / writers, 1)} a week"],
+          ["Estimated hours saved", "{=round(posts * 1.5)} a week"],
+          ["Final say", "Always a person"]
+        ]
+      },
+      "followups": [
+        ["Will posts sound generic?", "The voice guide comes from your {samples} past posts, so drafts follow your style. Writers still edit every draft."],
+        ["Is the hours-saved number guaranteed?", "No. It is a sample estimate based on faster outlines and first drafts. Track your own time for a month to see the real change."]
+      ]
+    }
+  ]
+}

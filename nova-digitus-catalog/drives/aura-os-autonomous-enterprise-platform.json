@@ -1,0 +1,247 @@
+{
+  "name": "Aura-OS: Autonomous Enterprise Platform",
+  "tag": "Plan strategy, automate routine tasks and track your market, all by speaking to it.",
+  "scenarios": [
+    {
+      "title": "Set next quarter's priorities by voice",
+      "ask": "(Spoken) Aura, plan next quarter. We want {growth}% revenue growth with a team of {team}.",
+      "inputs": [
+        {
+          "id": "growth",
+          "label": "Revenue growth target",
+          "type": "range",
+          "min": 5,
+          "max": 60,
+          "step": 5,
+          "value": 20,
+          "unit": "%"
+        },
+        {
+          "id": "team",
+          "label": "Team size",
+          "type": "range",
+          "min": 3,
+          "max": 200,
+          "step": 1,
+          "value": 18
+        },
+        {
+          "id": "revenue",
+          "label": "Revenue last quarter",
+          "type": "range",
+          "min": 50000,
+          "max": 5000000,
+          "step": 50000,
+          "value": 600000
+        }
+      ],
+      "steps": [
+        [
+          "Voice intake",
+          "Transcribed your request and confirmed the goal back to you in one sentence."
+        ],
+        [
+          "Strategist",
+          "Proposed 3 priorities to reach ${=round(revenue * (1 + growth / 100))}: grow existing accounts, one new channel, raise prices on the top plan."
+        ],
+        [
+          "Planner",
+          "Turned each priority into goals with owners, about {=max(3, round(team / 3))} owners in total."
+        ],
+        [
+          "Risk check",
+          "Flagged that {growth} growth needs about {=max(1, ceil(revenue * growth / 100 / 150000))} new sales hires or faster close rates."
+        ]
+      ],
+      "result": {
+        "title": "Quarter plan",
+        "rows": [
+          [
+            "Revenue target",
+            "${=round(revenue * (1 + growth / 100))}"
+          ],
+          [
+            "Extra revenue needed",
+            "${=round(revenue * growth / 100)}"
+          ],
+          [
+            "Priorities",
+            "3"
+          ],
+          [
+            "Goal owners",
+            "{=max(3, round(team / 3))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can I change the plan by talking to it?",
+          "Yes. Say something like 'drop the price change and add a partner channel' and Aura redraws the plan and shows what moved."
+        ],
+        [
+          "Is the growth target realistic?",
+          "Aura shows what the target needs in sales and capacity. It's a planning aid, and you decide if the target stands."
+        ]
+      ]
+    },
+    {
+      "title": "Automate the weekly routine",
+      "ask": "(Spoken) Aura, take over my weekly routine: {reports} reports, team check-ins and the pipeline review.",
+      "inputs": [
+        {
+          "id": "reports",
+          "label": "Weekly reports you assemble",
+          "type": "range",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "minutes",
+          "label": "Minutes per report today",
+          "type": "range",
+          "min": 15,
+          "max": 120,
+          "step": 5,
+          "value": 45,
+          "unit": "minutes"
+        }
+      ],
+      "steps": [
+        [
+          "Task mapper",
+          "Listed your weekly tasks by voice: {reports} reports, 1 pipeline review, team check-ins."
+        ],
+        [
+          "Automator",
+          "Built a job that pulls the numbers for each report every Friday at 7 AM."
+        ],
+        [
+          "Summarizer",
+          "Writes a 5-line spoken summary you can listen to on the drive in."
+        ],
+        [
+          "Follow-up",
+          "Creates tasks from anything you say 'follow up on' during the review."
+        ]
+      ],
+      "result": {
+        "title": "Routine automated",
+        "rows": [
+          [
+            "Reports automated",
+            "{reports}"
+          ],
+          [
+            "Time saved per week",
+            "About {=round(reports * minutes * 0.8 / 60, 1)} hours"
+          ],
+          [
+            "Spoken briefings per week",
+            "{=1 + reports}"
+          ],
+          [
+            "Still yours",
+            "Decisions and final sign-off"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Where does it get the numbers?",
+          "From the tools you connect, such as your CRM, accounting and analytics. It only reads what each report needs."
+        ],
+        [
+          "What if a number looks wrong?",
+          "Aura marks any number that moved more than usual and tells you where it came from, so you can check before sharing."
+        ]
+      ]
+    },
+    {
+      "title": "Market watch",
+      "ask": "(Spoken) Aura, keep an eye on {competitors} competitors and tell me what changed this month.",
+      "inputs": [
+        {
+          "id": "competitors",
+          "label": "Competitors to watch",
+          "type": "range",
+          "min": 2,
+          "max": 15,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "depth",
+          "label": "Depth",
+          "type": "select",
+          "value": "Standard",
+          "options": [
+            {
+              "label": "Headlines",
+              "n": 1
+            },
+            {
+              "label": "Standard",
+              "n": 2
+            },
+            {
+              "label": "Deep dive",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Collector",
+          "Checked public pricing pages, job posts and announcements for {competitors} sample competitors."
+        ],
+        [
+          "Analyst",
+          "Found {=max(1, round(competitors * 0.6))} notable changes, including a price cut and a new product tier."
+        ],
+        [
+          "Strategist",
+          "Rated each change by how much it affects your top plans."
+        ],
+        [
+          "Briefer",
+          "Wrote a {=depth * 2}-minute spoken briefing and a one-page note."
+        ]
+      ],
+      "result": {
+        "title": "Market briefing",
+        "rows": [
+          [
+            "Competitors checked",
+            "{competitors}"
+          ],
+          [
+            "Notable changes",
+            "{=max(1, round(competitors * 0.6))}"
+          ],
+          [
+            "Briefing length",
+            "{=depth * 2} minutes"
+          ],
+          [
+            "Suggested responses",
+            "{=max(1, round(competitors * 0.3))}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it use private data about competitors?",
+          "No. It only reads public sources such as websites, job posts and press releases."
+        ],
+        [
+          "How often does it check?",
+          "Weekly by default. You can ask for daily checks on one or two key competitors."
+        ]
+      ]
+    }
+  ]
+}

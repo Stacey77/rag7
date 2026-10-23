@@ -1,0 +1,237 @@
+{
+  "name": "Syzygy: The Hermetic Matrix",
+  "tag": "A visual way to study the seven Hermetic principles and Gnostic teaching side by side.",
+  "scenarios": [
+    {
+      "title": "Explore the seven principles",
+      "ask": "Show me {count} of the seven Hermetic principles at {depth} depth.",
+      "inputs": [
+        {
+          "id": "count",
+          "label": "Principles to explore",
+          "type": "range",
+          "min": 1,
+          "max": 7,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "depth",
+          "label": "Depth",
+          "type": "select",
+          "value": "Study",
+          "options": [
+            {
+              "label": "Overview",
+              "n": 1
+            },
+            {
+              "label": "Study",
+              "n": 2
+            },
+            {
+              "label": "Deep dive",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Matrix",
+          "Lit up {count} principle(s) in the matrix: Mentalism, Correspondence, Vibration, Polarity, Rhythm, Cause and Effect, and Gender."
+        ],
+        [
+          "Guide",
+          "Explained each one in plain words with an everyday example."
+        ],
+        [
+          "Visuals",
+          "Drew an animated diagram per principle, about {=depth * 4} minutes each."
+        ],
+        [
+          "Quiz",
+          "Added {=count * depth} questions to check your understanding."
+        ]
+      ],
+      "result": {
+        "title": "Study set",
+        "rows": [
+          [
+            "Principles",
+            "{count} of 7"
+          ],
+          [
+            "Study time",
+            "{=count * depth * 4} minutes"
+          ],
+          [
+            "Diagrams",
+            "{count}"
+          ],
+          [
+            "Quiz questions",
+            "{=count * depth}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Are the seven principles ancient?",
+          "The list of seven comes from The Kybalion, published in 1908. The app shows it next to older Hermetic writings, such as the Corpus Hermeticum, so you can compare."
+        ],
+        [
+          "Which principle should I start with?",
+          "Most learners start with Correspondence, often summed up as 'as above, so below', because the others build on it."
+        ]
+      ]
+    },
+    {
+      "title": "Compare Hermetic and Gnostic ideas",
+      "ask": "Compare Hermetic and Gnostic ideas across {texts} texts, about {mins} per text.",
+      "inputs": [
+        {
+          "id": "texts",
+          "label": "Texts to compare",
+          "type": "range",
+          "min": 2,
+          "max": 8,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "mins",
+          "label": "Time per text",
+          "type": "range",
+          "min": 5,
+          "max": 30,
+          "step": 5,
+          "value": 15,
+          "unit": "min"
+        }
+      ],
+      "steps": [
+        [
+          "Library",
+          "Opened {texts} texts, including selections from the Nag Hammadi library found in Egypt in 1945."
+        ],
+        [
+          "Matrix",
+          "Showed syzygies: in Valentinian Gnostic texts, aeons come in paired couples."
+        ],
+        [
+          "Comparer",
+          "Lined up where the traditions agree, such as mind as the source, and where they differ."
+        ],
+        [
+          "Notes",
+          "Saved your highlights into one study sheet."
+        ]
+      ],
+      "result": {
+        "title": "Comparison ready",
+        "rows": [
+          [
+            "Texts compared",
+            "{texts}"
+          ],
+          [
+            "Reading time",
+            "{=round(texts * mins / 60, 1)} hours"
+          ],
+          [
+            "Shared themes",
+            "{=2 + floor(texts / 2)}"
+          ],
+          [
+            "Study sheet",
+            "1 page per {=max(1, floor(texts / 2))} texts"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What does syzygy mean here?",
+          "In this app it names the paired aeons found in Valentinian Gnostic teaching, and more broadly any pair of opposites shown together in the matrix."
+        ],
+        [
+          "Are translations included?",
+          "Yes. Each text shows a public translation with notes on difficult words."
+        ]
+      ]
+    },
+    {
+      "title": "Run a study group",
+      "ask": "Plan a {weeks}-week study group for {people} people on the Hermetic principles.",
+      "inputs": [
+        {
+          "id": "weeks",
+          "label": "Weeks",
+          "type": "range",
+          "min": 3,
+          "max": 12,
+          "step": 1,
+          "value": 7
+        },
+        {
+          "id": "people",
+          "label": "Members",
+          "type": "range",
+          "min": 3,
+          "max": 30,
+          "step": 1,
+          "value": 10
+        }
+      ],
+      "steps": [
+        [
+          "Planner",
+          "Spread the seven principles across {weeks} weeks, with {=max(0, weeks - 7)} week(s) for review."
+        ],
+        [
+          "Discussion",
+          "Wrote 3 questions per meeting."
+        ],
+        [
+          "Visuals",
+          "Prepared a shared screen view of the matrix for each meeting."
+        ],
+        [
+          "Groups",
+          "Suggested {=ceil(people / 6)} small group(s) for discussion."
+        ]
+      ],
+      "result": {
+        "title": "Study group plan",
+        "rows": [
+          [
+            "Meetings",
+            "{weeks}"
+          ],
+          [
+            "Discussion questions",
+            "{=weeks * 3}"
+          ],
+          [
+            "Small groups",
+            "{=ceil(people / 6)}"
+          ],
+          [
+            "Review weeks",
+            "{=max(0, weeks - 7)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if we have fewer than seven weeks?",
+          "The planner pairs related principles, such as Polarity and Rhythm, in one meeting."
+        ],
+        [
+          "Can members work at home?",
+          "Yes. Each member gets the matrix, readings and their own notes."
+        ]
+      ]
+    }
+  ]
+}

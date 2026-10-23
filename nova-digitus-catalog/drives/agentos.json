@@ -1,0 +1,90 @@
+{
+  "name": "AgentOS",
+  "tag": "Coordinates many engineering agents on one visual board so work moves without collisions.",
+  "scenarios": [
+    {
+      "title": "Ship a feature with an agent team",
+      "ask": "Build the saved-search feature with {agents} coding agents across {repos} repos, with {gate} review.",
+      "inputs": [
+        {"id": "agents", "label": "Coding agents", "type": "range", "min": 2, "max": 16, "step": 1, "value": 5},
+        {"id": "repos", "label": "Repos touched", "type": "range", "min": 1, "max": 6, "step": 1, "value": 3},
+        {"id": "gate", "label": "Human review", "type": "select", "value": "Every merge",
+         "options": [{"label": "Every merge", "n": 2}, {"label": "Final merge only", "n": 1}]}
+      ],
+      "steps": [
+        ["Planner", "Broke the feature into {=6 + repos * 3} tasks and drew them as a workflow graph."],
+        ["Dispatcher", "Gave each of the {agents} agents its own branch and file lock so no two edit the same file."],
+        ["Test agent", "Ran tests after every task. {=max(1, round((6 + repos * 3) * 0.15))} tasks failed once and were retried."],
+        ["Integrator", "Merged branches in dependency order. Review gate: {gate}."],
+        ["Board", "Updated the visual board live so the lead sees what is blocked."]
+      ],
+      "result": {
+        "title": "Feature status",
+        "rows": [
+          ["Tasks", "{=6 + repos * 3}"],
+          ["Running in parallel", "{=min(agents, 6 + repos * 3)}"],
+          ["Elapsed time", "about {=round((6 + repos * 3) / min(agents, 6 + repos * 3) * 25 + gate * 30)} minutes"],
+          ["Human reviews needed", "{=(gate - 1) * (6 + repos * 3) + (2 - gate)}"]
+        ]
+      },
+      "followups": [
+        ["What stops agents from overwriting each other?", "File locks and separate branches. If two tasks need the same file, the Dispatcher runs them one after the other."],
+        ["Can a person take over a task?", "Yes. Drag the task to your name on the board and the agent stops and hands over its notes."]
+      ]
+    },
+    {
+      "title": "Clear a bug backlog",
+      "ask": "We have {bugs} open bugs. Let agents fix the easy ones and leave the rest triaged.",
+      "inputs": [
+        {"id": "bugs", "label": "Open bugs", "type": "range", "min": 20, "max": 1000, "step": 10, "value": 180},
+        {"id": "agents", "label": "Agents assigned", "type": "range", "min": 1, "max": 20, "step": 1, "value": 6}
+      ],
+      "steps": [
+        ["Triage agent", "Sorted {bugs} bugs: {=round(bugs * 0.35)} small, {=round(bugs * 0.4)} medium, {=bugs - round(bugs * 0.35) - round(bugs * 0.4)} need a person."],
+        ["Dispatcher", "Queued small bugs to {agents} agents, one bug per branch."],
+        ["Fixer agents", "Wrote a fix and a failing-then-passing test for each."],
+        ["Reviewer", "Opened {=round(bugs * 0.3)} pull requests. {=round(bugs * 0.05)} small bugs were not reproducible and went back to triage."]
+      ],
+      "result": {
+        "title": "Backlog run",
+        "rows": [
+          ["Pull requests opened", "{=round(bugs * 0.3)}"],
+          ["Bugs left for people", "{=bugs - round(bugs * 0.3)}"],
+          ["Time to finish", "about {=ceil(bugs * 0.35 * 12 / agents / 60)} hours"],
+          ["Merged without review", "0"]
+        ]
+      },
+      "followups": [
+        ["Why only the small ones?", "Small bugs have clear repro steps and limited scope, so an agent's fix is easy to check. Bigger ones get a triage note to speed up the person who takes them."],
+        ["Does every fix come with a test?", "Yes. A fix without a test that fails before and passes after is not submitted."]
+      ]
+    },
+    {
+      "title": "Upgrade a framework",
+      "ask": "Upgrade our framework one major version across {services} services.",
+      "inputs": [
+        {"id": "services", "label": "Services to upgrade", "type": "range", "min": 2, "max": 60, "step": 1, "value": 14},
+        {"id": "agents", "label": "Agents assigned", "type": "range", "min": 1, "max": 12, "step": 1, "value": 4}
+      ],
+      "steps": [
+        ["Planner", "Ordered {services} services by dependency so shared libraries go first."],
+        ["Workflow", "Built a reusable upgrade workflow: bump, fix breaking calls, run tests, open a pull request."],
+        ["Agents", "Ran the workflow on {agents} services at a time."],
+        ["Watcher", "Paused {=max(1, round(services * 0.1))} services that failed integration tests and attached the error summary."]
+      ],
+      "result": {
+        "title": "Upgrade progress",
+        "rows": [
+          ["Services upgraded", "{=services - max(1, round(services * 0.1))}"],
+          ["Need a person", "{=max(1, round(services * 0.1))}"],
+          ["Waves", "{=ceil(services / agents)}"],
+          ["Estimated calendar time", "about {=ceil(services / agents) * 2} hours"]
+        ]
+      },
+      "followups": [
+        ["Can we run it on a schedule?", "Yes. The upgrade workflow is saved, so it can run each time a new minor version ships."],
+        ["What if a service has no tests?", "The workflow marks it high risk and asks a person to approve before merging."]
+      ]
+    }
+  ]
+}

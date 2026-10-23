@@ -1,0 +1,90 @@
+{
+  "name": "NeuroLink",
+  "tag": "A command console for your company of named AI agents, each with its own specialty.",
+  "scenarios": [
+    {
+      "title": "Morning briefing from the agent team",
+      "ask": "Get a morning briefing from my {agents} agents covering sales, support and operations.",
+      "inputs": [
+        {"id": "agents", "label": "Agents on the team", "type": "range", "min": 3, "max": 12, "step": 1, "value": 6},
+        {"id": "deals", "label": "Open deals", "type": "range", "min": 5, "max": 200, "step": 5, "value": 40},
+        {"id": "tickets", "label": "Open support tickets", "type": "range", "min": 0, "max": 300, "step": 10, "value": 60}
+      ],
+      "steps": [
+        ["Console", "Pinged all {agents} agents for overnight updates."],
+        ["Vega (sales)", "Reviewed {deals} open deals. {=max(1, round(deals * 0.1))} have had no contact in 14 days."],
+        ["Orion (support)", "{tickets} open tickets. {=round(tickets * 0.15)} are past the response target."],
+        ["Atlas (operations)", "Two supplier deliveries are due today. One is running a day late."],
+        ["Chief of staff", "Combined everything into a 5-item priority list."]
+      ],
+      "result": {
+        "title": "Today's briefing",
+        "rows": [
+          ["Agents reporting", "{agents}"],
+          ["Stale deals to call", "{=max(1, round(deals * 0.1))}"],
+          ["Overdue tickets", "{=round(tickets * 0.15)}"],
+          ["Late deliveries", "1"],
+          ["Read time", "about 2 minutes"]
+        ]
+      },
+      "followups": [
+        ["Can I give an agent a task from here?", "Yes. Type to any agent by name, like asking Vega to draft follow-ups for the stale deals. It shows the drafts before sending."],
+        ["Are the agent names fixed?", "No. You name each agent and set its specialty, tools and limits when you add it."]
+      ]
+    },
+    {
+      "title": "Hand off a project across agents",
+      "ask": "Plan a customer webinar in {weeks} weeks for {guests} guests. Split the work across the team.",
+      "inputs": [
+        {"id": "weeks", "label": "Weeks until the webinar", "type": "range", "min": 1, "max": 8, "step": 1, "value": 3},
+        {"id": "guests", "label": "Target sign-ups", "type": "range", "min": 20, "max": 2000, "step": 20, "value": 300}
+      ],
+      "steps": [
+        ["Chief of staff", "Broke the job into {=8 + weeks * 2} tasks and assigned them by specialty."],
+        ["Lyra (marketing)", "Drafted the invite, 3 reminder emails and social posts."],
+        ["Vega (sales)", "Picked about {=round(guests * 4)} contacts to invite, assuming a 25% sign-up rate."],
+        ["Atlas (operations)", "Booked the webinar slot and prepared the run sheet."]
+      ],
+      "result": {
+        "title": "Webinar plan",
+        "rows": [
+          ["Tasks", "{=8 + weeks * 2}"],
+          ["Invites to send", "{=round(guests * 4)}"],
+          ["Emails drafted", "4"],
+          ["Waiting on you", "Approve the invite copy"]
+        ]
+      },
+      "followups": [
+        ["How do agents share information?", "They work from a shared project board. When Lyra finishes the invite, Vega sees it and uses it in the outreach."],
+        ["Is a 25% sign-up rate realistic?", "It depends on your list. Change the rate and the invite count updates. Your past events are the best guide."]
+      ]
+    },
+    {
+      "title": "Review the team's performance",
+      "ask": "Show how my {agents} agents performed over the last {days} days.",
+      "inputs": [
+        {"id": "agents", "label": "Agents", "type": "range", "min": 3, "max": 12, "step": 1, "value": 6},
+        {"id": "days", "label": "Days to review", "type": "range", "min": 7, "max": 90, "step": 1, "value": 30}
+      ],
+      "steps": [
+        ["Console", "Pulled task logs for {agents} agents over {days} days."],
+        ["Scorer", "Rated each agent on tasks done, approval rate and edits needed."],
+        ["Cost tracker", "Added model and tool costs per agent."],
+        ["Advisor", "Suggested retiring one low-use agent and giving its tasks to another."]
+      ],
+      "result": {
+        "title": "Team scorecard",
+        "rows": [
+          ["Tasks completed", "{=agents * days * 6}"],
+          ["Approved without edits", "84%"],
+          ["Total cost", "about ${=round(agents * days * 0.9)}"],
+          ["Suggested change", "Merge 1 low-use agent"]
+        ]
+      },
+      "followups": [
+        ["Why retire an agent?", "Each agent has its own instructions and tools to maintain. If one is rarely used, merging it into another keeps the team simpler."],
+        ["Can I compare to last month?", "Yes. The scorecard shows the change for each agent next to the current numbers."]
+      ]
+    }
+  ]
+}

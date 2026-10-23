@@ -1,0 +1,246 @@
+{
+  "name": "Coquus AI",
+  "tag": "An operating system for company workflows: shared context, AI employee skills, connected tools and human review built in.",
+  "scenarios": [
+    {
+      "title": "Give an AI employee a new skill",
+      "ask": "Teach our AI employee to handle supplier invoice questions. We get about {questions} a week.",
+      "inputs": [
+        {
+          "id": "questions",
+          "label": "Supplier questions per week",
+          "type": "range",
+          "min": 5,
+          "max": 300,
+          "step": 5,
+          "value": 60
+        },
+        {
+          "id": "minutes",
+          "label": "Minutes each takes today",
+          "type": "range",
+          "min": 3,
+          "max": 30,
+          "step": 1,
+          "value": 10,
+          "unit": "minutes"
+        },
+        {
+          "id": "review",
+          "label": "Human review",
+          "type": "select",
+          "value": "Review every reply",
+          "options": [
+            {
+              "label": "Review every reply",
+              "n": 1
+            },
+            {
+              "label": "Review new types only",
+              "n": 2
+            },
+            {
+              "label": "Spot-check 1 in 10",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Context loader",
+          "Linked the skill to your supplier list, payment terms and the accounting system."
+        ],
+        [
+          "Skill builder",
+          "Wrote the skill from 20 past answered questions: look up the invoice, check status, reply with the expected pay date."
+        ],
+        [
+          "Tester",
+          "Replayed 20 past questions. Matched your team's answer on 18."
+        ],
+        [
+          "Review gate",
+          "Set human review to: {review}."
+        ]
+      ],
+      "result": {
+        "title": "Skill live",
+        "rows": [
+          [
+            "Questions per week",
+            "{questions}"
+          ],
+          [
+            "Team time today",
+            "{=round(questions * minutes / 60, 1)} hours a week"
+          ],
+          [
+            "Team time with skill",
+            "{=round(questions * min(minutes, 1 + 3 / review) / 60, 1)} hours a week"
+          ],
+          [
+            "Test agreement",
+            "18 of 20"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What happens on the 2 it got wrong?",
+          "Both involved disputed invoices. The skill now hands any disputed invoice to a person instead of answering."
+        ],
+        [
+          "Can we loosen review later?",
+          "Yes. Start with every reply reviewed, then move to spot-checks once you're comfortable with the results."
+        ]
+      ]
+    },
+    {
+      "title": "Connect a workflow across tools",
+      "ask": "When a deal closes in our CRM, set up the customer in {tools} other tools and tell the team.",
+      "inputs": [
+        {
+          "id": "tools",
+          "label": "Other tools to update",
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "deals",
+          "label": "Deals closed per month",
+          "type": "range",
+          "min": 2,
+          "max": 200,
+          "step": 1,
+          "value": 25
+        }
+      ],
+      "steps": [
+        [
+          "Workflow designer",
+          "Mapped the steps: create the account, project, billing record and kickoff meeting."
+        ],
+        [
+          "Integrator",
+          "Connected {tools} tools through their standard connectors."
+        ],
+        [
+          "Shared context",
+          "Passed the deal notes to every step so nobody retypes them."
+        ],
+        [
+          "Review gate",
+          "A person checks the billing record before it's created."
+        ]
+      ],
+      "result": {
+        "title": "Workflow running",
+        "rows": [
+          [
+            "Setup steps automated",
+            "{=tools + 1} per deal"
+          ],
+          [
+            "Deals per month",
+            "{deals}"
+          ],
+          [
+            "Hours saved per month",
+            "About {=round(deals * tools * 0.25, 1)}"
+          ],
+          [
+            "Human checkpoints",
+            "1 per deal"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if one tool is down?",
+          "That step waits and retries, and the team sees which deals are waiting on it. Nothing gets half-created silently."
+        ],
+        [
+          "Can we change the steps ourselves?",
+          "Yes. Workflows are edited in plain language or with a simple step list."
+        ]
+      ]
+    },
+    {
+      "title": "Review queue for the team",
+      "ask": "Our AI employees produce about {items} items a day for review. Make the queue manageable for {reviewers} reviewers.",
+      "inputs": [
+        {
+          "id": "items",
+          "label": "Items for review per day",
+          "type": "range",
+          "min": 10,
+          "max": 500,
+          "step": 10,
+          "value": 120
+        },
+        {
+          "id": "reviewers",
+          "label": "Reviewers",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3
+        }
+      ],
+      "steps": [
+        [
+          "Sorter",
+          "Grouped items by type and risk."
+        ],
+        [
+          "Prioritizer",
+          "Put {=round(items * 0.15)} high-risk items first, such as anything about money or contracts."
+        ],
+        [
+          "Batcher",
+          "Low-risk items can be approved in batches after a quick scan."
+        ],
+        [
+          "Learner",
+          "Tracks what reviewers change and suggests skill updates weekly."
+        ]
+      ],
+      "result": {
+        "title": "Review queue",
+        "rows": [
+          [
+            "Items per reviewer per day",
+            "{=round(items / reviewers)}"
+          ],
+          [
+            "High-risk items",
+            "{=round(items * 0.15)}"
+          ],
+          [
+            "Batch-approvable",
+            "{=items - round(items * 0.15)}"
+          ],
+          [
+            "Review minutes per reviewer",
+            "About {=round((items * 0.15 * 3 + items * 0.85 * 0.5) / reviewers)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why not let it run without review?",
+          "You can for low-risk work once it's proven. Keeping people on high-risk items is how most teams stay comfortable."
+        ],
+        [
+          "Does it learn from rejections?",
+          "Yes. Rejected items and edits feed into suggested skill updates, which a person approves."
+        ]
+      ]
+    }
+  ]
+}

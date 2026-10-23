@@ -1,0 +1,91 @@
+{
+  "name": "Sovereign Equity & Overage Recovery Engine",
+  "tag": "Find, qualify and document unclaimed tax-sale and foreclosure surplus funds.",
+  "scenarios": [
+    {
+      "title": "Find surplus funds in one county",
+      "ask": "Show surplus funds from {sales} tax sales over the last {years} in one sample county, over {threshold}.",
+      "inputs": [
+        {"id": "sales", "label": "Tax-sale results to review", "type": "range", "min": 50, "max": 1000, "step": 10, "value": 312},
+        {"id": "years", "label": "Years to look back", "type": "range", "min": 1, "max": 5, "step": 1, "value": 3, "unit": "years"},
+        {"id": "threshold", "label": "Minimum surplus", "type": "select", "value": "$5,000", "options": [{"label": "$2,500", "n": 2.5}, {"label": "$5,000", "n": 5}, {"label": "$10,000", "n": 10}]}
+      ],
+      "steps": [
+        ["Records agent", "Read {sales} sample tax-sale results from the last {years}."],
+        ["Matcher", "{=round(sales * 0.61 / threshold)} sales left a surplus over {threshold} after the debt was paid."],
+        ["Verifier", "Checked claim deadlines. {=round(round(sales * 0.61 / threshold) * min(0.95, 1.06 - years * 0.1))} are still open."],
+        ["Docs agent", "Prepared a claim packet checklist for each open case."]
+      ],
+      "result": {
+        "title": "Sample county",
+        "rows": [
+          ["Sales reviewed", "{sales}"],
+          ["Surplus over {threshold}", "{=round(sales * 0.61 / threshold)}"],
+          ["Still claimable", "{=round(round(sales * 0.61 / threshold) * min(0.95, 1.06 - years * 0.1))}"],
+          ["Sample total", "${=round(round(sales * 0.61 / threshold) * (26000 + threshold * 1100))}"],
+          ["Note", "Sample data; rules differ by state"]
+        ]
+      },
+      "followups": [
+        ["Why do older sales have fewer open claims?", "Many jurisdictions set a deadline to claim surplus funds, and some unclaimed money moves to the state or county. Looking back {years}, about {=round(min(0.95, 1.06 - years * 0.1) * 100)}% of sample cases are still open."],
+        ["Who can claim the money?", "Usually the former owner or their heirs, and sometimes lienholders. Rules on third-party help and finder fees differ by state, so the engine records each jurisdiction's rules with every case."]
+      ]
+    },
+    {
+      "title": "Qualify one lead",
+      "ask": "A sample property sold with a ${surplus} surplus. It has {liens} recorded liens. Is it worth pursuing?",
+      "inputs": [
+        {"id": "surplus", "label": "Surplus amount ($)", "type": "range", "min": 2000, "max": 250000, "step": 1000, "value": 48000},
+        {"id": "liens", "label": "Junior liens on record", "type": "range", "min": 0, "max": 6, "step": 1, "value": 2},
+        {"id": "owner", "label": "Owner status", "type": "select", "value": "Living, located", "options": [{"label": "Living, located", "n": 1}, {"label": "Living, not located", "n": 2}, {"label": "Deceased, heirs", "n": 3}]}
+      ],
+      "steps": [
+        ["Records agent", "Pulled the sample sale record, surplus amount and recorded liens."],
+        ["Lien checker", "Estimated that {liens} junior liens may claim about ${=round(surplus * min(0.9, liens * 0.12))} first, depending on state rules."],
+        ["Owner finder", "Owner status: {owner}. Estimated {=owner * 3} weeks to reach the right claimant."],
+        ["Qualifier", "Scored the lead on net amount, deadline and paperwork load."]
+      ],
+      "result": {
+        "title": "Lead score",
+        "rows": [
+          ["Gross surplus", "${surplus}"],
+          ["Possible lien claims", "${=round(surplus * min(0.9, liens * 0.12))}"],
+          ["Estimated to former owner", "${=round(surplus - surplus * min(0.9, liens * 0.12))}"],
+          ["Paperwork level", "{=owner + ceil(liens / 2)} of 6"],
+          ["Note", "Estimate only; not legal advice"]
+        ]
+      },
+      "followups": [
+        ["Why do heir cases take longer?", "Heirs often need probate or an affidavit of heirship before a claim is paid. The engine lists which documents the sample jurisdiction asks for."],
+        ["Do liens always come first?", "Not always. Priority depends on state law and the type of lien. The estimate is a planning number until the claim is reviewed."]
+      ]
+    },
+    {
+      "title": "Track the claims pipeline",
+      "ask": "We have {cases} open sample cases. Show where each one stands and what to do this week.",
+      "inputs": [
+        {"id": "cases", "label": "Open cases", "type": "range", "min": 5, "max": 200, "step": 5, "value": 40},
+        {"id": "deadline", "label": "Days to flag before a deadline", "type": "range", "min": 15, "max": 90, "step": 15, "value": 30, "unit": "days"}
+      ],
+      "steps": [
+        ["Pipeline agent", "Sorted {cases} cases into found, contacted, signed, filed and paid."],
+        ["Deadline watch", "Found {=max(1, round(cases * deadline / 600))} cases with a deadline in the next {deadline}."],
+        ["Docs agent", "Listed missing documents for {=round(cases * 0.3)} cases."],
+        ["Outreach planner", "Drafted mail-first contact letters for cases not yet reached."]
+      ],
+      "result": {
+        "title": "This week",
+        "rows": [
+          ["Open cases", "{cases}"],
+          ["Deadline soon", "{=max(1, round(cases * deadline / 600))}"],
+          ["Missing documents", "{=round(cases * 0.3)}"],
+          ["Ready to file", "{=round(cases * 0.15)}"]
+        ]
+      },
+      "followups": [
+        ["Does it file claims for us?", "It prepares packets and checklists. A person reviews and files each claim, since signatures and notarization are required in many places."],
+        ["How does outreach stay compliant?", "Letter templates are set per state, and the engine records consent and contact history for each case. Have counsel review templates before use."]
+      ]
+    }
+  ]
+}

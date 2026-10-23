@@ -1,0 +1,253 @@
+{
+  "name": "Nova Orchestrator",
+  "tag": "Runs a team of AI agents on your work, hands tasks between them and shows progress in one place.",
+  "scenarios": [
+    {
+      "title": "Onboard new clients",
+      "ask": "We sign about {clients} new clients a month. Run onboarding with agents, with a person approving the {approval}.",
+      "inputs": [
+        {
+          "id": "clients",
+          "label": "New clients per month",
+          "type": "range",
+          "min": 2,
+          "max": 60,
+          "step": 2,
+          "value": 12
+        },
+        {
+          "id": "approval",
+          "label": "Human approval point",
+          "type": "select",
+          "value": "contract",
+          "options": [
+            {
+              "label": "contract",
+              "n": 1
+            },
+            {
+              "label": "contract and kickoff plan",
+              "n": 2
+            },
+            {
+              "label": "every step",
+              "n": 4
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Intake agent",
+          "Collects company details and goals from a short form and checks for missing fields."
+        ],
+        [
+          "Contract agent",
+          "Fills the contract template and routes it for approval."
+        ],
+        [
+          "Setup agent",
+          "Creates the client folder, project board and shared channel once the contract is signed."
+        ],
+        [
+          "Kickoff agent",
+          "Drafts the kickoff agenda and proposes three meeting times."
+        ],
+        [
+          "Tracker",
+          "Shows each client's stage, waiting time and who holds the next step."
+        ]
+      ],
+      "result": {
+        "title": "Onboarding flow",
+        "rows": [
+          [
+            "Clients a month",
+            "{clients}"
+          ],
+          [
+            "Handoffs a month",
+            "{=clients * 4}"
+          ],
+          [
+            "Human approvals a month",
+            "{=clients * approval}"
+          ],
+          [
+            "Typical time to kickoff",
+            "{=2 + approval} business days"
+          ],
+          [
+            "Staff time saved",
+            "About {=round(clients * (3 - approval * 0.25), 1)} hours a month"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What happens if an approval sits too long?",
+          "The Tracker reminds the approver after one business day and shows the delay on the board, so nothing waits quietly."
+        ],
+        [
+          "Can we add our own steps?",
+          "Yes. Each step is an agent with an input, an output and an owner. You add a step and choose where it hands off."
+        ],
+        [
+          "Why not approve every step?",
+          "You can. It is safer for new flows but slower. Many teams start with every step and relax it once the agents have a track record."
+        ]
+      ]
+    },
+    {
+      "title": "Run a content pipeline",
+      "ask": "Produce {pieces} articles a week with research, drafting, editing and publishing agents.",
+      "inputs": [
+        {
+          "id": "pieces",
+          "label": "Articles per week",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "words",
+          "label": "Average article length",
+          "type": "range",
+          "min": 600,
+          "max": 3000,
+          "step": 200,
+          "value": 1200,
+          "unit": "words"
+        }
+      ],
+      "steps": [
+        [
+          "Research agent",
+          "Builds a brief for each article with sources and key points."
+        ],
+        [
+          "Writer agent",
+          "Drafts {pieces} articles at about {words} each."
+        ],
+        [
+          "Editor agent",
+          "Checks facts against the brief, tone and length, and sends weak drafts back once."
+        ],
+        [
+          "Publisher agent",
+          "Formats and schedules approved articles after an editor signs off."
+        ],
+        [
+          "Tracker",
+          "Shows each article's stage and flags any stuck more than a day."
+        ]
+      ],
+      "result": {
+        "title": "Pipeline status",
+        "rows": [
+          [
+            "Articles in flight",
+            "{pieces}"
+          ],
+          [
+            "Handoffs a week",
+            "{=pieces * 4}"
+          ],
+          [
+            "Expected rewrites",
+            "{=ceil(pieces * 0.3)}"
+          ],
+          [
+            "Editor review time",
+            "About {=round(pieces * words / 1000 * 15)} minutes a week"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Who has the final say?",
+          "A person approves every article before it publishes. The agents prepare the work, they do not publish on their own."
+        ],
+        [
+          "What if research finds nothing useful?",
+          "The Research agent marks the brief as thin and the Tracker holds the article for a human decision instead of passing it on."
+        ]
+      ]
+    },
+    {
+      "title": "Unstick stalled work",
+      "ask": "We have {agents} agents running and {tasks} tasks in flight. Some are stuck. Find where and fix the handoffs.",
+      "inputs": [
+        {
+          "id": "agents",
+          "label": "Agents running",
+          "type": "range",
+          "min": 3,
+          "max": 30,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "tasks",
+          "label": "Tasks in flight",
+          "type": "range",
+          "min": 10,
+          "max": 500,
+          "step": 10,
+          "value": 120
+        }
+      ],
+      "steps": [
+        [
+          "Tracker",
+          "Found {=max(1, round(tasks * 0.12))} tasks idle for more than 24 hours."
+        ],
+        [
+          "Analyst",
+          "{=max(1, round(tasks * 0.07))} of them wait on a handoff that has no receiving agent after a recent change."
+        ],
+        [
+          "Router",
+          "Proposed new handoff rules for {=max(1, ceil(agents / 4))} agents to close the gaps."
+        ],
+        [
+          "Supervisor",
+          "Replays the stuck tasks once you approve the new rules."
+        ]
+      ],
+      "result": {
+        "title": "Recovery plan",
+        "rows": [
+          [
+            "Stuck tasks",
+            "{=max(1, round(tasks * 0.12))}"
+          ],
+          [
+            "Broken handoffs",
+            "{=max(1, round(tasks * 0.07))}"
+          ],
+          [
+            "Rules to update",
+            "{=max(1, ceil(agents / 4))}"
+          ],
+          [
+            "Tasks per agent",
+            "{=round(tasks / agents, 1)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How do handoffs break?",
+          "Usually an agent is renamed or its output changes shape, so the next agent no longer accepts it. The Orchestrator checks this whenever an agent changes."
+        ],
+        [
+          "Will replaying cause duplicates?",
+          "No. Each task has an ID and the Supervisor skips steps that already finished."
+        ]
+      ]
+    }
+  ]
+}

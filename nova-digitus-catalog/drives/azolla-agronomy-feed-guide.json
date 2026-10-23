@@ -1,0 +1,263 @@
+{
+  "name": "Azolla Agronomy & Feed Guide",
+  "tag": "Works out how much Azolla to grow for your animals and how to set up the ponds.",
+  "scenarios": [
+    {
+      "title": "Supplement dairy cows",
+      "ask": "I have {cows} cows. I want to feed {kg} of fresh Azolla per cow per day.",
+      "inputs": [
+        {
+          "id": "cows",
+          "label": "Cows",
+          "type": "range",
+          "min": 1,
+          "max": 50,
+          "step": 1,
+          "value": 6
+        },
+        {
+          "id": "kg",
+          "label": "Fresh Azolla per cow",
+          "type": "range",
+          "min": 0.5,
+          "max": 2,
+          "step": 0.5,
+          "value": 1.5,
+          "unit": "kg/day"
+        },
+        {
+          "id": "yield",
+          "label": "Growing conditions",
+          "type": "select",
+          "value": "Average",
+          "options": [
+            {
+              "label": "Cool or shaded",
+              "n": 0.15
+            },
+            {
+              "label": "Average",
+              "n": 0.25
+            },
+            {
+              "label": "Warm and sunny",
+              "n": 0.35
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Need",
+          "Daily need is {=round(cows * kg, 1)} kg of fresh Azolla."
+        ],
+        [
+          "Yield model",
+          "At about {=yield} kg per square meter per day, you need {=round(cows * kg / yield)} square meters of pond."
+        ],
+        [
+          "Layout",
+          "Planned {=ceil(cows * kg / yield / 4)} pits of 2 m x 2 m, lined, 10 to 15 cm deep."
+        ],
+        [
+          "Nutrition",
+          "Fresh Azolla is mostly water. Dry matter is about 6%, with roughly a quarter of that as protein."
+        ]
+      ],
+      "result": {
+        "title": "Pond plan",
+        "rows": [
+          [
+            "Fresh Azolla needed",
+            "{=round(cows * kg, 1)} kg/day"
+          ],
+          [
+            "Pond area",
+            "{=round(cows * kg / yield)} m²"
+          ],
+          [
+            "Pits (2 x 2 m)",
+            "{=ceil(cows * kg / yield / 4)}"
+          ],
+          [
+            "Protein supplied",
+            "About {=round(cows * kg * 0.06 * 0.25 * 1000)} g/day (estimate)"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can Azolla replace feed completely?",
+          "No. It is a supplement. Most guides introduce it slowly, mixed with regular feed, and the guide keeps it as a share of the ration."
+        ],
+        [
+          "Is Azolla allowed where I live?",
+          "Some Azolla species are invasive in some regions. Check local rules before you buy a starter culture or let ponds overflow."
+        ],
+        [
+          "What does a pit cost?",
+          "Sample setup cost is about ${=ceil(cows * kg / yield / 4) * 40} for liners, shade net and starter, using local prices you can edit."
+        ]
+      ]
+    },
+    {
+      "title": "Feed a poultry flock",
+      "ask": "I keep {birds} chickens and want to give each {grams} of fresh Azolla a day.",
+      "inputs": [
+        {
+          "id": "birds",
+          "label": "Birds",
+          "type": "range",
+          "min": 50,
+          "max": 2000,
+          "step": 50,
+          "value": 300
+        },
+        {
+          "id": "grams",
+          "label": "Fresh Azolla per bird",
+          "type": "range",
+          "min": 10,
+          "max": 40,
+          "step": 5,
+          "value": 20,
+          "unit": "g/day"
+        }
+      ],
+      "steps": [
+        [
+          "Need",
+          "Daily need is {=round(birds * grams / 1000, 1)} kg of fresh Azolla."
+        ],
+        [
+          "Pond sizing",
+          "At 0.25 kg per square meter per day, that is {=round(birds * grams / 1000 / 0.25)} square meters."
+        ],
+        [
+          "Harvest plan",
+          "Harvest about a third of the cover daily so it keeps growing."
+        ],
+        [
+          "Feeding tip",
+          "Rinse and drain before feeding, and mix with regular feed."
+        ]
+      ],
+      "result": {
+        "title": "Flock plan",
+        "rows": [
+          [
+            "Fresh Azolla",
+            "{=round(birds * grams / 1000, 1)} kg/day"
+          ],
+          [
+            "Pond area",
+            "{=round(birds * grams / 1000 / 0.25)} m²"
+          ],
+          [
+            "Pits (2 x 2 m)",
+            "{=ceil(birds * grams / 1000 / 0.25 / 4)}"
+          ],
+          [
+            "Daily harvest time",
+            "About {=ceil(birds * grams / 1000 / 5) * 5} minutes"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will egg production go up?",
+          "Some trials report benefits, but results vary. Track your own flock in the app before changing the ration further."
+        ],
+        [
+          "What about winter?",
+          "Growth slows in cold weather. The guide shows a smaller winter harvest so you can plan backup feed."
+        ]
+      ]
+    },
+    {
+      "title": "Start your first ponds",
+      "ask": "I want to cover {area} of pond. My climate is {climate}. How much starter do I need and when can I harvest?",
+      "inputs": [
+        {
+          "id": "area",
+          "label": "Pond area",
+          "type": "range",
+          "min": 4,
+          "max": 200,
+          "step": 4,
+          "value": 20,
+          "unit": "m²"
+        },
+        {
+          "id": "climate",
+          "label": "Climate",
+          "type": "select",
+          "value": "Mild",
+          "options": [
+            {
+              "label": "Warm",
+              "n": 10
+            },
+            {
+              "label": "Mild",
+              "n": 15
+            },
+            {
+              "label": "Cool",
+              "n": 25
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Starter",
+          "Seed at about 0.5 kg per square meter: {=round(area * 0.5, 1)} kg of starter culture."
+        ],
+        [
+          "Water",
+          "Fill to 12 cm: about {=round(area * 120)} liters, with a thin layer of soil and manure slurry."
+        ],
+        [
+          "Timeline",
+          "In a {climate} climate, expect full cover and first harvest in about {=climate} days."
+        ],
+        [
+          "Sourcing",
+          "Listed what to ask a supplier: species, how it was grown, and whether it is free of snails and algae."
+        ]
+      ],
+      "result": {
+        "title": "Start-up plan",
+        "rows": [
+          [
+            "Starter needed",
+            "{=round(area * 0.5, 1)} kg"
+          ],
+          [
+            "Water to fill",
+            "{=round(area * 120)} L"
+          ],
+          [
+            "First harvest",
+            "About {=climate} days"
+          ],
+          [
+            "Pits (2 x 2 m)",
+            "{=ceil(area / 4)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why did my Azolla turn red?",
+          "Usually too much sun or too little phosphorus. Add shade net and a small dose of fertilizer, then check again in a week."
+        ],
+        [
+          "Can I buy less starter?",
+          "Yes. Start one pit and expand as it grows. It takes longer but costs less."
+        ]
+      ]
+    }
+  ]
+}

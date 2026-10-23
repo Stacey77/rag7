@@ -1,0 +1,290 @@
+{
+  "name": "Monument: Archive of Black Innovation",
+  "tag": "Interactive museum and patent archive that brings Black inventors into any classroom or gallery.",
+  "scenarios": [
+    {
+      "title": "Inventors who shaped transport",
+      "ask": "Show inventors whose work shaped modern traffic and transport, with a timeline from {start} and a {quiz}-question quiz.",
+      "inputs": [
+        {
+          "id": "start",
+          "label": "Timeline starts",
+          "type": "select",
+          "value": "1890",
+          "options": [
+            {
+              "label": "1880",
+              "n": 1880
+            },
+            {
+              "label": "1890",
+              "n": 1890
+            },
+            {
+              "label": "1920",
+              "n": 1920
+            }
+          ]
+        },
+        {
+          "id": "quiz",
+          "label": "Quiz questions",
+          "type": "range",
+          "min": 3,
+          "max": 10,
+          "step": 1,
+          "value": 5
+        },
+        {
+          "id": "students",
+          "label": "Students",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 1,
+          "value": 25
+        }
+      ],
+      "steps": [
+        [
+          "Search",
+          "Found inventors and patents connected to transport and road safety."
+        ],
+        [
+          "Curator",
+          "Opened a gallery on Garrett Morgan's traffic signal patent of 1923."
+        ],
+        [
+          "Timeline",
+          "Placed related patents on a timeline from {start} to today, a span of {=2026 - start} years."
+        ],
+        [
+          "Lesson",
+          "Built a {quiz}-question classroom quiz from the gallery and grouped {students} students into {=ceil(students / 5)} teams."
+        ]
+      ],
+      "result": {
+        "title": "Gallery ready",
+        "rows": [
+          [
+            "Featured inventor",
+            "Garrett Morgan"
+          ],
+          [
+            "Timeline span",
+            "{=2026 - start} years"
+          ],
+          [
+            "Quiz",
+            "{quiz} questions"
+          ],
+          [
+            "Class time",
+            "About {=quiz * 2 + 15} minutes"
+          ],
+          [
+            "Teams",
+            "{=ceil(students / 5)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Are the patent records real?",
+          "Yes. Galleries show patent drawings and dates from public patent records, with the patent number on each page."
+        ],
+        [
+          "Can students explore on their own?",
+          "Yes. Each team gets its own path through the gallery and the quiz scores roll up for the teacher."
+        ]
+      ]
+    },
+    {
+      "title": "Build a library exhibit",
+      "ask": "Create an exhibit featuring {count} inventors for our library, shown on {screens} screen(s).",
+      "inputs": [
+        {
+          "id": "count",
+          "label": "Inventors featured",
+          "type": "range",
+          "min": 5,
+          "max": 30,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "screens",
+          "label": "Display screens",
+          "type": "range",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "value": 2
+        },
+        {
+          "id": "theme",
+          "label": "Theme",
+          "type": "select",
+          "value": "Everyday life",
+          "options": [
+            {
+              "label": "Everyday life",
+              "n": 1
+            },
+            {
+              "label": "Medicine and science",
+              "n": 2
+            },
+            {
+              "label": "Mixed",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Curator",
+          "Chose {count} inventors, for example Lewis Latimer's 1882 carbon filament process and Marie Van Brittan Brown's 1969 home security patent."
+        ],
+        [
+          "Writer",
+          "Wrote a 90-second story card for each inventor with the patent drawing."
+        ],
+        [
+          "Display",
+          "Built a loop for {screens} screen(s), about {=round(count * 1.5 / screens, 1)} minutes per screen."
+        ],
+        [
+          "Visitor guide",
+          "Added a QR code on each card that opens the full archive page."
+        ]
+      ],
+      "result": {
+        "title": "Exhibit ready",
+        "rows": [
+          [
+            "Inventors",
+            "{count}"
+          ],
+          [
+            "Story cards",
+            "{count}"
+          ],
+          [
+            "Loop length per screen",
+            "{=round(count * 1.5 / screens, 1)} minutes"
+          ],
+          [
+            "Printable posters",
+            "{count}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can we add local inventors?",
+          "Yes. Add your own entries with sources and they appear in the same style, marked as local additions."
+        ],
+        [
+          "Who else is in the archive?",
+          "Examples include Patricia Bath, whose 1988 patent covered a laser device for cataract surgery, and Garrett Morgan, Lewis Latimer and many more."
+        ]
+      ]
+    },
+    {
+      "title": "Run a student research project",
+      "ask": "{students} students each need an inventor to research in {field} over {weeks} weeks.",
+      "inputs": [
+        {
+          "id": "students",
+          "label": "Students",
+          "type": "range",
+          "min": 5,
+          "max": 35,
+          "step": 1,
+          "value": 20
+        },
+        {
+          "id": "field",
+          "label": "Field",
+          "type": "select",
+          "value": "Engineering",
+          "options": [
+            {
+              "label": "Engineering",
+              "n": 1
+            },
+            {
+              "label": "Medicine",
+              "n": 2
+            },
+            {
+              "label": "Computing",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "weeks",
+          "label": "Project length",
+          "type": "range",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "value": 3,
+          "unit": "weeks"
+        }
+      ],
+      "steps": [
+        [
+          "Matcher",
+          "Gave each of the {students} students a different inventor and primary sources such as patent drawings."
+        ],
+        [
+          "Research guide",
+          "Built a {weeks}-week checklist: background, the invention, its impact today."
+        ],
+        [
+          "Writing coach",
+          "Added sentence starters and a citation helper for each source."
+        ],
+        [
+          "Showcase",
+          "Set up a class gallery where finished projects appear side by side."
+        ]
+      ],
+      "result": {
+        "title": "Project set up",
+        "rows": [
+          [
+            "Students matched",
+            "{students}"
+          ],
+          [
+            "Checkpoints",
+            "{=weeks * 2}"
+          ],
+          [
+            "Sources per student",
+            "{=3 + field}"
+          ],
+          [
+            "Showcase",
+            "Class gallery"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if two students want the same inventor?",
+          "The matcher can pair them on different inventions or let them work as a team."
+        ],
+        [
+          "How do I grade this?",
+          "A rubric covers sources, accuracy and presentation, and each checkpoint is timestamped."
+        ]
+      ]
+    }
+  ]
+}

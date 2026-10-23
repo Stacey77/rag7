@@ -1,0 +1,89 @@
+{
+  "name": "Nexus AI Production System",
+  "tag": "A reference production AI stack that shows how ingestion, retrieval, memory, routing and monitoring fit together.",
+  "scenarios": [
+    {
+      "title": "Size a knowledge assistant",
+      "ask": "Size the stack for an internal assistant over {docs} thousand documents with {users} daily users.",
+      "inputs": [
+        {"id": "docs", "label": "Documents (thousands)", "type": "range", "min": 1, "max": 500, "step": 1, "value": 40},
+        {"id": "users", "label": "Daily users", "type": "range", "min": 50, "max": 20000, "step": 50, "value": 1500},
+        {"id": "qpu", "label": "Questions per user per day", "type": "range", "min": 1, "max": 20, "step": 1, "value": 4}
+      ],
+      "steps": [
+        ["Ingestion", "Plans to split {docs} thousand documents into about {=docs * 12} thousand chunks with metadata."],
+        ["Retrieval", "Hybrid search: keyword plus vector. Index size about {=round(docs * 12 * 3.1 / 1000, 1)} GB."],
+        ["Memory", "Per-user conversation memory with a 30-day limit."],
+        ["Router", "Sends simple lookups to a small model and complex questions to a larger one, about a 70 to 30 split."],
+        ["Observability", "Traces every request: retrieval hits, model used, latency and cost."]
+      ],
+      "result": {
+        "title": "Stack sizing",
+        "rows": [
+          ["Questions per day", "{=users * qpu}"],
+          ["Peak per minute", "about {=ceil(users * qpu / 480 * 3)}"],
+          ["Index size", "about {=round(docs * 12 * 3.1 / 1000, 1)} GB"],
+          ["Model cost per month", "about ${=round(users * qpu * 30 * (0.7 * 0.002 + 0.3 * 0.02))}"]
+        ]
+      },
+      "followups": [
+        ["Why route between two models?", "Most questions are simple lookups. Sending those to a small model cuts cost a lot while keeping the larger model for questions that need it."],
+        ["How is the peak estimated?", "Daily questions spread over an 8-hour workday, times 3 for busy moments. Real traffic data will refine it."]
+      ]
+    },
+    {
+      "title": "Find why answers got worse",
+      "ask": "User ratings dropped from {before} to {after} out of 5 this week. Trace the cause.",
+      "inputs": [
+        {"id": "before", "label": "Rating last week", "type": "range", "min": 3, "max": 5, "step": 0.1, "value": 4.3},
+        {"id": "after", "label": "Rating this week", "type": "range", "min": 2, "max": 4.5, "step": 0.1, "value": 3.6}
+      ],
+      "steps": [
+        ["Observability", "Compared traces for low-rated answers this week and last week."],
+        ["Retrieval check", "Retrieval hit rate fell from 82% to 61% on Monday."],
+        ["Ingestion check", "Monday's document sync changed file formats, and {=round(abs(before - after) * 400)} documents were indexed without their text."],
+        ["Fix plan", "Re-index the affected files and add a check that blocks empty chunks."]
+      ],
+      "result": {
+        "title": "Root cause",
+        "rows": [
+          ["Rating change", "{=round(after - before, 1)}"],
+          ["Cause", "Broken document sync"],
+          ["Documents affected", "{=round(abs(before - after) * 400)}"],
+          ["Fix", "Re-index plus empty-chunk guard"]
+        ]
+      },
+      "followups": [
+        ["Why look at retrieval first?", "When answers get worse suddenly, the cause is more often the data the model sees than the model itself. Traces show that quickly."],
+        ["Could this be caught earlier?", "Yes. An alert on retrieval hit rate would have fired on Monday morning. The fix plan adds it."]
+      ]
+    },
+    {
+      "title": "Cut monthly AI costs",
+      "ask": "We spend ${spend} a month on model calls. Show where the stack can save.",
+      "inputs": [
+        {"id": "spend", "label": "Monthly model spend ($)", "type": "range", "min": 500, "max": 100000, "step": 500, "value": 12000},
+        {"id": "repeat", "label": "Repeat questions (%)", "type": "range", "min": 5, "max": 60, "step": 5, "value": 25}
+      ],
+      "steps": [
+        ["Observability", "Grouped last month's calls by route and model."],
+        ["Cache planner", "{repeat}% of questions repeat within a day. A response cache would skip most of those calls."],
+        ["Router tuner", "Found that 20% of calls sent to the large model were simple enough for the small one."],
+        ["Prompt trimmer", "Shortened the system prompt by 35% with no drop in test scores."]
+      ],
+      "result": {
+        "title": "Savings plan",
+        "rows": [
+          ["Cache savings", "about ${=round(spend * repeat / 100 * 0.8)}"],
+          ["Routing savings", "about ${=round(spend * 0.1)}"],
+          ["Prompt savings", "about ${=round(spend * 0.06)}"],
+          ["Projected monthly spend", "about ${=round(spend - spend * repeat / 100 * 0.8 - spend * 0.16)}"]
+        ]
+      },
+      "followups": [
+        ["Will the cache give stale answers?", "Cached answers expire after a set time and are cleared when the source documents change."],
+        ["Are these savings certain?", "They are estimates from last month's traffic. The plan tracks actual spend weekly after each change."]
+      ]
+    }
+  ]
+}

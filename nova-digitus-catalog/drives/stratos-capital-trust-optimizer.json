@@ -1,0 +1,264 @@
+{
+  "name": "Stratos Capital & Trust Optimizer",
+  "tag": "A sandbox for planning credit use, card rewards and keeping personal and business assets separate.",
+  "scenarios": [
+    {
+      "title": "Plan card rewards",
+      "ask": "I spend ${spend} a month across {cards} cards. Show where each purchase should go to earn the most.",
+      "inputs": [
+        {
+          "id": "spend",
+          "label": "Monthly card spend ($)",
+          "type": "range",
+          "min": 1000,
+          "max": 50000,
+          "step": 500,
+          "value": 8000
+        },
+        {
+          "id": "cards",
+          "label": "Cards in your wallet",
+          "type": "range",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "today",
+          "label": "Average reward today",
+          "type": "select",
+          "value": "1%",
+          "options": [
+            {
+              "label": "1%",
+              "n": 1
+            },
+            {
+              "label": "1.5%",
+              "n": 1.5
+            },
+            {
+              "label": "2%",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Spend reader",
+          "Grouped ${spend} of sample monthly spend into travel, fuel, software, supplies and other."
+        ],
+        [
+          "Card matcher",
+          "Matched each category to the best of your {cards} cards."
+        ],
+        [
+          "Rewards model",
+          "Optimized average reward: {=min(3, today + cards * 0.25)}%."
+        ],
+        [
+          "Rule check",
+          "Checked category caps and annual fees so the plan isn't overstated."
+        ]
+      ],
+      "result": {
+        "title": "Rewards plan",
+        "rows": [
+          [
+            "Rewards today per year",
+            "${=round(spend * 12 * today / 100)}"
+          ],
+          [
+            "With routing per year",
+            "${=round(spend * 12 * min(3, today + cards * 0.25) / 100)}"
+          ],
+          [
+            "Difference",
+            "${=round(spend * 12 * (min(3, today + cards * 0.25) - today) / 100)}"
+          ],
+          [
+            "Note",
+            "Sample rates; card terms change"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Should business spend go on personal cards?",
+          "The sandbox keeps them apart. Mixing business and personal spending makes bookkeeping harder and can weaken the separation between you and your company."
+        ],
+        [
+          "Does it include annual fees?",
+          "Yes. The full model subtracts fees, so a card only wins a category if its rewards beat its cost."
+        ]
+      ]
+    },
+    {
+      "title": "Plan a credit cycle",
+      "ask": "I have ${limits} in total limits and carry ${balance}. Plan statement payments to keep utilization low.",
+      "inputs": [
+        {
+          "id": "limits",
+          "label": "Total credit limits ($)",
+          "type": "range",
+          "min": 5000,
+          "max": 250000,
+          "step": 5000,
+          "value": 60000
+        },
+        {
+          "id": "balance",
+          "label": "Typical monthly balance ($)",
+          "type": "range",
+          "min": 0,
+          "max": 100000,
+          "step": 1000,
+          "value": 18000
+        },
+        {
+          "id": "target",
+          "label": "Target utilization",
+          "type": "range",
+          "min": 5,
+          "max": 30,
+          "step": 5,
+          "value": 10,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Cycle reader",
+          "Mapped sample statement and due dates for each account."
+        ],
+        [
+          "Utilization check",
+          "Current utilization: {=round(min(100, balance / limits * 100), 1)}%."
+        ],
+        [
+          "Payment planner",
+          "Scheduled a payment of ${=max(0, round(balance - limits * target / 100))} before statements close."
+        ],
+        [
+          "Reminder",
+          "Set alerts 3 days before each statement date."
+        ]
+      ],
+      "result": {
+        "title": "Cycle plan",
+        "rows": [
+          [
+            "Utilization today",
+            "{=round(min(100, balance / limits * 100), 1)}%"
+          ],
+          [
+            "Target",
+            "{target}"
+          ],
+          [
+            "Pay before statements",
+            "${=max(0, round(balance - limits * target / 100))}"
+          ],
+          [
+            "Note",
+            "Educational planning, not credit advice"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why pay before the statement closes?",
+          "Many issuers report the statement balance. Paying earlier lowers the balance that gets reported."
+        ],
+        [
+          "Does this change what I owe?",
+          "No. You pay the same amount, just earlier in the cycle."
+        ]
+      ]
+    },
+    {
+      "title": "Check asset separation",
+      "ask": "Review {entities} entities and {accounts} accounts for mixing between personal and business assets.",
+      "inputs": [
+        {
+          "id": "entities",
+          "label": "Entities (trust, LLCs)",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "accounts",
+          "label": "Bank and card accounts",
+          "type": "range",
+          "min": 2,
+          "max": 40,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "mixed",
+          "label": "Mixed transactions found",
+          "type": "range",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "value": 15
+        }
+      ],
+      "steps": [
+        [
+          "Entity map",
+          "Drew the sample structure of {entities} entities, from the trust down to each operating LLC."
+        ],
+        [
+          "Account check",
+          "Matched {accounts} accounts to their owners. {=max(0, accounts - entities * 2)} accounts have no clear owner."
+        ],
+        [
+          "Mixing check",
+          "Flagged {mixed} transactions where personal and business money crossed without a record."
+        ],
+        [
+          "Fix list",
+          "Wrote steps: written agreements, reimbursements, and one account set per entity."
+        ]
+      ],
+      "result": {
+        "title": "Separation review",
+        "rows": [
+          [
+            "Entities mapped",
+            "{entities}"
+          ],
+          [
+            "Accounts without a clear owner",
+            "{=max(0, accounts - entities * 2)}"
+          ],
+          [
+            "Transactions to document",
+            "{mixed}"
+          ],
+          [
+            "Note",
+            "Review the structure with an attorney and CPA"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why does mixing matter?",
+          "Keeping each entity's money separate and documented supports the liability protection the structure is meant to give. Mixing can weaken it."
+        ],
+        [
+          "Can it fix past transactions?",
+          "It drafts reimbursement entries and notes for the {mixed} flagged items. Your bookkeeper reviews and records them."
+        ]
+      ]
+    }
+  ]
+}

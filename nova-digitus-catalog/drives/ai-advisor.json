@@ -1,0 +1,88 @@
+{
+  "name": "AI Advisor",
+  "tag": "A self-hosted AI chat that remembers your projects and decisions so you don't repeat yourself.",
+  "scenarios": [
+    {
+      "title": "Pick up a project after a break",
+      "ask": "I haven't touched one of my {projects} projects in {weeks} weeks. Catch me up and tell me what's next.",
+      "inputs": [
+        {"id": "projects", "label": "Projects in the memory vault", "type": "range", "min": 1, "max": 50, "step": 1, "value": 12},
+        {"id": "weeks", "label": "Weeks away", "type": "range", "min": 1, "max": 26, "step": 1, "value": 6, "unit": "weeks"}
+      ],
+      "steps": [
+        ["Memory search", "Found the project in the vault among {projects} projects."],
+        ["Recall", "Pulled {=min(30, 4 + weeks)} saved notes, decisions and open questions."],
+        ["Summarizer", "Wrote a 5-line catch-up: goal, where you left off, last decision, blockers, next step."],
+        ["Advisor", "Suggested the next 3 actions and asked if anything changed while you were away."]
+      ],
+      "result": {
+        "title": "You're caught up",
+        "rows": [
+          ["Notes recalled", "{=min(30, 4 + weeks)}"],
+          ["Open questions", "{=max(1, round(weeks / 3))}"],
+          ["Time to read", "Under 2 minutes"],
+          ["Where it runs", "Your own server"]
+        ]
+      },
+      "followups": [
+        ["What does it save to memory?", "Decisions, project facts and preferences you confirm. You can view, edit or delete any memory in the vault."],
+        ["Can someone else see my memory?", "It runs on your own server, so the vault stays with you. You choose who has an account."]
+      ]
+    },
+    {
+      "title": "Recall why a decision was made",
+      "ask": "Why did we choose this tech stack {months} months ago? Show the reasoning and what has changed since.",
+      "inputs": [
+        {"id": "months", "label": "Months ago", "type": "range", "min": 1, "max": 24, "step": 1, "value": 8, "unit": "months"},
+        {"id": "chats", "label": "Chats since then", "type": "range", "min": 10, "max": 1000, "step": 10, "value": 220}
+      ],
+      "steps": [
+        ["Memory search", "Searched {chats} chats and found the original decision note."],
+        ["Reasoning", "Listed the 3 reasons recorded at the time and the options you ruled out."],
+        ["Change check", "Found {=max(1, round(chats / 80))} later chats that touch the same choice."],
+        ["Advisor", "Said whether the original reasons still hold, with links to each source chat."]
+      ],
+      "result": {
+        "title": "Decision recall",
+        "rows": [
+          ["Original decision", "Found, {months} old"],
+          ["Related chats since", "{=max(1, round(chats / 80))}"],
+          ["Reasons still valid", "2 of 3 (sample)"],
+          ["Sources", "Linked"]
+        ]
+      },
+      "followups": [
+        ["What if the memory is wrong?", "Every memory links back to the chat it came from. If it is wrong, edit or delete it and the advisor uses the corrected version."],
+        ["Does it remember everything automatically?", "It suggests what to remember and you confirm. That keeps the vault clean and trustworthy."]
+      ]
+    },
+    {
+      "title": "Estimate self-hosting costs",
+      "ask": "Run the advisor for {users} people sending about {msgs} messages a day each using a {model} model.",
+      "inputs": [
+        {"id": "users", "label": "People using it", "type": "range", "min": 1, "max": 50, "step": 1, "value": 5},
+        {"id": "msgs", "label": "Messages per person per day", "type": "range", "min": 5, "max": 200, "step": 5, "value": 40},
+        {"id": "model", "label": "Model", "type": "select", "value": "hosted", "options": [{"label": "local", "n": 0}, {"label": "hosted", "n": 1}]}
+      ],
+      "steps": [
+        ["Usage model", "{=users * msgs} messages a day, about {=users * msgs * 22} a working month."],
+        ["Cost model", "Sample cost of about $0.01 per message for a hosted model, near zero for a local one."],
+        ["Server sizing", "Sized a small server for the app and memory vault: about $20 a month."],
+        ["Advisor", "Compared monthly totals for hosted and local options."]
+      ],
+      "result": {
+        "title": "Monthly cost (sample)",
+        "rows": [
+          ["Messages a month", "{=users * msgs * 22}"],
+          ["Model cost", "${=round(users * msgs * 22 * 0.01 * model)}"],
+          ["Server", "$20"],
+          ["Total", "${=round(users * msgs * 22 * 0.01 * model) + 20}"]
+        ]
+      },
+      "followups": [
+        ["Why is local cheaper?", "A local model runs on your own hardware, so there is no per-message fee. You need a machine with enough memory, and answers may be slower."],
+        ["Can we switch later?", "Yes. The model is a setting. The memory vault stays the same either way."]
+      ]
+    }
+  ]
+}

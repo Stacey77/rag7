@@ -1,0 +1,261 @@
+{
+  "name": "OmniNexus",
+  "tag": "Looks at a problem across mechanical, electrical, software and other fields and proposes one combined fix.",
+  "scenarios": [
+    {
+      "title": "Pumps keep overheating",
+      "ask": "{pumps} pumps at our water station overheat on days above {temp}. Find a fix that works across disciplines.",
+      "inputs": [
+        {
+          "id": "pumps",
+          "label": "Pumps",
+          "type": "range",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "value": 4
+        },
+        {
+          "id": "temp",
+          "label": "Ambient temperature",
+          "type": "range",
+          "min": 25,
+          "max": 45,
+          "step": 1,
+          "value": 32,
+          "unit": "°C"
+        }
+      ],
+      "steps": [
+        [
+          "Mechanical",
+          "Bearing temperatures are normal. The motors run hot, not the pumps."
+        ],
+        [
+          "Electrical",
+          "Supply voltage sags 6% at peak load, so motors draw more current."
+        ],
+        [
+          "Controls",
+          "All {pumps} pumps start together at shift change, causing the sag."
+        ],
+        [
+          "Building",
+          "The pump room vents are undersized for days above {temp}."
+        ],
+        [
+          "Synthesis",
+          "Combined fix: stagger starts by 90 seconds and add one exhaust fan."
+        ]
+      ],
+      "result": {
+        "title": "Combined fix",
+        "rows": [
+          [
+            "Root causes",
+            "3, across 3 disciplines"
+          ],
+          [
+            "Fix cost",
+            "About ${=1200 + pumps * 150} (sample)"
+          ],
+          [
+            "Motor temperature drop",
+            "About {=round(4 + (temp - 25) * 0.3)} °C"
+          ],
+          [
+            "Single-discipline fixes avoided",
+            "New motors at about ${=pumps * 3500}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why not just buy bigger motors?",
+          "Bigger motors would still start at the same time and still sit in a hot room. The combined fix costs less and solves the cause."
+        ],
+        [
+          "Who checks the proposal?",
+          "Each discipline's part is written for that engineer to review and sign off."
+        ]
+      ]
+    },
+    {
+      "title": "Add solar to an older roof",
+      "ask": "Can we add {kw} of solar to our {age}-year-old warehouse roof?",
+      "inputs": [
+        {
+          "id": "kw",
+          "label": "Solar size",
+          "type": "range",
+          "min": 10,
+          "max": 300,
+          "step": 10,
+          "value": 80,
+          "unit": "kW"
+        },
+        {
+          "id": "age",
+          "label": "Roof age",
+          "type": "range",
+          "min": 5,
+          "max": 40,
+          "step": 1,
+          "value": 22
+        }
+      ],
+      "steps": [
+        [
+          "Structural",
+          "Panels and racking add about {=round(kw * 60)} kg spread across the roof."
+        ],
+        [
+          "Roofing",
+          "At {age} years, the membrane may need replacing within the panels' life."
+        ],
+        [
+          "Electrical",
+          "Checked the main panel for back-feed limits. Larger systems often need a service upgrade."
+        ],
+        [
+          "Finance",
+          "Compared re-roofing first with installing now and moving panels later."
+        ],
+        [
+          "Synthesis",
+          "Built one plan that orders roof, electrical and solar work."
+        ]
+      ],
+      "result": {
+        "title": "Roof and solar plan",
+        "rows": [
+          [
+            "Added weight",
+            "{=round(kw * 60)} kg"
+          ],
+          [
+            "Re-roof first?",
+            "Recommended when roof age is over 15 years; yours is {age}"
+          ],
+          [
+            "Panel area",
+            "About {=round(kw * 5.5)} m²"
+          ],
+          [
+            "Sample yearly output",
+            "{=round(kw * 1300)} kWh"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it replace a structural engineer?",
+          "No. It prepares the questions and numbers so the engineer's review is faster."
+        ],
+        [
+          "What if we lease the building?",
+          "The plan adds a short section on what to agree with the landlord about the roof and wiring."
+        ]
+      ]
+    },
+    {
+      "title": "Quiet a noisy product",
+      "ask": "Customers say our {product} is too loud. It measures {db}. Target is {target}.",
+      "inputs": [
+        {
+          "id": "product",
+          "label": "Product",
+          "type": "select",
+          "value": "air purifier",
+          "options": [
+            {
+              "label": "air purifier",
+              "n": 1
+            },
+            {
+              "label": "desk fan",
+              "n": 2
+            },
+            {
+              "label": "dehumidifier",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "db",
+          "label": "Measured noise",
+          "type": "range",
+          "min": 40,
+          "max": 70,
+          "step": 1,
+          "value": 52,
+          "unit": "dB"
+        },
+        {
+          "id": "target",
+          "label": "Target noise",
+          "type": "range",
+          "min": 30,
+          "max": 50,
+          "step": 1,
+          "value": 42,
+          "unit": "dB"
+        }
+      ],
+      "steps": [
+        [
+          "Acoustics",
+          "Most noise comes from blade tones and panel rattle."
+        ],
+        [
+          "Mechanical",
+          "Adding rubber mounts cuts panel rattle by about 3 dB."
+        ],
+        [
+          "Software",
+          "A smoother fan speed curve removes a hum at the mid setting."
+        ],
+        [
+          "Industrial design",
+          "A curved air path lowers blade tone by about 2 dB."
+        ],
+        [
+          "Synthesis",
+          "Ranked the fixes by cost and how much noise each removes."
+        ]
+      ],
+      "result": {
+        "title": "Noise plan",
+        "rows": [
+          [
+            "Gap to target",
+            "{=max(0, db - target)} dB"
+          ],
+          [
+            "Expected from 3 fixes",
+            "About {=min(max(0, db - target), 7)} dB"
+          ],
+          [
+            "Remaining gap",
+            "{=max(0, db - target - 7)} dB"
+          ],
+          [
+            "Cheapest fix",
+            "Fan speed curve (software only)"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is a few decibels noticeable?",
+          "Yes. A 3 dB drop halves the sound energy, and most people notice it."
+        ],
+        [
+          "What if the fixes don't close the gap?",
+          "The plan lists the next options, like a slower, larger fan, with cost and size trade-offs."
+        ]
+      ]
+    }
+  ]
+}

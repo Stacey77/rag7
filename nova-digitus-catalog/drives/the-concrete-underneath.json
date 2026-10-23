@@ -1,0 +1,90 @@
+{
+  "name": "The Concrete Underneath",
+  "tag": "A research terminal that tracks the power, land and equipment buildout behind AI.",
+  "scenarios": [
+    {
+      "title": "Track data center projects in a region",
+      "ask": "Track {projects} announced data center projects in a sample region, averaging {mw} megawatts each.",
+      "inputs": [
+        {"id": "projects", "label": "Announced projects", "type": "range", "min": 2, "max": 60, "step": 1, "value": 14},
+        {"id": "mw", "label": "Average size", "type": "range", "min": 20, "max": 500, "step": 10, "value": 120, "unit": "MW"},
+        {"id": "online", "label": "Share expected online in 3 years", "type": "range", "min": 10, "max": 90, "step": 10, "value": 40, "unit": "%"}
+      ],
+      "steps": [
+        ["Filings agent", "Read sample permits, zoning notes and utility filings for {projects} projects."],
+        ["Power agent", "Added up requested capacity: {=projects * mw} MW."],
+        ["Timeline agent", "Estimated {=round(projects * online / 100)} projects online within 3 years based on permit stage."],
+        ["Brief writer", "Wrote a regional brief with the largest projects and open questions."]
+      ],
+      "result": {
+        "title": "Regional buildout (sample)",
+        "rows": [
+          ["Projects tracked", "{projects}"],
+          ["Requested capacity", "{=projects * mw} MW"],
+          ["Likely online in 3 years", "{=round(projects * mw * online / 100)} MW"],
+          ["Yearly energy at 80% use", "{=round(projects * mw * online / 100 * 8760 * 0.8 / 1000)} GWh"],
+          ["Note", "Sample data for illustration"]
+        ]
+      },
+      "followups": [
+        ["How is yearly energy worked out?", "Capacity in MW times 8,760 hours in a year times an assumed 80% average use, converted to gigawatt-hours. You can change the use rate."],
+        ["Where does the data come from in the real terminal?", "Public filings, utility interconnection queues and permit records you connect. The demo uses sample records only."]
+      ]
+    },
+    {
+      "title": "Find supply chain bottlenecks",
+      "ask": "Check lead times for {items} key equipment types across {suppliers} sample suppliers.",
+      "inputs": [
+        {"id": "items", "label": "Equipment types", "type": "range", "min": 3, "max": 20, "step": 1, "value": 8},
+        {"id": "suppliers", "label": "Suppliers tracked", "type": "range", "min": 3, "max": 50, "step": 1, "value": 12},
+        {"id": "weeks", "label": "Flag lead times over", "type": "range", "min": 12, "max": 104, "step": 4, "value": 52, "unit": "weeks"}
+      ],
+      "steps": [
+        ["Supply agent", "Collected sample lead times for {items} equipment types, such as transformers, switchgear and generators."],
+        ["Compare agent", "Ranked {suppliers} suppliers by quoted lead time and backlog."],
+        ["Flagger", "Marked {=max(1, round(items * 52 / weeks * 0.3))} equipment types with lead times over {weeks}."],
+        ["Brief writer", "Summarized which items are most likely to delay projects."]
+      ],
+      "result": {
+        "title": "Bottleneck report",
+        "rows": [
+          ["Equipment types", "{items}"],
+          ["Suppliers compared", "{suppliers}"],
+          ["Flagged as slow", "{=min(items, max(1, round(items * 52 / weeks * 0.3)))}"],
+          ["Note", "Sample lead times"]
+        ]
+      },
+      "followups": [
+        ["Why track transformers?", "Large power equipment is built to order and can take a long time to deliver, so it often sets the pace of a project."],
+        ["Can I get alerts?", "Yes. Set a threshold per item and the terminal flags any supplier quote that crosses it."]
+      ]
+    },
+    {
+      "title": "Build a weekly research brief",
+      "ask": "Give me a weekly brief covering {topics} topics in about {words} words.",
+      "inputs": [
+        {"id": "topics", "label": "Topics", "type": "range", "min": 2, "max": 10, "step": 1, "value": 5},
+        {"id": "words", "label": "Length", "type": "range", "min": 300, "max": 2000, "step": 100, "value": 800, "unit": "words"}
+      ],
+      "steps": [
+        ["News agent", "Collected {=topics * 12} sample items on power, land, water, chips and construction."],
+        ["Dedup agent", "Removed {=topics * 4} duplicates and rewrites."],
+        ["Analyst", "Picked the {=topics * 2} items most likely to change project timelines."],
+        ["Writer", "Wrote the brief at {words} with sources listed for each claim."]
+      ],
+      "result": {
+        "title": "Weekly brief",
+        "rows": [
+          ["Items reviewed", "{=topics * 12}"],
+          ["Items in the brief", "{=topics * 2}"],
+          ["Length", "{words}"],
+          ["Every claim", "Linked to its source"]
+        ]
+      },
+      "followups": [
+        ["Does it give stock picks?", "No. It is a research tool about the physical buildout. It does not recommend investments."],
+        ["Can I add my own sources?", "Yes. Add feeds, filings or saved documents, and the agents include them in the weekly pass."]
+      ]
+    }
+  ]
+}

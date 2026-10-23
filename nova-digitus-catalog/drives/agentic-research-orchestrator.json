@@ -1,0 +1,93 @@
+{
+  "name": "Agentic Research Orchestrator",
+  "tag": "Five research agents split up a computer-science question, read the sources and report back with citations.",
+  "scenarios": [
+    {
+      "title": "Pick a vector database",
+      "ask": "Compare vector databases for {vectors} million embeddings with a {latency} ms query budget. Read at least {papers} sources.",
+      "inputs": [
+        {"id": "vectors", "label": "Embeddings (millions)", "type": "range", "min": 1, "max": 500, "step": 1, "value": 20},
+        {"id": "latency", "label": "Query budget in ms", "type": "range", "min": 5, "max": 200, "step": 5, "value": 50},
+        {"id": "papers", "label": "Minimum sources", "type": "range", "min": 5, "max": 60, "step": 5, "value": 20}
+      ],
+      "steps": [
+        ["Planner", "Split the question into 5 parts: index types, scale limits, latency, cost and operations."],
+        ["Literature agent", "Read {papers} sources: benchmark write-ups, docs and papers on HNSW and IVF indexes."],
+        ["Benchmark agent", "Pulled published results near {vectors} million vectors and noted test hardware for each."],
+        ["Skeptic agent", "Flagged {=max(1, round(papers * 0.15))} sources with vendor-run benchmarks and weighted them lower."],
+        ["Writer", "Merged findings into a short report with a citation on every claim."]
+      ],
+      "result": {
+        "title": "Research report",
+        "rows": [
+          ["Sources read", "{papers}"],
+          ["Low-weight sources", "{=max(1, round(papers * 0.15))}"],
+          ["Shortlist", "{=min(4, max(2, round(latency / 40) + 1))} options under {latency} ms in published tests"],
+          ["Memory estimate for 768-dim float vectors", "about {=round(vectors * 768 * 4 / 1000)} GB before index overhead"],
+          ["Next step", "Run your own test on a sample"]
+        ]
+      },
+      "followups": [
+        ["Can I trust published benchmarks?", "Only partly. Hardware, settings and data shape differ. The report lists the setup for each number so you can judge, and the Skeptic agent marks vendor-run results."],
+        ["How was the memory number calculated?", "Each 768-dimension vector in 32-bit floats takes 3,072 bytes, so {vectors} million vectors need about {=round(vectors * 3.072, 1)} GB before the index adds its own overhead."]
+      ]
+    },
+    {
+      "title": "Literature review for a proposal",
+      "ask": "Summarize the last {years} years of research on {topic} for a grant proposal.",
+      "inputs": [
+        {"id": "years", "label": "Years to cover", "type": "range", "min": 1, "max": 10, "step": 1, "value": 5},
+        {"id": "topic", "label": "Topic", "type": "select", "value": "Program repair with language models",
+         "options": [{"label": "Program repair with language models", "n": 3}, {"label": "Federated learning on edge devices", "n": 2}, {"label": "Formal verification of smart contracts", "n": 1}]}
+      ],
+      "steps": [
+        ["Planner", "Defined search terms and split the {years}-year window across the agents."],
+        ["Search agent", "Found about {=years * topic * 40} candidate papers and kept {=round(years * topic * 40 * 0.15)} after abstract screening."],
+        ["Reader agents", "Extracted method, dataset and main result from each kept paper."],
+        ["Gap finder", "Grouped papers into themes and listed {=2 + topic} open problems that few papers address."],
+        ["Writer", "Drafted a two-page related-work section with references."]
+      ],
+      "result": {
+        "title": "Review ready",
+        "rows": [
+          ["Papers screened", "{=years * topic * 40}"],
+          ["Papers summarized", "{=round(years * topic * 40 * 0.15)}"],
+          ["Themes", "{=3 + topic}"],
+          ["Open problems listed", "{=2 + topic}"]
+        ]
+      },
+      "followups": [
+        ["Does it invent citations?", "Every reference links to a source the agents actually retrieved. The Writer cannot cite anything that is not in the reading list, and you can open each one."],
+        ["Can I add papers I already know?", "Yes. Drop in a list of titles or PDFs and they are read first and marked as seeded by you."]
+      ]
+    },
+    {
+      "title": "Explain a production bug",
+      "ask": "Our cache shows stale reads under load in {regions} regions. Research known causes and fixes.",
+      "inputs": [
+        {"id": "regions", "label": "Regions affected", "type": "range", "min": 1, "max": 8, "step": 1, "value": 3},
+        {"id": "rate", "label": "Stale reads per million", "type": "range", "min": 1, "max": 500, "step": 1, "value": 40}
+      ],
+      "steps": [
+        ["Planner", "Framed it as a consistency question: replication lag, invalidation order or clock issues."],
+        ["Literature agent", "Read design notes and papers on cache invalidation and read-your-writes consistency."],
+        ["Incident agent", "Found {=4 + regions} public postmortems with similar symptoms."],
+        ["Skeptic agent", "Ruled out clock skew because the stale reads cluster on writes followed by reads within 50 ms."],
+        ["Writer", "Ranked 3 likely causes with a test to confirm each."]
+      ],
+      "result": {
+        "title": "Findings",
+        "rows": [
+          ["Most likely cause", "Invalidation arrives after replica read"],
+          ["Similar postmortems", "{=4 + regions}"],
+          ["Stale reads per day at 1B reads", "about {=rate * 1000}"],
+          ["Suggested fix to test first", "Versioned keys with write-through"]
+        ]
+      },
+      "followups": [
+        ["Can it look at our logs?", "If you connect them, yes. A sixth agent can check the timing pattern in your logs against each likely cause."],
+        ["How sure is the ranking?", "It is a starting point, not a diagnosis. Each cause comes with a test so your team can confirm or rule it out quickly."]
+      ]
+    }
+  ]
+}

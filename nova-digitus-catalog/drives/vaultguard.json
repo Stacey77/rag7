@@ -1,0 +1,247 @@
+{
+  "name": "VaultGuard",
+  "tag": "A secure client portal that keeps each client's files separate, sends agreements for signature and requires strong sign-in.",
+  "scenarios": [
+    {
+      "title": "Onboard a new client",
+      "ask": "Set up a portal space for a new client with {docs} intake documents and {signers} people who need to sign.",
+      "inputs": [
+        {
+          "id": "docs",
+          "label": "Intake documents",
+          "type": "range",
+          "min": 2,
+          "max": 30,
+          "step": 1,
+          "value": 8
+        },
+        {
+          "id": "signers",
+          "label": "People who sign",
+          "type": "range",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "value": 2
+        },
+        {
+          "id": "signin",
+          "label": "Sign-in method",
+          "type": "select",
+          "value": "Authenticator app",
+          "options": [
+            {
+              "label": "Email code",
+              "n": 1
+            },
+            {
+              "label": "Authenticator app",
+              "n": 2
+            },
+            {
+              "label": "Security key",
+              "n": 3
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Space builder",
+          "Created a private client space. Only this client and your assigned staff can see it."
+        ],
+        [
+          "Agreement agent",
+          "Filled the engagement letter from your template and sent it to {signers} signers in order."
+        ],
+        [
+          "Request list",
+          "Asked the client for {docs} documents with a checklist and due dates."
+        ],
+        [
+          "Access guard",
+          "Required {signin} sign-in for every client user before first upload."
+        ]
+      ],
+      "result": {
+        "title": "Client space ready",
+        "rows": [
+          [
+            "Documents requested",
+            "{docs}"
+          ],
+          [
+            "Signatures out",
+            "{signers}"
+          ],
+          [
+            "Sign-in method",
+            "{signin}"
+          ],
+          [
+            "Your setup time",
+            "About {=3 + signers} minutes instead of {=20 + docs * 2}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can one client ever see another's files?",
+          "Each client space is separated at the storage level, and every file access is logged. Staff only see the clients they're assigned to."
+        ],
+        [
+          "What if a client struggles with sign-in?",
+          "They can use an email code to start, and you can require a stronger method for sensitive spaces later."
+        ]
+      ]
+    },
+    {
+      "title": "Annual agreement renewals",
+      "ask": "{clients} client agreements renew this quarter. Send them out and chase the stragglers.",
+      "inputs": [
+        {
+          "id": "clients",
+          "label": "Agreements due",
+          "type": "range",
+          "min": 10,
+          "max": 500,
+          "step": 10,
+          "value": 80
+        },
+        {
+          "id": "response",
+          "label": "Usually sign within a week",
+          "type": "range",
+          "min": 20,
+          "max": 90,
+          "step": 5,
+          "value": 60,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Renewal agent",
+          "Prepared {clients} renewals with updated fees and dates from your fee schedule."
+        ],
+        [
+          "Sender",
+          "Sent them in batches through the portal with a signing link."
+        ],
+        [
+          "Follow-up",
+          "Scheduled reminders at day 5 and day 10. About {=round(clients * (100 - response) / 100)} clients are expected to need them."
+        ],
+        [
+          "Tracker",
+          "Shows signed, viewed and not opened, so staff only call those who haven't looked."
+        ]
+      ],
+      "result": {
+        "title": "Renewals in motion",
+        "rows": [
+          [
+            "Agreements sent",
+            "{clients}"
+          ],
+          [
+            "Expected signed in week 1",
+            "{=round(clients * response / 100)}"
+          ],
+          [
+            "Reminders scheduled",
+            "{=round(clients * (100 - response) / 100) * 2}"
+          ],
+          [
+            "Staff calls likely needed",
+            "{=round(clients * (100 - response) / 100 * 0.3)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Can clients sign on a phone?",
+          "Yes. Signing works on phone, tablet or computer, and the signed copy files itself in their space."
+        ],
+        [
+          "Can we change the fee for one client?",
+          "Yes. Edit that renewal before it sends and the change is recorded with your name."
+        ]
+      ]
+    },
+    {
+      "title": "Sign-in security check",
+      "ask": "Check our portal's {users} users. We think about {weak}% still use weak sign-in.",
+      "inputs": [
+        {
+          "id": "users",
+          "label": "Portal users",
+          "type": "range",
+          "min": 20,
+          "max": 3000,
+          "step": 10,
+          "value": 400
+        },
+        {
+          "id": "weak",
+          "label": "On email code only",
+          "type": "range",
+          "min": 5,
+          "max": 80,
+          "step": 5,
+          "value": 35,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Auditor",
+          "Listed {users} users and how each signs in."
+        ],
+        [
+          "Risk scorer",
+          "Flagged {=round(users * weak / 100)} on email code only. {=max(1, round(users * weak / 100 * 0.1))} of them can see sensitive client files."
+        ],
+        [
+          "Nudge agent",
+          "Drafted a short message showing how to switch to an authenticator app in two minutes."
+        ],
+        [
+          "Policy",
+          "Proposed requiring a stronger method for sensitive spaces after a 30-day grace period."
+        ]
+      ],
+      "result": {
+        "title": "Sign-in plan",
+        "rows": [
+          [
+            "Users on weak sign-in",
+            "{=round(users * weak / 100)}"
+          ],
+          [
+            "With sensitive access",
+            "{=max(1, round(users * weak / 100 * 0.1))}"
+          ],
+          [
+            "Grace period",
+            "30 days"
+          ],
+          [
+            "Expected switched in 30 days",
+            "About {=round(users * weak / 100 * 0.7)}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Will this lock clients out?",
+          "No. Users get reminders during the grace period, and anyone who hasn't switched gets a guided setup at their next sign-in."
+        ],
+        [
+          "Why not just use passwords?",
+          "Passwords alone are easy to phish or reuse. A second factor stops most account takeovers."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "name": "Luxury Salvage Deals Platform",
+  "tag": "Find luxury salvage cars worth rebuilding and see repair costs and likely margin before you bid.",
+  "scenarios": [
+    {
+      "title": "Price one salvage car",
+      "ask": "A salvage luxury sedan with {damage} damage is at ${bid}. Clean retail is ${retail}. Is it worth rebuilding?",
+      "inputs": [
+        {"id": "bid", "label": "Your bid ($)", "type": "range", "min": 5000, "max": 80000, "step": 1000, "value": 22000},
+        {"id": "retail", "label": "Clean retail value ($)", "type": "range", "min": 30000, "max": 150000, "step": 5000, "value": 65000},
+        {"id": "damage", "label": "Damage type", "type": "select", "value": "Front end", "options": [{"label": "Cosmetic", "n": 0.1}, {"label": "Front end", "n": 0.22}, {"label": "Side impact", "n": 0.3}, {"label": "Flood", "n": 0.4}]}
+      ],
+      "steps": [
+        ["Photo reader", "Read the sample auction photos and listed likely damaged parts for {damage} damage."],
+        ["Repair estimator", "Estimated parts and labor at ${=round(retail * damage)}."],
+        ["Value model", "Rebuilt titles often sell below clean value. Used a sample 25% discount: ${=round(retail * 0.75)}."],
+        ["Fees", "Added sample buyer, transport and inspection fees of ${=round(1500 + bid * 0.08)}."],
+        ["Deal check", "Worked out profit or loss at your bid and the highest bid for a 15% margin."]
+      ],
+      "result": {
+        "title": "Deal estimate",
+        "rows": [
+          ["Repair estimate", "${=round(retail * damage)}"],
+          ["Rebuilt resale value", "${=round(retail * 0.75)}"],
+          ["Profit at your bid", "${=max(0, round(retail * 0.75 - bid - retail * damage - 1500 - bid * 0.08))}"],
+          ["Loss at your bid", "${=max(0, round(bid + retail * damage + 1500 + bid * 0.08 - retail * 0.75))}"],
+          ["Max bid for 15% margin", "${=max(0, round((retail * 0.75 * 0.85 - retail * damage - 1500) / 1.08))}"],
+          ["Note", "Estimate from sample data; inspect before you buy"]
+        ]
+      },
+      "followups": [
+        ["Why is flood damage priced so high?", "Water can reach wiring, modules and interior parts that don't show in photos. The estimator adds more hidden-damage risk for flood cars."],
+        ["How firm is the repair estimate?", "It is a starting point from photos and sample parts prices. A hands-on inspection often moves it, which is why the max bid keeps a 15% margin."]
+      ]
+    },
+    {
+      "title": "Scan this week's auctions",
+      "ask": "Scan {listings} luxury salvage listings this week and find deals under my ${budget} budget.",
+      "inputs": [
+        {"id": "listings", "label": "Listings to scan", "type": "range", "min": 50, "max": 2000, "step": 50, "value": 400},
+        {"id": "budget", "label": "Max all-in budget ($)", "type": "range", "min": 15000, "max": 150000, "step": 5000, "value": 50000},
+        {"id": "margin", "label": "Minimum margin", "type": "range", "min": 5, "max": 40, "step": 5, "value": 15, "unit": "%"}
+      ],
+      "steps": [
+        ["Scanner", "Read {listings} sample listings and dropped {=round(listings * 0.55)} with frame or airbag damage flags."],
+        ["Estimator", "Priced repairs on the remaining {=listings - round(listings * 0.55)}."],
+        ["Filter", "Kept cars with an all-in cost under ${budget} and at least {margin} estimated margin."],
+        ["Ranker", "Ranked the shortlist by margin and parts availability."]
+      ],
+      "result": {
+        "title": "Weekly shortlist",
+        "rows": [
+          ["Listings scanned", "{listings}"],
+          ["Ruled out early", "{=round(listings * 0.55)}"],
+          ["Deals on the shortlist", "{=max(1, round(listings * 0.03 * (1 + budget / 100000) * 15 / margin))}"],
+          ["Note", "Sample listings; results vary week to week"]
+        ]
+      },
+      "followups": [
+        ["Why drop frame damage automatically?", "Frame and structural repairs are costly and can make a car harder to insure and resell. You can turn this filter off."],
+        ["Can it watch for one model?", "Yes. Save a search by make, model and year, and the scanner alerts you when a match appears."]
+      ]
+    },
+    {
+      "title": "Plan parts for a rebuild",
+      "ask": "Source parts for a rebuild needing {parts} parts. I want to spend no more than ${cap}.",
+      "inputs": [
+        {"id": "parts", "label": "Parts needed", "type": "range", "min": 5, "max": 60, "step": 1, "value": 18},
+        {"id": "cap", "label": "Parts budget ($)", "type": "range", "min": 2000, "max": 40000, "step": 1000, "value": 9000},
+        {"id": "mix", "label": "Parts source", "type": "select", "value": "Mixed", "options": [{"label": "New OEM", "n": 1}, {"label": "Mixed", "n": 0.75}, {"label": "Used and aftermarket", "n": 0.55}]}
+      ],
+      "steps": [
+        ["Parts lister", "Built a list of {parts} parts from the damage report."],
+        ["Price checker", "Compared sample new, used and aftermarket prices for each part."],
+        ["Budget fit", "With a {mix} mix, the sample parts total is ${=round(parts * 520 * mix)}."],
+        ["Lead time", "Flagged {=max(1, round(parts * 0.15))} parts with lead times over two weeks."]
+      ],
+      "result": {
+        "title": "Parts plan",
+        "rows": [
+          ["Parts total", "${=round(parts * 520 * mix)}"],
+          ["Budget left", "${=max(0, cap - round(parts * 520 * mix))}"],
+          ["Over budget by", "${=max(0, round(parts * 520 * mix) - cap)}"],
+          ["Slow parts", "{=max(1, round(parts * 0.15))}"]
+        ]
+      },
+      "followups": [
+        ["Are used parts a good idea?", "For trim and body panels often yes. For safety parts like airbags and seatbelts, the plan defaults to new parts."],
+        ["How do slow parts affect the deal?", "Each week a car waits ties up cash. The plan orders the {=max(1, round(parts * 0.15))} slow parts first."]
+      ]
+    }
+  ]
+}

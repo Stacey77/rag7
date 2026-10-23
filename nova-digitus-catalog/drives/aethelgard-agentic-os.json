@@ -35,7 +35,7 @@
     },
     {
       "title": "Automate a weekly report",
-      "ask": "Our team spends {hours} hours a week building a status report from {sources} sources. Turn it into a skill.",
+      "ask": "Our team spends {hours} a week building a status report from {sources} sources. Turn it into a skill.",
       "inputs": [
         {"id": "hours", "label": "Hours spent each week", "type": "range", "min": 1, "max": 20, "step": 1, "value": 6, "unit": "hours"},
         {"id": "sources", "label": "Data sources", "type": "range", "min": 1, "max": 8, "step": 1, "value": 3}

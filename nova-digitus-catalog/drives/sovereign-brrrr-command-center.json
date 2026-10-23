@@ -1,0 +1,289 @@
+{
+  "name": "Sovereign BRRRR Command Center",
+  "tag": "Model buy, rehab, rent, refinance and repeat deals with clear numbers and stress tests.",
+  "scenarios": [
+    {
+      "title": "Run the numbers on one deal",
+      "ask": "Buy at ${price}, rehab for ${rehab}, after-repair value ${arv}, rent ${rent} a month. How much cash stays in the deal?",
+      "inputs": [
+        {
+          "id": "price",
+          "label": "Purchase price ($)",
+          "type": "range",
+          "min": 50000,
+          "max": 400000,
+          "step": 5000,
+          "value": 140000
+        },
+        {
+          "id": "rehab",
+          "label": "Rehab budget ($)",
+          "type": "range",
+          "min": 10000,
+          "max": 150000,
+          "step": 5000,
+          "value": 45000
+        },
+        {
+          "id": "arv",
+          "label": "After-repair value ($)",
+          "type": "range",
+          "min": 100000,
+          "max": 700000,
+          "step": 10000,
+          "value": 260000
+        },
+        {
+          "id": "rent",
+          "label": "Monthly rent ($)",
+          "type": "range",
+          "min": 800,
+          "max": 5000,
+          "step": 50,
+          "value": 2100
+        }
+      ],
+      "steps": [
+        [
+          "Deal intake",
+          "All-in cost: ${=price + rehab} plus a sample ${=round((price + rehab) * 0.04)} in closing and holding costs."
+        ],
+        [
+          "Refi model",
+          "Cash-out refinance at 75% of after-repair value: ${=round(arv * 0.75)} loan."
+        ],
+        [
+          "Payment model",
+          "Sample 30-year loan at 7.5%: about ${=round(arv * 0.75 * 0.007)} a month."
+        ],
+        [
+          "Cash flow",
+          "Rent minus the loan payment and 40% for taxes, insurance, repairs, vacancy and management."
+        ]
+      ],
+      "result": {
+        "title": "Deal summary",
+        "rows": [
+          [
+            "Cash left in the deal",
+            "${=max(0, round(price + rehab + (price + rehab) * 0.04 - arv * 0.75))}"
+          ],
+          [
+            "Cash pulled out above cost",
+            "${=max(0, round(arv * 0.75 - (price + rehab) * 1.04))}"
+          ],
+          [
+            "Monthly cash flow",
+            "${=max(0, round(rent * 0.6 - arv * 0.75 * 0.007))}"
+          ],
+          [
+            "Monthly shortfall",
+            "${=max(0, round(arv * 0.75 * 0.007 - rent * 0.6))}"
+          ],
+          [
+            "Equity after refi",
+            "${=round(arv * 0.25)}"
+          ],
+          [
+            "Note",
+            "Illustration with sample rates; not financial advice"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why 40% for expenses?",
+          "It is a common planning rule for taxes, insurance, repairs, vacancy and management. You can replace it with real numbers for each line."
+        ],
+        [
+          "What makes a deal repeatable?",
+          "Getting most of your cash back at refinance. When cash left in the deal is near zero, that money can fund the next purchase."
+        ]
+      ]
+    },
+    {
+      "title": "Stress test a rental",
+      "ask": "My rental refinanced at ${loan}. What if rates rise {bump} points at the next refi and vacancy hits {vacancy}?",
+      "inputs": [
+        {
+          "id": "loan",
+          "label": "Loan amount ($)",
+          "type": "range",
+          "min": 50000,
+          "max": 600000,
+          "step": 10000,
+          "value": 195000
+        },
+        {
+          "id": "rent",
+          "label": "Monthly rent ($)",
+          "type": "range",
+          "min": 800,
+          "max": 5000,
+          "step": 50,
+          "value": 2100
+        },
+        {
+          "id": "bump",
+          "label": "Rate increase",
+          "type": "range",
+          "min": 0,
+          "max": 4,
+          "step": 0.5,
+          "value": 1.5,
+          "unit": "points"
+        },
+        {
+          "id": "vacancy",
+          "label": "Vacancy",
+          "type": "range",
+          "min": 0,
+          "max": 25,
+          "step": 5,
+          "value": 10,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Base case",
+          "At 7.5%, payment is about ${=round(loan * 0.007)} a month."
+        ],
+        [
+          "Rate shock",
+          "At {=7.5 + bump}%, payment rises to about ${=round(loan * (0.007 + bump * 0.0007))}."
+        ],
+        [
+          "Vacancy shock",
+          "Effective rent drops to ${=round(rent * (1 - vacancy / 100))}."
+        ],
+        [
+          "Verdict",
+          "Compared cash flow before and after both shocks."
+        ]
+      ],
+      "result": {
+        "title": "Stress test",
+        "rows": [
+          [
+            "Payment today",
+            "${=round(loan * 0.007)}"
+          ],
+          [
+            "Payment under stress",
+            "${=round(loan * (0.007 + bump * 0.0007))}"
+          ],
+          [
+            "Cash flow under stress",
+            "${=max(0, round(rent * (1 - vacancy / 100) * 0.6 - loan * (0.007 + bump * 0.0007)))}"
+          ],
+          [
+            "Monthly shortfall under stress",
+            "${=max(0, round(-(rent * (1 - vacancy / 100) * 0.6 - loan * (0.007 + bump * 0.0007))))}"
+          ],
+          [
+            "Monthly change",
+            "${=round(rent * vacancy / 100 * 0.6 + loan * bump * 0.0007)} less"
+          ],
+          [
+            "Note",
+            "Illustration with sample rates"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How do I protect against this?",
+          "Common steps are a cash reserve of 6 months of payments, about ${=round(loan * 0.007 * 6)} here, and a fixed-rate loan when possible."
+        ],
+        [
+          "Is the payment math exact?",
+          "It is a close estimate for a 30-year fixed loan. The full model uses exact amortization and your actual tax and insurance bills."
+        ]
+      ]
+    },
+    {
+      "title": "Plan the next 12 months",
+      "ask": "I start with ${cash} cash and want to complete deals of about ${allin} all-in, recovering {recover} at refi.",
+      "inputs": [
+        {
+          "id": "cash",
+          "label": "Starting cash ($)",
+          "type": "range",
+          "min": 25000,
+          "max": 500000,
+          "step": 5000,
+          "value": 80000
+        },
+        {
+          "id": "allin",
+          "label": "All-in cost per deal ($)",
+          "type": "range",
+          "min": 60000,
+          "max": 500000,
+          "step": 10000,
+          "value": 190000
+        },
+        {
+          "id": "recover",
+          "label": "Cash recovered at refi",
+          "type": "range",
+          "min": 50,
+          "max": 100,
+          "step": 5,
+          "value": 80,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Funding model",
+          "Assumed a sample short-term loan covering 80% of each deal, so each deal needs ${=round(allin * 0.2)} down."
+        ],
+        [
+          "Recycle model",
+          "{recover} of your cash comes back about 6 months after each purchase."
+        ],
+        [
+          "Pipeline",
+          "Laid out purchases across 12 months so cash is never below zero."
+        ],
+        [
+          "Risk check",
+          "Flagged the month where reserves are lowest."
+        ]
+      ],
+      "result": {
+        "title": "12-month plan",
+        "rows": [
+          [
+            "Cash per deal",
+            "${=round(allin * 0.2)}"
+          ],
+          [
+            "Deals you can start at once",
+            "{=floor(cash / (allin * 0.2))}"
+          ],
+          [
+            "Estimated deals in 12 months",
+            "{=floor(cash / (allin * 0.2)) + floor(floor(cash / (allin * 0.2)) * recover / 100)}"
+          ],
+          [
+            "Note",
+            "Illustration; timelines and lender terms vary"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if I can't start any deals?",
+          "If cash per deal is above your starting cash, the plan suggests a partner, a smaller deal size or a lender with lower down payment."
+        ],
+        [
+          "Why does recovery matter so much?",
+          "Each point of recovery is cash you can reuse. At {recover}, most of your money goes back to work after each refinance."
+        ]
+      ]
+    }
+  ]
+}

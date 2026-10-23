@@ -1,0 +1,245 @@
+{
+  "name": "Robot Assistant Builder",
+  "tag": "Guides you through building a voice-controlled robot assistant and teaching it your commands.",
+  "scenarios": [
+    {
+      "title": "Build your first assistant",
+      "ask": "Help me build a voice robot with the {kit} and {arms} arm(s).",
+      "inputs": [
+        {
+          "id": "kit",
+          "label": "Kit",
+          "type": "select",
+          "value": "standard kit",
+          "options": [
+            {
+              "label": "starter kit",
+              "n": 1
+            },
+            {
+              "label": "standard kit",
+              "n": 2
+            },
+            {
+              "label": "advanced kit",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "arms",
+          "label": "Arms",
+          "type": "range",
+          "min": 0,
+          "max": 2,
+          "step": 1,
+          "value": 1
+        }
+      ],
+      "steps": [
+        [
+          "Planner",
+          "Picked parts: a small computer board, microphone, speaker, {=2 + arms * 3} motors and a frame."
+        ],
+        [
+          "Assembler",
+          "Wrote {=10 + kit * 4 + arms * 5} build steps with 3D views of each part."
+        ],
+        [
+          "Wiring",
+          "Checked each wire on a diagram before power-on."
+        ],
+        [
+          "Voice",
+          "Loaded a wake word and 10 starter commands like 'turn left' and 'what time is it'."
+        ]
+      ],
+      "result": {
+        "title": "Build plan",
+        "rows": [
+          [
+            "Build steps",
+            "{=10 + kit * 4 + arms * 5}"
+          ],
+          [
+            "Motors",
+            "{=2 + arms * 3}"
+          ],
+          [
+            "Build time",
+            "About {=4 + kit * 2 + arms * 2} hours"
+          ],
+          [
+            "Sample parts cost",
+            "About ${=90 + kit * 60 + arms * 45}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Do I need to solder?",
+          "The starter kit uses plug-in wires. The advanced kit has a few optional solder joints with step-by-step help."
+        ],
+        [
+          "Does the voice work offline?",
+          "Yes. Speech for your own commands runs on the board, so nothing leaves the robot unless you allow it."
+        ]
+      ]
+    },
+    {
+      "title": "Teach custom commands",
+      "ask": "Teach my robot {cmds} new commands with {samples} voice samples each.",
+      "inputs": [
+        {
+          "id": "cmds",
+          "label": "New commands",
+          "type": "range",
+          "min": 5,
+          "max": 50,
+          "step": 1,
+          "value": 12
+        },
+        {
+          "id": "samples",
+          "label": "Samples per command",
+          "type": "range",
+          "min": 3,
+          "max": 10,
+          "step": 1,
+          "value": 5
+        }
+      ],
+      "steps": [
+        [
+          "Recorder",
+          "Prompted you to say each command {samples} times in a normal voice."
+        ],
+        [
+          "Trainer",
+          "Trained on {=cmds * samples} samples on the robot itself."
+        ],
+        [
+          "Tester",
+          "Ran each command and checked the robot's action matched."
+        ],
+        [
+          "Tuner",
+          "Flagged commands that sound alike, such as 'lift' and 'left'."
+        ]
+      ],
+      "result": {
+        "title": "Commands learned",
+        "rows": [
+          [
+            "Commands",
+            "{cmds}"
+          ],
+          [
+            "Samples recorded",
+            "{=cmds * samples}"
+          ],
+          [
+            "Recording time",
+            "About {=ceil(cmds * samples * 4 / 60)} minutes"
+          ],
+          [
+            "Expected accuracy",
+            "About {=min(97, 82 + samples * 2)}% in a quiet room (estimate)"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if someone else speaks?",
+          "Add a few samples from each person who will use it. Accuracy for new voices improves fast."
+        ],
+        [
+          "Can a command run a sequence?",
+          "Yes. One phrase can trigger several actions, like 'tidy up' moving to a spot, picking up and dropping into a bin."
+        ]
+      ]
+    },
+    {
+      "title": "Run a classroom build",
+      "ask": "{students} students will build robots in teams of {team} over {sessions} sessions.",
+      "inputs": [
+        {
+          "id": "students",
+          "label": "Students",
+          "type": "range",
+          "min": 4,
+          "max": 40,
+          "step": 1,
+          "value": 24
+        },
+        {
+          "id": "team",
+          "label": "Team size",
+          "type": "range",
+          "min": 2,
+          "max": 5,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "sessions",
+          "label": "Sessions",
+          "type": "range",
+          "min": 3,
+          "max": 12,
+          "step": 1,
+          "value": 6
+        }
+      ],
+      "steps": [
+        [
+          "Planner",
+          "Made {=ceil(students / team)} teams and one kit per team."
+        ],
+        [
+          "Lesson builder",
+          "Split the build into {sessions} sessions, about {=round(30 / sessions, 1)} steps each."
+        ],
+        [
+          "Roles",
+          "Rotated builder, wirer and tester roles every session."
+        ],
+        [
+          "Showcase",
+          "Set a final challenge: each robot follows 5 spoken commands."
+        ]
+      ],
+      "result": {
+        "title": "Class plan",
+        "rows": [
+          [
+            "Teams",
+            "{=ceil(students / team)}"
+          ],
+          [
+            "Kits needed",
+            "{=ceil(students / team)}"
+          ],
+          [
+            "Steps per session",
+            "{=round(30 / sessions, 1)}"
+          ],
+          [
+            "Sample kit cost",
+            "About ${=ceil(students / team) * 150}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if a team falls behind?",
+          "The teacher view shows each team's step, and the tutor gives hints so they catch up."
+        ],
+        [
+          "Can kits be reused?",
+          "Yes. Everything comes apart, and the app has a teardown checklist."
+        ]
+      ]
+    }
+  ]
+}

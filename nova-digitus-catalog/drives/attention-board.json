@@ -1,0 +1,89 @@
+{
+  "name": "Attention Board",
+  "tag": "One board that shows what needs your attention today across email, tasks and projects.",
+  "scenarios": [
+    {
+      "title": "Start the day",
+      "ask": "I have {emails} unread emails, {tasks} open tasks and {projects} projects. What needs me today?",
+      "inputs": [
+        {"id": "emails", "label": "Unread emails", "type": "range", "min": 0, "max": 500, "step": 10, "value": 120},
+        {"id": "tasks", "label": "Open tasks", "type": "range", "min": 0, "max": 200, "step": 5, "value": 45},
+        {"id": "projects", "label": "Active projects", "type": "range", "min": 1, "max": 20, "step": 1, "value": 6}
+      ],
+      "steps": [
+        ["Email reader", "Scanned {emails} emails. {=round(emails * 0.08)} need a reply from you; the rest are updates or newsletters."],
+        ["Task reader", "Found {=round(tasks * 0.15)} tasks due today or overdue."],
+        ["Project reader", "Checked {projects} projects. {=max(1, round(projects / 4))} are waiting on your decision."],
+        ["Ranker", "Ordered everything by deadline, who is waiting and impact."]
+      ],
+      "result": {
+        "title": "Today's board",
+        "rows": [
+          ["Emails needing you", "{=round(emails * 0.08)}"],
+          ["Tasks due", "{=round(tasks * 0.15)}"],
+          ["Decisions waiting", "{=max(1, round(projects / 4))}"],
+          ["Estimated focus time", "{=round((emails * 0.08 * 4 + tasks * 0.15 * 20 + max(1, round(projects / 4)) * 15) / 60, 1)} hours"]
+        ]
+      },
+      "followups": [
+        ["What about the other emails?", "They stay in your inbox, grouped as updates and reading. Nothing is deleted or answered without you."],
+        ["What if it's more than a day's work?", "The board suggests what to push to tomorrow and drafts a short note for anyone who is waiting."]
+      ]
+    },
+    {
+      "title": "Weekly review",
+      "ask": "Review my week: {done} tasks done, {slipped} slipped. What should change next week?",
+      "inputs": [
+        {"id": "done", "label": "Tasks completed", "type": "range", "min": 0, "max": 100, "step": 1, "value": 32},
+        {"id": "slipped", "label": "Tasks that slipped", "type": "range", "min": 0, "max": 50, "step": 1, "value": 9},
+        {"id": "meetings", "label": "Hours in meetings", "type": "range", "min": 0, "max": 40, "step": 1, "value": 14, "unit": "hours"}
+      ],
+      "steps": [
+        ["Tracker", "Counted {done} done and {slipped} slipped."],
+        ["Pattern finder", "Most slipped tasks were scheduled on days with over {=max(2, round(meetings / 5))} hours of meetings."],
+        ["Planner", "Suggested blocking {=max(2, 10 - round(meetings / 4))} hours of focus time next week."],
+        ["Writer", "Wrote a short review with 3 changes to try."]
+      ],
+      "result": {
+        "title": "Week in review",
+        "rows": [
+          ["Completion rate", "{=round(done / max(1, done + slipped) * 100)}%"],
+          ["Meeting hours", "{meetings}"],
+          ["Focus time to block", "{=max(2, 10 - round(meetings / 4))} hours"],
+          ["Changes to try", "3"]
+        ]
+      },
+      "followups": [
+        ["Will it move my meetings?", "No. It only suggests focus blocks. You decide what goes on the calendar."],
+        ["Can my team see this?", "The review is private by default. You can share a version without task details."]
+      ]
+    },
+    {
+      "title": "Hand off before time off",
+      "ask": "I'm out for {days} days. Find what will need attention and who should cover it.",
+      "inputs": [
+        {"id": "days", "label": "Days out", "type": "range", "min": 1, "max": 21, "step": 1, "value": 5, "unit": "days"},
+        {"id": "team", "label": "People who can cover", "type": "range", "min": 1, "max": 10, "step": 1, "value": 3}
+      ],
+      "steps": [
+        ["Calendar reader", "Found {=days * 2} deadlines and meetings in the next {days}."],
+        ["Matcher", "Matched each item to one of {team} teammates by who knows the work."],
+        ["Writer", "Drafted a handoff note for each person."],
+        ["Auto-reply", "Drafted an out-of-office reply that points to the right person."]
+      ],
+      "result": {
+        "title": "Handoff plan",
+        "rows": [
+          ["Items to cover", "{=days * 2}"],
+          ["Per teammate", "About {=round(days * 2 / team, 1)}"],
+          ["Handoff notes", "{team}"],
+          ["Sent", "Only after you approve"]
+        ]
+      },
+      "followups": [
+        ["What if no one knows a project?", "The board marks it and suggests moving the deadline or a short briefing before you leave."],
+        ["Does it catch me up when I'm back?", "Yes. On your first day back it shows what happened and what still needs you."]
+      ]
+    }
+  ]
+}

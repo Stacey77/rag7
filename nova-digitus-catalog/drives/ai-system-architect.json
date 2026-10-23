@@ -1,0 +1,89 @@
+{
+  "name": "AI System Architect",
+  "tag": "Turns a business problem into a reviewed AI solution design, from requirements to deployment plan.",
+  "scenarios": [
+    {
+      "title": "Design a demand forecast",
+      "ask": "Design an AI system to forecast weekly demand for {skus} products across {sites} warehouses.",
+      "inputs": [
+        {"id": "skus", "label": "Products (SKUs)", "type": "range", "min": 100, "max": 50000, "step": 100, "value": 4000},
+        {"id": "sites", "label": "Warehouses", "type": "range", "min": 1, "max": 40, "step": 1, "value": 6},
+        {"id": "history", "label": "Sales history in years", "type": "range", "min": 1, "max": 8, "step": 1, "value": 3}
+      ],
+      "steps": [
+        ["Problem framer", "Defined the goal: cut stockouts without raising inventory. Success metric: forecast error by SKU and site."],
+        ["Data planner", "Needs {history} years of sales, promotions and holidays: about {=round(skus * sites * history * 52 / 1000000, 1)} million rows."],
+        ["Model selector", "Recommended a gradient-boosted model with a simple baseline for comparison."],
+        ["Architecture", "Drew the pipeline: nightly data load, weekly training, forecasts to the planning system."],
+        ["Governance", "Added a drift check and a monthly review with the planning team."]
+      ],
+      "result": {
+        "title": "Solution design",
+        "rows": [
+          ["Forecasts per week", "{=skus * sites}"],
+          ["Training rows", "about {=round(skus * sites * history * 52 / 1000000, 1)} million"],
+          ["Expected error drop vs baseline", "{=min(30, 8 + history * 3)}% (estimate)"],
+          ["Build time", "about {=6 + ceil(sites / 10)} weeks"]
+        ]
+      },
+      "followups": [
+        ["Why does more history help?", "Longer history shows seasonal patterns more than once, which helps the model tell a trend from a one-off. Past about five years the gain is small."],
+        ["Is the error drop guaranteed?", "No. It is a planning estimate. The design includes a baseline so you measure the real gain before rollout."]
+      ]
+    },
+    {
+      "title": "Review a vendor proposal",
+      "ask": "A vendor proposes a chatbot for {calls} calls a month at {price} cents per conversation. Review the design.",
+      "inputs": [
+        {"id": "calls", "label": "Conversations per month", "type": "range", "min": 1000, "max": 200000, "step": 1000, "value": 30000},
+        {"id": "price", "label": "Price per conversation (cents)", "type": "range", "min": 5, "max": 200, "step": 5, "value": 60}
+      ],
+      "steps": [
+        ["Reader", "Pulled the architecture, data flow and pricing from the proposal."],
+        ["Checklist", "Checked 24 design points. 4 are missing: data retention, handoff rules, testing plan and exit terms."],
+        ["Cost model", "Compared the vendor price with an estimated in-house cost of about {=round(8 + 1500000 / calls, 1)} cents per conversation including staff."],
+        ["Writer", "Wrote a review memo with questions for the vendor."]
+      ],
+      "result": {
+        "title": "Proposal review",
+        "rows": [
+          ["Monthly vendor cost", "${=round(calls * price / 100)}"],
+          ["Estimated in-house cost", "${=round(calls * (8 + 1500000 / calls) / 100)}"],
+          ["Missing design points", "4 of 24"],
+          ["Verdict", "Ask for missing points before deciding"]
+        ]
+      },
+      "followups": [
+        ["Should we build instead?", "Not on cost alone. In-house means owning updates, monitoring and support. The memo lists those costs so the comparison is fair."],
+        ["What are exit terms?", "How you get your data and conversation logs back if you leave. Without them, switching vendors later can be slow and costly."]
+      ]
+    },
+    {
+      "title": "Plan deployment and monitoring",
+      "ask": "Our document classifier is ready. Plan deployment for {docs} documents a day with a {acc}% accuracy floor.",
+      "inputs": [
+        {"id": "docs", "label": "Documents per day", "type": "range", "min": 100, "max": 100000, "step": 100, "value": 5000},
+        {"id": "acc", "label": "Accuracy floor (%)", "type": "range", "min": 80, "max": 99, "step": 1, "value": 92}
+      ],
+      "steps": [
+        ["Deployment planner", "Chose a canary rollout: 10% of traffic for one week, then 50%, then all."],
+        ["Monitor designer", "Set alerts if weekly accuracy on a reviewed sample drops below {acc}%."],
+        ["Sampling", "Plans to review {=max(20, round(docs * 0.01))} documents a day by hand to measure accuracy."],
+        ["Runbook", "Wrote steps for rollback and retraining."]
+      ],
+      "result": {
+        "title": "Deployment plan",
+        "rows": [
+          ["Rollout stages", "3"],
+          ["Daily review sample", "{=max(20, round(docs * 0.01))}"],
+          ["Low-confidence docs sent to people", "about {=round(docs * (acc - 75) / 100 * 0.3)} a day"],
+          ["Rollback time", "Under 15 minutes"]
+        ]
+      },
+      "followups": [
+        ["Why send more to people at a higher floor?", "A higher floor means the model must be more certain before acting alone, so more borderline documents go to a person."],
+        ["How often should we retrain?", "When accuracy drifts toward the floor, or at least quarterly. The plan watches both."]
+      ]
+    }
+  ]
+}

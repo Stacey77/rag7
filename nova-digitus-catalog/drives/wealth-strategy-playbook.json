@@ -1,0 +1,93 @@
+{
+  "name": "Wealth Strategy Playbook",
+  "tag": "Helps veterans plan the buy, borrow, die strategy with holding-company structures.",
+  "scenarios": [
+    {
+      "title": "Fund living costs without selling",
+      "ask": "Show how a ${value} rental portfolio with {owed} owed could fund living costs without selling, using a {ltv} credit line.",
+      "inputs": [
+        {"id": "value", "label": "Portfolio value ($)", "type": "range", "min": 100000, "max": 3000000, "step": 25000, "value": 400000},
+        {"id": "owed", "label": "Debt owed today (share of value)", "type": "range", "min": 0, "max": 50, "step": 5, "value": 30, "unit": "%"},
+        {"id": "ltv", "label": "Credit line limit", "type": "select", "value": "55% LTV", "options": [{"label": "50% LTV", "n": 50}, {"label": "55% LTV", "n": 55}, {"label": "60% LTV", "n": 60}]},
+        {"id": "drop", "label": "Price drop to test", "type": "range", "min": 0, "max": 40, "step": 5, "value": 20, "unit": "%"}
+      ],
+      "steps": [
+        ["Model", "Sample portfolio: ${value} value, ${=round(value * owed / 100)} owed."],
+        ["Borrow", "A line of credit at {ltv} could release about ${=max(0, round(value * (ltv - owed) / 100))}, drawn over 5 years."],
+        ["Stress test", "Checked a {drop} price drop with the line fully drawn: loan-to-value becomes {=round(max(owed, ltv) / max(1, 100 - drop) * 100)}%."],
+        ["Structure", "Showed how a holding company can separate the properties from personal assets."]
+      ],
+      "result": {
+        "title": "Illustration only",
+        "rows": [
+          ["Cash released", "About ${=max(0, round(value * (ltv - owed) / 100))} over 5 years"],
+          ["Per year", "About ${=max(0, round(value * (ltv - owed) / 100 / 5))}"],
+          ["Properties sold", "0"],
+          ["Worst-case LTV", "{=round(max(owed, ltv) / max(1, 100 - drop) * 100)}%"],
+          ["Next step", "Review with your CPA and attorney"]
+        ]
+      },
+      "followups": [
+        ["What if I already owe more than the line allows?", "Then the line releases nothing until the portfolio grows or the debt is paid down. The playbook shows how many years that might take at sample growth rates."],
+        ["Is the worst case safe?", "It depends on the lender's limits. If {=round(max(owed, ltv) / max(1, 100 - drop) * 100)}% is above what your lender allows, you could be asked to pay down the line. The playbook flags this before you draw."]
+      ]
+    },
+    {
+      "title": "Design a holding-company structure",
+      "ask": "I own {props} properties and run {biz} businesses. Show a holding structure that keeps them separate.",
+      "inputs": [
+        {"id": "props", "label": "Properties", "type": "range", "min": 1, "max": 20, "step": 1, "value": 4},
+        {"id": "biz", "label": "Operating businesses", "type": "range", "min": 0, "max": 6, "step": 1, "value": 2},
+        {"id": "per_llc", "label": "Properties per LLC", "type": "range", "min": 1, "max": 5, "step": 1, "value": 2}
+      ],
+      "steps": [
+        ["Mapper", "Drew a sample chart: trust at the top, a holding company, then property and business LLCs."],
+        ["Grouping", "Placed {props} properties into {=ceil(props / per_llc)} property LLCs with up to {per_llc} each."],
+        ["Business side", "Kept {biz} operating businesses in their own LLCs, apart from the real estate."],
+        ["Checklist", "Listed bank accounts, insurance and agreements each entity needs."]
+      ],
+      "result": {
+        "title": "Sample structure",
+        "rows": [
+          ["Property LLCs", "{=ceil(props / per_llc)}"],
+          ["Business LLCs", "{biz}"],
+          ["Total entities", "{=ceil(props / per_llc) + biz + 2} including trust and holding company"],
+          ["Bank accounts needed", "{=ceil(props / per_llc) + biz + 1}"],
+          ["Note", "Educational model; have an attorney set up your structure"]
+        ]
+      },
+      "followups": [
+        ["Why not one LLC for everything?", "If one property has a claim, assets in the same LLC can be exposed. Splitting them limits how far one problem can reach, at the cost of more paperwork."],
+        ["Does each LLC cost money?", "Yes. Most states charge formation and annual fees, and each entity needs its own books. The playbook adds those costs to the plan."]
+      ]
+    },
+    {
+      "title": "Plan for veteran household goals",
+      "ask": "Our household needs ${need} a year from the portfolio for {years} years. What would that draw look like?",
+      "inputs": [
+        {"id": "need", "label": "Yearly draw needed ($)", "type": "range", "min": 5000, "max": 150000, "step": 5000, "value": 30000},
+        {"id": "years", "label": "Years of draws", "type": "range", "min": 1, "max": 20, "step": 1, "value": 8, "unit": "years"},
+        {"id": "rate", "label": "Line of credit rate", "type": "range", "min": 4, "max": 12, "step": 0.5, "value": 7.5, "unit": "%"}
+      ],
+      "steps": [
+        ["Draw planner", "Laid out ${need} a year for {years}."],
+        ["Interest model", "Estimated interest if the balance builds and interest is paid each year."],
+        ["Income check", "Compared draws with sample rental income, so you see how much the rents cover."],
+        ["Review list", "Listed questions for your CPA, attorney and VA-accredited advisor if benefits are involved."]
+      ],
+      "result": {
+        "title": "Illustration only",
+        "rows": [
+          ["Total drawn", "${=need * years}"],
+          ["Interest in the final year", "${=round(need * years * rate / 100)}"],
+          ["Total interest (approx.)", "${=round(need * years * (years + 1) / 2 * rate / 100)}"],
+          ["Note", "Not financial advice; numbers are illustrative"]
+        ]
+      },
+      "followups": [
+        ["Why does interest grow every year?", "Each year adds a new draw to the balance, so interest is charged on more money. By year {years}, interest is about ${=round(need * years * rate / 100)} a year."],
+        ["Does this affect VA benefits?", "The playbook does not determine benefits. If you receive needs-based benefits, ask a VA-accredited representative how borrowing or assets are treated."]
+      ]
+    }
+  ]
+}

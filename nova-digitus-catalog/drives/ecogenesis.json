@@ -1,0 +1,260 @@
+{
+  "name": "EcoGenesis",
+  "tag": "Lets you design and test a self-sustaining natural space on screen before you build it.",
+  "scenarios": [
+    {
+      "title": "Design a backyard food forest",
+      "ask": "Design a food forest on {area} in a {climate} climate. Show me year {years}.",
+      "inputs": [
+        {
+          "id": "area",
+          "label": "Area",
+          "type": "range",
+          "min": 50,
+          "max": 2000,
+          "step": 50,
+          "value": 400,
+          "unit": "m²"
+        },
+        {
+          "id": "climate",
+          "label": "Climate",
+          "type": "select",
+          "value": "temperate",
+          "options": [
+            {
+              "label": "dry",
+              "n": 1
+            },
+            {
+              "label": "temperate",
+              "n": 2
+            },
+            {
+              "label": "humid",
+              "n": 3
+            }
+          ]
+        },
+        {
+          "id": "years",
+          "label": "Years to simulate",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 5
+        }
+      ],
+      "steps": [
+        [
+          "Layout",
+          "Placed canopy trees, shrubs, ground cover and vines in 7 layers across {area}."
+        ],
+        [
+          "Plant picker",
+          "Chose {=round(area / 6)} plants suited to a {climate} climate."
+        ],
+        [
+          "Simulator",
+          "Grew the design for {years} year(s), tracking shade, water use and soil."
+        ],
+        [
+          "Balance check",
+          "Flagged where shade will crowd out lower layers by year {=min(years, 4)}."
+        ]
+      ],
+      "result": {
+        "title": "Design at year {years}",
+        "rows": [
+          [
+            "Plants",
+            "{=round(area / 6)}"
+          ],
+          [
+            "Canopy cover",
+            "{=min(80, years * 12 + 10)}%"
+          ],
+          [
+            "Water need",
+            "About {=round(area * (4 - climate) * 2)} L/week in dry spells"
+          ],
+          [
+            "Estimated yearly harvest",
+            "About {=round(area * 0.8 * min(years, 6) / 6)} kg (sample)"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "How accurate is the simulation?",
+          "It is a planning model built on typical growth rates. Real growth depends on your soil and weather, so treat results as a guide."
+        ],
+        [
+          "Can I import my site?",
+          "Yes. Upload a site sketch or map and the layout uses your real shapes and sun angles."
+        ]
+      ]
+    },
+    {
+      "title": "Balance an aquaponics loop",
+      "ask": "We have a {tank} fish tank. How many fish and how much grow bed keep it balanced?",
+      "inputs": [
+        {
+          "id": "tank",
+          "label": "Fish tank volume",
+          "type": "range",
+          "min": 500,
+          "max": 5000,
+          "step": 250,
+          "value": 1500,
+          "unit": "L"
+        },
+        {
+          "id": "density",
+          "label": "Stocking",
+          "type": "select",
+          "value": "Moderate",
+          "options": [
+            {
+              "label": "Light",
+              "n": 60
+            },
+            {
+              "label": "Moderate",
+              "n": 40
+            },
+            {
+              "label": "Heavy",
+              "n": 25
+            }
+          ]
+        }
+      ],
+      "steps": [
+        [
+          "Fish model",
+          "At this stocking, the tank holds about {=round(tank / density)} kg of fish."
+        ],
+        [
+          "Feed",
+          "Fish eat about 1.5% of body weight: {=round(tank / density * 15)} grams of feed a day."
+        ],
+        [
+          "Plants",
+          "Matched {=round(tank / density * 15 / 60, 1)} square meters of grow bed to that feed."
+        ],
+        [
+          "Simulator",
+          "Ran 90 days and tracked ammonia, nitrate and oxygen."
+        ]
+      ],
+      "result": {
+        "title": "Balanced loop",
+        "rows": [
+          [
+            "Fish",
+            "{=round(tank / density)} kg"
+          ],
+          [
+            "Feed per day",
+            "{=round(tank / density * 15)} g"
+          ],
+          [
+            "Grow bed",
+            "{=round(tank / density * 15 / 60, 1)} m²"
+          ],
+          [
+            "Oxygen margin",
+            "{=round(density / 2)}% above minimum"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What happens if I overstock?",
+          "The model shows ammonia rising and oxygen falling within days, so you can see the risk before it happens in the tank."
+        ],
+        [
+          "Which fish does it model?",
+          "Common warm and cool water species. Pick one and the feed and temperature numbers change to match."
+        ]
+      ]
+    },
+    {
+      "title": "Plan a wildlife pond",
+      "ask": "Plan a {pond} pond with {plants} plant cover. Will it stay clear?",
+      "inputs": [
+        {
+          "id": "pond",
+          "label": "Pond area",
+          "type": "range",
+          "min": 5,
+          "max": 100,
+          "step": 5,
+          "value": 20,
+          "unit": "m²"
+        },
+        {
+          "id": "plants",
+          "label": "Plant cover",
+          "type": "range",
+          "min": 10,
+          "max": 70,
+          "step": 5,
+          "value": 40,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Designer",
+          "Shaped shallow edges and one deeper zone of at least 0.8 m."
+        ],
+        [
+          "Plant picker",
+          "Chose submerged, floating and edge plants for {plants} cover."
+        ],
+        [
+          "Simulator",
+          "Tested a summer heat wave for algae and oxygen."
+        ],
+        [
+          "Wildlife",
+          "Added a sloped exit so animals can climb out."
+        ]
+      ],
+      "result": {
+        "title": "Pond plan",
+        "rows": [
+          [
+            "Plants",
+            "About {=round(pond * plants / 100 * 2)} plants"
+          ],
+          [
+            "Algae risk",
+            "{=max(5, round(80 - plants))} out of 100"
+          ],
+          [
+            "Water volume",
+            "About {=round(pond * 0.5 * 1000)} L"
+          ],
+          [
+            "Top-up in summer",
+            "About {=round(pond * 5)} L/week"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What cover is best?",
+          "Many pond keepers aim for half to two-thirds plant cover to shade the water and starve algae. Move the slider to see the change."
+        ],
+        [
+          "Do I need a pump?",
+          "Not always. The simulator shows whether a small solar pump would help oxygen on hot days."
+        ]
+      ]
+    }
+  ]
+}

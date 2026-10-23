@@ -1,0 +1,259 @@
+{
+  "name": "AquaFlow: Water Delivery Operations",
+  "tag": "Order intake, route planning, jug inventory and reports for water delivery businesses, in one place.",
+  "scenarios": [
+    {
+      "title": "Plan tomorrow's deliveries",
+      "ask": "We have {orders} orders for tomorrow and {trucks} trucks. Plan the routes.",
+      "inputs": [
+        {
+          "id": "orders",
+          "label": "Orders",
+          "type": "range",
+          "min": 10,
+          "max": 300,
+          "step": 5,
+          "value": 85
+        },
+        {
+          "id": "trucks",
+          "label": "Trucks",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3
+        },
+        {
+          "id": "jugs",
+          "label": "Average 5-gallon jugs per order",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3
+        }
+      ],
+      "steps": [
+        [
+          "Order intake",
+          "Collected {orders} orders from the website, phone notes and repeat schedules."
+        ],
+        [
+          "Router",
+          "Split them into {trucks} routes of about {=round(orders / trucks)} stops each, grouped by neighborhood."
+        ],
+        [
+          "Loader",
+          "Each truck needs about {=round(orders * jugs / trucks)} full jugs and room for empties."
+        ],
+        [
+          "Notifier",
+          "Queued text messages with a 2-hour delivery window for every customer."
+        ]
+      ],
+      "result": {
+        "title": "Routes ready",
+        "rows": [
+          [
+            "Stops per truck",
+            "{=round(orders / trucks)}"
+          ],
+          [
+            "Jugs to load",
+            "{=orders * jugs}"
+          ],
+          [
+            "Total driver hours",
+            "About {=round(orders * 9 / 60, 1)}"
+          ],
+          [
+            "Trucks needed for 8-hour days",
+            "{=ceil(orders * 9 / 480)} (you have {trucks})"
+          ],
+          [
+            "Customer texts",
+            "{orders}"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What if a truck can't carry that many jugs?",
+          "Set each truck's capacity and the router splits overloaded routes or adds a reload stop at the warehouse."
+        ],
+        [
+          "Can drivers see the route on their phones?",
+          "Yes. Each driver gets a stop list with directions, gate codes and notes, and marks deliveries done as they go."
+        ]
+      ]
+    },
+    {
+      "title": "Keep jugs in stock",
+      "ask": "We have {stock} full jugs and go through about {daily} a day. Our supplier takes {lead} to deliver.",
+      "inputs": [
+        {
+          "id": "stock",
+          "label": "Full jugs on hand",
+          "type": "range",
+          "min": 50,
+          "max": 3000,
+          "step": 50,
+          "value": 600
+        },
+        {
+          "id": "daily",
+          "label": "Jugs used per day",
+          "type": "range",
+          "min": 10,
+          "max": 500,
+          "step": 10,
+          "value": 140
+        },
+        {
+          "id": "lead",
+          "label": "Supplier lead time",
+          "type": "range",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "value": 3,
+          "unit": "days"
+        }
+      ],
+      "steps": [
+        [
+          "Inventory",
+          "Counted {stock} full jugs and {=round(stock * 0.4)} empties waiting for refill."
+        ],
+        [
+          "Forecaster",
+          "Usage runs about {daily} a day, higher on Mondays."
+        ],
+        [
+          "Planner",
+          "Stock covers about {=round(stock / max(1, daily), 1)} days. Reorder point is {=daily * (lead + 2)} jugs, which includes a 2-day buffer."
+        ],
+        [
+          "Buyer",
+          "Drafted a purchase order for the supplier, waiting for your approval."
+        ]
+      ],
+      "result": {
+        "title": "Stock plan",
+        "rows": [
+          [
+            "Days of stock",
+            "{=round(stock / max(1, daily), 1)}"
+          ],
+          [
+            "Reorder point",
+            "{=daily * (lead + 2)} jugs"
+          ],
+          [
+            "Order now?",
+            "{=max(0, daily * (lead + 2) - stock)} jugs short of the reorder point"
+          ],
+          [
+            "Suggested order",
+            "{=daily * 7} jugs (one week)"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Does it track empty jugs customers still have?",
+          "Yes. Each customer has a jug balance, and drivers record empties picked up so deposits stay accurate."
+        ],
+        [
+          "Can it reorder automatically?",
+          "It can, but by default it drafts the order and waits for you."
+        ]
+      ]
+    },
+    {
+      "title": "Monthly business report",
+      "ask": "Give me last month's numbers: {customers} customers, about {churn}% cancelled.",
+      "inputs": [
+        {
+          "id": "customers",
+          "label": "Active customers",
+          "type": "range",
+          "min": 50,
+          "max": 3000,
+          "step": 50,
+          "value": 450
+        },
+        {
+          "id": "churn",
+          "label": "Cancelled last month",
+          "type": "range",
+          "min": 1,
+          "max": 15,
+          "step": 1,
+          "value": 4,
+          "unit": "%"
+        },
+        {
+          "id": "spend",
+          "label": "Average monthly spend",
+          "type": "range",
+          "min": 15,
+          "max": 120,
+          "step": 5,
+          "value": 38,
+          "unit": "dollars"
+        }
+      ],
+      "steps": [
+        [
+          "Reporter",
+          "Pulled orders, payments and cancellations for the month."
+        ],
+        [
+          "Analyst",
+          "Lost {=round(customers * churn / 100)} customers. Most said delivery windows were too wide."
+        ],
+        [
+          "Revenue",
+          "Monthly revenue about ${=customers * spend}."
+        ],
+        [
+          "Advisor",
+          "Suggested narrower delivery windows in the two areas with the most cancellations."
+        ]
+      ],
+      "result": {
+        "title": "Monthly report",
+        "rows": [
+          [
+            "Revenue",
+            "${=customers * spend}"
+          ],
+          [
+            "Customers lost",
+            "{=round(customers * churn / 100)}"
+          ],
+          [
+            "Revenue lost per month",
+            "${=round(customers * churn / 100) * spend}"
+          ],
+          [
+            "Top cancel reason",
+            "Delivery window too wide"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Where do cancel reasons come from?",
+          "From a one-question survey sent when a customer cancels, plus driver notes. You can edit the reasons list."
+        ],
+        [
+          "Can I send this to my accountant?",
+          "Yes. The report exports as a PDF or a spreadsheet."
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "name": "Agent Dev Kit Dashboard",
+  "tag": "A visual guide that helps your team plan an agent's memory, knowledge, guardrails and handoffs.",
+  "scenarios": [
+    {
+      "title": "Plan a customer-service agent",
+      "ask": "Plan a support agent for {tickets} tickets a day using {docs} help articles, with {guard} guardrails.",
+      "inputs": [
+        {"id": "tickets", "label": "Tickets per day", "type": "range", "min": 50, "max": 5000, "step": 50, "value": 600},
+        {"id": "docs", "label": "Help articles", "type": "range", "min": 20, "max": 2000, "step": 20, "value": 300},
+        {"id": "guard", "label": "Guardrail level", "type": "select", "value": "Standard",
+         "options": [{"label": "Light", "n": 1}, {"label": "Standard", "n": 2}, {"label": "Strict", "n": 3}]}
+      ],
+      "steps": [
+        ["Memory", "Short-term memory for the current chat. Long-term notes per customer, kept 90 days."],
+        ["Knowledge", "Index {docs} articles into about {=docs * 6} passages for retrieval."],
+        ["Guardrails", "{guard} level: {=guard * 3 + 2} checks, including no refunds without approval and no personal data in replies."],
+        ["Delegation", "Billing and outage questions hand off to specialist agents. Angry customers go to a person."],
+        ["Distribution", "Plan for {=max(1, ceil(tickets / 1500))} agent instances behind one queue."]
+      ],
+      "result": {
+        "title": "Architecture plan",
+        "rows": [
+          ["Knowledge passages", "{=docs * 6}"],
+          ["Guardrail checks", "{=guard * 3 + 2}"],
+          ["Specialist agents", "2"],
+          ["Instances", "{=max(1, ceil(tickets / 1500))}"],
+          ["Expected handoffs to people", "about {=round(tickets * (0.08 + guard * 0.02))} a day"]
+        ]
+      },
+      "followups": [
+        ["Why do stricter guardrails send more to people?", "Each extra check is another reason to stop and ask. That is the trade: fewer mistakes, more human work. The dashboard shows the count so you can choose."],
+        ["Is this code or a diagram?", "Both. The dashboard draws the architecture and exports a starter config for the Agent Development Kit that matches it."]
+      ]
+    },
+    {
+      "title": "Teach agent concepts to new hires",
+      "ask": "Walk {people} new engineers through the five building blocks in {sessions} short sessions.",
+      "inputs": [
+        {"id": "people", "label": "New engineers", "type": "range", "min": 1, "max": 30, "step": 1, "value": 6},
+        {"id": "sessions", "label": "Sessions", "type": "range", "min": 1, "max": 5, "step": 1, "value": 3}
+      ],
+      "steps": [
+        ["Curriculum", "Grouped memory, knowledge, guardrails, delegation and distribution into {sessions} sessions."],
+        ["Visual walkthrough", "Each block has an animated diagram that shows data moving through it."],
+        ["Exercises", "Added {=sessions * 2} build-it-yourself exercises using the sample agent."],
+        ["Check-in", "Short quiz at the end of each session to spot gaps."]
+      ],
+      "result": {
+        "title": "Onboarding track",
+        "rows": [
+          ["Sessions", "{sessions}"],
+          ["Blocks per session", "{=round(5 / sessions, 1)}"],
+          ["Exercises", "{=sessions * 2}"],
+          ["Seats", "{people}"]
+        ]
+      },
+      "followups": [
+        ["Is one session enough?", "It covers the ideas but leaves little hands-on time. Three sessions is the usual sweet spot for engineers new to agents."],
+        ["Can we add our own examples?", "Yes. Swap in your own sample agent and the diagrams update to match it."]
+      ]
+    },
+    {
+      "title": "Review an existing agent",
+      "ask": "Review our current agent: {tools} tools, {prompt_k}k-token system prompt. Where are the weak spots?",
+      "inputs": [
+        {"id": "tools", "label": "Tools the agent can call", "type": "range", "min": 1, "max": 40, "step": 1, "value": 14},
+        {"id": "prompt_k", "label": "System prompt size", "type": "range", "min": 1, "max": 30, "step": 1, "value": 9}
+      ],
+      "steps": [
+        ["Mapper", "Placed your agent on the five-block map. Memory and knowledge are mixed into one prompt."],
+        ["Knowledge check", "About {=round(prompt_k * 0.6, 1)}k tokens of the prompt are reference text that could move to retrieval."],
+        ["Delegation check", "{tools} tools on one agent. Suggested splitting into {=max(1, ceil(tools / 8))} agents with focused toolsets."],
+        ["Guardrail check", "No output check before replies reach customers. Flagged as high priority."]
+      ],
+      "result": {
+        "title": "Review findings",
+        "rows": [
+          ["High-priority gaps", "1"],
+          ["Prompt tokens to move to retrieval", "{=round(prompt_k * 0.6, 1)}k"],
+          ["Suggested agent split", "{=max(1, ceil(tools / 8))} agents"],
+          ["Estimated cost cut per call", "about {=round(prompt_k * 60 / (prompt_k + 2))}%"]
+        ]
+      },
+      "followups": [
+        ["Why split tools across agents?", "Models choose tools less reliably as the list grows. Smaller, focused toolsets usually mean fewer wrong calls."],
+        ["Is the cost cut guaranteed?", "No. It is an estimate based on shorter prompts. Measure before and after on your own traffic."]
+      ]
+    }
+  ]
+}

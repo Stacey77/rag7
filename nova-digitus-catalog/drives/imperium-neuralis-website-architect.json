@@ -1,0 +1,236 @@
+{
+  "name": "Imperium Neuralis: Website Architect",
+  "tag": "Analyzes your website, estimates what a better one could earn and generates the improved version.",
+  "scenarios": [
+    {
+      "title": "Audit and rebuild a service site",
+      "ask": "Our site gets {visitors} visitors a month and {conv}% become inquiries. Analyze it and build a better one.",
+      "inputs": [
+        {
+          "id": "visitors",
+          "label": "Monthly visitors",
+          "type": "range",
+          "min": 200,
+          "max": 50000,
+          "step": 100,
+          "value": 3000
+        },
+        {
+          "id": "conv",
+          "label": "Visitors who inquire",
+          "type": "range",
+          "min": 0.5,
+          "max": 8,
+          "step": 0.5,
+          "value": 1.5,
+          "unit": "%"
+        },
+        {
+          "id": "value",
+          "label": "Average value of a new client",
+          "type": "range",
+          "min": 100,
+          "max": 10000,
+          "step": 100,
+          "value": 1200
+        }
+      ],
+      "steps": [
+        [
+          "Analyzer",
+          "Scanned 14 sample pages: slow mobile load, no clear call to action above the fold, contact form 9 fields long."
+        ],
+        [
+          "Revenue model",
+          "Today: {=round(visitors * conv / 100)} inquiries a month. A typical lift after fixes like these is 20 to 50%."
+        ],
+        [
+          "Architect",
+          "Planned a 6-page site: home, services, proof, pricing guide, about, contact."
+        ],
+        [
+          "Builder",
+          "Generated the new pages with a 4-field form and a call button on every page."
+        ]
+      ],
+      "result": {
+        "title": "New site plan",
+        "rows": [
+          [
+            "Inquiries today",
+            "{=round(visitors * conv / 100)} per month"
+          ],
+          [
+            "Projected with a 30% lift",
+            "{=round(visitors * conv / 100 * 1.3)} per month"
+          ],
+          [
+            "Extra revenue if 1 in 4 become clients",
+            "${=round(visitors * conv / 100 * 0.3 * 0.25 * value)} per month"
+          ],
+          [
+            "Note",
+            "Projection, not a guarantee"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Why assume a 30% lift?",
+          "It's the middle of a common range for fixes like a shorter form and clearer calls to action. Your real result depends on your market and traffic."
+        ],
+        [
+          "Do we keep our domain and content?",
+          "Yes. The new site uses your domain, and your existing text and photos are reused where they still work."
+        ]
+      ]
+    },
+    {
+      "title": "Online store checkout leaks",
+      "ask": "Our store gets {visitors} visitors a month and the average order is ${order}. Find where we lose buyers.",
+      "inputs": [
+        {
+          "id": "visitors",
+          "label": "Monthly visitors",
+          "type": "range",
+          "min": 1000,
+          "max": 200000,
+          "step": 1000,
+          "value": 20000
+        },
+        {
+          "id": "order",
+          "label": "Average order",
+          "type": "range",
+          "min": 15,
+          "max": 400,
+          "step": 5,
+          "value": 65
+        },
+        {
+          "id": "cart",
+          "label": "Visitors who add to cart",
+          "type": "range",
+          "min": 2,
+          "max": 20,
+          "step": 1,
+          "value": 8,
+          "unit": "%"
+        }
+      ],
+      "steps": [
+        [
+          "Analyzer",
+          "Walked the purchase path. {cart}% add to cart, but 70% of carts are abandoned."
+        ],
+        [
+          "Diagnoser",
+          "Shipping cost appears only on the last step, and guest checkout is hidden."
+        ],
+        [
+          "Revenue model",
+          "Recovering 10% of abandoned carts adds {=round(visitors * cart / 100 * 0.7 * 0.1)} orders a month."
+        ],
+        [
+          "Builder",
+          "Generated a new cart and checkout layout with shipping shown up front."
+        ]
+      ],
+      "result": {
+        "title": "Checkout fixes",
+        "rows": [
+          [
+            "Carts started",
+            "{=round(visitors * cart / 100)} per month"
+          ],
+          [
+            "Carts abandoned",
+            "{=round(visitors * cart / 100 * 0.7)}"
+          ],
+          [
+            "Extra orders at 10% recovery",
+            "{=round(visitors * cart / 100 * 0.7 * 0.1)}"
+          ],
+          [
+            "Extra revenue",
+            "${=round(visitors * cart / 100 * 0.7 * 0.1 * order)} per month (estimate)"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "Is 10% recovery realistic?",
+          "It's a conservative planning figure. Clear shipping costs and guest checkout are among the most common fixes for abandoned carts."
+        ],
+        [
+          "Can we test before switching?",
+          "Yes. Run the new checkout for half your visitors and compare for two to four weeks."
+        ]
+      ]
+    },
+    {
+      "title": "Quick site score",
+      "ask": "Score our {pages}-page website and tell me the top fixes.",
+      "inputs": [
+        {
+          "id": "pages",
+          "label": "Pages on the site",
+          "type": "range",
+          "min": 3,
+          "max": 200,
+          "step": 1,
+          "value": 12
+        }
+      ],
+      "steps": [
+        [
+          "Crawler",
+          "Read all {pages} pages and checked links, images and forms."
+        ],
+        [
+          "Analyzer",
+          "Found {=max(2, round(pages * 0.4))} issues: missing page titles, large images and 3 broken links."
+        ],
+        [
+          "Prioritizer",
+          "Ranked fixes by effect on speed, search visibility and inquiries."
+        ],
+        [
+          "Builder",
+          "Offered to generate fixed versions of the top 5 pages."
+        ]
+      ],
+      "result": {
+        "title": "Site score",
+        "rows": [
+          [
+            "Pages checked",
+            "{pages}"
+          ],
+          [
+            "Issues found",
+            "{=max(2, round(pages * 0.4))}"
+          ],
+          [
+            "Quick fixes (under an hour)",
+            "{=max(1, round(pages * 0.25))}"
+          ],
+          [
+            "Sample score",
+            "64 of 100"
+          ]
+        ]
+      },
+      "followups": [
+        [
+          "What's in the score?",
+          "Speed, mobile layout, search basics like titles and descriptions, and how easy it is to contact you."
+        ],
+        [
+          "Can I fix things myself?",
+          "Yes. Each issue comes with plain steps. The builder is there if you'd rather have it done."
+        ]
+      ]
+    }
+  ]
+}
