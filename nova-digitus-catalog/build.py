@@ -5,7 +5,7 @@ Every "Book a demo" button opens the Discovery Call with the app name pre-filled
 """
 import html, json, os, re
 from urllib.parse import quote
-from catalog_data import APPS, GROUPS
+from catalog_data import APPS, GROUPS, PORTFOLIO_EXTRA
 from links import public_try_url as links_try_url
 
 # 60-second teaser demos (demos.json) and the player that runs them, bundled into the site as demos.js
@@ -23,6 +23,12 @@ if os.path.exists(VAULT_FILE):
             for a in _vault if a.get("name")]
     VAULT_URLS = {a["name"]: a["try_url"] for a in _vault if str(a.get("try_url", "")).startswith("https://")}
     print(f"catalog source: Obsidian vault ({len(APPS)} public apps)")
+# Portfolio apps not yet in the vault (see catalog_data.PORTFOLIO_EXTRA); a vault entry with the same name wins.
+_have = {a[0].lower() for a in APPS}
+_extra = [a for a in PORTFOLIO_EXTRA if a[0].lower() not in _have]
+APPS = list(APPS) + _extra
+if _extra:
+    print(f"plus {len(_extra)} App Exchange portfolio apps not in the vault yet")
 
 
 def try_url(name):
@@ -210,3 +216,15 @@ with open(os.path.join(SITE, "demos.js"), "w") as f:
     f.write("window.ND_DEMOS=" + json.dumps(demo_data, ensure_ascii=False).replace("</", "<\\/") + ";\n")
     f.write(open(os.path.join(HERE, "demo_player.js")).read())
 print(f"demos.js: {len(DEMOS)} demos" + (f" ({len(missing)} for apps outside the catalog: {', '.join(missing)})" if missing else ""))
+
+# ---------- keep the home page's app counts in step with the catalog
+_home = os.path.join(SITE, "index.html")
+if os.path.exists(_home):
+    _h = open(_home, encoding="utf-8").read()
+    _h = re.sub(r'(<div class="count"><b>)\d+(</b>)', rf"\g<1>{total}\g<2>", _h)
+    _h = re.sub(r"\b\d+ apps in nine groups", f"{total} apps in nine groups", _h)
+    _h = re.sub(r"Search all \d+ apps", f"Search all {total} apps", _h)
+    for _gid, *_ in GROUPS:
+        _n = sum(1 for a in APPS if a[1] == _gid)
+        _h = re.sub(rf'(href="apps/{_gid}\.html">[^<]*<span class="more">)\d+', rf"\g<1>{_n}", _h)
+    open(_home, "w", encoding="utf-8").write(_h)
