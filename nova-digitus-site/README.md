@@ -51,3 +51,9 @@ If you want the form on Coolify, point its `action` at your own form handler or 
 The catalog is generated from the app list (`catalog_data.py` and `build.py` in the Nova Digitus workspace).
 To give an app a **Try it** button, add its public address to `PUBLIC_URLS` in `links.py`, rebuild,
 and copy the new `apps/` folder here.
+
+## Customer review pages
+
+`review/<app-slug>/index.html` is a private page for each app, to send after a booking. A link only opens it until its end date:
+`review/<slug>/?until=YYYY-MM-DD&c=<code>&for=<client>`. Make links in the App Exchange (open an app, then "Customer review link").
+Pages are `noindex` and left out of the sitemap. The date check runs in the browser, so it stops casual sharing after the date but isn't a hard lock.

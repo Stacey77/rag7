@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexus Agentic Studio: your review | Nova Digitus Designs</title>
+<meta name="robots" content="noindex, nofollow"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%232F5BEA%27/%3E%3Cpath d=%27M19 47V17h6l14 19V17h6v30h-6L25 28v19z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../apps/catalog.css">
+<style>.rv-banner{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:0 0 28px;font-size:.95rem}
+.rv-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:28px}@media (max-width:820px){.rv-grid{grid-template-columns:1fr}}
+.rv-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px}.rv-card h2{font-size:1.3rem}
+.rv-card ol,.rv-card ul{padding-left:20px;margin:10px 0 0}.rv-card li{margin-bottom:8px}.rv-next{margin-top:22px}.rv-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}</style>
+</head><body><div class="wrap">
+<header class="nav"><a class="logo" href="../../">Nova Digitus Designs</a><nav><a class="btn" href="https://cal.com/stacey-williams-5enqex/discovery-call?app=Nexus%20Agentic%20Studio" target="_blank" rel="noopener">Book a follow-up</a></nav></header>
+<main>
+<div id="rv-ok" hidden>
+<div class="rv-banner"><span id="rv-who"></span>This private review link works until <b id="rv-until"></b>.</div>
+<div class="hero"><p class="crumb">Business Operations &amp; Automation</p><h1>Nexus Agentic Studio</h1><p class="lede">Audit manual processes, calculate ROI and deploy secure automated workflows.</p></div>
+<section><div class="rv-grid">
+<div class="rv-card"><h2>Who it's for</h2><p>For owners and operators who want work to run itself.</p>
+<h2 class="rv-next">What happens next</h2><ol><li><b>Review</b> this page and note where it fits your work.</li><li><b>Follow-up call:</b> 30 minutes on your use case, with the app configured on sample data like yours.</li><li><b>Pilot:</b> one app on your data, measured against a goal we agree on. Keep it, license it, or walk away.</li></ol>
+<div class="rv-acts"><a class="btn" href="https://cal.com/stacey-williams-5enqex/discovery-call?app=Nexus%20Agentic%20Studio" target="_blank" rel="noopener">Book the follow-up call</a></div></div>
+<div class="rv-card"><h2>Before we talk</h2><p>A few questions to think about. Rough answers are fine.</p><ul><li>Which manual process costs your team the most hours?</li><li>Which tools does that process touch today?</li><li>How do you measure it now: time, errors, cost?</li></ul></div>
+</div></section>
+</div>
+<div id="rv-gate" class="hero" hidden><h1 id="rv-gate-title">This page is for booked clients</h1><p class="lede" id="rv-gate-text">Review links are sent after you book a call.</p>
+<p><a class="btn" href="https://cal.com/stacey-williams-5enqex/discovery-call?app=Nexus%20Agentic%20Studio" target="_blank" rel="noopener">Book a call</a> <a class="btn line" href="../../apps/">Browse all apps</a></p></div>
+<noscript><p class="lede">Turn on JavaScript to open this review, or <a href="https://cal.com/stacey-williams-5enqex/discovery-call?app=Nexus%20Agentic%20Studio">book a call</a>.</p></noscript>
+</main></div><footer><div class="wrap">© 2026 Nova Digitus Designs LLC · Private review page</div></footer>
+<script>
+(function(){
+  var SLUG="nexus-agentic-studio", SALT="nd-review-v1", CAL="https://cal.com/stacey-williams-5enqex/discovery-call";
+  var q=new URLSearchParams(location.search), until=q.get('until')||'', code=(q.get('c')||'').toLowerCase(), who=(q.get('for')||'').slice(0,80);
+  var ok=document.getElementById('rv-ok'), gate=document.getElementById('rv-gate');
+  function show(kind){
+    if(kind==='ok'){ok.hidden=false;gate.hidden=true;return;}
+    gate.hidden=false; ok.hidden=true;
+    document.getElementById('rv-gate-title').textContent = kind==='expired' ? 'This review link has expired' : 'This page is for booked clients';
+    document.getElementById('rv-gate-text').textContent = kind==='expired'
+      ? 'The review window for this app ended on '+until+'. Book a short call and we will send you a fresh link, or walk you through it live.'
+      : 'Review links are sent after you book a call. Book one below and you will get your link.';
+  }
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(until) || !/^[0-9a-f]{10}$/.test(code) || !(window.crypto&&crypto.subtle)){show('invalid');return;}
+  crypto.subtle.digest('SHA-256', new TextEncoder().encode(SLUG+'|'+until+'|'+SALT)).then(function(buf){
+    var hex=Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('').slice(0,10);
+    if(hex!==code){show('invalid');return;}
+    var end=new Date(until+'T23:59:59');
+    if(Date.now()>end.getTime()){show('expired');return;}
+    var days=Math.max(0,Math.ceil((end.getTime()-Date.now())/86400000));
+    document.getElementById('rv-who').textContent = who ? 'Prepared for '+who+'. ' : '';
+    document.getElementById('rv-until').textContent = end.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+' ('+days+' day'+(days===1?'':'s')+' left)';
+    show('ok');
+  });
+})();
+</script>
+</body></html>

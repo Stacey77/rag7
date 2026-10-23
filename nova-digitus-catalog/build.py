@@ -228,3 +228,100 @@ if os.path.exists(_home):
         _n = sum(1 for a in APPS if a[1] == _gid)
         _h = re.sub(rf'(href="apps/{_gid}\.html">[^<]*<span class="more">)\d+', rf"\g<1>{_n}", _h)
     open(_home, "w", encoding="utf-8").write(_h)
+
+# ---------- private review pages: review/<slug>/index.html, one per app, to send after a booking
+# A review link carries an end date and a short check code: review/<slug>/?until=YYYY-MM-DD&c=<code>[&for=Client].
+# The page shows the app only while the link is valid. This is a soft lock for a static site: it stops casual
+# sharing after the date, but the page source itself is public. Links are made in the App Exchange.
+import hashlib
+REVIEW_SALT = "nd-review-v1"
+
+def review_slug(name):
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")[:60]
+
+PREP = {
+    "engineering": ["Which project or site would you test it on first?", "Who on the team owns the schedule or the equipment today?", "What data can you share: plans, task lists, sensor exports?"],
+    "it": ["Which systems, networks or cloud accounts are in scope?", "Who approves changes in your environment?", "What would a good week look like after it's running?"],
+    "ai": ["Which task do you most want an AI agent to take off your plate?", "Which tools and documents would it need to read?", "Who reviews what the agents produce?"],
+    "operations": ["Which manual process costs your team the most hours?", "Which tools does that process touch today?", "How do you measure it now: time, errors, cost?"],
+    "sales": ["Who is your best customer, in one sentence?", "Which channels bring you leads today?", "What does a qualified lead mean for your team?"],
+    "wealth": ["What decision are you trying to make, and by when?", "Which accounts or records would you use? (Nothing is shared without your OK.)", "Who else advises you: CPA, attorney, lender?"],
+    "health": ["What habit or routine do you want support with?", "When in your day would you use it?", "This is a wellness tool, not medical advice: who else supports you?"],
+    "culture": ["Is this for you, a class, a community or an event?", "Which topics or traditions matter most to you?", "How would you like to explore: guided, self-paced or group?"],
+    "creative": ["What are you making, and for whom?", "What does finished look like for you?", "Which tools do you already use?"],
+}
+
+REVIEW_JS = """<script>
+(function(){
+  var SLUG=%s, SALT=%s, CAL=%s;
+  var q=new URLSearchParams(location.search), until=q.get('until')||'', code=(q.get('c')||'').toLowerCase(), who=(q.get('for')||'').slice(0,80);
+  var ok=document.getElementById('rv-ok'), gate=document.getElementById('rv-gate');
+  function show(kind){
+    if(kind==='ok'){ok.hidden=false;gate.hidden=true;return;}
+    gate.hidden=false; ok.hidden=true;
+    document.getElementById('rv-gate-title').textContent = kind==='expired' ? 'This review link has expired' : 'This page is for booked clients';
+    document.getElementById('rv-gate-text').textContent = kind==='expired'
+      ? 'The review window for this app ended on '+until+'. Book a short call and we will send you a fresh link, or walk you through it live.'
+      : 'Review links are sent after you book a call. Book one below and you will get your link.';
+  }
+  if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(until) || !/^[0-9a-f]{10}$/.test(code) || !(window.crypto&&crypto.subtle)){show('invalid');return;}
+  crypto.subtle.digest('SHA-256', new TextEncoder().encode(SLUG+'|'+until+'|'+SALT)).then(function(buf){
+    var hex=Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('').slice(0,10);
+    if(hex!==code){show('invalid');return;}
+    var end=new Date(until+'T23:59:59');
+    if(Date.now()>end.getTime()){show('expired');return;}
+    var days=Math.max(0,Math.ceil((end.getTime()-Date.now())/86400000));
+    document.getElementById('rv-who').textContent = who ? 'Prepared for '+who+'. ' : '';
+    document.getElementById('rv-until').textContent = end.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+' ('+days+' day'+(days===1?'':'s')+' left)';
+    show('ok');
+  });
+})();
+</script>"""
+
+_groups = {g[0]: g for g in GROUPS}
+_rv_root = os.path.join(SITE, "review")
+import shutil as _sh
+if os.path.isdir(_rv_root):
+    _sh.rmtree(_rv_root)
+_review_index = []
+for name, gid, desc, featured in APPS:
+    slug = review_slug(name)
+    g = _groups.get(gid, _groups["ai"])
+    url = try_url(name)
+    prep = "".join(f"<li>{e(x)}</li>" for x in PREP.get(gid, PREP["ai"]))
+    page = f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(name)}: your review | Nova Digitus Designs</title>
+<meta name="robots" content="noindex, nofollow">{FAVICON}
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../apps/catalog.css">
+<style>.rv-banner{{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:0 0 28px;font-size:.95rem}}
+.rv-grid{{display:grid;grid-template-columns:1.2fr .8fr;gap:28px}}@media (max-width:820px){{.rv-grid{{grid-template-columns:1fr}}}}
+.rv-card{{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px}}.rv-card h2{{font-size:1.3rem}}
+.rv-card ol,.rv-card ul{{padding-left:20px;margin:10px 0 0}}.rv-card li{{margin-bottom:8px}}.rv-next{{margin-top:22px}}.rv-acts{{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}}</style>
+</head><body><div class="wrap">
+<header class="nav"><a class="logo" href="../../">Nova Digitus Designs</a><nav><a class="btn" href="{e(book_url(name))}" target="_blank" rel="noopener">Book a follow-up</a></nav></header>
+<main>
+<div id="rv-ok" hidden>
+<div class="rv-banner"><span id="rv-who"></span>This private review link works until <b id="rv-until"></b>.</div>
+<div class="hero"><p class="crumb">{e(g[1])}</p><h1>{e(name)}</h1><p class="lede">{e(desc)}</p></div>
+<section><div class="rv-grid">
+<div class="rv-card"><h2>Who it's for</h2><p>{e(g[2])}</p>
+<h2 class="rv-next">What happens next</h2><ol><li><b>Review</b> this page and note where it fits your work.</li><li><b>Follow-up call:</b> 30 minutes on your use case, with the app configured on sample data like yours.</li><li><b>Pilot:</b> one app on your data, measured against a goal we agree on. Keep it, license it, or walk away.</li></ol>
+<div class="rv-acts"><a class="btn" href="{e(book_url(name))}" target="_blank" rel="noopener">Book the follow-up call</a>{f'<a class="btn line" href="{e(url)}" target="_blank" rel="noopener">Try the live app</a>' if url else ''}</div></div>
+<div class="rv-card"><h2>Before we talk</h2><p>A few questions to think about. Rough answers are fine.</p><ul>{prep}</ul></div>
+</div></section>
+</div>
+<div id="rv-gate" class="hero" hidden><h1 id="rv-gate-title">This page is for booked clients</h1><p class="lede" id="rv-gate-text">Review links are sent after you book a call.</p>
+<p><a class="btn" href="{e(book_url(name))}" target="_blank" rel="noopener">Book a call</a> <a class="btn line" href="../../apps/">Browse all apps</a></p></div>
+<noscript><p class="lede">Turn on JavaScript to open this review, or <a href="{e(book_url(name))}">book a call</a>.</p></noscript>
+</main></div><footer><div class="wrap">© 2026 Nova Digitus Designs LLC · Private review page</div></footer>
+{REVIEW_JS % (json.dumps(slug), json.dumps(REVIEW_SALT), json.dumps(CAL))}
+</body></html>"""
+    os.makedirs(os.path.join(_rv_root, slug), exist_ok=True)
+    open(os.path.join(_rv_root, slug, "index.html"), "w", encoding="utf-8").write(page)
+    _review_index.append({"name": name, "slug": slug})
+with open(os.path.join(HERE, "review_index.json"), "w") as f:
+    json.dump(_review_index, f, ensure_ascii=False, indent=0)
+print(f"review pages: {len(_review_index)} (review/<slug>/index.html)")

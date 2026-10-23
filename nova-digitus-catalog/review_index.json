@@ -1,0 +1,778 @@
+[
+{
+"name": "Active Learning Explorer",
+"slug": "active-learning-explorer"
+},
+{
+"name": "Aethelgard: Agentic OS",
+"slug": "aethelgard-agentic-os"
+},
+{
+"name": "AETHEREA AGI Core",
+"slug": "aetherea-agi-core"
+},
+{
+"name": "Aetherius AI",
+"slug": "aetherius-ai"
+},
+{
+"name": "Agent Dev Kit Dashboard",
+"slug": "agent-dev-kit-dashboard"
+},
+{
+"name": "AgentForge: GenAI Studio",
+"slug": "agentforge-genai-studio"
+},
+{
+"name": "Agentic Architecture Sandbox (Azure AI Foundry + Claude)",
+"slug": "agentic-architecture-sandbox-azure-ai-foundry-claude"
+},
+{
+"name": "Agentic Research Orchestrator",
+"slug": "agentic-research-orchestrator"
+},
+{
+"name": "AgentOS",
+"slug": "agentos"
+},
+{
+"name": "AI Design Architect Workspace",
+"slug": "ai-design-architect-workspace"
+},
+{
+"name": "AI in Testing Gap Analyzer & Optimizer",
+"slug": "ai-in-testing-gap-analyzer-optimizer"
+},
+{
+"name": "AI Roadmap Architect",
+"slug": "ai-roadmap-architect"
+},
+{
+"name": "AI System Architect",
+"slug": "ai-system-architect"
+},
+{
+"name": "ARC AGI Explorer",
+"slug": "arc-agi-explorer"
+},
+{
+"name": "Astra Orchestrator",
+"slug": "astra-orchestrator"
+},
+{
+"name": "Dev Ecosystem Dashboard",
+"slug": "dev-ecosystem-dashboard"
+},
+{
+"name": "Flash UI: AI Swarm Vibecoding Studio",
+"slug": "flash-ui-ai-swarm-vibecoding-studio"
+},
+{
+"name": "Kimi Research Assistant",
+"slug": "kimi-research-assistant"
+},
+{
+"name": "Multi-Agent Orchestrator",
+"slug": "multi-agent-orchestrator"
+},
+{
+"name": "NeuroLink",
+"slug": "neurolink"
+},
+{
+"name": "Nexus AI Production System",
+"slug": "nexus-ai-production-system"
+},
+{
+"name": "Nova Multi-Agent Core",
+"slug": "nova-multi-agent-core"
+},
+{
+"name": "OmniAgent Enterprise Platform",
+"slug": "omniagent-enterprise-platform"
+},
+{
+"name": "Platinum AI Factory",
+"slug": "platinum-ai-factory"
+},
+{
+"name": "Pulse: Live Transcription & Content Analysis",
+"slug": "pulse-live-transcription-content-analysis"
+},
+{
+"name": "RAG Orion Superplatform",
+"slug": "rag-orion-superplatform"
+},
+{
+"name": "Synthetic Agentic AI Platform Guide",
+"slug": "synthetic-agentic-ai-platform-guide"
+},
+{
+"name": "System Design Architect",
+"slug": "system-design-architect"
+},
+{
+"name": "UI Visionary",
+"slug": "ui-visionary"
+},
+{
+"name": "AI Agentic Brain: Digital Illustration Platform",
+"slug": "ai-agentic-brain-digital-illustration-platform"
+},
+{
+"name": "AuraDJ",
+"slug": "auradj"
+},
+{
+"name": "Eve: Multimodal Companion",
+"slug": "eve-multimodal-companion"
+},
+{
+"name": "Infinite Adventure Engine",
+"slug": "infinite-adventure-engine"
+},
+{
+"name": "IPTV Dashboard",
+"slug": "iptv-dashboard"
+},
+{
+"name": "Lyrics to Music Studio",
+"slug": "lyrics-to-music-studio"
+},
+{
+"name": "Majestic Speaker",
+"slug": "majestic-speaker"
+},
+{
+"name": "Neural Link Voice Assistant",
+"slug": "neural-link-voice-assistant"
+},
+{
+"name": "OmniScope Proximity",
+"slug": "omniscope-proximity"
+},
+{
+"name": "Photo Animator",
+"slug": "photo-animator"
+},
+{
+"name": "The Roaring Discourse: Talking Lion",
+"slug": "the-roaring-discourse-talking-lion"
+},
+{
+"name": "KeBTAH Rising Firefly Portal",
+"slug": "kebtah-rising-firefly-portal"
+},
+{
+"name": "Kemet and Kush: Spirituality",
+"slug": "kemet-and-kush-spirituality"
+},
+{
+"name": "Monument: Archive of Black Innovation",
+"slug": "monument-archive-of-black-innovation"
+},
+{
+"name": "OmniBot Academy & Workshop",
+"slug": "omnibot-academy-workshop"
+},
+{
+"name": "Reality Mechanics Diagram",
+"slug": "reality-mechanics-diagram"
+},
+{
+"name": "Syzygy: The Hermetic Matrix",
+"slug": "syzygy-the-hermetic-matrix"
+},
+{
+"name": "The Logos Organon",
+"slug": "the-logos-organon"
+},
+{
+"name": "Tree of Life Interactive Map",
+"slug": "tree-of-life-interactive-map"
+},
+{
+"name": "Autarkic Field Engineering & Telemetry Suite",
+"slug": "autarkic-field-engineering-telemetry-suite"
+},
+{
+"name": "Azolla Agronomy & Feed Guide",
+"slug": "azolla-agronomy-feed-guide"
+},
+{
+"name": "Carbon-12 3D Visualizer",
+"slug": "carbon-12-3d-visualizer"
+},
+{
+"name": "CopperDew: Atmospheric Coil Water Harvester",
+"slug": "copperdew-atmospheric-coil-water-harvester"
+},
+{
+"name": "EcoGenesis",
+"slug": "ecogenesis"
+},
+{
+"name": "Engineering Orchestrator",
+"slug": "engineering-orchestrator"
+},
+{
+"name": "KAO Master Command Hub",
+"slug": "kao-master-command-hub"
+},
+{
+"name": "MAH AI Hub: Robotics & IoT Command",
+"slug": "mah-ai-hub-robotics-iot-command"
+},
+{
+"name": "OmniNexus",
+"slug": "omninexus"
+},
+{
+"name": "Robot Assistant Builder",
+"slug": "robot-assistant-builder"
+},
+{
+"name": "Skywave Gateway · Reticulum HF Mesh Bridge",
+"slug": "skywave-gateway-reticulum-hf-mesh-bridge"
+},
+{
+"name": "TerraFleet Autonomous Garden Robotics",
+"slug": "terrafleet-autonomous-garden-robotics"
+},
+{
+"name": "90 Days of Quiet",
+"slug": "90-days-of-quiet"
+},
+{
+"name": "Aura Nexus",
+"slug": "aura-nexus"
+},
+{
+"name": "Copper-Infused Water Lab",
+"slug": "copper-infused-water-lab"
+},
+{
+"name": "Herbal Digestives & Pastilles Lab",
+"slug": "herbal-digestives-pastilles-lab"
+},
+{
+"name": "Medica Herbalista",
+"slug": "medica-herbalista"
+},
+{
+"name": "Singular Companion",
+"slug": "singular-companion"
+},
+{
+"name": "Wealth in Health Index",
+"slug": "wealth-in-health-index"
+},
+{
+"name": "Wealth in Health: Sound Healing",
+"slug": "wealth-in-health-sound-healing"
+},
+{
+"name": "Win The Morning",
+"slug": "win-the-morning"
+},
+{
+"name": "AI Code Reviewer",
+"slug": "ai-code-reviewer"
+},
+{
+"name": "AI Governance & Guardrails Platform",
+"slug": "ai-governance-guardrails-platform"
+},
+{
+"name": "AI Ops Engineer Platform",
+"slug": "ai-ops-engineer-platform"
+},
+{
+"name": "Deep Dive IDE & CDE",
+"slug": "deep-dive-ide-cde"
+},
+{
+"name": "IT Issue Resolver",
+"slug": "it-issue-resolver"
+},
+{
+"name": "IT System Enhancer",
+"slug": "it-system-enhancer"
+},
+{
+"name": "NAAS Elite Control Plane",
+"slug": "naas-elite-control-plane"
+},
+{
+"name": "OmniNet AI: Network Diagnostics & Self-Healing",
+"slug": "omninet-ai-network-diagnostics-self-healing"
+},
+{
+"name": "OpsGuard",
+"slug": "opsguard"
+},
+{
+"name": "QuantumGuard",
+"slug": "quantumguard"
+},
+{
+"name": "Radio Broadcast Hub",
+"slug": "radio-broadcast-hub"
+},
+{
+"name": "Stratum MCP: Cloud Resource Control Plane",
+"slug": "stratum-mcp-cloud-resource-control-plane"
+},
+{
+"name": "StreamVerse AI Anomaly Intelligence",
+"slug": "streamverse-ai-anomaly-intelligence"
+},
+{
+"name": "TenancyCore SaaS",
+"slug": "tenancycore-saas"
+},
+{
+"name": "TrackerShield: Hidden Tracker Detection",
+"slug": "trackershield-hidden-tracker-detection"
+},
+{
+"name": "Unified Cybersecurity Platform",
+"slug": "unified-cybersecurity-platform"
+},
+{
+"name": "VaultGuard",
+"slug": "vaultguard"
+},
+{
+"name": "AI Business Operations Orchestrator",
+"slug": "ai-business-operations-orchestrator"
+},
+{
+"name": "AI Strategy Planner",
+"slug": "ai-strategy-planner"
+},
+{
+"name": "AI Worker Workspace",
+"slug": "ai-worker-workspace"
+},
+{
+"name": "AquaFlow: Water Delivery Operations",
+"slug": "aquaflow-water-delivery-operations"
+},
+{
+"name": "Aura-OS: Autonomous Enterprise Platform",
+"slug": "aura-os-autonomous-enterprise-platform"
+},
+{
+"name": "Business Numbers & Unit Economics Engine",
+"slug": "business-numbers-unit-economics-engine"
+},
+{
+"name": "Cerebrum Magnum",
+"slug": "cerebrum-magnum"
+},
+{
+"name": "Collaborative Business Context Hub",
+"slug": "collaborative-business-context-hub"
+},
+{
+"name": "Coquus AI",
+"slug": "coquus-ai"
+},
+{
+"name": "Cura AI Switchboard",
+"slug": "cura-ai-switchboard"
+},
+{
+"name": "Donor Services Resolution Swarm",
+"slug": "donor-services-resolution-swarm"
+},
+{
+"name": "Enterprise Strategy & AI Orchestrator",
+"slug": "enterprise-strategy-ai-orchestrator"
+},
+{
+"name": "Imperium Neuralis: Website Architect",
+"slug": "imperium-neuralis-website-architect"
+},
+{
+"name": "Nexus Agentic Studio",
+"slug": "nexus-agentic-studio"
+},
+{
+"name": "Nova Digitus Agent Dashboard",
+"slug": "nova-digitus-agent-dashboard"
+},
+{
+"name": "Nova Digitus Conversational AI",
+"slug": "nova-digitus-conversational-ai"
+},
+{
+"name": "Nova Wearable Studio",
+"slug": "nova-wearable-studio"
+},
+{
+"name": "Orchestra PM",
+"slug": "orchestra-pm"
+},
+{
+"name": "Problem Crusher",
+"slug": "problem-crusher"
+},
+{
+"name": "Smart Bill Splitter",
+"slug": "smart-bill-splitter"
+},
+{
+"name": "SyncSphere",
+"slug": "syncsphere"
+},
+{
+"name": "Ad Campaign Scaling Dashboard & Lead Magnet",
+"slug": "ad-campaign-scaling-dashboard-lead-magnet"
+},
+{
+"name": "AI CMO Command Center",
+"slug": "ai-cmo-command-center"
+},
+{
+"name": "AI CMO Platform",
+"slug": "ai-cmo-platform"
+},
+{
+"name": "AI SDR Agent Fleet",
+"slug": "ai-sdr-agent-fleet"
+},
+{
+"name": "AI Swarm Outreach Hub",
+"slug": "ai-swarm-outreach-hub"
+},
+{
+"name": "AI Swarm: B2B Outreach Planner",
+"slug": "ai-swarm-b2b-outreach-planner"
+},
+{
+"name": "AI Voice Agent Case Study & Simulator",
+"slug": "ai-voice-agent-case-study-simulator"
+},
+{
+"name": "Comprehensive Outreach Campaign Agent",
+"slug": "comprehensive-outreach-campaign-agent"
+},
+{
+"name": "Nova Digitus AI Office Assistant",
+"slug": "nova-digitus-ai-office-assistant"
+},
+{
+"name": "Nova Digitus Prospect Tracker",
+"slug": "nova-digitus-prospect-tracker"
+},
+{
+"name": "PitchPerfect AI",
+"slug": "pitchperfect-ai"
+},
+{
+"name": "Virtual Try-On",
+"slug": "virtual-try-on"
+},
+{
+"name": "Autonomous Quant Trading Desk",
+"slug": "autonomous-quant-trading-desk"
+},
+{
+"name": "Buy Borrow Die Simulator",
+"slug": "buy-borrow-die-simulator"
+},
+{
+"name": "Corporate Credit Tradelines Builder",
+"slug": "corporate-credit-tradelines-builder"
+},
+{
+"name": "IRIEBOT7.io Autonomous Trading Dashboard",
+"slug": "iriebot7-io-autonomous-trading-dashboard"
+},
+{
+"name": "Luxury Salvage Deals Platform",
+"slug": "luxury-salvage-deals-platform"
+},
+{
+"name": "Sovereign BRRRR Command Center",
+"slug": "sovereign-brrrr-command-center"
+},
+{
+"name": "Sovereign Equity & Overage Recovery Engine",
+"slug": "sovereign-equity-overage-recovery-engine"
+},
+{
+"name": "Stratos Capital & Trust Optimizer",
+"slug": "stratos-capital-trust-optimizer"
+},
+{
+"name": "Tax Form Navigator",
+"slug": "tax-form-navigator"
+},
+{
+"name": "The Concrete Underneath",
+"slug": "the-concrete-underneath"
+},
+{
+"name": "Wealth Playground",
+"slug": "wealth-playground"
+},
+{
+"name": "Wealth Strategy Playbook",
+"slug": "wealth-strategy-playbook"
+},
+{
+"name": "WealthStrat: Institutional Leverage Engine",
+"slug": "wealthstrat-institutional-leverage-engine"
+},
+{
+"name": "AGI System",
+"slug": "agi-system"
+},
+{
+"name": "AI Advisor",
+"slug": "ai-advisor"
+},
+{
+"name": "Attention Board",
+"slug": "attention-board"
+},
+{
+"name": "BagBot Kraken Trader",
+"slug": "bagbot-kraken-trader"
+},
+{
+"name": "Break the Chains",
+"slug": "break-the-chains"
+},
+{
+"name": "Concentus Console",
+"slug": "concentus-console"
+},
+{
+"name": "Consilium Mobile",
+"slug": "consilium-mobile"
+},
+{
+"name": "Consilium Orchestrator",
+"slug": "consilium-orchestrator"
+},
+{
+"name": "Cosmic Code Tutor",
+"slug": "cosmic-code-tutor"
+},
+{
+"name": "Day One Store Builder",
+"slug": "day-one-store-builder"
+},
+{
+"name": "Digital vCard",
+"slug": "digital-vcard"
+},
+{
+"name": "Downloads Wiki",
+"slug": "downloads-wiki"
+},
+{
+"name": "Earth Tube Planner",
+"slug": "earth-tube-planner"
+},
+{
+"name": "Empire Console",
+"slug": "empire-console"
+},
+{
+"name": "Etz Chaim Atlas",
+"slug": "etz-chaim-atlas"
+},
+{
+"name": "Exoskeleton Repair Agent",
+"slug": "exoskeleton-repair-agent"
+},
+{
+"name": "Fleet Console",
+"slug": "fleet-console"
+},
+{
+"name": "HELIX Console",
+"slug": "helix-console"
+},
+{
+"name": "Humanoid Body Studio",
+"slug": "humanoid-body-studio"
+},
+{
+"name": "Kiln Cloud",
+"slug": "kiln-cloud"
+},
+{
+"name": "KITH",
+"slug": "kith"
+},
+{
+"name": "LeadFinder EPIC",
+"slug": "leadfinder-epic"
+},
+{
+"name": "Leverage Ledger",
+"slug": "leverage-ledger"
+},
+{
+"name": "Marcus: Stoic Mentor",
+"slug": "marcus-stoic-mentor"
+},
+{
+"name": "MCP Trading Desk",
+"slug": "mcp-trading-desk"
+},
+{
+"name": "Merkaba Code Studio",
+"slug": "merkaba-code-studio"
+},
+{
+"name": "Multi-LLM Chat",
+"slug": "multi-llm-chat"
+},
+{
+"name": "NEXUM",
+"slug": "nexum"
+},
+{
+"name": "NOVA Assistant",
+"slug": "nova-assistant"
+},
+{
+"name": "Nova Orchestrator",
+"slug": "nova-orchestrator"
+},
+{
+"name": "Nova Trading Platform",
+"slug": "nova-trading-platform"
+},
+{
+"name": "Orbis Six Origins",
+"slug": "orbis-six-origins"
+},
+{
+"name": "Platinum Agent Console",
+"slug": "platinum-agent-console"
+},
+{
+"name": "Pleroma Codex",
+"slug": "pleroma-codex"
+},
+{
+"name": "Plugin Tools Control",
+"slug": "plugin-tools-control"
+},
+{
+"name": "Pricing Floor",
+"slug": "pricing-floor"
+},
+{
+"name": "Private Assistant",
+"slug": "private-assistant"
+},
+{
+"name": "AI Swarm Problem Solver",
+"slug": "ai-swarm-problem-solver"
+},
+{
+"name": "Prospect Case Files",
+"slug": "prospect-case-files"
+},
+{
+"name": "QUANTUM Live Ops",
+"slug": "quantum-live-ops"
+},
+{
+"name": "Relay Product Search",
+"slug": "relay-product-search"
+},
+{
+"name": "Robot Design Studio",
+"slug": "robot-design-studio"
+},
+{
+"name": "Robot Fleet Interface",
+"slug": "robot-fleet-interface"
+},
+{
+"name": "Robot Agent Layer",
+"slug": "robot-agent-layer"
+},
+{
+"name": "SentientShield: Swarm Command",
+"slug": "sentientshield-swarm-command"
+},
+{
+"name": "Sopdet Calendar",
+"slug": "sopdet-calendar"
+},
+{
+"name": "Star OS",
+"slug": "star-os"
+},
+{
+"name": "Stock Trading Assistant",
+"slug": "stock-trading-assistant"
+},
+{
+"name": "Super Brain",
+"slug": "super-brain"
+},
+{
+"name": "SUPER SEC Platform",
+"slug": "super-sec-platform"
+},
+{
+"name": "Surplus Swarm Console",
+"slug": "surplus-swarm-console"
+},
+{
+"name": "Swarm Control",
+"slug": "swarm-control"
+},
+{
+"name": "The Gatekeeper",
+"slug": "the-gatekeeper"
+},
+{
+"name": "The Standard",
+"slug": "the-standard"
+},
+{
+"name": "Unbound AGI Console",
+"slug": "unbound-agi-console"
+},
+{
+"name": "Unified Symphony Platform",
+"slug": "unified-symphony-platform"
+},
+{
+"name": "Unseen Dispatch",
+"slug": "unseen-dispatch"
+},
+{
+"name": "Vertical AI Agents: Multi-modal Interface",
+"slug": "vertical-ai-agents-multi-modal-interface"
+},
+{
+"name": "WellOff AI",
+"slug": "welloff-ai"
+},
+{
+"name": "WellOff Neural Link IDE",
+"slug": "welloff-neural-link-ide"
+},
+{
+"name": "Where They're Biting",
+"slug": "where-they-re-biting"
+},
+{
+"name": "Yad Workbench",
+"slug": "yad-workbench"
+}
+]
