@@ -65,6 +65,13 @@
    "try_url": ""
   },
   {
+   "name": "AGI System",
+   "group": "ai",
+   "description": "Production-ready framework for chatbots, writing assistants and research tools built on LangChain and CrewAI.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "AI Design Architect Workspace",
    "group": "ai",
    "description": "Design, visualize and test agent architectures and prompt flows.",
@@ -103,6 +110,27 @@
    "name": "Astra Orchestrator",
    "group": "ai",
    "description": "Orchestrates subagents and reviews and improves its own output.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Concentus Console",
+   "group": "ai",
+   "description": "Console for coordinating multiple AI agents on shared goals with a common timeline.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Consilium Mobile",
+   "group": "ai",
+   "description": "Mobile version of Consilium for getting multi-agent advice on the go.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "Consilium Orchestrator",
+   "group": "ai",
+   "description": "Advisory AI orchestrator that brings several expert agents together on a decision.",
    "featured": false,
    "try_url": ""
   },
@@ -632,6 +660,13 @@
    "try_url": ""
   },
   {
+   "name": "Attention Board",
+   "group": "operations",
+   "description": "One board that shows what needs your attention today across email, tasks and projects.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
    "name": "Aura-OS: Autonomous Enterprise Platform",
    "group": "operations",
    "description": "Strategic planning, task automation and market intelligence you can run by voice.",
@@ -838,6 +873,13 @@
    "name": "Autonomous Quant Trading Desk",
    "group": "wealth",
    "description": "Simulated trading desk where scheduled AI agents research, trade, check risk and write the close summary.",
+   "featured": false,
+   "try_url": ""
+  },
+  {
+   "name": "BagBot Kraken Trader",
+   "group": "wealth",
+   "description": "Command-line crypto trading bot for Kraken with strategy settings and live mode.",
    "featured": false,
    "try_url": ""
   },
