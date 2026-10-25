@@ -37,7 +37,22 @@ PUBLIC_URLS = {
     "Nova Trading Platform": "https://stacey77.github.io/rag7/nova-digitus-site/try/nova-trading-platform/",
     "Crown & Council": "https://aistudio.google.com/apps/11de2624-0a51-483a-8037-d010deb28e52?showPreview=true",
     "IRIEBOT7.io Autonomous Trading Dashboard": "https://aistudio.google.com/apps/545e3ecf-6b90-48c3-9697-a3dbb7fe90aa?showPreview=true",
-    # "TerraFleet Autonomous Garden Robotics": "https://example.com/try/terrafleet/",
+    "AI Agentic Brain: Digital Illustration Platform": "https://aistudio.google.com/apps/c292afb7-1efd-4159-8d97-ca793f318eb7?showPreview=true",
+    "AI Business Operations Orchestrator": "https://aistudio.google.com/apps/a228c806-02ab-4eda-a22e-e908c3f55578?showPreview=true",
+    "AI CMO Platform": "https://aistudio.google.com/apps/57d49c6f-135f-4f89-bf7c-c89538ca60f2?showPreview=true",
+    "AI SDR Agent Fleet": "https://aistudio.google.com/apps/5ffcb60b-cc6f-402f-89de-5f0509d4ad06?showPreview=true",
+    "AgentForge: GenAI Studio": "https://aistudio.google.com/apps/cb307d99-1710-4225-9307-af28f1ed88fe?showPreview=true",
+    "AuraDJ": "https://aistudio.google.com/apps/20e88263-1502-42a8-9d98-ceed6f85a48d?showPreview=true",
+    "Monument: Archive of Black Innovation": "https://aistudio.google.com/apps/916709d0-4b9a-4490-b0e9-10700a22df8f?showPreview=true",
+    "Nova Digitus Conversational AI": "https://aistudio.google.com/apps/3a23ef4c-d011-403b-9674-622b090a923f?showPreview=true",
+    "OmniAgent Enterprise Platform": "https://aistudio.google.com/apps/58d093b3-7db1-4a4b-b20c-0fcd138da358?showPreview=true",
+    "OmniNet AI: Network Diagnostics & Self-Healing": "https://aistudio.google.com/apps/14076a84-5005-4e5e-a6cd-9a363680a60f?showPreview=true",
+    "Problem Crusher": "https://aistudio.google.com/apps/9c9188fa-6658-4c4e-b98b-bb1765682af4?showPreview=true",
+    "Stratum MCP: Cloud Resource Control Plane": "https://aistudio.google.com/apps/8f476ab0-1ded-4c89-aaaf-8bfe1d9e5d29?showPreview=true",
+    "Tree of Life Interactive Map": "https://aistudio.google.com/apps/5f743a9c-c135-4268-9c94-cdaab4c9aee0?showPreview=true",
+    "Wealth Strategy Playbook": "https://aistudio.google.com/apps/900a2db0-8b4d-4d2c-844b-6a392a07a3ed?showPreview=true",
+    "Wealth in Health Index": "https://aistudio.google.com/apps/bfb6cee5-546c-4301-9838-58c9f815a11b?showPreview=true",
+    "TerraFleet Autonomous Garden Robotics": "https://aistudio.google.com/apps/b499854d-7e9b-4e2b-bc3b-2316aa4571b0?showPreview=true",
 }
 
 def public_try_url(name):
