@@ -241,4 +241,5 @@ PORTFOLIO_EXTRA = [
     ('WellOff Neural Link IDE', 'ai', 'AI coding workspace that pairs an editor with a conversational agent that builds, explains and confirms changes.', False),
     ("Where They're Biting", 'creative', 'Fish finder app with fishing spots, catch reports and maps.', False),
     ('Yad Workbench', 'culture', 'Practice console for Tree of Life study: paths, correspondences and daily work.', False),
+    ('Crown & Council', 'creative', 'Interactive AI app built in Google AI Studio. Open it and try it in your browser.', False),
 ]

@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Unbound AGI Console: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Unbound AGI Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: ops console — fleet rail | live agent work | human gate. Dark-first. */
+:root{
+  --bg:#0c0e18; --panel:#131727; --panel2:#1a1f34; --line:#272d48;
+  --fg:#e6e8f2; --mute:#8b91ae; --ai:#74b4ff; --gate:#eab54e;
+  --ok:#4cc488; --warn:#f0a443; --crit:#ef5d6d; --agent-l:68%;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#f2f3f8; --panel:#ffffff; --panel2:#eceef6; --line:#d8dbea;
+  --fg:#161a2c; --mute:#596082; --ai:#1d64c4; --gate:#9a6400;
+  --ok:#17804f; --warn:#a96300; --crit:#c22c3e; --agent-l:36%; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#f2f3f8; --panel:#ffffff; --panel2:#eceef6; --line:#d8dbea;
+  --fg:#161a2c; --mute:#596082; --ai:#1d64c4; --gate:#9a6400;
+  --ok:#17804f; --warn:#a96300; --crit:#c22c3e; --agent-l:36%; color-scheme:light}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 var(--f-body);padding-inline:16px;padding-block:14px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ai);outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+.mute{color:var(--mute)}
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);font-weight:600}
+
+header{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-bottom:14px}
+.brand{display:flex;flex-direction:column;gap:2px;min-width:0}
+.brand h1{font-family:var(--f-display);font-weight:700;font-size:22px;letter-spacing:.02em;margin:0;text-wrap:balance}
+.brand h1 span{color:var(--gate)}
+.brand p{margin:0;color:var(--mute);font-size:12.5px}
+.dial{display:flex;flex-direction:column;gap:6px;margin-left:auto}
+.dial-row{display:flex;gap:4px;flex-wrap:wrap}
+.dial button{border:1px solid var(--line);background:var(--panel);padding:6px 10px;border-radius:6px;font-size:12px;font-weight:600}
+.dial button[aria-pressed="true"]{background:var(--gate);color:var(--bg);border-color:var(--gate)}
+.ctrl{display:flex;gap:6px;align-items:flex-end}
+.btn{border:1px solid var(--line);background:var(--panel);padding:7px 12px;border-radius:6px;font-size:12.5px;font-weight:600}
+.btn:hover{border-color:var(--mute)}
+.btn.primary{background:var(--ai);border-color:var(--ai);color:var(--bg)}
+.btn.gate{background:var(--gate);border-color:var(--gate);color:var(--bg)}
+.btn.danger{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 45%,var(--line))}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--f-mono);font-size:21px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat.gate b{color:var(--gate)} .stat.ok b{color:var(--ok)} .stat.ai b{color:var(--ai)}
+
+.grid{display:grid;grid-template-columns:250px minmax(0,1fr) 350px;gap:14px;align-items:start}
+@media (max-width:1100px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line)}
+.ph h2{margin:0;font-family:var(--f-display);font-size:13px;font-weight:500;letter-spacing:.03em}
+.pb{padding:10px 14px}
+
+.vrow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.vrow:last-child{border-bottom:0}
+.vrow .name{flex:1;min-width:0}
+.vrow .name small{display:block;color:var(--mute);font-size:11.5px}
+.sw{appearance:none;width:30px;height:17px;border-radius:9px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:background .15s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:var(--fg);transition:transform .15s}
+.sw:checked{background:var(--ai)} .sw:checked::after{transform:translateX(13px);background:var(--bg)}
+.arow{display:flex;align-items:center;gap:9px;padding:6px 0}
+.av{--h:200;width:28px;height:28px;border-radius:7px;flex:none;display:grid;place-items:center;font-family:var(--f-mono);font-size:11px;font-weight:600;
+  background:hsl(var(--h) 60% 50% / .16);color:hsl(var(--h) 70% var(--agent-l));border:1px solid hsl(var(--h) 60% 50% / .35)}
+.av.busy{box-shadow:0 0 0 2px hsl(var(--h) 70% 55% / .55)}
+.arow .name{flex:1;min-width:0;font-size:13px}
+.arow .name small{display:block;color:var(--mute);font-size:11px}
+.arow .n{font-family:var(--f-mono);font-size:11.5px;color:var(--mute);font-variant-numeric:tabular-nums}
+.new-tag{font-size:10px;color:var(--gate);font-weight:700;letter-spacing:.06em;margin-left:4px}
+
+.tabs{display:flex;gap:2px;overflow-x:auto;padding:6px 8px 0;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;padding:9px 12px;font-size:12.5px;font-weight:600;color:var(--mute);border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--ai)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
+.chip{border:1px solid var(--line);background:none;border-radius:999px;padding:3px 10px;font-size:12px}
+.chip[aria-pressed="true"]{background:var(--panel2);border-color:var(--mute)}
+
+.stream{max-height:640px;overflow:auto;padding:4px 14px 14px}
+.msg{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--line);animation:in .35s ease}
+@keyframes in{from{transform:translateY(-4px);opacity:.4}to{transform:none;opacity:1}}
+.msg .meta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;font-size:12px;color:var(--mute)}
+.msg .meta b{color:var(--fg);font-weight:600}
+.msg p{margin:3px 0 0}
+.tag{font-family:var(--f-mono);font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--mute)}
+.tag.auto{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.tag.gate{color:var(--gate);border-color:color-mix(in srgb,var(--gate) 45%,var(--line))}
+.tag.deny{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 40%,var(--line))}
+.tag.syn{color:var(--ai);border-color:color-mix(in srgb,var(--ai) 40%,var(--line))}
+.msg.sys p{color:var(--mute);font-style:italic}
+
+.queue{display:flex;flex-direction:column;gap:10px;padding:12px;max-height:760px;overflow:auto}
+.empty{color:var(--mute);font-size:13px;padding:22px 8px;text-align:center}
+.card{border:1px solid color-mix(in srgb,var(--gate) 40%,var(--line));background:var(--panel2);border-radius:8px;padding:11px 12px;display:flex;flex-direction:column;gap:8px;animation:in .35s ease}
+.card h3{margin:0;font-size:13.5px;font-weight:600;text-wrap:balance}
+.card .who{font-size:12px;color:var(--mute);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.risk{display:flex;align-items:center;gap:8px;font-size:11.5px}
+.bar{flex:1;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%}
+.reasons{margin:0;padding-left:16px;font-size:12px;color:var(--mute)}
+.reasons li strong{color:var(--gate);font-weight:600}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.acts .btn{padding:5px 10px;font-size:12px}
+.why{font-size:12px;border-left:2px solid var(--ai);padding-left:8px;color:var(--fg)}
+
+.vaults{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;padding:14px}
+.vault{border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--panel2)}
+.vault h3{margin:0;font-size:13.5px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12px}
+.kv dt{color:var(--mute)} .kv dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.seal{font-size:11.5px;color:var(--ok);font-weight:600}
+.intro{padding:12px 14px 0;margin:0;color:var(--mute);font-size:13px;max-width:70ch}
+
+.forge{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:16px;padding:14px}
+@media (max-width:700px){.forge{grid-template-columns:minmax(0,1fr)}}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.field select,.field input[type=number]{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 8px}
+.field input[type=range]{accent-color:var(--ai)}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+.steps li{display:flex;gap:8px;align-items:center;color:var(--mute)}
+.steps li.done{color:var(--fg)} .steps li.done::before{content:"✓";color:var(--ok)}
+.steps li.run::before{content:"…";color:var(--ai)} .steps li.wait::before{content:"·"}
+.scores{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.score{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px}
+.score b{display:block;font-family:var(--f-mono);font-size:18px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:12px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+th,td{padding:6px 9px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--mute);font-weight:600;font-family:var(--f-body);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.released{margin-top:14px}
+
+.pol{padding:14px;display:flex;flex-direction:column;gap:14px}
+.levels{display:grid;gap:6px}
+.level{display:grid;grid-template-columns:110px minmax(0,1fr) 70px;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-size:12.5px;align-items:center}
+.level.on{border-color:var(--gate);background:color-mix(in srgb,var(--gate) 8%,transparent)}
+.level b{font-family:var(--f-display);font-weight:500;font-size:12px}
+.rule{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line)}
+.rule div{flex:1;min-width:0;font-size:13px} .rule small{display:block;color:var(--mute)}
+
+.ledger{max-height:640px;overflow:auto}
+.ledger td:nth-child(3){white-space:normal;font-family:var(--f-body);min-width:240px}
+.hash{color:var(--ai)}
+.btn:disabled{opacity:.5;cursor:default}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px;padding:14px}
+.vcard{border:1px solid var(--line);border-radius:8px;background:var(--panel2);padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.vhead{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.vhead h3{margin:0;font-size:14px}
+.model{font-family:var(--f-mono);font-size:12px;color:var(--ai)}
+.specs{display:flex;flex-direction:column;gap:6px}
+.spec{display:flex;gap:8px;align-items:center;font-size:12.5px}
+.spec small{color:var(--mute);font-size:11.5px}
+.kpis{display:grid;gap:4px;border-top:1px dashed var(--line);padding-top:8px}
+.kpi{display:flex;justify-content:space-between;font-size:12.5px;gap:8px}
+.kpi b{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.up{color:var(--ok)} .down{color:var(--crit)}
+.sub{margin:0 0 8px;font-family:var(--f-display);font-size:13px;font-weight:500;letter-spacing:.02em}
+.vhead .sub{margin:0}
+.catalog{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.cat{border:1px dashed var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:5px;font-size:12.5px}
+.cat b{font-size:13px}
+.cat .btn{margin-top:auto;align-self:flex-start}
+.custom{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.custom input,.custom select{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 8px;min-width:0}
+.synth{display:flex;flex-direction:column;gap:22px;padding:14px}
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+@media (max-width:700px){.pipe{grid-template-columns:minmax(0,1fr)}}
+.stage{border:1px solid var(--line);border-radius:6px;padding:8px;font-size:12px;color:var(--mute);background:var(--panel2)}
+.stage b{display:block;font-family:var(--f-mono);font-size:10.5px;margin-bottom:3px}
+.stage.done{color:var(--fg);border-color:color-mix(in srgb,var(--ok) 50%,var(--line))}
+.stage.run{color:var(--fg);border-color:var(--ai);box-shadow:inset 0 0 0 1px var(--ai)}
+.stage.gate{color:var(--gate);border-color:var(--gate);box-shadow:inset 0 0 0 1px var(--gate)}
+.cmp{display:grid;gap:12px;margin-top:12px}
+.cmprow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;font-size:12.5px}
+@media (max-width:500px){.cmprow{grid-template-columns:minmax(0,1fr)}}
+.bars{display:flex;flex-direction:column;gap:4px;min-width:0}
+.bars span{display:flex;align-items:center;gap:8px}
+.bars em{flex:1;display:block;min-width:0;height:9px;background:var(--line);border-radius:2px;overflow:hidden}
+.bars i{display:block;height:100%}
+.bars .b0 i{background:var(--mute)} .bars .b1 i{background:var(--ai)}
+.bars small{flex:none;width:130px;font-size:11.5px}
+footer{margin-top:14px;color:var(--mute);font-size:12px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header>
+  <div class="brand">
+    <h1>UNBOUND<span>/</span>AGI</h1>
+    <p>Vertical AI runs each industry. Synthetic AI trains and tests on data that never touches real people. Humans approve what matters.</p>
+  </div>
+  <div class="dial">
+    <span class="lbl">Autonomy level</span>
+    <div class="dial-row" id="dial"></div>
+  </div>
+  <div class="ctrl">
+    <button class="btn" id="speed">Speed 1×</button>
+    <button class="btn primary" id="run">Pause</button>
+  </div>
+</header>
+
+<section class="stats" id="stats"></section>
+
+<div class="grid">
+  <aside class="panel">
+    <div class="ph"><h2>Verticals</h2><span class="lbl">live</span></div>
+    <div class="pb" id="verticals"></div>
+    <div class="ph" style="border-top:1px solid var(--line)"><h2>Agent fleet</h2><span class="lbl" id="fleetCount"></span></div>
+    <div class="pb" id="agents"></div>
+  </aside>
+
+  <main class="panel">
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-tab="stream" aria-selected="true">Agent stream</button>
+      <button role="tab" data-tab="vertical" aria-selected="false">Vertical AI</button>
+      <button role="tab" data-tab="synth" aria-selected="false">Synthetic AI</button>
+      <button role="tab" data-tab="vaults" aria-selected="false">Sovereign vaults</button>
+      <button role="tab" data-tab="forge" aria-selected="false">Synthetic data</button>
+      <button role="tab" data-tab="policy" aria-selected="false">Policy</button>
+      <button role="tab" data-tab="ledger" aria-selected="false">Ledger</button>
+    </div>
+    <section data-view="stream">
+      <div class="chips" id="chips"></div>
+      <div class="stream" id="stream"></div>
+    </section>
+    <section data-view="vertical" hidden>
+      <p class="intro">Each vertical runs its own domain model and specialist agents, tuned to that industry's data, terms and rules. The fleet agents coordinate across them.</p>
+      <div class="vgrid" id="vgrid"></div>
+      <div class="pb" style="border-top:1px solid var(--line);padding-block:14px">
+        <h3 class="sub">Launch a new vertical</h3>
+        <p class="mute" style="margin:0 0 10px;font-size:12.5px">Forge builds the sealed vault, specialist agents, domain model and compliance guardrails. Every launch goes to the human gate.</p>
+        <div class="catalog" id="catalog"></div>
+        <div class="custom">
+          <label class="lbl" for="cName">Custom vertical</label>
+          <input id="cName" placeholder="Industry, e.g. Dental clinics" maxlength="28">
+          <select id="cRegion" aria-label="Vault region"><option>US-South</option><option>US-East</option><option>US-Central</option><option>US-West</option><option>EU-Frankfurt</option><option>CA-Toronto</option></select>
+          <button class="btn" id="cGo">Propose launch</button>
+        </div>
+      </div>
+    </section>
+    <section data-view="synth" hidden>
+      <p class="intro">Synthetic AI is how the platform improves without touching real people. Agents spin up synthetic populations, rehearse scenarios on them, and train their own successors on synthetic data. Anything that reaches production still goes through you.</p>
+      <div class="synth">
+        <div>
+          <div class="vhead" style="margin-bottom:8px"><h3 class="sub">Self-improvement loop</h3><button class="btn" id="loopToggle">Pause loop</button></div>
+          <div class="mute" id="loopHead" style="font-size:12.5px;margin-bottom:8px"></div>
+          <div class="pipe" id="loopPipe"></div>
+          <div class="tbl" style="margin-top:10px"><table><thead><tr><th>Cycle</th><th>Candidate</th><th>Gain</th><th>Outcome</th><th>Time</th></tr></thead><tbody id="loopHist"></tbody></table></div>
+        </div>
+        <div>
+          <h3 class="sub">Scenario simulator</h3>
+          <div class="forge" style="padding:0">
+            <div>
+              <div class="field"><label class="lbl" for="simV">Vertical</label><select id="simV"></select></div>
+              <div class="field"><label class="lbl" for="simS">Scenario</label><select id="simS"></select></div>
+              <div class="field"><label class="lbl" for="simN">Population: <span id="simNOut" class="mono"></span></label><input type="range" id="simN" min="1" max="4" step="1" value="2"></div>
+              <button class="btn primary" id="simGo">Run simulation</button>
+            </div>
+            <div style="min-width:0"><ul class="steps" id="simSteps"></ul><div id="simOut"></div></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="sub">Synthetic populations</h3>
+          <div class="tbl"><table><thead><tr><th>Population</th><th>Vertical</th><th>Scenario</th><th>Time</th></tr></thead><tbody id="pops"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+    <section data-view="vaults" hidden>
+      <p class="intro">Each vertical keeps its raw records in its own vault, in its own region, under keys you hold. Agents never read raw rows. They query through the vault or train on synthetic sets made inside it.</p>
+      <div class="vaults" id="vaults"></div>
+    </section>
+    <section data-view="forge" hidden>
+      <p class="intro">Make a synthetic twin of a vault. The generator runs inside the vault boundary, adds differential-privacy noise, and only the synthetic rows come out.</p>
+      <div class="forge">
+        <div>
+          <div class="field"><label class="lbl" for="fVault">Source vault</label><select id="fVault"></select></div>
+          <div class="field"><label class="lbl" for="fRows">Rows: <span id="fRowsOut" class="mono"></span></label><input type="range" id="fRows" min="1" max="6" step="1" value="3"></div>
+          <div class="field"><label class="lbl" for="fEps">Privacy budget (ε)</label>
+            <select id="fEps"><option value="0.5">0.5 · strongest privacy</option><option value="1" selected>1 · balanced</option><option value="3">3 · higher fidelity</option><option value="8">8 · research grade</option></select></div>
+          <button class="btn primary" id="fGo">Generate synthetic set</button>
+        </div>
+        <div style="min-width:0">
+          <ul class="steps" id="fSteps"></ul>
+          <div id="fResult"></div>
+        </div>
+      </div>
+      <div class="pb released"><span class="lbl">Released to agents</span><div id="fReleased" class="mute" style="font-size:12.5px;margin-top:6px"></div></div>
+    </section>
+    <section data-view="policy" hidden>
+      <div class="pol">
+        <div><span class="lbl">Autonomy levels</span><p class="mute" style="margin:4px 0 8px;font-size:12.5px">Agents score every action for risk. At or under the level's limit it runs on its own. Above it, it waits for you.</p><div class="levels" id="levels"></div></div>
+        <div><span class="lbl">Always ask a human, at any level</span><div id="rules"></div></div>
+      </div>
+    </section>
+    <section data-view="ledger" hidden>
+      <p class="intro">Every action, approval and denial, hash-chained so any edit to history breaks the chain.</p>
+      <div class="pb"><div class="tbl ledger"><table><thead><tr><th>Time</th><th>Actor</th><th>Event</th><th>Hash</th></tr></thead><tbody id="ledger"></tbody></table></div></div>
+    </section>
+  </main>
+
+  <aside class="panel">
+    <div class="ph"><h2>Human gate</h2><span class="lbl" id="qCount">0 waiting</span></div>
+    <div class="queue" id="queue"></div>
+  </aside>
+</div>
+<footer>Simulation console. Agent dialogue, risk scores and data are generated in your browser to show how the platform behaves; nothing here touches real systems.</footer>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const R=(a,b)=>Math.floor(a+Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(n>=1e4?0:1)+"k":String(n);
+const now=()=>new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
+
+const LEVELS=[
+  {name:"Manual",lim:-1,d:"Agents propose. Nothing runs without you."},
+  {name:"Assist",lim:15,d:"Only trivial, reversible actions run alone."},
+  {name:"Supervised",lim:35,d:"Routine operations run; anything with impact waits."},
+  {name:"Delegated",lim:60,d:"Agents run the business; you see the big calls."},
+  {name:"Unbound",lim:85,d:"Agents act, grow and coordinate. Hard rules still hold."}
+];
+
+const S={
+  level:3,running:true,speed:1,tab:"stream",filter:"all",
+  stats:{auto:0,human:0,denied:0,syn:0,msgs:0},
+  policy:{cross:true,pii:true,fleet:true,cap:5000},
+  agents:[
+    ["Nova","Orchestrator",265],["Vortex","Sales · performance",20],["Echo","Marketing · comms",320],
+    ["Sentinel","Finance · data integrity",145],["Spark","Design · computation",45],["Sage","Knowledge · synthetic data",200],
+    ["Cyber","Security",0],["Forge","Innovation · fleet growth",30],["Atlas","Operations · logistics",180],["Rig","Field · equipment",100]
+  ].map(([name,role,h])=>({name,role,h,acts:0,busy:0,isNew:false})),
+  verticals:[
+    {id:"rtl",name:"Retail",sub:"Demand, pricing, shelf",on:true,n:0,region:"US-East",rec:4200000,key:"RTL"},
+    {id:"fin",name:"Financial Services",sub:"Compliance, alert triage",on:true,n:0,region:"US-Central",rec:18700000,key:"FIN"},
+    {id:"ind",name:"Industrial",sub:"Downtime, connected worker",on:true,n:0,region:"US-South",rec:9100000,key:"IND"},
+    {id:"hc",name:"Healthcare",sub:"Care ops, readmissions",on:true,n:0,region:"US-East (HIPAA)",rec:2600000,key:"HC"},
+    {id:"re",name:"Real Estate",sub:"Container units, leasing",on:true,n:0,region:"US-South",rec:310000,key:"RE"},
+    {id:"mob",name:"Mobility",sub:"Key fobs, diagnostics",on:true,n:0,region:"US-South",rec:86000,key:"MOB"}
+  ],
+  stream:[],queue:[],ledger:[],released:[],vaultQ:{},synSets:{},prevHash:"00000000",pid:0
+};
+S.verticals.forEach(v=>{S.vaultQ[v.id]=R(120,900);S.synSets[v.id]=0});
+const A=n=>S.agents.find(a=>a.name===n)||(S.specialists||[]).find(a=>a.name===n)||S.agents[0];
+const V=id=>S.verticals.find(v=>v.id===id);
+
+/* ---------- Vertical AI: domain models, specialists, KPIs ---------- */
+S.specialists=[];S.pops=[];S.stats.promo=0;S.stats.sims=0;
+S.loop={on:true,cyc:0,stage:-1,vid:null,delta:0,hist:[]};
+const ver=m=>`${m.maj}.${m.min}`;
+const fmtK=k=>k.u==="$"?"$"+k.v.toFixed(k.dp):k.v.toFixed(k.dp)+(/^[a-z]/i.test(k.u)?" "+k.u:k.u);
+const VDATA={
+ rtl:{hue:28,pop:"shoppers",spec:[["DemandSense","Demand forecasting"],["PriceMind","Pricing and elasticity"],["ShelfEye","Shelf vision"]],model:["Retail-Demand",3,2,91.4],comp:["PCI DSS","CCPA"],kpi:[["Forecast accuracy",91.4,"%",1],["Stockout rate",3.2,"%",-1],["Gross margin",34.1,"%",1]],scen:["Holiday demand spike","Supplier shutdown","Competitor price war"]},
+ fin:{hue:212,pop:"account holders",spec:[["AlertLens","Alert triage"],["RegWatch","Regulatory change"],["KYCore","Identity and KYC"]],model:["FinRisk-Explain",2,7,88.9],comp:["SOX","BSA/AML","GLBA"],kpi:[["Alert precision",72.4,"%",1],["Triage time",9.8,"min",-1],["Cases on SLA",96.1,"%",1]],scen:["Fraud wave","Rate shock","Regulator audit"]},
+ ind:{hue:12,pop:"machine twins",spec:[["VibeSense","Predictive maintenance"],["LineBalancer","Throughput"],["SafeWork","Connected worker safety"]],model:["Plant-RootCause",4,0,90.2],comp:["OSHA","ISO 55000"],kpi:[["OEE",78.3,"%",1],["Unplanned downtime",4.1,"h/wk",-1],["MTBF",412,"h",1]],scen:["Bearing failure cascade","Power outage","Rush order"]},
+ hc:{hue:165,pop:"patients",spec:[["CareFlow","Discharge operations"],["ReadmitRisk","Readmission prediction"],["CodeAssist","Clinical coding"]],model:["Care-Readmit",1,9,86.7],comp:["HIPAA","HITECH"],kpi:[["Readmission rate",13.2,"%",-1],["Discharged before noon",41,"%",1],["Coding accuracy",95.3,"%",1]],scen:["Flu season surge","Nurse staffing shortage","Payer rule change"]},
+ re:{hue:285,pop:"tenants",spec:[["LeaseIQ","Leasing and pricing"],["SiteOps","Site maintenance"]],model:["Habitat-Lease",1,3,84.5],comp:["Fair Housing Act"],kpi:[["Occupancy",92,"%",1],["Days to lease",11,"days",-1],["Maintenance SLA",94.2,"%",1]],scen:["Vacancy spike","Storm damage","Rate cut"]},
+ mob:{hue:48,pop:"vehicle owners",spec:[["FobMaster","Key programming"],["DTC-Doctor","Diagnostics"],["RouteSmith","Mobile routing"]],model:["Fortis-Diag",2,1,89.1],comp:["Right to Repair","CCPA"],kpi:[["Jobs per day",6.2,"",1],["First-time fix",89,"%",1],["Avg ticket",142,"$",1]],scen:["Weekend lockout surge","Parts delay","New model year release"]}
+};
+function applyVData(v,d){
+  v.hue=d.hue;v.pop=d.pop;v.comp=d.comp;v.scen=d.scen||["Demand surge","Supply shock","Compliance audit"];
+  v.model={name:d.model[0],maj:d.model[1],min:d.model[2],acc:d.model[3]};
+  v.kpi=d.kpi.map(([l,val,u,dir])=>({l,v:val,base:val,u,dir,dp:u==="$"?(val<10?2:0):(val>=100?0:1)}));
+  v.specs=d.spec.map(([name,role])=>{const a={name,role,h:d.hue,acts:0,busy:0,vid:v.id};S.specialists.push(a);return a});
+}
+const CATALOG=[
+ {id:"agri",name:"Agriculture",sub:"Exotic flowers, mushrooms, greenhouses",region:"US-South",key:"AGR",hue:120,pop:"plant beds",
+  spec:[["BloomCast","Bloom timing"],["SporeWatch","Mushroom grow rooms"],["ClimateHand","Greenhouse climate"]],model:["Agri-Grow",1,0,85.2],comp:["USDA GAP","APHIS"],
+  kpi:[["Bloom forecast accuracy",89,"%",1],["Greenhouse yield",92,"%",1],["Shrink",6,"%",-1]],scen:["Heat wave","Fungal outbreak","Valentine's demand"],
+  t:{thing:"greenhouse bay",things:"greenhouse bays",metric:"humidity",act1:"Adjust climate in",d1:"Humidity and light changes stay inside each crop profile.",act2:"Ship orchid order to buyer in Ontario",d2:"Cross-border plant shipment with phytosanitary paperwork.",cross2:true,act3:"Order mushroom substrate",d3:"Covers the next two flushes."},
+  schema:[["bay",()=>"GB-"+R(1,24)],["crop",()=>pick(["Orchid","Protea","Anthurium","Lion's mane","Oyster"])],["humidity",()=>R(55,92)+"%"],["temp_c",()=>(Math.random()*10+18).toFixed(1)],["days_to_bloom",()=>R(2,40)]]},
+ {id:"legal",name:"Legal",sub:"Contracts, discovery, deadlines",region:"US-Central",key:"LGL",hue:350,pop:"counterparties",
+  spec:[["ClauseHawk","Contract review"],["DiscoveryNet","E-discovery"],["DocketBot","Deadlines and filings"]],model:["Legal-Clause",1,0,87.0],comp:["ABA Model Rules","GDPR"],
+  kpi:[["Contract cycle time",6.1,"days",-1],["Clause risk caught",88,"%",1],["Matters on deadline",97,"%",1]],scen:["Litigation hold","Counterparty pushback","New privacy law"],
+  t:{thing:"contract",things:"contracts",metric:"clause risk",act1:"Auto-redline",d1:"Applies your playbook positions; counsel sees every change.",act2:"Send redlined MSA to opposing counsel",d2:"Outbound with negotiated positions and client details.",pii2:true,act3:"Engage e-discovery processing vendor",d3:"Processes 40GB under litigation hold."},
+  schema:[["matter",()=>"M-"+R(1000,9999)],["clause",()=>pick(["Indemnity","Limitation","Term","IP","Venue"])],["risk",()=>Math.random().toFixed(2)],["due_days",()=>R(1,30)],["status",()=>pick(["open","redlined","signed"])]]},
+ {id:"logi",name:"Logistics",sub:"Routing, freight, docks",region:"US-South",key:"LOG",hue:190,pop:"shipments",
+  spec:[["RouteForge","Route optimization"],["FreightBid","Spot freight"],["DockSense","Dock scheduling"]],model:["Logi-Route",1,0,88.0],comp:["FMCSA HOS","C-TPAT"],
+  kpi:[["On-time delivery",94,"%",1],["Cost per mile",2.31,"$",-1],["Dock dwell",38,"min",-1]],scen:["I-40 ice storm","Fuel price spike","Peak season volume"],
+  t:{thing:"shipment",things:"shipments",metric:"on-time rate",act1:"Re-route",d1:"Avoids the weather delay on the I-40 corridor.",act2:"Accept spot freight load at premium rate",d2:"Commits a truck and driver for three days.",act3:"Book overflow warehouse space",d3:"Two weeks of pallet storage."},
+  schema:[["load",()=>"LD-"+R(10000,99999)],["lane",()=>pick(["MEM-DAL","MEM-ATL","MEM-CHI","MEM-STL"])],["miles",()=>R(180,780)],["eta_h",()=>R(4,22)],["on_time",()=>pick(["yes","yes","yes","late"])]]},
+ {id:"energy",name:"Energy",sub:"Grid, solar, demand response",region:"US-Central",key:"NRG",hue:58,pop:"homes",
+  spec:[["GridPulse","Grid balancing"],["SolarYield","Solar forecasting"],["LoadShift","Demand response"]],model:["Grid-Balance",1,0,90.0],comp:["NERC CIP","FERC"],
+  kpi:[["Grid uptime",99.8,"%",1],["Solar yield vs forecast",87,"%",1],["Peak load shaved",12,"%",1]],scen:["Heat dome","Substation fault","Cloudy week"],
+  t:{thing:"feeder",things:"feeders",metric:"load balance",act1:"Rebalance load on",d1:"Shifts load between feeders inside safe limits.",act2:"Trigger demand-response event for 2,000 homes",d2:"Customers get a notice and a bill credit.",pii2:true,act3:"Dispatch inverter repair crew",d3:"Three solar sites are under forecast."},
+  schema:[["feeder",()=>"F-"+R(10,99)],["load_mw",()=>(Math.random()*40+5).toFixed(1)],["temp_c",()=>R(18,41)],["solar_kw",()=>R(0,900)],["status",()=>pick(["normal","normal","peak","alert"])]]},
+ {id:"hosp",name:"Hospitality",sub:"Bookings, guests, food and beverage",region:"US-East",key:"HSP",hue:255,pop:"guests",
+  spec:[["YieldKeeper","Room pricing"],["GuestSense","Guest experience"],["ChefOps","Kitchen and inventory"]],model:["Stay-Yield",1,0,86.0],comp:["PCI DSS","ADA"],
+  kpi:[["RevPAR",118,"$",1],["Guest score",4.6,"/5",1],["Food waste",7,"%",-1]],scen:["Convention week","Hurricane cancellations","Chef shortage"],
+  t:{thing:"booking",things:"bookings",metric:"RevPAR",act1:"Reprice",d1:"Rate changes inside your floor and ceiling.",act2:"Send loyalty offer to past guests",d2:"Uses guest contact records.",pii2:true,act3:"Reorder food and beverage stock",d3:"Covers weekend event demand."},
+  schema:[["booking",()=>"BK-"+R(10000,99999)],["room",()=>pick(["King","Double","Suite"])],["nights",()=>R(1,6)],["rate",()=>"$"+R(89,320)],["channel",()=>pick(["direct","OTA","group"])]]},
+ {id:"cons",name:"Construction",sub:"Bids, schedule, site safety",region:"US-South",key:"CON",hue:78,pop:"work crews",
+  spec:[["BidSmith","Estimating and bids"],["CritPath","Scheduling"],["HardHat","Site safety"]],model:["Build-Schedule",1,0,84.0],comp:["OSHA","Davis-Bacon"],
+  kpi:[["Schedule float",8,"days",1],["Bid win rate",31,"%",1],["Safety incidents",0.4,"/mo",-1]],scen:["Steel price jump","Rain delay month","Inspector backlog"],
+  t:{thing:"work package",things:"work packages",metric:"schedule float",act1:"Resequence",d1:"Keeps the critical path intact.",act2:"Submit bid on county school renovation",d2:"Binding bid at your margin target.",act3:"Order structural steel",d3:"Locks price before the increase."},
+  schema:[["package",()=>"WP-"+R(100,999)],["trade",()=>pick(["Steel","Concrete","Electrical","HVAC"])],["crew",()=>R(3,14)],["float_days",()=>R(0,15)],["status",()=>pick(["on track","at risk","done"])]]}
+];
+function customEntry(name,region){
+  const base=(name.replace(/[^a-z0-9]/gi,"")||"Custom").slice(0,10),cap=base[0].toUpperCase()+base.slice(1);
+  return{id:"c"+Date.now().toString(36),name,sub:"Custom vertical",region,key:base.slice(0,3).toUpperCase(),hue:R(0,359),pop:"synthetic cases",
+   spec:[[cap+"Scout","Intake and signals"],[cap+"Mind","Domain reasoning"],[cap+"Ops","Execution"]],model:[cap+"-Core",0,1,80.0],comp:["Your policy pack"],
+   kpi:[["Task accuracy",80,"%",1],["Cycle time",24,"h",-1],["Cases on SLA",90,"%",1]],scen:null,
+   t:{thing:"case",things:"cases",metric:"throughput",act1:"Auto-resolve",d1:"Routine cases closed with a full decision trace.",act2:"Change the intake workflow",d2:"Alters how new cases are routed.",act3:"Buy a data feed for the domain",d3:"Adds outside signals to the vault."},
+   schema:[["case",()=>"C-"+R(1000,9999)],["type",()=>pick(["A","B","C"])],["score",()=>Math.random().toFixed(2)],["age_h",()=>R(1,72)],["status",()=>pick(["open","closed"])]]};
+}
+function launchProposal(e){return{agent:"Forge",title:`Launch ${e.name} vertical`,detail:`Sealed ${e.region} vault, specialists ${e.spec.map(s=>s[0]).join(", ")}, ${e.model[0]} model, ${e.comp.join(" + ")} guardrails.`,risk:R(42,58),fleet:"launch",entry:e}}
+
+/* ---------- dialogue + proposals per vertical ---------- */
+const T={
+ rtl:{talk:[
+  ()=>["Vortex","Sage",`Demand for SKU-${R(1000,9999)} is up ${R(18,64)}% over 72h in ${R(4,19)} stores. Seasonal or a trend break?`],
+  ()=>["Sage","Vortex",`Synthetic history set RTL-S${R(10,99)} shows the same lift two years running. Seasonal, ${R(78,94)}% confidence.`],
+  ()=>["Spark","Vortex",`Elasticity model says a ${R(2,7)}% price move keeps margin flat on the top ${R(20,60)} SKUs.`],
+  ()=>["Atlas","Vortex",`Distribution center can absorb ${R(800,2400)} more units this week without overtime.`]],
+  prop:[
+  ()=>({agent:"Vortex",title:`Reprice ${R(18,60)} SKUs in the Southeast region`,detail:"Margin-neutral price moves based on elasticity run against synthetic sales history.",risk:R(22,42)}),
+  ()=>{const s=R(2,9)*1000;return{agent:"Atlas",title:`Place supplier reorder for ${R(900,2600).toLocaleString()} units`,detail:`Covers projected stockout in 9 days. Spend $${s.toLocaleString()}.`,risk:R(25,45),spend:s}},
+  ()=>({agent:"Spark",title:`Run shelf-execution audit across ${R(8,22)} stores`,detail:"Read-only photo audit; flags gaps against planogram.",risk:R(5,14)})]},
+ fin:{talk:[
+  ()=>["Sentinel","Cyber",`Alert cluster: ${R(6,31)} transactions share one device fingerprint across ${R(3,9)} accounts.`],
+  ()=>["Cyber","Sentinel",`Fingerprint matches a known mule pattern. Explanation trace attached for the reviewer.`],
+  ()=>["Sage","Sentinel",`False-positive model retrained on ${R(200,600)}k synthetic alerts. Precision up ${R(3,11)} points.`],
+  ()=>["Nova","Sentinel",`Compliance window closes in ${R(2,6)} days. Prioritize alerts with regulatory clocks.`]],
+  prop:[
+  ()=>({agent:"Sentinel",title:`Freeze ${R(2,5)} accounts pending review`,detail:"Mule-pattern match with explainable trace. Customer-facing impact.",risk:R(62,78)}),
+  ()=>({agent:"Sentinel",title:`Auto-close ${R(120,340)} false-positive alerts`,detail:"Each closure carries its model explanation and is reversible for 30 days.",risk:R(28,40)}),
+  ()=>({agent:"Cyber",title:"Draft suspicious-activity report for compliance",detail:"Includes customer identifiers for the filing.",risk:R(45,58),pii:true}),
+  ()=>({agent:"Echo",title:"Share alert summary with partner bank in Frankfurt",detail:"Partner requested pattern data for a joint investigation.",risk:R(55,70),pii:true,cross:true})]},
+ ind:{talk:[
+  ()=>["Rig","Atlas",`Press line ${R(2,6)} vibration at ${(Math.random()*4+5).toFixed(1)} mm/s and climbing.`],
+  ()=>["Atlas","Rig",`Root cause looks like bearing wear. Matches ${R(4,12)} synthetic failure runs.`],
+  ()=>["Sage","Rig",`Predicted time to failure: ${R(40,140)} runtime hours, 80% interval.`],
+  ()=>["Nova","Atlas",`Saturday has the lowest order load. Plan maintenance there if needed.`]],
+  prop:[
+  ()=>({agent:"Atlas",title:"Schedule maintenance window Saturday 02:00",detail:"Four-hour window, no open orders affected.",risk:R(12,24)}),
+  ()=>{const s=R(9,22)*100;return{agent:"Rig",title:"Order replacement bearing kit",detail:`Spend $${s.toLocaleString()} from approved supplier.`,risk:R(10,20),spend:s}},
+  ()=>({agent:"Rig",title:`Throttle line ${R(2,6)} to 80% speed`,detail:"Cuts failure risk until repair; drops output 20%.",risk:R(44,58)})]},
+ hc:{talk:[
+  ()=>["Sage","Sentinel",`Readmission model trained on a synthetic cohort of ${R(40,180)}k stays. No raw charts used.`],
+  ()=>["Sentinel","Cyber",`Access check: zero raw-record reads by agents this shift.`],
+  ()=>["Atlas","Echo",`${R(9,30)} discharges tomorrow flagged for follow-up calls.`]],
+  prop:[
+  ()=>({agent:"Atlas",title:`Flag ${R(10,28)} discharges for readmission follow-up`,detail:"Writes flags into the care team's queue. Names stay in the vault.",risk:R(24,36),pii:true}),
+  ()=>({agent:"Sage",title:"Retrain readmission model on synthetic cohort",detail:"Synthetic set only. Previous model kept for rollback.",risk:R(14,24)}),
+  ()=>({agent:"Echo",title:"Export patient cohort to research partner in Toronto",detail:"Partner asked for identifiable cohort for a study.",risk:R(72,88),pii:true,cross:true})]},
+ re:{talk:[
+  ()=>["Atlas","Vortex",`Container unit occupancy at ${R(82,97)}%. ${R(1,4)} units turn over this month.`],
+  ()=>["Vortex","Spark",`Comparable rents in the area moved ${R(2,6)}% this quarter.`]],
+  prop:[
+  ()=>({agent:"Vortex",title:`Adjust rent on ${R(3,8)} container units at renewal`,detail:"Market-based increase within lease terms.",risk:R(34,48)}),
+  ()=>{const s=R(18,32)*100;return{agent:"Atlas",title:"Accept maintenance vendor quote",detail:`HVAC service across two sites, $${s.toLocaleString()}.`,risk:R(16,26),spend:s}}]},
+ mob:{talk:[
+  ()=>["Rig","Atlas",`${R(3,9)} fob-programming jobs requested for tomorrow. Route fits ${R(2,6)}.`],
+  ()=>["Echo","Vortex",`Past customers with ${R(2,5)}+ year-old vehicles respond best to diagnostic offers.`],
+  ()=>["Sage","Rig",`Most common DTC this week: P0${R(100,499)}. Repair guide attached.`]],
+  prop:[
+  ()=>({agent:"Atlas",title:`Book ${R(2,5)} mobile jobs into tomorrow's route`,detail:"Fills open slots; customers get confirmation texts.",risk:R(8,16)}),
+  ()=>({agent:"Echo",title:`Send fob-programming offer to ${R(80,220)} past customers`,detail:"Uses your own customer list. Opt-outs respected.",risk:R(22,34)})]}
+};
+const FLEET=[
+  ()=>({agent:"Forge",title:`Spawn new agent "${pick(["Ledger","Quorum","Tally","Beacon","Harbor","Loom","Vector","Cipher"])}"`,detail:"Forge found repeated work no agent owns and wrote a role spec for it.",risk:R(48,64),fleet:"spawn"}),
+  ()=>({agent:"Forge",title:`Fine-tune ${pick(["Sentinel","Vortex","Atlas","Rig"])} on ${R(200,600)}k synthetic rows`,detail:"Changes an agent's behavior. Old weights kept for rollback.",risk:R(40,56),fleet:"tune",syn:true}),
+  ()=>({agent:"Nova",title:"Rebalance fleet: move 2 agents to the busiest vertical",detail:"Reassigns capacity based on queue depth.",risk:R(18,30)}),
+  ()=>{const e=CATALOG.find(c=>!V(c.id)&&!S.queue.some(q=>q.entry&&q.entry.id===c.id));return e?launchProposal(e):{agent:"Nova",title:"Rebalance fleet across verticals",detail:"Reassigns capacity based on queue depth.",risk:R(18,30)}}
+];
+function genT(e){const t=e.t,sp=e.spec.map(s=>s[0]);return{
+  talk:[
+   ()=>[sp[0],"Sage",`Reviewed ${R(20,140)} ${t.things} overnight. ${R(2,9)} need attention on ${t.metric}.`],
+   ()=>["Sage",sp[1],`Synthetic ${t.thing} set ${e.key}-S${R(10,99)} covers the edge cases your model missed last week.`],
+   ()=>[sp[1],"Nova",`${t.metric[0].toUpperCase()+t.metric.slice(1)} is ${pick(["improving","holding","slipping"])} this week, a ${R(1,8)} point move.`],
+   ()=>[sp[2],"Atlas",`Queue: ${R(5,40)} open ${t.things}, oldest is ${R(1,6)} days.`]],
+  prop:[
+   ()=>({agent:sp[0],title:`${t.act1} ${R(3,25)} ${t.things}`,detail:t.d1,risk:R(14,34)}),
+   ()=>({agent:sp[1],title:t.act2,detail:t.d2,risk:R(40,64),pii:!!t.pii2,cross:!!t.cross2}),
+   ()=>{const s=R(2,12)*1000;return{agent:sp[2],title:t.act3,detail:`${t.d3} Spend $${s.toLocaleString()}.`,risk:R(24,44),spend:s}}]}}
+
+/* ---------- hash chain ---------- */
+function fnv(s){let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)}return(h>>>0).toString(16).padStart(8,"0")}
+function log(actor,text){const h=fnv(S.prevHash+actor+text+Date.now());S.prevHash=h;S.ledger.unshift({t:now(),actor,text,h});if(S.ledger.length>200)S.ledger.pop();if(S.tab==="ledger")renderLedger()}
+
+/* ---------- stream ---------- */
+function say(m){S.stream.unshift({...m,t:now()});if(S.stream.length>140)S.stream.pop();S.stats.msgs++;renderStream()}
+
+/* ---------- decision engine ---------- */
+const FLEETMSG={spawn:"Adds a new agent to the fleet",tune:"Changes how agents behave in production",launch:"Launches a new vertical with its own vault and agents",promote:"Puts a new model into production"};
+function hardRules(p){const r=[];
+  if(p.always)r.push("Model promotions always need a human");
+  if(p.cross&&S.policy.cross)r.push("Data would leave its sovereign region");
+  if(p.pii&&S.policy.pii)r.push("Touches personal records");
+  if(p.fleet&&S.policy.fleet)r.push(FLEETMSG[p.fleet]);
+  if(p.spend&&p.spend>S.policy.cap)r.push(`Spend over $${S.policy.cap.toLocaleString()} cap`);
+  return r}
+function execute(p){
+  if(p.fleet==="spawn"){const nm=(p.title.match(/"(.+)"/)||[])[1]||"Agent";if(!S.agents.some(a=>a.name===nm)){S.agents.push({name:nm,role:"Spawned by Forge",h:R(0,359),acts:0,busy:3,isNew:true});say({from:"Forge",vid:"fleet",text:`${nm} is online and has taken its first task.`,tag:"syn",tagText:"fleet grew"});renderAgents()}}
+  if(p.entry)addVertical(p.entry);
+  if(p.fleet==="promote"){const v=V(p.vid);if(v){v.model.min++;v.model.acc=Math.min(99.5,+(v.model.acc+p.delta).toFixed(1));S.stats.promo++;
+    say({from:"Sage",vid:p.vid,text:`${v.model.name} v${ver(v.model)} is in production at ${v.model.acc}% accuracy. Previous version kept for rollback.`,tag:"syn",tagText:"model promoted"})}
+    loopDone(p,"promoted")}
+  if(p.sim){const v=V(p.vid);if(v)v.kpi.forEach(k=>{k.v+=k.dir*Math.abs(k.v)*.012;clampK(k)})}
+}
+function addVertical(e){
+  if(V(e.id))return;
+  const v={id:e.id,name:e.name,sub:e.sub,on:true,n:0,region:e.region,rec:R(60,900)*1000,key:e.key,isNew:true};
+  S.verticals.push(v);applyVData(v,e);T[e.id]=genT(e);SCHEMA[e.id]=e.schema;S.vaultQ[e.id]=0;S.synSets[e.id]=0;
+  say({from:"Nova",vid:e.id,text:`${e.name} vertical is live: sealed ${e.region} vault, ${v.specs.map(s=>s.name).join(", ")} online, ${v.model.name} v${ver(v.model)} loaded.`,tag:"syn",tagText:"vertical launched"});
+  log("Forge",`Launched ${e.name} vertical in ${e.region}`);
+  renderVerticals();renderForgeControls();renderSimControls();renderCatalog();renderVerticalAI();
+}
+function propose(p,vid){
+  p.id=++S.pid;p.vid=vid;p.risk=Math.max(1,Math.min(99,p.risk));
+  const lim=LEVELS[S.level].lim,hard=hardRules(p);
+  const ag=A(p.agent);ag.acts++;ag.busy=3;
+  if(!hard.length&&p.risk<=lim){
+    S.stats.auto++;
+    say({from:p.agent,vid,text:`${p.title}. ${p.detail}`,tag:"auto",tagText:`auto · risk ${p.risk}`});
+    log(p.agent,`Executed: ${p.title} (risk ${p.risk}, level ${LEVELS[S.level].name})`);
+    execute(p);
+  }else{
+    p.reasons=hard.slice();if(p.risk>lim)p.reasons.push(lim<0?"Manual mode: every action needs you":`Risk ${p.risk} is over the ${LEVELS[S.level].name} limit of ${lim}`);
+    S.queue.unshift(p);
+    say({from:p.agent,vid,text:`Proposing: ${p.title}. Sent to the human gate.`,tag:"gate",tagText:`waiting · risk ${p.risk}`});
+    log(p.agent,`Requested approval: ${p.title}`);
+    renderQueue();
+  }
+  renderStats();
+}
+function decide(id,yes){
+  const i=S.queue.findIndex(q=>q.id===id);if(i<0)return;const p=S.queue.splice(i,1)[0];
+  if(yes){S.stats.human++;
+    say({from:"Nova",vid:p.vid,text:`Approved by you: ${p.title}. ${p.agent} is executing.`,tag:"gate",tagText:"human approved"});
+    log("You",`Approved: ${p.title}`);
+    execute(p);
+  }else{S.stats.denied++;
+    say({from:"Nova",vid:p.vid,text:`Denied by you: ${p.title}. ${p.agent} will look for another way.`,tag:"deny",tagText:"human denied"});
+    log("You",`Denied: ${p.title}`);
+    if(p.fleet==="promote")loopDone(p,"denied");
+  }
+  renderQueue();renderStats();
+}
+function explain(id){
+  const p=S.queue.find(q=>q.id===id);if(!p||p.why)return;
+  const peer=pick(S.agents.filter(a=>a.name!==p.agent)).name;
+  p.why=`${p.agent}: ${p.detail} ${peer} reviewed it and agrees the downside is ${p.risk>60?"real but contained":"small"}. If you deny it, we hold the current state and recheck in one hour.`;
+  say({from:p.agent,to:peer,vid:p.vid,text:`Explaining "${p.title}" to the human reviewer with ${peer}'s cross-check.`});
+  renderQueue();
+}
+
+/* ---------- Vertical AI behavior ---------- */
+function clampK(k){if(k.u==="%")k.v=Math.min(k.v,99.9);if(k.u==="/5")k.v=Math.min(k.v,5);k.v=Math.max(0,k.v)}
+function drift(v){v.kpi.forEach(k=>{const mag=Math.max(.02,Math.abs(k.v)*.003);k.v+=(Math.random()-.42)*mag*k.dir;clampK(k)})}
+function specTalk(v){
+  const sp=pick(v.specs),k=pick(v.kpi),to=pick(["Nova","Sage","Sentinel","Atlas","Vortex","Echo"]);
+  const better=(k.v-k.base)*k.dir>=0;
+  const lines=[
+    `${v.model.name} v${ver(v.model)} scored ${(v.model.acc-Math.random()*1.5).toFixed(1)}% on today's live slice.`,
+    `${k.l} is at ${fmtK(k)}, ${better?"better":"worse"} than at the start of the shift.`,
+    `Handled ${R(12,180)} ${v.name.toLowerCase()} tasks this hour inside ${pick(v.comp)} guardrails.`,
+    `Asking for a fresh synthetic slice from the ${v.name} vault to cover edge cases.`];
+  sp.acts++;sp.busy=2;say({from:sp.name,to,vid:v.id,text:pick(lines)});
+}
+
+/* ---------- Synthetic AI: self-improvement loop ---------- */
+function loopDone(p,out){const L=S.loop;
+  L.hist.unshift({cyc:p.loop,model:p.model,delta:p.delta,out,t:now()});if(L.hist.length>8)L.hist.pop();
+  L.stage=-1;L.vid=null;if(S.tab==="synth")renderLoop()}
+function loopStep(){
+  const L=S.loop;if(!L.on||L.stage===4)return;
+  if(L.stage===-1){const live=S.verticals.filter(v=>v.on);if(!live.length)return;
+    const v=pick(live);L.cyc++;L.vid=v.id;L.stage=0;L.delta=+(Math.random()*1.5+.3).toFixed(1);L.rows=R(100,800)*1000;
+    say({from:"Sage",vid:v.id,text:`Improvement cycle ${L.cyc}: generating ${fmt(L.rows)} synthetic rows inside the ${v.name} vault for ${v.model.name}.`,tag:"syn",tagText:"loop"});return}
+  if(Math.random()<.45)return;
+  const v=V(L.vid);if(!v){L.stage=-1;return}
+  const cand=`${v.model.name} v${v.model.maj}.${v.model.min+1}`;L.stage++;
+  if(L.stage===1)say({from:v.specs[0].name,vid:v.id,text:`Training candidate ${cand} on the synthetic set. No real records involved.`,tag:"syn",tagText:"loop"});
+  else if(L.stage===2)say({from:"Sage",vid:v.id,text:`Synthetic holdout eval: ${cand} is +${L.delta} pts over v${ver(v.model)}.`,tag:"syn",tagText:"loop"});
+  else if(L.stage===3){
+    if(Math.random()<.15){say({from:"Cyber",vid:v.id,text:`Mirage adversaries broke ${cand} on ${R(3,19)} edge cases. Rejected before it reached you; cycle restarts.`,tag:"deny",tagText:"red-team fail"});
+      L.hist.unshift({cyc:L.cyc,model:cand,delta:L.delta,out:"failed red-team",t:now()});if(L.hist.length>8)L.hist.pop();L.stage=-1;L.vid=null}
+    else say({from:"Cyber",vid:v.id,text:`Mirage adversaries ran ${R(400,1200)} synthetic attacks on ${cand}. It held.`,tag:"syn",tagText:"loop"})}
+  else if(L.stage===4)propose({agent:"Sage",title:`Promote ${cand} to production`,detail:`Synthetic eval +${L.delta} pts, passed red-team, no regression on ${pick(v.comp)} checks. Trained only on synthetic data.`,risk:R(30,50),fleet:"promote",always:true,loop:L.cyc,delta:L.delta,model:cand},v.id);
+}
+
+/* ---------- tick ---------- */
+function tick(){
+  S.agents.forEach(a=>{if(a.busy>0)a.busy--});S.specialists.forEach(a=>{if(a.busy>0)a.busy--});
+  loopStep();
+  const live=S.verticals.filter(v=>v.on);
+  if(live.length){
+    if(Math.random()<.06)propose(pick(FLEET)(),"fleet");
+    else{const v=pick(live),t=T[v.id];v.n++;S.vaultQ[v.id]+=R(1,6);drift(v);const r=Math.random();
+      if(r<.38)propose(pick(t.prop)(),v.id);
+      else if(r<.62)specTalk(v);
+      else{const [f,to,text]=pick(t.talk)();A(f).acts++;A(f).busy=2;say({from:f,to,vid:v.id,text})}}
+  }
+  renderVerticals();renderAgents();
+  if(S.tab==="vaults")renderVaults();
+  if(S.tab==="vertical")renderVerticalAI();
+  if(S.tab==="synth"){renderLoop();renderPops()}
+}
+let timer;function schedule(){clearInterval(timer);if(S.running)timer=setInterval(tick,1700/S.speed)}
+
+/* ---------- renders ---------- */
+function av(name){const a=A(name);return`<span class="av${a.busy?" busy":""}" style="--h:${a.h}" aria-hidden="true">${esc(name.slice(0,2).toUpperCase())}</span>`}
+function vname(id){return id==="fleet"?"Fleet":esc(V(id).name)}
+function renderStats(){
+  const st=S.stats;
+  $("#stats").innerHTML=[
+    ["ai","Agent messages",st.msgs],["ok","Ran autonomously",st.auto],["gate","Waiting on you",S.queue.length],
+    ["","You approved",st.human],["","You denied",st.denied],["","Verticals live",S.verticals.length],
+    ["ai","Models promoted",st.promo],["ai","Simulations run",st.sims],["ai","Synthetic rows released",fmt(st.syn)],["ok","Raw records exported",0]
+  ].map(([c,l,v])=>`<div class="stat ${c}"><span class="lbl">${l}</span><b>${v}</b></div>`).join("");
+}
+function renderDial(){
+  $("#dial").innerHTML=LEVELS.map((l,i)=>`<button aria-pressed="${i===S.level}" data-l="${i}" title="${esc(l.d)}">L${i} ${l.name}</button>`).join("");
+  $("#levels").innerHTML=LEVELS.map((l,i)=>`<div class="level${i===S.level?" on":""}"><b>L${i} ${l.name}</b><span>${l.d}</span><span class="mono mute">${l.lim<0?"none":"≤ "+l.lim}</span></div>`).join("");
+}
+function renderVerticals(){
+  $("#verticals").innerHTML=S.verticals.map(v=>`<div class="vrow"><div class="name">${esc(v.name)}${v.isNew?'<span class="new-tag">NEW</span>':""}<small>${esc(v.sub)} · <span class="mono">${v.n}</span> events</small></div><input type="checkbox" class="sw" id="sw-${v.id}" data-v="${v.id}" ${v.on?"checked":""} aria-label="Run ${v.name} agents"></div>`).join("");
+  $("#chips").innerHTML=[["all","All"],...S.verticals.map(v=>[v.id,v.name]),["fleet","Fleet"]].map(([id,n])=>`<button class="chip" data-f="${id}" aria-pressed="${S.filter===id}">${esc(n)}</button>`).join("");
+}
+function renderAgents(){
+  $("#fleetCount").textContent=S.agents.length+" agents";
+  $("#agents").innerHTML=S.agents.map(a=>`<div class="arow">${av(a.name)}<div class="name">${esc(a.name)}${a.isNew?'<span class="new-tag">NEW</span>':""}<small>${esc(a.role)}</small></div><span class="n">${a.acts}</span></div>`).join("");
+}
+function renderStream(){
+  const items=S.stream.filter(m=>S.filter==="all"||m.vid===S.filter).slice(0,80);
+  $("#stream").innerHTML=items.length?items.map(m=>`<div class="msg">${av(m.from)}<div style="min-width:0"><div class="meta"><b>${esc(m.from)}</b>${m.to?`<span>→ ${esc(m.to)}</span>`:""}<span>${vname(m.vid)}</span><span class="mono">${m.t}</span>${m.tag?`<span class="tag ${m.tag}">${esc(m.tagText)}</span>`:""}</div><p>${esc(m.text)}</p></div></div>`).join(""):`<div class="empty">No messages for this filter yet.</div>`;
+}
+function renderQueue(){
+  $("#qCount").textContent=S.queue.length+" waiting";
+  $("#queue").innerHTML=S.queue.length?S.queue.map(p=>{
+    const c=p.risk>60?"var(--crit)":p.risk>35?"var(--warn)":"var(--ok)";
+    return`<article class="card"><div class="who">${av(p.agent)}<span><b style="color:var(--fg)">${esc(p.agent)}</b> · ${vname(p.vid)}</span></div>
+    <h3>${esc(p.title)}</h3><div class="mute" style="font-size:12.5px">${esc(p.detail)}</div>
+    <div class="risk"><span class="lbl">Risk</span><span class="bar"><i style="width:${p.risk}%;background:${c}"></i></span><span class="mono">${p.risk}</span></div>
+    <ul class="reasons">${p.reasons.map(r=>`<li><strong>Why you:</strong> ${esc(r)}</li>`).join("")}</ul>
+    ${p.why?`<div class="why">${esc(p.why)}</div>`:""}
+    <div class="acts"><button class="btn gate" data-ok="${p.id}">Approve</button><button class="btn danger" data-no="${p.id}">Deny</button>${p.why?"":`<button class="btn" data-why="${p.id}">Ask agents why</button>`}</div></article>`}).join("")
+    :`<div class="empty">Nothing needs you right now.<br>Agents are working inside the ${LEVELS[S.level].name} limits.</div>`;
+  renderCatalog();
+}
+function renderVaults(){
+  $("#vaults").innerHTML=S.verticals.map(v=>`<div class="vault"><h3>${v.name} vault</h3>
+  <dl class="kv"><dt>Region</dt><dd>${v.region}</dd><dt>Records</dt><dd>${fmt(v.rec)}</dd><dt>Keys</dt><dd>customer-held</dd><dt>Agent queries</dt><dd>${S.vaultQ[v.id].toLocaleString()}</dd><dt>Synthetic sets</dt><dd>${S.synSets[v.id]}</dd><dt>Raw rows read</dt><dd>0</dd></dl>
+  <span class="seal">Sealed · AES-256-GCM · in-region compute</span></div>`).join("");
+}
+function renderRules(){
+  const rules=[["cross","Data leaving its region","Any transfer outside the vault's jurisdiction."],["pii","Personal records","Anything that reads or moves identifiable people."],["fleet","Fleet changes","New agents, fine-tunes, or self-modification."]];
+  $("#rules").innerHTML=rules.map(([k,t,d])=>`<div class="rule"><input type="checkbox" class="sw" id="r-${k}" data-r="${k}" ${S.policy[k]?"checked":""}><div><label for="r-${k}">${t}</label><small>${d}</small></div></div>`).join("")+
+  `<div class="rule"><div><label for="cap">Spend cap per action</label><small>Anything over this waits for you.</small></div><input type="number" id="cap" min="0" step="500" value="${S.policy.cap}" style="width:110px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 8px"></div>`;
+}
+function renderLedger(){
+  $("#ledger").innerHTML=S.ledger.map(e=>`<tr><td>${e.t}</td><td>${esc(e.actor)}</td><td>${esc(e.text)}</td><td class="hash">${e.h}</td></tr>`).join("")||`<tr><td colspan="4" class="mute">No events yet.</td></tr>`;
+}
+
+/* ---------- Vertical AI tab ---------- */
+function renderVerticalAI(){
+  $("#vgrid").innerHTML=S.verticals.map(v=>`<div class="vcard">
+   <div class="vhead"><h3>${esc(v.name)}${v.isNew?'<span class="new-tag">NEW</span>':""}</h3><span class="mute mono" style="font-size:11px">${esc(v.region)}${v.on?"":" · paused"}</span></div>
+   <div class="model">${esc(v.model.name)} v${ver(v.model)} · ${v.model.acc}% accuracy</div>
+   <div class="specs">${v.specs.map(s=>`<div class="spec">${av(s.name)}<span style="min-width:0">${esc(s.name)}<small> · ${esc(s.role)}</small></span><span class="mono mute" style="margin-left:auto;font-size:11.5px">${s.acts}</span></div>`).join("")}</div>
+   <div class="kpis">${v.kpi.map(k=>{const d=(k.v-k.base)*k.dir;return`<div class="kpi"><span class="mute">${esc(k.l)}</span><b>${fmtK(k)} <span class="${d>=0?"up":"down"}" aria-label="${d>=0?"improving":"worsening"}">${d>=0?"▲":"▼"}</span></b></div>`}).join("")}</div>
+   <div>${v.comp.map(c=>`<span class="tag" style="margin:0 4px 4px 0;display:inline-block">${esc(c)}</span>`).join("")}</div>
+  </div>`).join("");
+}
+function renderCatalog(){
+  const pend=new Set(S.queue.filter(q=>q.entry).map(q=>q.entry.id));
+  $("#catalog").innerHTML=CATALOG.map(e=>{const live=!!V(e.id),p=pend.has(e.id);
+    return`<div class="cat"><b>${e.name}</b><span class="mute">${e.sub}</span><span class="mono mute" style="font-size:11px">${e.region} · ${e.comp.join(", ")}</span><span>${e.spec.map(s=>s[0]).join(" · ")}</span>
+    <button class="btn" data-launch="${e.id}" ${live||p?"disabled":""}>${live?"Live":p?"Waiting on you":"Propose launch"}</button></div>`}).join("");
+}
+
+/* ---------- Synthetic AI tab ---------- */
+const LSTAGES=["Generate synthetic data","Train candidate","Synthetic eval","Red-team vs Mirage adversaries","Human promotion"];
+function renderLoop(){
+  const L=S.loop,v=L.vid?V(L.vid):null;
+  $("#loopHead").textContent=v?`Cycle ${L.cyc} · ${v.name} · ${v.model.name} v${ver(v.model)} → v${v.model.maj}.${v.model.min+1}${L.stage===4?" · waiting on you":""}`:(L.on?"Picking the next model to improve.":"Loop paused. No new cycles will start.");
+  $("#loopPipe").innerHTML=LSTAGES.map((s,k)=>{let c="";if(v){if(k<L.stage)c="done";else if(k===L.stage)c=k===4?"gate":"run"}return`<div class="stage ${c}"><b>${k+1}</b>${s}</div>`}).join("");
+  $("#loopHist").innerHTML=L.hist.length?L.hist.map(h=>`<tr><td>#${h.cyc}</td><td>${esc(h.model)}</td><td>+${h.delta}</td><td><span class="tag ${h.out==="promoted"?"auto":"deny"}">${esc(h.out)}</span></td><td>${h.t}</td></tr>`).join(""):`<tr><td colspan="5" class="mute">No finished cycles yet.</td></tr>`;
+  $("#loopToggle").textContent=L.on?"Pause loop":"Resume loop";
+}
+function renderPops(){
+  $("#pops").innerHTML=S.pops.length?S.pops.map(p=>`<tr><td>${esc(p.label)}</td><td>${vname(p.vid)}</td><td>${esc(p.scen)}</td><td>${p.t}</td></tr>`).join(""):`<tr><td colspan="4" class="mute">No simulations yet.</td></tr>`;
+}
+const SIMN=[1000,10000,50000,100000];
+function simLabel(){const v=V($("#simV").value);if(v)$("#simNOut").textContent=`${fmt(SIMN[$("#simN").value-1])} synthetic ${v.pop}`}
+function renderScen(){const v=V($("#simV").value);if(!v)return;$("#simS").innerHTML=v.scen.map(s=>`<option>${esc(s)}</option>`).join("");simLabel()}
+function renderSimControls(){const sel=$("#simV"),cur=sel.value;sel.innerHTML=S.verticals.map(v=>`<option value="${v.id}">${esc(v.name)}</option>`).join("");if(cur&&V(cur))sel.value=cur;renderScen()}
+let simming=false,lastSim=null;
+function simulate(){
+  if(simming)return;simming=true;$("#simGo").disabled=true;
+  const v=V($("#simV").value),scen=$("#simS").value,n=SIMN[$("#simN").value-1];
+  const steps=[`Spawn ${fmt(n)} synthetic ${v.pop} from the ${v.name} vault`,`Inject scenario: ${scen}`,"Run 30 simulated days on the current baseline","Run the same 30 days with the agent policy","Compare outcomes"];
+  let i=0;const draw=()=>{$("#simSteps").innerHTML=steps.map((s,k)=>`<li class="${k<i?"done":k===i?"run":"wait"}">${esc(s)}</li>`).join("")};
+  $("#simOut").innerHTML="";draw();
+  const iv=setInterval(()=>{i++;draw();if(i>=steps.length){clearInterval(iv);done()}},550);
+  function done(){
+    const rows=v.kpi.map(k=>{const a=Math.abs(k.v);return{k,base:Math.max(0,k.v-k.dir*a*(.08+Math.random()*.14)),ag:Math.max(0,k.v-k.dir*a*(Math.random()*.06-.02))}});
+    rows.forEach(r=>{if(r.k.u==="%"){r.base=Math.min(r.base,99.9);r.ag=Math.min(r.ag,99.9)}});
+    S.pops.unshift({vid:v.id,label:`${fmt(n)} synthetic ${v.pop}`,scen,t:now()});if(S.pops.length>10)S.pops.pop();S.stats.sims++;
+    lastSim={vid:v.id,scen,n};
+    const f=(k,val)=>fmtK({...k,v:val});
+    $("#simOut").innerHTML=`<div class="cmp">${rows.map(r=>{const mx=Math.max(r.base,r.ag)||1,win=(r.ag-r.base)*r.k.dir>0;
+      return`<div class="cmprow"><span>${esc(r.k.l)}<br><small class="${win?"up":"down"}">${win?"agents better":"baseline better"}</small></span>
+      <div class="bars"><span class="b0"><em><i style="width:${(r.base/mx*100).toFixed(1)}%"></i></em><small class="mono">${f(r.k,r.base)} baseline</small></span>
+      <span class="b1"><em><i style="width:${(r.ag/mx*100).toFixed(1)}%"></i></em><small class="mono">${f(r.k,r.ag)} agents</small></span></div></div>`}).join("")}</div>
+      <div class="acts" style="margin-top:12px"><button class="btn gate" id="simPromote">Send policy to the human gate</button></div>`;
+    say({from:v.specs[0].name,vid:v.id,text:`Simulated "${scen}" on ${fmt(n)} synthetic ${v.pop}. Agent policy compared against baseline over 30 days.`,tag:"syn",tagText:"simulation"});
+    log(v.specs[0].name,`Ran simulation "${scen}" on ${fmt(n)} synthetic ${v.pop}`);
+    simming=false;$("#simGo").disabled=false;renderPops();renderStats();
+  }
+}
+
+/* ---------- synthetic forge ---------- */
+const ROWS=[1000,10000,50000,100000,500000,1000000];
+const SCHEMA={
+ rtl:[["sku",()=>"SKU-"+R(1000,9999)],["store",()=>"ST-"+R(10,99)],["units_wk",()=>R(4,420)],["price",()=>"$"+(Math.random()*60+2).toFixed(2)],["margin",()=>R(8,46)+"%"]],
+ fin:[["acct",()=>fnv(String(Math.random())).slice(0,6)],["amount",()=>"$"+(Math.random()*4000).toFixed(2)],["mcc",()=>pick(["5411","5812","4829","6011","5999"])],["risk",()=>(Math.random()).toFixed(2)],["flag",()=>pick(["none","none","none","review"])]],
+ ind:[["asset",()=>"PL-"+R(1,6)+"-"+R(10,99)],["temp_c",()=>(Math.random()*30+40).toFixed(1)],["vib_mm_s",()=>(Math.random()*6+2).toFixed(1)],["runtime_h",()=>R(200,9000)],["fail_p",()=>(Math.random()*.4).toFixed(2)]],
+ hc:[["patient",()=>fnv(String(Math.random())).slice(0,6)],["age_band",()=>pick(["18-34","35-49","50-64","65-79","80+"])],["dx",()=>pick(["I50.9","E11.9","J44.1","N18.3","I10"])],["los_days",()=>R(1,14)],["readmit",()=>(Math.random()*.5).toFixed(2)]],
+ re:[["unit",()=>"CU-"+R(100,399)],["sqft",()=>pick([160,320,480,640])],["site",()=>pick(["North","Riverside","East"])],["rent",()=>"$"+R(650,1900)],["occupied",()=>pick(["yes","yes","yes","no"])]],
+ mob:[["vin",()=>fnv(String(Math.random())).slice(0,6)],["make",()=>pick(["Ford","Toyota","Chevy","Honda","Nissan"])],["dtc",()=>"P0"+R(100,499)],["fob",()=>pick(["programmed","new","lost-all"])],["job",()=>"$"+R(65,340)]]
+};
+let forging=false,lastSet=null;
+function renderForgeControls(){
+  const sel=$("#fVault"),cur=sel.value;
+  sel.innerHTML=S.verticals.map(v=>`<option value="${v.id}">${esc(v.name)} · ${fmt(v.rec)} records</option>`).join("");
+  if(cur&&V(cur))sel.value=cur;
+  $("#fRowsOut").textContent=fmt(ROWS[$("#fRows").value-1]);
+}
+function forge(){
+  if(forging)return;forging=true;$("#fGo").disabled=true;
+  const vid=$("#fVault").value,eps=+$("#fEps").value,rows=ROWS[$("#fRows").value-1],v=V(vid);
+  const steps=[`Profile schema inside the ${v.name} vault`,"Fit generative model in the enclave",`Add differential-privacy noise (ε = ${eps})`,"Test fidelity and re-identification risk"];
+  $("#fResult").innerHTML="";let i=0;
+  const draw=()=>{$("#fSteps").innerHTML=steps.map((s,k)=>`<li class="${k<i?"done":k===i?"run":"wait"}">${esc(s)}</li>`).join("")};draw();
+  const iv=setInterval(()=>{i++;draw();if(i>=steps.length){clearInterval(iv);finish()}},650);
+  function finish(){
+    const fid=Math.min(98,Math.round(72+Math.log2(eps*2)*6+Math.random()*3));
+    const priv=Math.max(40,Math.round(99-eps*5.5-Math.random()*2));
+    const util=Math.round((fid*.6+priv*.4));
+    const sc=SCHEMA[vid];const sample=Array.from({length:6},()=>sc.map(c=>c[1]()));
+    lastSet={vid,rows,eps,fid,priv,name:`${v.key}-S${R(100,999)}`};
+    $("#fResult").innerHTML=`<div class="scores"><div class="score"><span class="lbl">Fidelity</span><b>${fid}%</b></div><div class="score"><span class="lbl">Privacy</span><b>${priv}%</b></div><div class="score"><span class="lbl">Utility</span><b>${util}%</b></div></div>
+    <div class="lbl" style="margin-bottom:6px">Preview · ${esc(lastSet.name)} · ${fmt(rows)} synthetic rows</div>
+    <div class="tbl"><table><thead><tr>${sc.map(c=>`<th>${c[0]}</th>`).join("")}</tr></thead><tbody>${sample.map(r=>`<tr>${r.map(x=>`<td>${esc(x)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    <div class="acts" style="margin-top:10px"><button class="btn primary" id="fRelease">Release to ${v.name} agents</button><button class="btn" id="fDiscard">Discard</button></div>`;
+    forging=false;$("#fGo").disabled=false;
+    log("Sage",`Generated ${lastSet.name}: ${fmt(rows)} rows from ${v.name} vault, ε=${eps}, fidelity ${fid}%`);
+  }
+}
+function release(){
+  if(!lastSet)return;const s=lastSet;lastSet=null;
+  S.released.unshift(s);S.synSets[s.vid]++;S.stats.syn+=s.rows;
+  say({from:"Sage",vid:s.vid,text:`Released synthetic set ${s.name} (${fmt(s.rows)} rows, ε ${s.eps}). Agents can train on it. Raw records stayed in the vault.`,tag:"syn",tagText:"synthetic"});
+  log("You",`Released ${s.name} to ${V(s.vid).name} agents`);
+  $("#fResult").innerHTML=`<div class="mute" style="font-size:13px;margin-top:10px">${esc(s.name)} released. ${V(s.vid).name} agents are using it now.</div>`;
+  renderReleased();renderStats();
+}
+function renderReleased(){
+  $("#fReleased").innerHTML=S.released.length?S.released.map(s=>`<span class="tag syn" style="margin:0 6px 6px 0;display:inline-block">${esc(s.name)} · ${fmt(s.rows)} · ε${s.eps}</span>`).join(""):"None yet. Generate a set above.";
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.l!==undefined){S.level=+t.dataset.l;renderDial();renderQueue();log("You",`Set autonomy to L${S.level} ${LEVELS[S.level].name}`);say({from:"Nova",vid:"fleet",text:`Autonomy set to L${S.level} ${LEVELS[S.level].name}. ${LEVELS[S.level].d}`,tag:"gate",tagText:"policy"})}
+  else if(t.dataset.ok)decide(+t.dataset.ok,true);
+  else if(t.dataset.no)decide(+t.dataset.no,false);
+  else if(t.dataset.why)explain(+t.dataset.why);
+  else if(t.dataset.f){S.filter=t.dataset.f;renderVerticals();renderStream()}
+  else if(t.dataset.tab){S.tab=t.dataset.tab;document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b===t));document.querySelectorAll("[data-view]").forEach(s=>s.hidden=s.dataset.view!==S.tab);if(S.tab==="vaults")renderVaults();if(S.tab==="ledger")renderLedger();if(S.tab==="vertical"){renderVerticalAI();renderCatalog()}if(S.tab==="synth"){renderLoop();renderPops()}}
+  else if(t.dataset.launch){const e=CATALOG.find(c=>c.id===t.dataset.launch);if(e&&!V(e.id)){propose(launchProposal(e),"fleet");renderCatalog()}}
+  else if(t.id==="cGo"){const nm=$("#cName").value.trim();if(!nm){$("#cName").focus();return}propose(launchProposal(customEntry(nm,$("#cRegion").value)),"fleet");$("#cName").value=""}
+  else if(t.id==="simGo")simulate();
+  else if(t.id==="simPromote"&&lastSim){const s=lastSim,v=V(s.vid);lastSim=null;
+    propose({agent:v.specs[0].name,title:`Put "${s.scen}" response policy into production`,detail:`Tested on ${fmt(s.n)} synthetic ${v.pop} over 30 simulated days before any real customer saw it.`,risk:R(38,56),fleet:"tune",sim:true},v.id);
+    const m=document.createElement("span");m.className="mute";m.textContent="Sent to the human gate.";t.replaceWith(m)}
+  else if(t.id==="loopToggle"){S.loop.on=!S.loop.on;log("You",`${S.loop.on?"Resumed":"Paused"} the self-improvement loop`);renderLoop()}
+  else if(t.id==="run"){S.running=!S.running;t.textContent=S.running?"Pause":"Resume";schedule()}
+  else if(t.id==="speed"){S.speed=S.speed===1?2:S.speed===2?4:1;t.textContent=`Speed ${S.speed}×`;schedule()}
+  else if(t.id==="fGo")forge();
+  else if(t.id==="fRelease")release();
+  else if(t.id==="fDiscard"){lastSet=null;$("#fResult").innerHTML=`<div class="mute" style="font-size:13px;margin-top:10px">Discarded. Nothing left the vault.</div>`}
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.dataset.v){const v=V(t.dataset.v);v.on=t.checked;log("You",`${v.on?"Resumed":"Paused"} ${v.name} agents`)}
+  else if(t.dataset.r){S.policy[t.dataset.r]=t.checked;log("You",`${t.checked?"Enabled":"Disabled"} hard rule: ${t.dataset.r}`)}
+  else if(t.id==="cap"){S.policy.cap=Math.max(0,+t.value||0);log("You",`Spend cap set to $${S.policy.cap.toLocaleString()}`)}
+  else if(t.id==="fVault")renderForgeControls();
+  else if(t.id==="simV")renderScen();
+});
+$("#simN").addEventListener("input",simLabel);
+$("#fRows").addEventListener("input",()=>$("#fRowsOut").textContent=fmt(ROWS[$("#fRows").value-1]));
+
+/* ---------- boot with a realistic working state ---------- */
+S.verticals.forEach(v=>applyVData(v,VDATA[v.id]));
+renderDial();renderVerticals();renderAgents();renderRules();renderForgeControls();renderReleased();renderSimControls();
+S.pops.push({vid:"rtl",label:"48k synthetic shoppers",scen:"Holiday demand spike",t:now()},{vid:"ind",label:"320 synthetic machine twins",scen:"Bearing failure cascade",t:now()});
+S.stats.sims=2;
+log("Nova","Platform online. 10 fleet agents, 17 vertical specialists, 6 sealed vaults, self-improvement loop running.");
+for(let k=0;k<14;k++)tick();
+propose({agent:"Echo",title:"Share alert summary with partner bank in Frankfurt",detail:"Partner requested pattern data for a joint investigation.",risk:63,pii:true,cross:true},"fin");
+if(!S.queue.some(q=>q.entry&&q.entry.id===CATALOG[0].id))propose(launchProposal(CATALOG[0]),"fleet");
+renderStats();renderQueue();renderVerticalAI();renderLoop();renderPops();schedule();
+})();
+</script>
+</body>
+</html>

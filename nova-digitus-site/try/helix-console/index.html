@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="HELIX Console: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>HELIX Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+:root{
+  --ground:#EDEFEA; --surface:#FCFCFB; --surface2:#F4F5F1; --raise:#FFFFFF;
+  --ink:#151A16; --ink2:#4E5850; --ink3:#7B8580;
+  --line:#D8DCD4; --line2:#C3C9BF;
+  --s1:#0B7C5C; --s2:#C2470E; --s3:#3355B5; --s4:#93327D; --s5:#6E7B12;
+  --ok:#2F7A45; --warn:#A8700B; --crit:#B1352A;
+  --accent:var(--s1);
+  --shadow:0 1px 2px rgba(21,26,22,.05), 0 10px 30px -16px rgba(21,26,22,.28);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ground:#0E110F; --surface:#1A1A19; --surface2:#212421; --raise:#242724;
+  --ink:#E8EBE6; --ink2:#A2ABA4; --ink3:#79837C; --line:#2C312D; --line2:#3A403B;
+  --s1:#1BA37D; --s2:#DC6A32; --s3:#5F88E8; --s4:#C258AC; --s5:#8C9A30;
+  --ok:#4FA96B; --warn:#D3A03A; --crit:#E0685C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --ground:#0E110F; --surface:#1A1A19; --surface2:#212421; --raise:#242724;
+  --ink:#E8EBE6; --ink2:#A2ABA4; --ink3:#79837C; --line:#2C312D; --line2:#3A403B;
+  --s1:#1BA37D; --s2:#DC6A32; --s3:#5F88E8; --s4:#C258AC; --s5:#8C9A30;
+  --ok:#4FA96B; --warn:#D3A03A; --crit:#E0685C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1320px;margin:0 auto;padding:0 22px}
+h1,h2,h3{margin:0;text-wrap:balance}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* masthead */
+.mast{border-bottom:1px solid var(--line);background:var(--surface)}
+.mast .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;
+  padding:24px 22px 20px;flex-wrap:wrap}
+.brand{font-family:"Instrument Serif",Georgia,serif;font-size:clamp(30px,4.5vw,44px);line-height:.98;letter-spacing:-.01em}
+.brand em{font-style:italic;color:var(--accent)}
+.pitch{color:var(--ink2);margin-top:6px;max-width:56ch;font-size:14.5px}
+.stateline{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12px;color:var(--ink3)}
+.stateline .dot{width:7px;height:7px;border-radius:50%;background:var(--ink3)}
+.stateline.live .dot{background:var(--s1);box-shadow:0 0 0 3px color-mix(in srgb,var(--s1) 22%,transparent)}
+
+/* master switch */
+.master{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.switch{display:inline-flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--line2);
+  border-radius:100px;padding:5px 6px 5px 14px}
+.switch b{font-size:12.5px;letter-spacing:.02em}
+.toggle{width:46px;height:26px;border-radius:100px;border:1px solid var(--line2);background:var(--line);
+  position:relative;transition:background .15s;flex:none}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+  background:var(--raise);box-shadow:0 1px 2px rgba(0,0,0,.3);transition:left .15s}
+.toggle[aria-checked="true"]{background:var(--s1)}
+.toggle[aria-checked="true"]::after{left:22px}
+.masterhint{font-size:11.5px;color:var(--ink3);max-width:30ch;text-align:right}
+
+/* control bar */
+.controls{background:var(--surface2);border-bottom:1px solid var(--line)}
+.controls .wrap{display:flex;gap:22px;align-items:center;padding:14px 22px;flex-wrap:wrap}
+.cgroup{display:flex;flex-direction:column;gap:5px}
+.cgroup label{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-family:"IBM Plex Mono",monospace}
+.cgroup .val{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px}
+input[type=range]{width:150px;accent-color:var(--s1)}
+.btns{display:flex;gap:8px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.btn{border:1px solid var(--line2);background:var(--surface);color:var(--ink);border-radius:6px;
+  padding:9px 15px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{border-color:var(--ink3)}
+.btn.primary{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn.primary:hover{opacity:.9}
+.btn.warn{border-color:color-mix(in srgb,var(--s2) 55%,transparent);color:var(--s2)}
+.btn.crit{border-color:color-mix(in srgb,var(--crit) 55%,transparent);color:var(--crit)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn .k{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink3)}
+
+/* kpi strip */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
+  border-bottom:1px solid var(--line)}
+.kpi{background:var(--surface);padding:14px 18px}
+.kpi .lbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-family:"IBM Plex Mono",monospace}
+.kpi .big{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:3px;line-height:1}
+.kpi .big.good{color:var(--ok)} .kpi .big.bad{color:var(--crit)}
+.kpi .sub{font-size:11.5px;color:var(--ink3);margin-top:5px;font-family:"IBM Plex Mono",monospace}
+.kpi .sub b{color:var(--s2);font-weight:600}
+@media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}}
+
+/* stage */
+.stage{display:grid;grid-template-columns:1.55fr 1fr;gap:22px;padding:22px 0}
+@media(max-width:1000px){.stage{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow)}
+.card h3{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);font-weight:500;padding:13px 16px 0}
+.chartwrap{padding:8px 12px 12px}
+canvas{display:block;width:100%}
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:0 16px 12px;font-size:11.5px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:16px;height:3px;border-radius:2px;display:inline-block}
+.sw.dash{height:0;border-top:2px dashed currentColor;width:16px}
+
+/* topology */
+#topo{width:100%;height:auto}
+.node rect.bg{transition:fill .25s}
+.node text{font-family:"IBM Plex Mono",monospace}
+.topolegend{display:flex;gap:14px;flex-wrap:wrap;padding:0 16px 12px;font-size:11px;color:var(--ink3);align-items:center}
+.heatbar{width:70px;height:8px;border-radius:2px;background:linear-gradient(90deg,var(--s1),var(--warn),var(--crit))}
+
+/* feed */
+.feed{max-height:340px;overflow:auto;padding:4px 0}
+.ev{display:grid;grid-template-columns:52px 82px 1fr;gap:10px;padding:8px 16px;border-bottom:1px solid var(--line);
+  font-size:12.5px;align-items:baseline}
+.ev:last-child{border-bottom:0}
+.ev .t{font-family:"IBM Plex Mono",monospace;color:var(--ink3);font-size:11.5px}
+.ev .ag{font-family:"IBM Plex Mono",monospace;font-size:11.5px;display:inline-flex;align-items:center;gap:5px}
+.ev .ag .d{width:7px;height:7px;border-radius:50%;flex:none}
+.ev .msg{color:var(--ink2);line-height:1.4}
+.ev .msg .pill{font-family:"IBM Plex Mono",monospace;font-size:10px;padding:1px 6px;border-radius:100px;border:1px solid;margin-right:6px}
+.ev .msg .pill.ship{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+.ev .msg .pill.blk{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 45%,transparent)}
+.ev .msg .pill.rb{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
+.ev .msg .df{display:block;color:var(--ink3);font-family:"IBM Plex Mono",monospace;font-size:11px;margin-top:2px}
+.feedempty{padding:30px 16px;color:var(--ink3);text-align:center;font-size:13px}
+
+.gamedays{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 14px}
+.gd{border:1px solid var(--line);border-radius:100px;padding:3px 10px;font-family:"IBM Plex Mono",monospace;font-size:11px}
+.gd.pass{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.gd.fail{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 40%,transparent)}
+
+.banner{padding:9px 16px;font-size:12.5px;font-family:"IBM Plex Mono",monospace;border-radius:4px;margin:0 16px 12px;
+  display:none}
+.banner.show{display:block}
+.banner.sale{background:color-mix(in srgb,var(--s2) 12%,transparent);color:var(--s2)}
+.banner.zone{background:color-mix(in srgb,var(--crit) 12%,transparent);color:var(--crit)}
+
+.foot{border-top:1px solid var(--line);color:var(--ink3);font-size:12px;padding:20px 0 46px}
+.foot code{font-family:"IBM Plex Mono",monospace;color:var(--ink2)}
+.themetoggle{position:fixed;right:14px;bottom:14px;z-index:50;border:1px solid var(--line2);background:var(--surface);
+  color:var(--ink2);border-radius:100px;font-family:"IBM Plex Mono",monospace;font-size:11px;padding:6px 12px;box-shadow:var(--shadow)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="mast"><div class="wrap">
+  <div>
+    <h1 class="brand">HELIX <em>console</em></h1>
+    <p class="pitch">A genetic brain designs your architecture; a swarm of agents runs it. Set your load and
+    budget, then throw a flash sale or kill a data center and watch it hold the line — live, in your browser.</p>
+    <div class="stateline" id="stateline"><span class="dot"></span><span id="statetext">idle — press Design</span></div>
+  </div>
+  <div class="master">
+    <div class="switch">
+      <b>Autonomy</b>
+      <button class="toggle" id="autonomy" role="switch" aria-checked="true" aria-label="Toggle autonomy"></button>
+    </div>
+    <div class="masterhint" id="masterhint">Swarm is operating the system. Flip off to run it static and watch it break.</div>
+  </div>
+</div></header>
+
+<section class="controls"><div class="wrap">
+  <div class="cgroup">
+    <label for="rps">Base load</label>
+    <input type="range" id="rps" min="2000" max="9000" step="200" value="5200">
+    <span class="val" id="rpsval">5,200 rps</span>
+  </div>
+  <div class="cgroup">
+    <label for="budget">Cost ceiling</label>
+    <input type="range" id="budget" min="120" max="600" step="10" value="260">
+    <span class="val" id="budgetval">$260 / hr</span>
+  </div>
+  <div class="cgroup">
+    <label for="speed">Speed</label>
+    <input type="range" id="speed" min="1" max="30" step="1" value="12">
+    <span class="val" id="speedval">12× </span>
+  </div>
+  <div class="cgroup">
+    <label>SLO target</label>
+    <span class="val">p99 ≤ 250 ms</span>
+  </div>
+  <div class="btns">
+    <button class="btn warn" id="sale" disabled>⚡ Flash sale</button>
+    <button class="btn crit" id="zone" disabled>✕ Kill a zone</button>
+    <button class="btn" id="run" disabled>▶ Run day</button>
+    <button class="btn" id="reset" disabled>↺ Reset</button>
+    <button class="btn primary" id="design">✦ Design architecture</button>
+  </div>
+</div></section>
+
+<div class="kpis">
+  <div class="kpi"><div class="lbl">p99 latency</div><div class="big" id="k-p99">—</div><div class="sub">static: <b id="k-p99s">—</b></div></div>
+  <div class="kpi"><div class="lbl">SLO held</div><div class="big" id="k-slo">—</div><div class="sub">static: <b id="k-slos">—</b></div></div>
+  <div class="kpi"><div class="lbl">Spend</div><div class="big" id="k-cost">—</div><div class="sub">static: <b id="k-costs">—</b></div></div>
+  <div class="kpi"><div class="lbl">Fleet</div><div class="big" id="k-rep">—</div><div class="sub" id="k-repsub">replicas deployed</div></div>
+  <div class="kpi"><div class="lbl">Clock</div><div class="big" id="k-clock">00:00</div><div class="sub" id="k-hot">at rest</div></div>
+</div>
+
+<div class="wrap">
+  <div class="stage">
+    <div>
+      <div class="card">
+        <h3>Live operations · 24h day</h3>
+        <div class="banner sale" id="banner-sale">⚡ FLASH SALE injected — traffic surging</div>
+        <div class="banner zone" id="banner-zone">✕ AVAILABILITY ZONE DOWN — one third of capacity gone</div>
+        <div class="chartwrap"><canvas id="chart" height="330"></canvas></div>
+        <div class="legend">
+          <span style="color:var(--ink2)"><i class="sw" style="background:var(--ink3)"></i> load (rps)</span>
+          <span style="color:var(--s1)"><i class="sw" style="background:var(--s1)"></i> p99 — HELIX autonomous</span>
+          <span style="color:var(--s2)"><i class="sw" style="background:var(--s2)"></i> p99 — static (no autonomy)</span>
+          <span style="color:var(--crit)"><i class="sw dash" style="color:var(--crit)"></i> SLO 250 ms</span>
+          <span style="color:var(--s5)"><i class="sw" style="background:var(--s5)"></i> spend $/hr</span>
+        </div>
+      </div>
+      <div class="card" style="margin-top:22px">
+        <h3>Deployed topology · utilisation heat</h3>
+        <div class="chartwrap"><svg id="topo" viewBox="0 0 900 300" role="img" aria-label="Service topology with live utilisation heat"></svg></div>
+        <div class="topolegend"><span>cool</span><span class="heatbar"></span><span>saturated</span>
+          <span style="margin-left:auto">number = live replicas · ring = availability zones</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h3>Agent decision feed</h3>
+        <div class="feed" id="feed"><div class="feedempty">Design an architecture, then press Run. Every change an agent ships shows up here with its reason.</div></div>
+      </div>
+      <div class="card" style="margin-top:22px">
+        <h3>Chaos drills · unannounced AZ-loss tests</h3>
+        <div class="gamedays" id="gamedays"><span style="color:var(--ink3);font-size:12px;padding:6px 0">none yet</span></div>
+      </div>
+      <div class="card" style="margin-top:22px">
+        <h3>Design search · fitness by generation</h3>
+        <div class="chartwrap"><canvas id="evo" height="150"></canvas></div>
+        <div class="legend"><span id="evostat" style="color:var(--ink3)">not yet designed</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    HELIX runs entirely in your browser — the genetic search, the queueing-theory evaluator (Erlang-C M/M/c),
+    the seven-agent swarm and the guardrail/canary/rollback control loop are all live here, no server.
+    Numbers are an analytic model for ranking designs, not a load test. <code>helix</code> ships as a Python
+    package with an MCP server and LangChain / LangSmith / Lindy integrations.
+  </div>
+</div>
+<button class="themetoggle" id="tt" aria-label="Toggle theme">theme</button>
+
+<script>/* HELIX engine — browser port. Mirrors the Python package (simulator, genome,
+   evolution, swarm, orchestrator) closely enough that live numbers match the
+   reference run. Pure, dependency-free, runs in a browser or in node. */
+(function (root) {
+"use strict";
+
+// ---------------------------------------------------------------- constants
+var CLASSES = {
+  s1:{vcpu:2,speed:1.00,cost:0.096}, s2:{vcpu:4,speed:1.16,cost:0.192},
+  m1:{vcpu:8,speed:1.30,cost:0.384}, m2:{vcpu:16,speed:1.41,cost:0.784},
+  l1:{vcpu:32,speed:1.48,cost:1.632}, l2:{vcpu:64,speed:1.53,cost:3.520}
+};
+var CLASS_ORDER = ["s1","s2","m1","m2","l1","l2"];
+var CACHE = {
+  none:{hit:0,cost:0,lat:0}, local:{hit:0.45,cost:0,lat:0.05},
+  shared:{hit:0.78,cost:0.22,lat:0.6}, tiered:{hit:0.91,cost:0.61,lat:0.4}
+};
+var CACHE_ORDER = ["none","local","shared","tiered"];
+
+var REPLICA_FAIL_HR=0.0040, ZONE_OUT_HR=0.00075, COORD_STATE=0.052, COORD_APP=0.020,
+    CROSS_AZ=0.011;
+var SLO_P99=250.0, SLO_ERR=0.0010, SLO_AVAIL=0.99950;
+
+// ---------------------------------------------------------------- blueprint
+// name:[tier, base_ms, deps[[dep,calls,sync]], cacheable, stateful, external, fixed, critical]
+var BP = {
+  edge:         ["edge",1.2,[["api_gateway",1,1]],0,0,0,0,1],
+  api_gateway:  ["edge",2.5,[["auth",1,1],["catalog",0.55,1],["search",0.20,1],["cart",0.15,1],["orders",0.10,1]],0,0,0,0,1],
+  auth:         ["app",6.0,[["session_store",1,1]],1,0,0,0,1],
+  catalog:      ["app",9.0,[["catalog_db",1,1]],1,0,0,0,1],
+  search:       ["app",24.0,[["search_index",1,1]],0,0,0,0,1],
+  cart:         ["app",7.0,[["session_store",1,1],["inventory",0.6,1]],0,0,0,0,1],
+  orders:       ["app",12.0,[["orders_db",1,1],["inventory",1,1],["payments",1,1],["notifier",1,0]],0,0,0,0,1],
+  inventory:    ["app",8.0,[["orders_db",1,1]],0,0,0,0,1],
+  payments:     ["external",0,[],0,0,1,140.0,1],
+  notifier:     ["worker",30.0,[],0,0,0,0,0],
+  session_store:["data",1.1,[],1,1,0,0,1],
+  catalog_db:   ["data",4.5,[],1,1,0,0,1],
+  orders_db:    ["data",6.5,[],0,1,0,0,1],
+  search_index: ["data",18.0,[],0,1,0,0,1]
+};
+var ENTRY = "edge";
+var SVC = Object.keys(BP);
+var EVOLVABLE = SVC.filter(function(n){ return !BP[n][5]; });
+function spec(n){ var b=BP[n]; return {tier:b[0],base:b[1],deps:b[2],cacheable:!!b[3],
+  stateful:!!b[4],external:!!b[5],fixed:b[6],critical:!!b[7]}; }
+
+// ---------------------------------------------------------------- queueing
+function erlangB(c,a){ var inv=1.0; for(var n=1;n<=c;n++){ inv = a>0 ? 1.0+inv*n/a : Infinity; }
+  return inv===Infinity?0:1.0/inv; }
+function erlangC(c,a){ if(a<=0)return 0; var rho=a/c; if(rho>=1)return 1;
+  var b=erlangB(c,a), d=1-rho*(1-b); return d>0?Math.min(1,b/d):1; }
+function mmc(lam,svcMs,c,q){ q=q||0.99;
+  if(c<=0)return [1e6,1e6,9.99];
+  var mu=1000.0/Math.max(svcMs,1e-6);
+  if(lam<=0){ return [svcMs, svcMs*Math.log(1/(1-q)), 0]; }
+  var a=lam/mu, rho=a/c;
+  if(rho>=0.995)return [1e6,1e6,rho];
+  var cq=erlangC(c,a), spare=c*mu-lam;
+  var wqMean=(cq/spare)*1000.0;
+  var wqTail=cq>(1-q)?(Math.log(cq/(1-q))/spare*1000.0):0;
+  var svcTail=svcMs*Math.log(1/(1-q));
+  return [wqMean+svcMs, Math.max(0,wqTail)+svcTail, rho];
+}
+
+// ---------------------------------------------------------------- genome
+function clampGene(g,n){
+  var sp=spec(n); var floor=sp.stateful?3:1;
+  if(CLASSES[g.klass]===undefined)g.klass="s1";
+  if(CACHE[g.cache]===undefined)g.cache="none";
+  if(!sp.cacheable)g.cache="none";
+  g.min_replicas=Math.max(floor,Math.min(24,Math.round(g.min_replicas)));
+  g.max_replicas=Math.max(g.min_replicas+1,Math.min(120,Math.round(g.max_replicas)));
+  g.replicas=Math.max(g.min_replicas,Math.min(g.max_replicas,Math.round(g.replicas)));
+  g.zones=Math.max(1,Math.min(3,Math.round(g.zones)));
+  g.target_util=Math.max(0.35,Math.min(0.88,g.target_util));
+  g.retries=Math.max(0,Math.min(3,Math.round(g.retries)));
+  return g;
+}
+function newGenome(genes,lb,to,hedge){ return {genes:genes,lb:lb||"round_robin",
+  timeout:to||900,hedge:!!hedge,gen:0,lineage:"seed"}; }
+function copyGenome(g){ var ng={}; for(var n in g.genes){var s=g.genes[n];ng[n]={
+  klass:s.klass,replicas:s.replicas,zones:s.zones,cache:s.cache,target_util:s.target_util,
+  min_replicas:s.min_replicas,max_replicas:s.max_replicas,retries:s.retries,circuit_break:s.circuit_break};}
+  return {genes:ng,lb:g.lb,timeout:g.timeout,hedge:g.hedge,gen:g.gen,lineage:g.lineage}; }
+
+function baseline(){ var genes={}; EVOLVABLE.forEach(function(n){ var sp=spec(n);
+  genes[n]=clampGene({klass:(sp.tier==="app"||sp.tier==="data")?"m1":"s2",
+    replicas:sp.stateful?4:6, zones:2, cache:sp.cacheable?"shared":"none",
+    target_util:0.70, min_replicas:sp.stateful?3:2, max_replicas:40, retries:1,
+    circuit_break:false},n); });
+  var g=newGenome(genes); g.lineage="human-baseline"; return g; }
+
+function randGenome(R){ var genes={}; EVOLVABLE.forEach(function(n){ var sp=spec(n);
+  genes[n]=clampGene({klass:CLASS_ORDER[(R()*CLASS_ORDER.length)|0],
+    replicas:2+((R()*22)|0), zones:[1,2,2,3,3][(R()*5)|0],
+    cache:sp.cacheable?CACHE_ORDER[(R()*CACHE_ORDER.length)|0]:"none",
+    target_util:0.45+R()*0.40, min_replicas:2+((R()*4)|0), max_replicas:20+((R()*70)|0),
+    retries:(R()*3)|0, circuit_break:R()<0.5},n); });
+  var g=newGenome(genes,["round_robin","least_conn","p2c"][(R()*3)|0],
+    [400,600,900,1200][(R()*4)|0], R()<0.35); g.lineage="random"; return g; }
+
+// ---------------------------------------------------------------- evaluate
+function evaluate(g, rps, lostZone){
+  var lam={}; SVC.forEach(function(n){lam[n]=0;});
+  (function spread(node,w,depth){
+    if(w<=1e-9||depth>12)return; lam[node]+=w; var sp=spec(node);
+    if(sp.external)return;
+    var hit=(g.genes[node]?CACHE[g.genes[node].cache].hit:0);
+    var pass=w*(1-hit);
+    sp.deps.forEach(function(d){ spread(d[0],pass*d[1],depth+1); });
+  })(ENTRY, rps*(g.hedge?1.08:1.0), 0);
+
+  var st={}, saturated=[];
+  EVOLVABLE.forEach(function(n){ var gene=g.genes[n], sp=spec(n), cls=CLASSES[gene.klass];
+    var eff=gene.replicas;
+    if(lostZone&&gene.zones>1) eff=Math.max(1,Math.floor(gene.replicas*(gene.zones-1)/gene.zones));
+    else if(lostZone&&gene.zones===1) eff=0;
+    var tax=sp.stateful?COORD_STATE:COORD_APP;
+    var coord=1+tax*Math.log2(Math.max(1,eff));
+    var svcMs=sp.base/cls.speed*coord; if(gene.zones>1)svcMs+=0.35*(gene.zones-1);
+    var hit=CACHE[gene.cache].hit, clam=lam[n]*(1-hit), c=eff*cls.vcpu;
+    var r=mmc(clam,svcMs,c), mean=r[0],tail=r[1],util=r[2], shed=0;
+    if(util>=0.995){ saturated.push(n);
+      if(gene.circuit_break){ var served=0.98*c*(1000.0/Math.max(svcMs,1e-6));
+        shed=Math.max(0,1-served/Math.max(clam,1e-9)); var rr=mmc(served*0.97,svcMs,c); mean=rr[0];tail=rr[1]; }
+      else { mean=tail=g.timeout; shed=Math.min(0.85,0.20+0.65*Math.min(1,util-0.995)); }
+    }
+    st[n]={lam:lam[n],replicas:eff,util:util,mean:mean,p99:tail,shed:shed,hit:hit,
+      klass:gene.klass,cache:gene.cache,zones:gene.zones,svcMs:svcMs};
+  });
+
+  var baseErr=1; EVOLVABLE.forEach(function(n){baseErr*=(1-Math.min(0.9,st[n].shed));}); baseErr=1-baseErr;
+  if(baseErr>1e-6){ var maxRet=0; EVOLVABLE.forEach(function(n){maxRet=Math.max(maxRet,g.genes[n].retries);});
+    var amp=1+baseErr*maxRet*0.9; EVOLVABLE.forEach(function(n){ if(st[n].util>0.7)st[n].util=Math.min(9.9,st[n].util*amp); }); }
+
+  var memo={};
+  function path(node,depth){ if(memo[node])return memo[node]; var sp=spec(node);
+    if(sp.external){ memo[node]=[sp.fixed,sp.fixed*1.9]; return memo[node]; }
+    var s=st[node], dmean=0,dp99=0;
+    if(depth<12) sp.deps.forEach(function(d){ if(!d[2])return; var pr=path(d[0],depth+1); dmean+=d[1]*pr[0]; dp99+=d[1]*pr[1]; });
+    var hit=s.hit, clat=CACHE[s.cache].lat;
+    var mean=hit*clat+(1-hit)*(s.mean+dmean);
+    var p99=hit*clat+(1-hit)*(s.p99+0.88*dp99);
+    memo[node]=[mean,p99]; return memo[node];
+  }
+  var pr=path(ENTRY,0), mean=pr[0], p99=pr[1];
+  if(g.hedge)p99*=0.74;
+  if(g.lb==="p2c"){p99*=0.93;mean*=0.98;} else if(g.lb==="least_conn")p99*=0.96;
+
+  var err=1; EVOLVABLE.forEach(function(n){ if(spec(n).critical)err*=(1-Math.min(0.9,st[n].shed)); }); err=1-err;
+  if(p99>g.timeout){ err=Math.min(0.95,err+0.35); p99=g.timeout; }
+
+  var avail=1; EVOLVABLE.forEach(function(n){ if(!spec(n).critical)return; var gene=g.genes[n];
+    var ro=Math.pow(REPLICA_FAIL_HR,Math.max(1,Math.min(gene.replicas,6)));
+    var zo=gene.zones===1?ZONE_OUT_HR:ZONE_OUT_HR*0.02; avail*=(1-ro-zo); });
+  var blast=0; EVOLVABLE.forEach(function(n){ blast=Math.max(blast,1/g.genes[n].zones); });
+
+  var cost=0; EVOLVABLE.forEach(function(n){ var gene=g.genes[n];
+    cost+=gene.replicas*CLASSES[gene.klass].cost; cost+=CACHE[gene.cache].cost*Math.max(1,gene.zones); });
+  var anyMulti=EVOLVABLE.some(function(n){return g.genes[n].zones>1;});
+  cost+=(rps*3600/1e6)*CROSS_AZ*(anyMulti?2:1);
+
+  var hottest="",maxu=0; for(var n in st){ if(st[n].util>maxu){maxu=st[n].util;hottest=n;} }
+  return {rps:rps,p50:mean,p99:p99,err:err,avail:avail,cost:cost,blast:blast,
+    saturated:saturated,hottest:hottest,maxUtil:maxu,per:st,
+    sloOk:(p99<=SLO_P99&&err<=SLO_ERR&&avail>=SLO_AVAIL&&saturated.length===0)};
+}
+
+// ---------------------------------------------------------------- policy
+function violations(g){ var v=[]; EVOLVABLE.forEach(function(n){ var gene=g.genes[n],sp=spec(n);
+  if(sp.critical&&gene.zones<2)v.push(n+": single-AZ critical service");
+  if(gene.retries>2)v.push(n+": retry budget "+gene.retries+" > 2");
+  if(sp.stateful&&!gene.circuit_break)v.push(n+": stateful tier without circuit breaker");
+  if(sp.critical&&gene.min_replicas<2)v.push(n+": replica floor < 2"); });
+  if(g.timeout>1200)v.push("global timeout "+g.timeout+"ms > 1200ms"); return v; }
+function remediate(g){ var o=copyGenome(g); EVOLVABLE.forEach(function(n){ var gene=o.genes[n],sp=spec(n);
+  if(sp.critical){gene.zones=Math.max(2,gene.zones);gene.min_replicas=Math.max(2,gene.min_replicas);}
+  gene.retries=Math.min(2,gene.retries); if(sp.stateful)gene.circuit_break=true; clampGene(gene,n); });
+  o.timeout=Math.min(1200,o.timeout); return o; }
+
+// ---------------------------------------------------------------- fitness + GA
+var SCEN=[["steady",1.00,0,0.34],["peak",1.85,0,0.30],["flash",3.20,0,0.18],["zone",1.25,1,0.18]];
+function fitness(g,base){ var total=0, ok=true, cost=0;
+  SCEN.forEach(function(s){ var e=evaluate(g,base*s[1],!!s[2]); var pen=0;
+    pen+=2.6*Math.max(0,e.p99-SLO_P99)/SLO_P99; pen+=0.55*Math.min(1,e.p99/SLO_P99);
+    pen+=42*Math.max(0,e.err-SLO_ERR); pen+=260*Math.max(0,SLO_AVAIL-e.avail);
+    pen+=1.1*e.blast; pen+=6*e.saturated.length; pen+=e.cost/100.0;
+    total+=s[3]*pen; if(!e.sloOk)ok=false; if(s[0]==="steady")cost=e.cost; });
+  total+=0.9*violations(g).length;
+  return {score:-total, ok:ok, cost:cost}; }
+
+function rng(seed){ var s=seed>>>0; return function(){ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+function mutate(g,R,rate,sigma){ var m=copyGenome(g); m.lineage="mutant";
+  function gauss(){ return (R()+R()+R()+R()-2)*1.4; }
+  EVOLVABLE.forEach(function(n){ var gg=m.genes[n];
+    if(R()<rate){ var i=CLASS_ORDER.indexOf(gg.klass); gg.klass=CLASS_ORDER[Math.max(0,Math.min(5,i+[-2,-1,1,1,2][(R()*5)|0]))]; }
+    if(R()<rate*1.6){ var step=Math.max(1,Math.round(Math.abs(gauss()*3*sigma))); gg.replicas+=step*(R()<0.5?-1:1); }
+    if(R()<rate*0.5)gg.zones+= (R()<0.5?-1:1);
+    if(R()<rate&&spec(n).cacheable)gg.cache=CACHE_ORDER[(R()*CACHE_ORDER.length)|0];
+    if(R()<rate)gg.target_util+=gauss()*0.07*sigma;
+    if(R()<rate*0.6)gg.retries+=(R()<0.5?-1:1);
+    if(R()<rate*0.6)gg.circuit_break=!gg.circuit_break;
+    if(R()<rate*0.4)gg.min_replicas+=(R()<0.5?-1:1);
+    clampGene(gg,n); });
+  if(R()<rate)m.lb=["round_robin","least_conn","p2c"][(R()*3)|0];
+  if(R()<rate)m.timeout=Math.max(250,Math.min(2000,m.timeout+[-200,-100,100,200][(R()*4)|0]));
+  if(R()<rate*0.7)m.hedge=!m.hedge;
+  return m; }
+function crossover(a,b,R){ var c=copyGenome(a); c.lineage="xover";
+  EVOLVABLE.forEach(function(n){ c.genes[n]=copyGenome(R()<0.5?b:a).genes[n];
+    if(R()<0.35)c.genes[n].replicas=Math.round((a.genes[n].replicas+b.genes[n].replicas)/2);
+    if(R()<0.35)c.genes[n].target_util=(a.genes[n].target_util+b.genes[n].target_util)/2;
+    clampGene(c.genes[n],n); });
+  if(R()<0.5)c.lb=b.lb; if(R()<0.5)c.timeout=b.timeout; if(R()<0.5)c.hedge=b.hedge; return c; }
+
+/* Stepwise GA so the UI can animate it. new GA(base,pop,seed); .init(); .step() -> gen record. */
+function GA(base,pop,seed){ this.base=base; this.pop=pop||40; this.R=rng(seed||17);
+  this.population=[]; this.best=null; this.bestScore=-1e18; this.bestDetail=null;
+  this.sigma=1.0; this.rate=0.18; this.stagnant=0; this.gen=0; this.history=[]; }
+GA.prototype.init=function(){ this.population=[baseline()];
+  while(this.population.length<this.pop)this.population.push(randGenome(this.R)); };
+GA.prototype.step=function(){ var self=this;
+  var scored=this.population.map(function(g){ var f=fitness(g,self.base); if(f.score>self.bestScore){
+    self.bestScore=f.score; self.best=copyGenome(g); self.bestDetail=f; self.best.gen=self.gen; self.stagnant=0; }
+    return {s:f.score,g:g,f:f}; });
+  scored.sort(function(a,b){return b.s-a.s;});
+  var mean=scored.reduce(function(a,x){return a+x.s;},0)/scored.length;
+  // diversity
+  var names=EVOLVABLE, tot=0,cnt=0, lim=Math.min(scored.length,16);
+  for(var i=0;i<lim;i++)for(var j=i+1;j<lim;j++){ var d=0; names.forEach(function(n){
+    var A=scored[i].g.genes[n],B=scored[j].g.genes[n];
+    d+=(A.klass!==B.klass?1:0)+(A.cache!==B.cache?1:0)+Math.min(1,Math.abs(A.replicas-B.replicas)/12); });
+    tot+=d/(names.length*3); cnt++; }
+  var div=cnt?tot/cnt:0;
+  var rec={gen:this.gen,best:scored[0].s,mean:mean,best_score:this.bestScore,
+    div:div,cost:this.bestDetail.cost,ok:this.bestDetail.ok};
+  this.history.push(rec);
+  // next gen
+  this.stagnant++;
+  if(this.stagnant>=4||div<0.06){ this.sigma=Math.min(2.4,this.sigma*1.45); this.rate=Math.min(0.42,this.rate*1.3); }
+  else { this.sigma=Math.max(0.35,this.sigma*0.96); this.rate=Math.max(0.10,this.rate*0.98); }
+  var elite=4, next=[]; for(var k=0;k<elite;k++)next.push(copyGenome(scored[k].g));
+  if(this.stagnant>=6){ for(var q=0;q<Math.max(2,(this.pop/10)|0);q++)next.push(randGenome(this.R)); this.stagnant=0; }
+  function tour(){ var best=null; for(var t=0;t<4;t++){ var p=scored[(self.R()*scored.length)|0]; if(!best||p.s>best.s)best=p; } return best.g; }
+  while(next.length<this.pop){ var child=self.R()<0.75?crossover(tour(),tour(),self.R):copyGenome(tour());
+    child=mutate(child,self.R,this.rate,this.sigma); child.gen=this.gen+1; next.push(child); }
+  this.population=next; this.gen++;
+  return rec;
+};
+
+// tiny online refine (architect): local search seeded from current
+function refine(current,base,iters,seed){ var R=rng(seed||3); var best=copyGenome(current);
+  var bestScore=fitness(best,base).score;
+  for(var i=0;i<(iters||40);i++){ var cand=mutate(best,R,0.12,0.45); var s=fitness(cand,base).score;
+    if(s>bestScore){bestScore=s;best=cand;} } return best; }
+
+// ---------------------------------------------------------------- diff
+function diff(a,b){ var out=[]; EVOLVABLE.forEach(function(n){ var A=a.genes[n],B=b.genes[n];
+  ["klass","replicas","zones","cache","circuit_break","target_util"].forEach(function(f){
+    if(A[f]!==B[f])out.push(n+"."+f+": "+A[f]+" -> "+B[f]); }); });
+  ["lb","timeout","hedge"].forEach(function(f){ if(a[f]!==b[f])out.push("global."+f+": "+a[f]+" -> "+b[f]); });
+  return out; }
+function structuralCount(d){ var s={}; d.forEach(function(x){ var p=x.split("."); if(p.length<2)return;
+  var f=p[1].split(":")[0]; if(f==="klass"||f==="cache"||f==="zones")s[p[0]]=1; }); return Object.keys(s).length; }
+function serviceCount(d){ var s={}; d.forEach(function(x){ s[x.split(".")[0]]=1; }); return Object.keys(s).length; }
+
+// ---------------------------------------------------------------- workload
+function dayTrace(base,ticks,seed){ ticks=ticks||288; var R=rng(seed||11); var out=[];
+  function gauss(m,s){ return m+(R()+R()+R()-1.5)*2*s; }
+  for(var i=0;i<ticks;i++){ var minute=i*5, h=minute/60;
+    var diurnal=0.42+0.58*Math.pow(0.5*(1-Math.cos(2*Math.PI*(h-4.5)/24)),1.35);
+    var lunch=0.16*Math.exp(-Math.pow(h-12.4,2)/1.6);
+    var evening=0.30*Math.exp(-Math.pow(h-20.0,2)/5.0);
+    var rps=base*(diurnal+lunch+evening)*gauss(1,0.035); var ev="",lost=false;
+    if(i>=156&&i<=171){ var kk=(i-156)/15; rps*=1+3.1*Math.exp(-Math.pow(kk-0.28,2)/0.06); ev="flash_sale"; }
+    if(i>=232&&i<=241){ lost=true; ev="az_failure"; }
+    if(i>=36&&i<=45){ rps*=1.35; ev="upstream_degraded"; }
+    out.push({i:i,minute:minute,hour:h,rps:Math.max(60,rps),ev:ev,lost:lost}); }
+  return out; }
+function holt(series,ahead,alpha,beta){ ahead=ahead||3;alpha=alpha||0.45;beta=beta||0.25;
+  if(!series.length)return 0; if(series.length===1)return series[0];
+  var level=series[0],trend=series[1]-series[0];
+  for(var i=1;i<series.length;i++){ var prev=level; level=alpha*series[i]+(1-alpha)*(level+trend);
+    trend=beta*(level-prev)+(1-beta)*trend; } return Math.max(0,level+ahead*trend); }
+
+// ---------------------------------------------------------------- orchestrator
+function Orchestrator(genome,base,opts){ opts=opts||{};
+  this.genome=copyGenome(genome); this.base=base;
+  this.budget=opts.budget||1e9; this.swarmOn=opts.swarmOn!==false;
+  this.lastChange=-99; this.pending=null; this.rpsHist=[];
+  this.ledger=[]; this.coldStreak={}; this.chaosEvery=36; this.chaosResults=[];
+  this.gr={cool:1,maxStruct:5,maxCap:16,maxApply:4,minImp:0.004,burst:1.55,rbRatio:1.22,costStep:0.40};
+  this.R=rng(opts.seed||23);
+}
+function runtimeObjective(g,rps,lost,burst){
+  var e=evaluate(g,rps,lost), b=evaluate(g,rps*burst,lost), z=evaluate(g,rps*1.15,true);
+  var pen=0; [[0.55,e],[0.20,b],[0.25,z]].forEach(function(w){ var ev=w[1];
+    pen+=w[0]*(2.6*Math.max(0,ev.p99-SLO_P99)/SLO_P99+0.55*Math.min(2,ev.p99/SLO_P99)
+      +42*Math.max(0,ev.err-SLO_ERR)+6*ev.saturated.length); });
+  pen+=e.cost/100.0+0.9*e.blast; return {score:-pen,ev:e}; }
+function rebase(base,cand,current){ var out=copyGenome(current);
+  EVOLVABLE.forEach(function(n){ var B=base.genes[n],C=cand.genes[n];
+    ["klass","replicas","zones","cache","target_util","min_replicas","max_replicas","retries","circuit_break"].forEach(function(f){
+      if(B[f]!==C[f])out.genes[n][f]=C[f]; }); clampGene(out.genes[n],n); });
+  ["lb","timeout","hedge"].forEach(function(f){ if(base[f]!==cand[f])out[f]=cand[f]; });
+  return out; }
+
+// agents produce proposals: {agent,kind,genome,rationale,urgency}
+Orchestrator.prototype._propose=function(ev,rps,forecast,lost,incident){
+  var self=this, props=[], signals=[]; var g=this.genome;
+  // observer signals
+  var sat=[]; EVOLVABLE.forEach(function(n){ var s=ev.per[n]; if(!s)return; var tgt=g.genes[n].target_util;
+    if(s.util>=0.995){ sat.push(n); signals.push({agent:"observer",kind:"saturation",target:n}); }
+    else if(s.util>tgt&&s.util>0.80){ signals.push({agent:"observer",kind:"hot",target:n}); }
+    if(s.util<0.42*tgt&&s.replicas>g.genes[n].min_replicas){ signals.push({agent:"observer",kind:"cold",target:n}); }
+  });
+  var cold=signals.filter(function(s){return s.kind==="cold";}).map(function(s){return s.target;});
+  EVOLVABLE.forEach(function(n){ self.coldStreak[n]=(cold.indexOf(n)>=0)?(self.coldStreak[n]||0)+1:0; });
+
+  // capacity (scale out / in) with N+1 zone redundancy
+  var target=Math.max(rps,forecast), scale=target/Math.max(rps,1);
+  var up=copyGenome(g), down=copyGenome(g), upc=[], downc=[];
+  EVOLVABLE.forEach(function(n){ var s=ev.per[n]; if(!s||s.replicas<=0)return; var gene=g.genes[n];
+    var proj=Math.min(s.util,3)*scale; var red=gene.zones>1?gene.zones/(gene.zones-1):1;
+    if(proj>gene.target_util*1.04){ var need=Math.ceil(gene.replicas*proj/gene.target_util*red);
+      var nw=Math.min(gene.max_replicas,Math.max(gene.replicas+1,Math.min(need,gene.replicas*2)));
+      if(nw!==gene.replicas){ upc.push(n+" "+gene.replicas+"→"+nw); up.genes[n].replicas=nw; clampGene(up.genes[n],n); } }
+    else if(proj<gene.target_util*0.80&&gene.replicas>gene.min_replicas){
+      var want=Math.ceil(gene.replicas*proj/gene.target_util*1.15*red);
+      var nd=Math.max(gene.min_replicas,Math.ceil(gene.replicas*0.75),want);
+      if(nd!==gene.replicas){ downc.push(n+" "+gene.replicas+"→"+nd); down.genes[n].replicas=nd; clampGene(down.genes[n],n); } }
+  });
+  if(upc.length)props.push({agent:"capacity",kind:"scale_out",genome:up,urgency:0.85,
+    rationale:"forecast "+Math.round(target)+" rps: "+upc.slice(0,4).join(", ")});
+  if(downc.length)props.push({agent:"capacity",kind:"scale_in",genome:down,urgency:0.30,
+    rationale:"idle headroom: "+downc.slice(0,4).join(", ")});
+
+  // healer
+  var breach=signals.some(function(s){return s.kind==="saturation";})||ev.p99>SLO_P99||ev.err>0.001;
+  if(sat.length||breach){ var h=copyGenome(g), acts=[];
+    sat.forEach(function(n){ var gg=h.genes[n]; if(!gg.circuit_break){gg.circuit_break=true;acts.push("breaker "+n);}
+      if(gg.retries>0){gg.retries--;acts.push("retries "+n+"→"+gg.retries);}
+      var jump=Math.min(gg.max_replicas,Math.ceil(gg.replicas*1.9)+2); if(jump>gg.replicas){acts.push("surge "+n+" "+gg.replicas+"→"+jump);gg.replicas=jump;} clampGene(gg,n); });
+    if(lost)EVOLVABLE.forEach(function(n){ var gg=h.genes[n]; if(gg.zones<3&&spec(n).critical){gg.zones=3;acts.push("spread "+n+"→3az");} clampGene(gg,n); });
+    if(acts.length)props.push({agent:"healer",kind:"heal",genome:h,urgency:1.0,rationale:acts.slice(0,4).join("; ")});
+  }
+
+  // cost
+  if((cold.length||ev.cost>this.budget)&&!incident){ var c=copyGenome(g), cacts=[];
+    cold.forEach(function(n){ var gg=c.genes[n], i=CLASS_ORDER.indexOf(gg.klass), floor=spec(n).stateful?3:2;
+      if(self.coldStreak[n]>=10&&gg.replicas<=gg.min_replicas&&gg.min_replicas>floor){ gg.min_replicas=Math.max(floor,gg.min_replicas-1); cacts.push("floor "+n+"→"+gg.min_replicas); self.coldStreak[n]=0; }
+      else if(i>0&&ev.per[n].util<0.12&&gg.replicas<=gg.min_replicas){ gg.klass=CLASS_ORDER[i-1]; cacts.push("downsize "+n+"→"+gg.klass); }
+      else if(gg.replicas>gg.min_replicas){ var nw=Math.max(gg.min_replicas,gg.replicas-Math.max(1,(gg.replicas/5)|0)); cacts.push("scale-in "+n+" "+gg.replicas+"→"+nw); gg.replicas=nw; } clampGene(gg,n); });
+    if(cacts.length)props.push({agent:"cost",kind:"scale_down",genome:c,urgency:ev.cost>this.budget?0.75:0.18,rationale:cacts.slice(0,4).join("; ")});
+  }
+
+  // security
+  var v=violations(g); if(v.length){ props.push({agent:"security",kind:"policy",genome:remediate(g),urgency:0.95,rationale:v.length+" policy violation(s): "+v.slice(0,3).join("; ")}); }
+
+  return {props:props,signals:signals};
+};
+
+Orchestrator.prototype.step=function(t){
+  this.rpsHist.push(t.rps); var hist=this.rpsHist.slice(-12);
+  var forecast=holt(hist,3);
+  var ev=evaluate(this.genome,t.rps,t.lost);
+  var incident=ev.saturated.length>0||ev.p99>SLO_P99||t.lost;
+  var applied=[], rolledBack=null;
+
+  // verify previous change
+  if(this.pending){ var exp=this.pending.exp;
+    if(ev.p99>Math.max(exp*this.gr.rbRatio,exp+25)&&ev.p99>this.pending.before_p99){
+      this.genome=copyGenome(this.pending.before); ev=evaluate(this.genome,t.rps,t.lost);
+      rolledBack=this.pending.id;
+      this.ledger.push({tick:t.i,minute:t.minute,agent:"brain",action:"rollback",accepted:true,
+        rationale:"predicted "+Math.round(exp)+"ms, observed "+Math.round(this.pending.obs||ev.p99)+"ms — reverted",p99:ev.p99,cost:ev.cost}); }
+    this.pending=null; }
+
+  if(this.swarmOn){
+    var out=this._propose(ev,t.rps,forecast,t.lost,incident);
+    var ranked=out.props.slice().sort(function(a,b){return b.urgency-a.urgency;});
+    var tickBase=copyGenome(this.genome);
+    var base=runtimeObjective(this.genome,Math.max(t.rps,forecast),t.lost,this.gr.burst).score;
+    var cooling=(t.i-this.lastChange)<this.gr.cool;
+    for(var pi=0; pi<ranked.length; pi++){ if(applied.length>=this.gr.maxApply)break; var p=ranked[pi];
+      if(cooling&&p.urgency<0.5)continue;
+      if(incident&&p.agent==="cost"&&p.urgency<0.7)continue;
+      var cand=applied.length?rebase(tickBase,p.genome,this.genome):p.genome;
+      var ro=runtimeObjective(cand,Math.max(t.rps,forecast),t.lost,this.gr.burst);
+      // guardrails
+      var d=diff(this.genome,cand), nCh=serviceCount(d), nStruct=structuralCount(d);
+      var ok=true, why="";
+      if(nCh===0){ok=false;why="no-op";}
+      else if(!incident&&nStruct>this.gr.maxStruct){ok=false;why="blast radius: "+nStruct+" structural";}
+      else if(!incident&&nCh>this.gr.maxCap){ok=false;why="blast radius: "+nCh+" services";}
+      else if(!incident&&ro.ev.cost>ev.cost*(1+this.gr.costStep)){ok=false;why="cost step > "+(this.gr.costStep*100)+"%";}
+      else { var nv=violations(cand).filter(function(x){return violations(tickBase).indexOf(x)<0;}); if(nv.length){ok=false;why="policy: "+nv[0];} }
+      if(!ok){ this.ledger.push({tick:t.i,minute:t.minute,agent:p.agent,action:p.kind,accepted:false,blocked:why,rationale:p.rationale,p99:ro.ev.p99,cost:ro.ev.cost}); continue; }
+      var gate=(p.kind==="policy")?-0.02:this.gr.minImp;
+      if(ro.score<=base+gate){ continue; }
+      // accept
+      var before=copyGenome(this.genome); this.genome=copyGenome(cand); this.lastChange=t.i;
+      var cid="chg-"+t.i+"-"+p.agent;
+      if(!this.pending)this.pending={id:cid,before:before,exp:ro.ev.p99,before_p99:ev.p99};
+      else this.pending.exp=ro.ev.p99;
+      var dd=diff(before,this.genome).slice(0,6);
+      applied.push({id:cid,agent:p.agent,kind:p.kind,rationale:p.rationale,diff:dd});
+      this.ledger.push({tick:t.i,minute:t.minute,agent:p.agent,action:p.kind,accepted:true,
+        rationale:p.rationale,p99:ro.ev.p99,cost:ro.ev.cost,diff:dd});
+      ev=evaluate(this.genome,t.rps,t.lost); base=ro.score;
+    }
+    // architect: periodic structural retune
+    if(t.i>0&&t.i%24===0){ var candA=refine(this.genome,Math.max(t.rps,forecast),30,t.i);
+      var dA=diff(this.genome,candA);
+      if(dA.length&&structuralCount(dA)<=this.gr.maxStruct){ var roA=runtimeObjective(candA,Math.max(t.rps,forecast),t.lost,this.gr.burst);
+        var b2=runtimeObjective(this.genome,Math.max(t.rps,forecast),t.lost,this.gr.burst).score;
+        if(roA.score>b2+this.gr.minImp&&violations(candA).filter(function(x){return violations(this.genome).indexOf(x)<0;},this).length===0){
+          var beforeA=copyGenome(this.genome); this.genome=candA;
+          this.ledger.push({tick:t.i,minute:t.minute,agent:"architect",action:"evolve",accepted:true,
+            rationale:"micro-evolved "+dA.length+" gene(s): "+dA.slice(0,3).join("; "),p99:roA.ev.p99,cost:roA.ev.cost,diff:diff(beforeA,this.genome).slice(0,6)});
+          ev=evaluate(this.genome,t.rps,t.lost); this.lastChange=t.i;
+          this.pending={id:"chg-"+t.i+"-architect",before:beforeA,exp:roA.ev.p99,before_p99:ev.p99}; } } }
+    // chaos drill
+    if(t.i>0&&t.i%this.chaosEvery===0&&!incident){ var probe=evaluate(this.genome,t.rps*1.15,true);
+      this.chaosResults.push({tick:t.i,survived:probe.sloOk,p99:probe.p99,saturated:probe.saturated.slice()});
+      if(!probe.sloOk){ var cg=copyGenome(this.genome); (probe.saturated.length?probe.saturated:EVOLVABLE.slice(0,3)).forEach(function(n){
+        var gg=cg.genes[n]; gg.zones=3; gg.replicas=Math.min(gg.max_replicas,((gg.replicas*1.35)|0)+1); gg.min_replicas=Math.min(gg.max_replicas-1,gg.min_replicas+1); clampGene(gg,n); });
+        var roC=runtimeObjective(cg,t.rps,t.lost,this.gr.burst); var bC=runtimeObjective(this.genome,t.rps,t.lost,this.gr.burst).score;
+        if(roC.score>bC){ var beforeC=copyGenome(this.genome); this.genome=cg;
+          this.ledger.push({tick:t.i,minute:t.minute,agent:"chaos",action:"resilience",accepted:true,
+            rationale:"AZ-loss drill failed — widening spread & raising floors",p99:roC.ev.p99,cost:roC.ev.cost,diff:diff(beforeC,this.genome).slice(0,6)});
+          ev=evaluate(this.genome,t.rps,t.lost); } } }
+  }
+
+  var totalRep=0; EVOLVABLE.forEach(function(n){ totalRep+=this.genome.genes[n].replicas; },this);
+  return {tick:t.i,minute:t.minute,hour:t.hour,rps:t.rps,forecast:forecast,ev:t.ev,event:t.ev,lost:t.lost,
+    p50:ev.p50,p99:ev.p99,err:ev.err,cost:ev.cost,util:ev.maxUtil,hottest:ev.hottest,
+    replicas:totalRep,saturated:ev.saturated.slice(),sloOk:ev.sloOk,per:ev.per,
+    applied:applied,rolledBack:rolledBack,incident:incident};
+};
+
+// ---------------------------------------------------------------- exports
+root.HELIX={ CLASSES:CLASSES,CACHE:CACHE,BP:BP,SVC:SVC,EVOLVABLE:EVOLVABLE,ENTRY:ENTRY,spec:spec,
+  SLO_P99:SLO_P99, evaluate:evaluate, baseline:baseline, randGenome:randGenome, copyGenome:copyGenome,
+  fitness:fitness, violations:violations, remediate:remediate, GA:GA, refine:refine, diff:diff,
+  dayTrace:dayTrace, holt:holt, Orchestrator:Orchestrator, rng:rng };
+
+})(typeof window!=="undefined"?window:(typeof globalThis!=="undefined"?globalThis:this));
+</script>
+<script>
+"use strict";
+var H = window.HELIX;
+var $ = function(s){ return document.querySelector(s); };
+function cssv(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function fmt(n,d){ d=d||0; return Number(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function hhmm(min){ var h=Math.floor(min/60), m=min%60; return (h<10?"0":"")+h+":"+(m<10?"0":"")+m; }
+
+// ---------------------------------------------------------------- state
+var S = {
+  base: 5200, budget: 260, speed: 12,
+  designed: null,            // designed genome
+  trace: null, idx: 0,
+  auto: null, stat: null,    // orchestrators: autonomous + static shadow
+  autoSeries: [], statSeries: [], rpsSeries: [], costSeries: [],
+  autoBreaches: 0, statBreaches: 0, autoCost: 0, statCost: 0,
+  running: false, timer: null, autonomyOn: true,
+  overrides: {},             // tick -> {mult, lost}
+  gamedaysShown: 0, evoHist: null, lastPer: null
+};
+
+// ---------------------------------------------------------------- topology layout
+var POS = {edge:[16,120],api_gateway:[150,120],
+  auth:[300,10],catalog:[300,66],search:[300,122],cart:[300,178],orders:[300,234],
+  inventory:[460,206],payments:[460,262],notifier:[610,262],
+  session_store:[620,10],catalog_db:[620,66],search_index:[620,122],orders_db:[620,196]};
+var NW=118, NH=42;
+
+function heatColor(u){
+  // 0 -> s1 (cool), ~target -> warn, >=1 -> crit ; blend in OKLab-ish via simple rgb mix
+  u = Math.max(0, Math.min(1.2, u));
+  var c1=cssv("--s1"), c2=cssv("--warn"), c3=cssv("--crit");
+  function hex(c){ c=c.replace("#",""); if(c.length===3)c=c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+    return [parseInt(c.substr(0,2),16),parseInt(c.substr(2,2),16),parseInt(c.substr(4,2),16)]; }
+  function mix(a,b,t){ var A=hex(a),B=hex(b); return "rgb("+A.map(function(v,i){return Math.round(v+(B[i]-v)*t);}).join(",")+")"; }
+  if(u<0.7) return mix(c1,c2,u/0.7);
+  return mix(c2,c3,Math.min(1,(u-0.7)/0.5));
+}
+
+function buildTopo(){
+  var svg=$("#topo"); svg.innerHTML="";
+  var NS="http://www.w3.org/2000/svg";
+  function el(t,a){ var n=document.createElementNS(NS,t); for(var k in a)n.setAttribute(k,a[k]); return n; }
+  var links=el("g",{}); svg.appendChild(links);
+  H.SVC.forEach(function(n){ var p=POS[n]; if(!p)return; var sp=H.spec(n);
+    sp.deps.forEach(function(d){ var q=POS[d[0]]; if(!q)return;
+      var x1=p[0]+NW,y1=p[1]+NH/2,x2=q[0],y2=q[1]+NH/2,mx=(x1+x2)/2;
+      var async=(n==="orders"&&d[0]==="notifier");
+      links.appendChild(el("path",{d:"M"+x1+" "+y1+" C"+mx+" "+y1+" "+mx+" "+y2+" "+x2+" "+y2,
+        fill:"none",stroke:"var(--line2)","stroke-width":1.1,"stroke-dasharray":async?"4 3":"none",opacity:async?.7:1})); });
+  });
+  H.SVC.forEach(function(n){ var p=POS[n]; if(!p)return; var sp=H.spec(n);
+    var g=el("g",{class:"node",id:"node-"+n});
+    g.appendChild(el("rect",{class:"bg",x:p[0],y:p[1],width:NW,height:NH,rx:3,fill:"var(--surface2)",stroke:"var(--line2)","stroke-width":1}));
+    g.appendChild(el("rect",{class:"heat",x:p[0],y:p[1],width:4,height:NH,fill:sp.external?"var(--s2)":"var(--s1)"}));
+    var t1=el("text",{x:p[0]+12,y:p[1]+17,"font-size":11,fill:"var(--ink)","font-weight":"500"}); t1.textContent=n; g.appendChild(t1);
+    var t2=el("text",{class:"meta",x:p[0]+12,y:p[1]+32,"font-size":10,fill:"var(--ink3)"});
+    t2.textContent=sp.external?"external":""; g.appendChild(t2);
+    var rc=el("text",{class:"rep",x:p[0]+NW-9,y:p[1]+18,"font-size":11,fill:"var(--ink2)","text-anchor":"end","font-weight":"600"}); g.appendChild(rc);
+    svg.appendChild(g);
+  });
+}
+function paintTopo(genome, per){
+  H.SVC.forEach(function(n){ var g=document.getElementById("node-"+n); if(!g)return; var sp=H.spec(n);
+    var heat=g.querySelector(".heat"), meta=g.querySelector(".meta"), rep=g.querySelector(".rep");
+    if(sp.external){ heat.setAttribute("fill","var(--s2)"); meta.textContent="140ms fixed"; rep.textContent=""; return; }
+    var gene=genome.genes[n]; var u=per&&per[n]?per[n].util:0;
+    heat.setAttribute("fill", heatColor(u));
+    heat.setAttribute("width", 4+Math.min(10,u*10));
+    meta.textContent=gene.klass+" · "+gene.zones+"az"+(gene.cache!=="none"?" · "+gene.cache[0].toUpperCase():"");
+    rep.textContent=gene.replicas;
+  });
+}
+
+// ---------------------------------------------------------------- charts
+function drawChart(){
+  var cv=$("#chart"), dpr=window.devicePixelRatio||1;
+  var W=cv.clientWidth, Hh=330; cv.width=W*dpr; cv.height=Hh*dpr;
+  var x=cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,Hh);
+  var m={l:44,r:46,t:10,b:20}, N=288;
+  var ink3=cssv("--ink3"), line=cssv("--line");
+  var xf=function(i){ return m.l+(i/(N-1))*(W-m.l-m.r); };
+  // p99 log axis left
+  function yl(v){ v=Math.max(40,Math.min(1000,v)); return (Hh-m.b)-(Math.log10(v)-Math.log10(40))/(Math.log10(1000)-Math.log10(40))*(Hh-m.b-m.t); }
+  x.font="10px 'IBM Plex Mono',monospace"; x.textAlign="right"; x.textBaseline="middle";
+  [50,100,250,500,1000].forEach(function(v){ var yy=yl(v); x.strokeStyle=line; x.lineWidth=1;
+    x.beginPath();x.moveTo(m.l,yy);x.lineTo(W-m.r,yy);x.stroke(); x.fillStyle=ink3; x.fillText(v,m.l-6,yy); });
+  // SLO line
+  x.strokeStyle=cssv("--crit"); x.lineWidth=1.4; x.setLineDash([5,4]); x.beginPath();
+  x.moveTo(m.l,yl(250));x.lineTo(W-m.r,yl(250));x.stroke(); x.setLineDash([]);
+  // rps (right axis, area) behind
+  var maxr=S.base*4.4;
+  function yr(v){ return (Hh-m.b)-(v/maxr)*(Hh-m.b-m.t); }
+  if(S.rpsSeries.length){
+    x.beginPath(); x.moveTo(xf(0),Hh-m.b);
+    S.rpsSeries.forEach(function(v,i){ x.lineTo(xf(i),yr(v)); });
+    x.lineTo(xf(S.rpsSeries.length-1),Hh-m.b); x.closePath();
+    x.fillStyle="color-mix(in srgb,"+ink3+" 12%,transparent)"; x.fill();
+    x.strokeStyle=ink3; x.lineWidth=1; x.globalAlpha=.6; x.beginPath();
+    S.rpsSeries.forEach(function(v,i){ i?x.lineTo(xf(i),yr(v)):x.moveTo(xf(i),yr(v)); }); x.stroke(); x.globalAlpha=1;
+  }
+  // event bands
+  x.fillStyle="color-mix(in srgb,"+cssv("--s4")+" 9%,transparent)";
+  if(S.trace) S.trace.forEach(function(t,i){ if(i>=S.rpsSeries.length)return; if(t.ev==="flash_sale"||t.ev==="az_failure"){ x.fillRect(xf(i)-1,m.t,2.4,Hh-m.b-m.t); } });
+  // cost line (right, olive) scaled to budget*2
+  var maxc=Math.max(S.budget*2, 60);
+  function yc(v){ return (Hh-m.b)-(v/maxc)*(Hh-m.b-m.t); }
+  function plot(series,color,w){ if(!series.length)return; x.strokeStyle=color; x.lineWidth=w; x.beginPath();
+    series.forEach(function(v,i){ var yy=(color===cssv("--s5"))?yc(v):yl(v); i?x.lineTo(xf(i),yy):x.moveTo(xf(i),yy); }); x.stroke(); }
+  plot(S.costSeries, cssv("--s5"), 1.4);
+  plot(S.statSeries, cssv("--s2"), 1.6);
+  plot(S.autoSeries, cssv("--s1"), 2.2);
+  // right axis label
+  x.fillStyle=ink3; x.textAlign="left"; x.fillText("$"+fmt(maxc), W-m.r+4, m.t+6);
+  x.fillText("$0", W-m.r+4, Hh-m.b);
+  // x ticks
+  x.textAlign="center"; x.textBaseline="alphabetic";
+  for(var h=0;h<=24;h+=6){ var i=Math.min(N-1,Math.round(h/24*N)); x.fillText((h<10?"0":"")+h+":00", xf(i), Hh-6); }
+}
+
+function drawEvo(hist){
+  var cv=$("#evo"), dpr=window.devicePixelRatio||1; var W=cv.clientWidth, Hh=150;
+  cv.width=W*dpr; cv.height=Hh*dpr; var x=cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,Hh);
+  if(!hist||!hist.length)return; var m={l:38,r:10,t:10,b:18};
+  var lo=Math.min.apply(null,hist.map(function(h){return h.best;}));
+  var hi=Math.max.apply(null,hist.map(function(h){return h.best;}));
+  var pad=(hi-lo)*0.12||1;
+  var xf=function(i){return m.l+(i/(Math.max(1,hist.length-1)))*(W-m.l-m.r);};
+  var yf=function(v){return (Hh-m.b)-((v-(lo-pad))/((hi+pad)-(lo-pad)))*(Hh-m.b-m.t);};
+  x.strokeStyle=cssv("--line"); x.lineWidth=1; [lo,(lo+hi)/2,hi].forEach(function(v){ var yy=yf(v);
+    x.beginPath();x.moveTo(m.l,yy);x.lineTo(W-m.r,yy);x.stroke();
+    x.fillStyle=cssv("--ink3");x.font="9px 'IBM Plex Mono',monospace";x.textAlign="right";x.textBaseline="middle";x.fillText(v.toFixed(1),m.l-5,yy); });
+  x.beginPath(); hist.forEach(function(h,i){ i?x.lineTo(xf(i),yf(h.best)):x.moveTo(xf(i),yf(h.best)); });
+  x.lineTo(xf(hist.length-1),Hh-m.b); x.lineTo(xf(0),Hh-m.b); x.closePath();
+  x.fillStyle="color-mix(in srgb,"+cssv("--s1")+" 14%,transparent)"; x.fill();
+  x.strokeStyle=cssv("--s1"); x.lineWidth=2; x.beginPath();
+  hist.forEach(function(h,i){ i?x.lineTo(xf(i),yf(h.best)):x.moveTo(xf(i),yf(h.best)); }); x.stroke();
+}
+
+// ---------------------------------------------------------------- feed
+var AGC={capacity:"--s1",cost:"--s5",architect:"--s3",healer:"--s2",chaos:"--s4",security:"--ink2",brain:"--warn"};
+function pushFeed(rows){
+  var feed=$("#feed"); if(feed.querySelector(".feedempty")) feed.innerHTML="";
+  rows.forEach(function(r){ var div=document.createElement("div"); div.className="ev";
+    var pill=r.rollback?'<span class="pill rb">rolled back</span>':(r.accepted?'<span class="pill ship">shipped</span>':'<span class="pill blk">blocked</span>');
+    var df=r.diff&&r.diff.length?'<span class="df">'+r.diff.slice(0,3).join(" · ")+'</span>':(r.blocked?'<span class="df">✕ '+r.blocked+'</span>':'');
+    div.innerHTML='<span class="t">'+hhmm(r.minute)+'</span>'+
+      '<span class="ag"><span class="d" style="background:var('+(AGC[r.agent]||"--ink3")+')"></span>'+r.agent+'</span>'+
+      '<span class="msg">'+pill+r.rationale+df+'</span>';
+    feed.insertBefore(div, feed.firstChild);
+  });
+  while(feed.children.length>60) feed.removeChild(feed.lastChild);
+}
+
+// ---------------------------------------------------------------- design
+function setState(txt,live){ $("#statetext").textContent=txt; $("#stateline").classList.toggle("live",!!live); }
+function design(){
+  stop(); resetSeries();
+  $("#design").disabled=true; setState("designing… genetic search running",true);
+  var ga=new H.GA(S.base, 56, 17); ga.init();
+  var gen=0, total=45;
+  var iv=setInterval(function(){
+    ga.step(); gen++; S.evoHist=ga.history; drawEvo(ga.history);
+    $("#evostat").textContent="gen "+gen+"/"+total+" · best "+ga.bestScore.toFixed(2)+" · "+(ga.bestDetail.ok?"all scenarios pass":"tuning");
+    if(gen>=total){ clearInterval(iv);
+      S.designed=ga.best; S.trace=H.dayTrace(S.base);
+      S.auto=new H.Orchestrator(S.designed,S.base,{budget:S.budget,swarmOn:S.autonomyOn,seed:23});
+      S.stat=new H.Orchestrator(S.designed,S.base,{swarmOn:false,seed:24});
+      var e0=H.evaluate(S.designed,S.base,false);
+      paintTopo(S.designed,e0.per);
+      setKPIsAtRest(e0);
+      $("#design").disabled=false; $("#run").disabled=false; $("#reset").disabled=false;
+      $("#sale").disabled=false; $("#zone").disabled=false;
+      setState("designed — "+H.EVOLVABLE.length+" services, "+ (ga.bestDetail.ok?"SLO-safe across all 4 scenarios":"best effort") +". Press Run.",false);
+      $("#evostat").textContent="converged: "+ga.history[0].best.toFixed(2)+" → "+ga.bestScore.toFixed(2)+" ("+fmt(56*total)+" architectures evaluated)";
+    }
+  }, 26);
+}
+function setKPIsAtRest(e){
+  $("#k-p99").textContent=fmt(e.p99)+" ms"; $("#k-p99").className="big "+(e.p99<=250?"good":"bad");
+  $("#k-p99s").textContent="—"; $("#k-slo").textContent="100%"; $("#k-slo").className="big good";
+  $("#k-slos").textContent="—"; $("#k-cost").textContent="$"+fmt(e.cost); $("#k-costs").textContent="—";
+  var rep=0; H.EVOLVABLE.forEach(function(n){rep+=S.designed.genes[n].replicas;}); $("#k-rep").textContent=fmt(rep);
+  $("#k-clock").textContent="00:00"; $("#k-hot").textContent="at rest · hottest "+e.hottest;
+}
+
+// ---------------------------------------------------------------- run loop
+function resetSeries(){
+  S.autoSeries=[];S.statSeries=[];S.rpsSeries=[];S.costSeries=[]; S.idx=0;
+  S.autoBreaches=0;S.statBreaches=0;S.autoCost=0;S.statCost=0; S.overrides={}; S.gamedaysShown=0;
+  $("#feed").innerHTML='<div class="feedempty">Running…</div>';
+  $("#gamedays").innerHTML='<span style="color:var(--ink3);font-size:12px;padding:6px 0">none yet</span>';
+  drawChart();
+}
+function tickOnce(){
+  if(!S.trace||S.idx>=S.trace.length){ stop(); setState("day complete — "+dayVerdict(),false); return; }
+  var t=Object.assign({}, S.trace[S.idx]);
+  var ov=S.overrides[S.idx];
+  if(ov){ if(ov.mult)t.rps*=ov.mult; if(ov.lost)t.lost=true; if(ov.ev)t.ev=ov.ev; }
+  var ra=S.auto.step(t), rs=S.stat.step(t);
+  S.rpsSeries.push(t.rps); S.autoSeries.push(ra.p99); S.statSeries.push(rs.p99); S.costSeries.push(ra.cost);
+  if(!ra.sloOk)S.autoBreaches++; if(!rs.sloOk)S.statBreaches++;
+  S.autoCost+=ra.cost; S.statCost+=rs.cost;
+  // KPIs
+  $("#k-p99").textContent=fmt(ra.p99)+" ms"; $("#k-p99").className="big "+(ra.p99<=250?"good":"bad");
+  $("#k-p99s").textContent=fmt(rs.p99)+" ms";
+  var n=S.idx+1;
+  $("#k-slo").textContent=(100*(1-S.autoBreaches/n)).toFixed(1)+"%"; $("#k-slo").className="big "+(S.autoBreaches===0?"good":(S.autoBreaches/n>0.05?"bad":""));
+  $("#k-slos").textContent=(100*(1-S.statBreaches/n)).toFixed(1)+"%";
+  $("#k-cost").textContent="$"+fmt(ra.cost); $("#k-costs").textContent="$"+fmt(rs.cost);
+  $("#k-rep").textContent=fmt(ra.replicas);
+  $("#k-clock").textContent=hhmm(t.minute);
+  $("#k-hot").textContent=(ra.incident?"⚠ incident · ":"")+"hottest "+ra.hottest+" "+(ra.per[ra.hottest]?(ra.per[ra.hottest].util*100).toFixed(0)+"%":"");
+  // banners
+  $("#banner-sale").classList.toggle("show", t.ev==="flash_sale");
+  $("#banner-zone").classList.toggle("show", t.ev==="az_failure"||ra.lost);
+  // topology
+  S.lastPer=ra.per; paintTopo(S.auto.genome, ra.per);
+  // feed: new ledger rows this tick
+  var rows=S.auto.ledger.filter(function(l){return l.tick===t.i;}).map(function(l){
+    return {minute:l.minute,agent:l.agent,accepted:l.accepted,rollback:l.action==="rollback",blocked:l.blocked,rationale:l.rationale,diff:l.diff}; });
+  if(rows.length)pushFeed(rows);
+  // gamedays
+  if(S.auto.chaosResults.length>S.gamedaysShown){ renderGamedays(); S.gamedaysShown=S.auto.chaosResults.length; }
+  drawChart();
+  S.idx++;
+}
+function renderGamedays(){
+  var box=$("#gamedays"); box.innerHTML="";
+  S.auto.chaosResults.forEach(function(g){ var d=document.createElement("span");
+    d.className="gd "+(g.survived?"pass":"fail");
+    d.textContent=hhmm(g.tick*5)+" "+(g.survived?"✓":"✕"); box.appendChild(d); });
+  if(!S.auto.chaosResults.length)box.innerHTML='<span style="color:var(--ink3);font-size:12px;padding:6px 0">none yet</span>';
+}
+function dayVerdict(){
+  var n=S.trace.length;
+  return "HELIX "+(100*(1-S.autoBreaches/n)).toFixed(1)+"% SLO @ $"+fmt(S.autoCost/12)+"/day · static "+(100*(1-S.statBreaches/n)).toFixed(1)+"% @ $"+fmt(S.statCost/12)+"/day";
+}
+function play(){ if(!S.trace||S.running)return; S.running=true; $("#run").textContent="❚❚ Pause";
+  setState("running — "+ (S.autonomyOn?"swarm operating live":"AUTONOMY OFF, running static"), true);
+  var feed=$("#feed"); if(feed.querySelector(".feedempty")||!feed.children.length)
+    feed.innerHTML='<div class="feedempty">'+(S.autonomyOn?"Watching for the first action…":"Autonomy is off — no agents are acting. Flip it on to see the swarm respond.")+'</div>';
+  schedule(); }
+function schedule(){ if(!S.running)return; tickOnce();
+  if(S.idx>=S.trace.length){ return; }
+  S.timer=setTimeout(schedule, 1000/S.speed); }
+function stop(){ S.running=false; if(S.timer)clearTimeout(S.timer); $("#run").textContent="▶ Run day"; }
+
+// ---------------------------------------------------------------- controls
+$("#rps").addEventListener("input",function(e){ S.base=+e.target.value; $("#rpsval").textContent=fmt(S.base)+" rps"; });
+$("#budget").addEventListener("input",function(e){ S.budget=+e.target.value; $("#budgetval").textContent="$"+S.budget+" / hr"; if(S.auto)S.auto.budget=S.budget; });
+$("#speed").addEventListener("input",function(e){ S.speed=+e.target.value; $("#speedval").textContent=S.speed+"×"; });
+$("#design").addEventListener("click",design);
+$("#run").addEventListener("click",function(){ if(S.running)stop(); else play(); });
+$("#reset").addEventListener("click",function(){ stop();
+  S.auto=new H.Orchestrator(S.designed,S.base,{budget:S.budget,swarmOn:S.autonomyOn,seed:23});
+  S.stat=new H.Orchestrator(S.designed,S.base,{swarmOn:false,seed:24});
+  resetSeries(); var e0=H.evaluate(S.designed,S.base,false); paintTopo(S.designed,e0.per); setKPIsAtRest(e0);
+  setState("reset — press Run",false); $("#feed").innerHTML='<div class="feedempty">Ready.</div>'; });
+$("#sale").addEventListener("click",function(){ injectWindow(15,function(k){return 1+3.4*Math.exp(-Math.pow(k-0.3,2)/0.05);},false,"flash_sale"); });
+$("#zone").addEventListener("click",function(){ injectWindow(9,function(){return 1.25;},true,"az_failure"); });
+function injectWindow(len,multFn,lost,ev){ if(!S.trace)return; var start=S.running?S.idx:Math.max(S.idx,0);
+  for(var k=0;k<len;k++){ var i=start+k; if(i>=S.trace.length)break; S.overrides[i]={mult:multFn(k/len),lost:lost,ev:ev}; }
+  if(!S.running)play();
+}
+$("#autonomy").addEventListener("click",function(){ S.autonomyOn=!S.autonomyOn;
+  this.setAttribute("aria-checked",String(S.autonomyOn));
+  $("#masterhint").textContent=S.autonomyOn?"Swarm is operating the system. Flip off to run it static and watch it break.":"AUTONOMY OFF — the fleet is frozen. Throw a spike and watch the SLO fall.";
+  if(S.auto)S.auto.swarmOn=S.autonomyOn;
+});
+$("#tt").addEventListener("click",function(){ var cur=document.documentElement.getAttribute("data-theme");
+  var sysDark=matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", cur?(cur==="dark"?"light":"dark"):(sysDark?"light":"dark"));
+  drawChart(); drawEvo(S.evoHist); if(S.designed)paintTopo((S.auto&&S.auto.genome)||S.designed, S.lastPer); });
+window.addEventListener("resize",function(){ drawChart(); drawEvo(S.evoHist);
+  if(S.designed)paintTopo((S.auto&&S.auto.genome)||S.designed, S.lastPer); });
+
+// ---------------------------------------------------------------- boot
+buildTopo();
+(function bootDesign(){ // auto-design on load so the console opens in a working state
+  design();
+})();
+
+</script>
+</body>
+</html>

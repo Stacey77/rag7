@@ -1,0 +1,3538 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Concentus Console: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Concentus Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+/* ── Tokens ─────────────────────────────────────────────────────────
+   Light = the printed programme. Dark = the hall.
+   Dark-first design; light is fully specified, never inverted. */
+:root {
+  --ground:      #F6F2E9;
+  --panel:       #FFFDF8;
+  --panel-2:     #EEE9DE;
+  --panel-3:     #E4DED1;
+  --line:        rgba(122, 94, 44, .20);
+  --line-strong: rgba(122, 94, 44, .40);
+  --ink:         #1C1917;
+  --ink-2:       #6B635A;
+  --ink-3:       #9A9187;
+  --gilt:        #8A6A2E;
+  --gilt-bright: #6E521F;
+  --gilt-wash:   rgba(138, 106, 46, .10);
+  --ok:          #3F7D68;
+  --warn:        #A96116;
+  --crit:        #A03C33;
+  --ok-wash:     rgba(63, 125, 104, .13);
+  --warn-wash:   rgba(169, 97, 22, .13);
+  --crit-wash:   rgba(160, 60, 51, .13);
+  --shadow:      0 1px 0 rgba(122, 94, 44, .08);
+
+  --rail: 216px;
+  --gap: 28px;
+  --pad: 40px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:      #121016;
+    --panel:       #191520;
+    --panel-2:     #1F1A27;
+    --panel-3:     #272132;
+    --line:        rgba(200, 164, 101, .16);
+    --line-strong: rgba(200, 164, 101, .34);
+    --ink:         #F0E9DC;
+    --ink-2:       #A79E93;
+    --ink-3:       #726A64;
+    --gilt:        #C8A465;
+    --gilt-bright: #E9D2A4;
+    --gilt-wash:   rgba(200, 164, 101, .09);
+    --ok:          #5FA08C;
+    --warn:        #E08B3C;
+    --crit:        #C2534A;
+    --ok-wash:     rgba(95, 160, 140, .14);
+    --warn-wash:   rgba(224, 139, 60, .14);
+    --crit-wash:   rgba(194, 83, 74, .14);
+    --shadow:      0 1px 0 rgba(0, 0, 0, .4);
+  }
+}
+
+:root[data-theme="dark"] {
+  --ground:      #121016;
+  --panel:       #191520;
+  --panel-2:     #1F1A27;
+  --panel-3:     #272132;
+  --line:        rgba(200, 164, 101, .16);
+  --line-strong: rgba(200, 164, 101, .34);
+  --ink:         #F0E9DC;
+  --ink-2:       #A79E93;
+  --ink-3:       #726A64;
+  --gilt:        #C8A465;
+  --gilt-bright: #E9D2A4;
+  --gilt-wash:   rgba(200, 164, 101, .09);
+  --ok:          #5FA08C;
+  --warn:        #E08B3C;
+  --crit:        #C2534A;
+  --ok-wash:     rgba(95, 160, 140, .14);
+  --warn-wash:   rgba(224, 139, 60, .14);
+  --crit-wash:   rgba(194, 83, 74, .14);
+  --shadow:      0 1px 0 rgba(0, 0, 0, .4);
+}
+
+/* ── Base ───────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+::selection { background: var(--gilt); color: var(--ground); }
+
+:focus-visible {
+  outline: 1px solid var(--gilt);
+  outline-offset: 3px;
+}
+
+h1, h2, h3, h4 { margin: 0; font-weight: 400; text-wrap: balance; }
+
+.serif {
+  font-family: "Bodoni Moda", "Didot", "Bodoni MT", Georgia, serif;
+  font-optical-sizing: auto;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* small-caps utility label */
+.label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ── Shell ──────────────────────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* ── Rail ───────────────────────────────────────────────────────── */
+.rail {
+  border-right: 1px solid var(--line);
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.mark {
+  padding: 28px 24px 22px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mark-name {
+  font-family: "Bodoni Moda", Didot, Georgia, serif;
+  font-size: 23px;
+  letter-spacing: .10em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.mark-rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--gilt), transparent);
+  margin: 4px 0 2px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  flex: 1;
+}
+
+.nav-btn {
+  appearance: none;
+  border: 0;
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: var(--ink-2);
+  padding: 13px 24px 13px 23px;
+  border-left: 1px solid transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+}
+
+.nav-btn:hover { color: var(--ink); background: var(--gilt-wash); }
+
+.nav-btn[aria-selected="true"] {
+  color: var(--ink);
+  border-left-color: var(--gilt);
+  background: var(--gilt-wash);
+}
+
+.nav-btn strong { font-weight: 600; font-size: 13.5px; letter-spacing: .01em; }
+.nav-btn span { font-size: 10.5px; color: var(--ink-3); letter-spacing: .04em; }
+.nav-btn[aria-selected="true"] span { color: var(--gilt); }
+
+.rail-foot {
+  border-top: 1px solid var(--line);
+  padding: 16px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.theme-toggle {
+  appearance: none;
+  background: none;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: color .18s, border-color .18s;
+}
+.theme-toggle:hover { color: var(--gilt); border-color: var(--gilt); }
+
+/* ── Masthead ───────────────────────────────────────────────────── */
+.stage { min-width: 0; display: flex; flex-direction: column; }
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px var(--pad);
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+  flex-wrap: wrap;
+}
+
+.mast-left { display: flex; align-items: baseline; gap: 16px; min-width: 0; }
+.mast-title { font-size: 22px; letter-spacing: .01em; }
+.mast-sub { color: var(--ink-3); font-size: 12px; }
+
+.mast-right { display: flex; align-items: center; gap: 26px; }
+
+.readout { display: flex; flex-direction: column; gap: 3px; text-align: right; }
+.readout-val {
+  font-family: "Bodoni Moda", Didot, Georgia, serif;
+  font-size: 21px;
+  line-height: 1;
+  color: var(--ink);
+}
+.readout-val .unit { font-family: "Archivo", sans-serif; font-size: 10px; color: var(--ink-3); letter-spacing: .1em; margin-left: 3px; }
+
+.pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 0 var(--ok);
+  animation: pulse 2.4s ease-out infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 var(--ok-wash); }
+  70%  { box-shadow: 0 0 0 9px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  padding: 5px 10px;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.chip-demo { color: var(--warn); border-color: var(--warn); background: var(--warn-wash); }
+
+/* ── Panels ─────────────────────────────────────────────────────── */
+.panel { padding: 34px var(--pad) 64px; display: none; }
+.panel.is-active { display: block; animation: rise .34s cubic-bezier(.2,.7,.3,1); }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.section { margin-top: 40px; }
+.section:first-child { margin-top: 0; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--line-strong);
+  margin-bottom: 20px;
+}
+.section-head h3 { font-size: 15px; font-weight: 600; letter-spacing: .01em; }
+.section-note { font-size: 11.5px; color: var(--ink-3); }
+
+/* ── Stat band ──────────────────────────────────────────────────── */
+.band {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.stat {
+  padding: 20px 22px 18px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+.stat:last-child { border-right: 0; }
+
+.stat-fig {
+  font-family: "Bodoni Moda", Didot, Georgia, serif;
+  font-size: 38px;
+  line-height: .92;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+.stat-fig .unit {
+  font-family: "Archivo", sans-serif;
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: .06em;
+  margin-left: 4px;
+}
+.stat-delta { font-size: 11px; color: var(--ink-3); }
+.stat-delta.up { color: var(--ok); }
+.stat-delta.down { color: var(--crit); }
+
+/* ── Data table ─────────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); background: var(--panel); }
+
+table { width: 100%; border-collapse: collapse; min-width: 620px; }
+
+thead th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--panel-2);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+  color: var(--ink-2);
+}
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr { transition: background-color .16s ease; }
+tbody tr:hover { background: var(--gilt-wash); }
+td.primary { color: var(--ink); font-weight: 500; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* severity stripe on first cell */
+td.stripe { position: relative; padding-left: 22px; }
+td.stripe::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--ink-3);
+}
+tr[data-sev="ok"]   td.stripe::before { background: var(--ok); }
+tr[data-sev="warn"] td.stripe::before { background: var(--warn); }
+tr[data-sev="crit"] td.stripe::before { background: var(--crit); }
+tr[data-sev="idle"] td.stripe::before { background: var(--ink-3); }
+
+/* ── Status pill ────────────────────────────────────────────────── */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase;
+  padding: 3px 9px 3px 7px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+.pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.pill.ok   { color: var(--ok);   background: var(--ok-wash); }
+.pill.warn { color: var(--warn); background: var(--warn-wash); }
+.pill.crit { color: var(--crit); background: var(--crit-wash); }
+.pill.idle { color: var(--ink-3); background: transparent; }
+
+/* ── Meter ──────────────────────────────────────────────────────── */
+.meter { display: flex; align-items: center; gap: 10px; min-width: 132px; }
+.meter-track { flex: 1; height: 3px; background: var(--panel-3); position: relative; overflow: hidden; }
+.meter-fill { position: absolute; inset: 0 auto 0 0; background: var(--gilt); }
+.meter-fill.ok { background: var(--ok); }
+.meter-fill.warn { background: var(--warn); }
+.meter-fill.crit { background: var(--crit); }
+.meter-val { font-size: 11px; color: var(--ink-2); min-width: 34px; text-align: right; }
+
+/* ── Card grid ──────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.tile {
+  background: var(--panel);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  cursor: pointer;
+  transition: background-color .2s ease;
+  position: relative;
+  min-width: 0;
+}
+.tile:hover { background: var(--panel-2); }
+.tile[aria-pressed="true"] { background: var(--panel-2); }
+.tile[aria-pressed="true"]::after {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--gilt);
+}
+.tile { appearance: none; border: 0; font: inherit; color: inherit; text-align: left; }
+
+.tile-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.tile-name { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: .005em; }
+.tile-kicker { font-size: 11px; color: var(--ink-3); margin-top: 3px; letter-spacing: .03em; }
+
+.tile-figs { display: flex; gap: 26px; }
+.tile-fig { display: flex; flex-direction: column; gap: 3px; }
+.tile-fig b {
+  font-family: "Bodoni Moda", Didot, Georgia, serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.spark { display: block; width: 100%; height: 34px; }
+
+/* ── Trace waterfall ────────────────────────────────────────────── */
+.traces { border: 1px solid var(--line); background: var(--panel); }
+.trace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(150px, 2fr) 74px 92px;
+  gap: 18px;
+  align-items: center;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.trace:last-child { border-bottom: 0; }
+.trace-name { min-width: 0; }
+.trace-name b { display: block; font-weight: 500; font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trace-name span { font-size: 10.5px; color: var(--ink-3); letter-spacing: .06em; }
+
+.waterfall { display: flex; flex-direction: column; gap: 3px; }
+.wf-bar { height: 4px; background: var(--gilt); opacity: .85; }
+.wf-bar.ok { background: var(--ok); }
+.wf-bar.crit { background: var(--crit); }
+
+/* ── Chart frame ────────────────────────────────────────────────── */
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--gap); }
+.frame { border: 1px solid var(--line); background: var(--panel); padding: 20px 22px 16px; }
+.frame-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+.frame-head h4 { font-size: 13px; font-weight: 600; }
+.chart { display: block; width: 100%; height: 168px; }
+
+/* ── Percentile bars ────────────────────────────────────────────── */
+.pcts { display: flex; flex-direction: column; gap: 13px; }
+.pct { display: grid; grid-template-columns: 42px minmax(0, 1fr) 66px; gap: 14px; align-items: center; }
+.pct-k { font-size: 11px; font-weight: 600; letter-spacing: .1em; color: var(--ink-3); }
+.pct-track { height: 6px; background: var(--panel-3); position: relative; }
+.pct-fill { position: absolute; inset: 0 auto 0 0; background: var(--gilt); }
+.pct-fill.warn { background: var(--warn); }
+.pct-v { font-size: 12.5px; text-align: right; color: var(--ink); }
+
+/* ── Form ───────────────────────────────────────────────────────── */
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field input, .field select {
+  appearance: none;
+  background: var(--ground);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 0;
+}
+.field input:focus, .field select:focus { border-color: var(--gilt); outline: none; }
+
+.actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+
+.btn {
+  appearance: none;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  border: 1px solid var(--gilt);
+  background: transparent;
+  color: var(--gilt);
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease;
+}
+.btn:hover { background: var(--gilt); color: var(--ground); }
+.btn-quiet { border-color: var(--line-strong); color: var(--ink-2); }
+.btn-quiet:hover { background: var(--panel-2); color: var(--ink); border-color: var(--ink-3); }
+
+.log {
+  margin-top: 22px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 16px 20px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  max-height: 172px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.log-line { display: flex; gap: 14px; }
+.log-line time { color: var(--ink-3); flex: none; }
+.log-line em { font-style: normal; color: var(--gilt); }
+
+/* ── Stream ─────────────────────────────────────────────────────── */
+.stream { border: 1px solid var(--line); background: var(--panel); }
+.stream-row {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr) auto auto;
+  gap: 18px;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+}
+.stream-row:last-child { border-bottom: 0; }
+.stream-src { font-weight: 600; color: var(--ink); font-size: 12px; }
+.stream-evt { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stream-t { color: var(--ink-3); font-size: 11.5px; white-space: nowrap; }
+
+.hint { margin-top: 14px; font-size: 11.5px; color: var(--ink-3); }
+
+
+/* ── Swarm ──────────────────────────────────────────────────────── */
+.lineage { display: block; width: 100%; height: 236px; }
+
+.legend {
+  display: flex; flex-wrap: wrap; gap: 20px; align-items: center;
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
+}
+.legend-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+}
+.legend-note { text-transform: none; letter-spacing: .02em; font-style: italic; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.dot-live  { background: var(--gilt); }
+.dot-elite { background: var(--ok); box-shadow: 0 0 0 2px var(--ok-wash); }
+.dot-healed{ background: var(--warn); }
+.dot-dead  { background: var(--ink-3); opacity: .45; }
+
+.objbars { display: flex; flex-direction: column; gap: 3px; min-width: 200px; }
+.objbar { display: grid; grid-template-columns: 54px minmax(0,1fr); gap: 8px; align-items: center; }
+.objbar span { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.objbar i { display: block; height: 3px; background: var(--panel-3); position: relative; }
+.objbar i::after {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w, 0%); background: var(--gilt);
+}
+.objbar.low i::after { background: var(--crit); }
+.objbar.mid i::after { background: var(--warn); }
+
+.chip-live { color: var(--ok); border-color: var(--ok); background: var(--ok-wash); }
+
+.genome-id { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink); }
+.genome-sum { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+/* ── Orchestrator ───────────────────────────────────────────────── */
+.coach {
+  display: flex; gap: 16px; align-items: flex-start;
+  border: 1px solid var(--gilt); border-left-width: 3px;
+  background: var(--gilt-wash);
+  padding: 18px 22px; margin-bottom: var(--gap);
+}
+.coach-mark {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid var(--gilt); color: var(--gilt);
+  display: grid; place-items: center;
+  font-family: "Bodoni Moda", Didot, Georgia, serif; font-size: 15px;
+}
+.coach-body { min-width: 0; }
+.coach-body strong { display: block; font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.coach-body p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--ink-2); max-width: 78ch; }
+
+.stage-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr); gap: var(--gap); align-items: start; }
+.orch-frame { display: flex; flex-direction: column; }
+.orch-svg { display: block; width: 100%; height: auto; max-height: 430px; }
+.orch-node { cursor: pointer; }
+.orch-node:hover circle { filter: brightness(1.25); }
+.orch-node:focus-visible { outline: none; }
+.orch-node:focus-visible circle { stroke-width: 3; }
+
+.inspector { align-self: start; position: sticky; top: 20px; }
+.insp-empty { font-size: 13px; color: var(--ink-3); margin: 0; }
+.insp-lede { font-size: 13px; line-height: 1.6; color: var(--ink); margin: 0 0 16px; }
+.insp-rows { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.insp-row {
+  display: flex; justify-content: space-between; gap: 14px; align-items: baseline;
+  background: var(--panel); padding: 7px 11px; font-size: 12px;
+}
+.insp-row span { color: var(--ink-3); }
+.insp-row b { color: var(--ink); font-weight: 500; font-family: "IBM Plex Mono", monospace; font-size: 11.5px; }
+.insp-genome { margin-top: 16px; display: flex; flex-direction: column; gap: 1px; }
+.insp-genome .label { margin-bottom: 7px; }
+.insp-genome .insp-row { border: 1px solid var(--line); }
+.insp-note {
+  margin: 16px 0 0; font-size: 12px; line-height: 1.65; color: var(--ink-2);
+  border-top: 1px solid var(--line); padding-top: 14px;
+}
+.insp-note b { color: var(--ink); }
+
+.controls { display: flex; flex-wrap: wrap; gap: 12px; }
+.ctl {
+  appearance: none; font: inherit; text-align: left; cursor: pointer;
+  border: 1px solid var(--gilt); background: transparent; color: var(--gilt);
+  padding: 12px 18px; display: flex; flex-direction: column; gap: 2px;
+  transition: background-color .2s ease, color .2s ease;
+}
+.ctl b { font-size: 12.5px; font-weight: 600; letter-spacing: .04em; }
+.ctl span { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; opacity: .72; }
+.ctl:hover { background: var(--gilt); color: var(--ground); }
+.ctl-quiet { border-color: var(--line-strong); color: var(--ink-2); }
+.ctl-quiet:hover { background: var(--panel-2); color: var(--ink); border-color: var(--ink-3); }
+
+.narration { border: 1px solid var(--line); background: var(--panel); max-height: 320px; overflow-y: auto; }
+.narr-row {
+  display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px;
+  padding: 11px 18px; border-bottom: 1px solid var(--line); font-size: 12.5px; line-height: 1.6;
+  border-left: 2px solid transparent;
+}
+.narr-row:last-child { border-bottom: 0; }
+.narr-tag { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding-top: 2px; }
+.narr-text { color: var(--ink-2); }
+.narr-text b { color: var(--ink); font-weight: 600; }
+.narr-ok   { border-left-color: var(--ok); }
+.narr-ok   .narr-tag { color: var(--ok); }
+.narr-warn { border-left-color: var(--warn); }
+.narr-warn .narr-tag { color: var(--warn); }
+.narr-crit { border-left-color: var(--crit); }
+.narr-crit .narr-tag { color: var(--crit); }
+
+@media (max-width: 1040px) {
+  .stage-grid { grid-template-columns: 1fr; }
+  .inspector { position: static; }
+}
+
+/* ── Floating guide ─────────────────────────────────────────────── */
+.guide { position: fixed; right: 22px; bottom: 22px; z-index: 90; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+
+.guide-fab {
+  appearance: none; width: 50px; height: 50px; border-radius: 50%;
+  border: 1px solid var(--gilt); background: var(--panel); color: var(--gilt);
+  cursor: pointer; display: grid; place-items: center;
+  font-family: "Bodoni Moda", Didot, Georgia, serif; font-size: 21px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.28);
+  transition: transform .2s ease, background-color .2s ease, color .2s ease;
+}
+.guide-fab:hover { transform: translateY(-2px); background: var(--gilt); color: var(--ground); }
+.guide.is-open .guide-fab { display: none; }
+
+.guide-panel {
+  display: none; width: 372px; max-width: calc(100vw - 44px);
+  background: var(--panel); border: 1px solid var(--line-strong);
+  box-shadow: 0 14px 44px rgba(0,0,0,.34);
+  flex-direction: column; overflow: hidden;
+}
+.guide.is-open .guide-panel { display: flex; }
+
+.guide-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px; border-bottom: 1px solid var(--line); background: var(--panel-2);
+}
+.guide-id { display: flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+.guide-id i { width: 7px; height: 7px; border-radius: 50%; background: var(--gilt); }
+.guide-min {
+  appearance: none; background: none; border: 1px solid var(--line-strong); color: var(--ink-3);
+  width: 24px; height: 24px; cursor: pointer; font-size: 15px; line-height: 1; display: grid; place-items: center;
+}
+.guide-min:hover { color: var(--ink); border-color: var(--ink-3); }
+
+.guide-tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); }
+.guide-tab {
+  appearance: none; background: none; border: 0; border-bottom: 2px solid transparent;
+  font: inherit; font-size: 11px; letter-spacing: .05em; color: var(--ink-3);
+  padding: 11px 6px; cursor: pointer; transition: color .18s ease, border-color .18s ease;
+}
+.guide-tab:hover { color: var(--ink-2); }
+.guide-tab.is-on { color: var(--gilt); border-bottom-color: var(--gilt); }
+.guide-tab { position: relative; }
+.guide-tab.has-new::after {
+  content: ""; position: absolute; top: 7px; right: 9px;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--gilt);
+}
+
+.guide-body { padding: 18px 18px 6px; max-height: 46vh; overflow-y: auto; }
+.guide-body h4 { font-size: 14.5px; font-weight: 600; color: var(--ink); margin: 0 0 8px; }
+.guide-body p { margin: 0 0 11px; font-size: 12.5px; line-height: 1.62; color: var(--ink-2); }
+.guide-body p b, .guide-body li b { color: var(--ink); }
+.guide-dim { color: var(--ink-3) !important; font-style: italic; }
+.guide-step { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gilt); margin-bottom: 7px; }
+
+.guide-list, .guide-advice { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.guide-item {
+  appearance: none; width: 100%; text-align: left; font: inherit; cursor: pointer;
+  background: var(--panel-2); border: 1px solid var(--line); padding: 11px 13px;
+  display: flex; flex-direction: column; gap: 4px; transition: border-color .18s ease, background-color .18s ease;
+}
+.guide-item[data-inert] { cursor: default; }
+.guide-item:not([data-inert]):hover { border-color: var(--gilt); background: var(--gilt-wash); }
+.guide-item b { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.guide-item span { font-size: 11.5px; line-height: 1.55; color: var(--ink-3); }
+.guide-item i { font-style: normal; font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--gilt); margin-top: 3px; }
+
+.guide-advice li {
+  border-left: 2px solid var(--gilt); padding: 2px 0 2px 12px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.guide-advice li.adv { padding: 10px 0 12px 12px; border-bottom: 1px solid var(--line); }
+.guide-advice li.adv:last-child { border-bottom: 0; }
+.adv-warn { border-left-color: var(--warn); }
+.adv-crit { border-left-color: var(--crit); }
+.adv-info { border-left-color: var(--ink-3); }
+.adv-plan {
+  margin-top: 7px; font-size: 11px; line-height: 1.55; color: var(--ink-3);
+  background: var(--panel-2); border: 1px solid var(--line); padding: 7px 9px;
+}
+.adv-plan i { font-style: normal; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-size: 9.5px; color: var(--gilt); margin-right: 6px; }
+.adv-plan em { font-style: normal; color: var(--crit); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; }
+.adv-fix {
+  appearance: none; margin-top: 8px; align-self: flex-start; font: inherit; cursor: pointer;
+  font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  border: 1px solid var(--gilt); background: transparent; color: var(--gilt); padding: 6px 12px;
+  transition: background-color .2s ease, color .2s ease;
+}
+.adv-fix:hover:not([disabled]) { background: var(--gilt); color: var(--ground); }
+.adv-fix[disabled] { border-color: var(--line-strong); color: var(--ink-3); cursor: default; }
+.guide-advice b { font-size: 12.5px; color: var(--ink); }
+.guide-advice span { font-size: 11.5px; line-height: 1.6; color: var(--ink-2); }
+
+.guide-foot { display: flex; gap: 8px; padding: 14px 18px 16px; border-top: 1px solid var(--line); }
+.guide-btn {
+  appearance: none; font: inherit; font-size: 10.5px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; cursor: pointer;
+  border: 1px solid var(--gilt); background: transparent; color: var(--gilt);
+  padding: 9px 13px; flex: 1; transition: background-color .2s ease, color .2s ease;
+}
+.guide-btn:hover:not([disabled]) { background: var(--gilt); color: var(--ground); }
+.guide-btn[disabled] { opacity: .38; cursor: default; }
+.guide-btn-quiet { border-color: var(--line-strong); color: var(--ink-3); flex: 0 0 auto; }
+.guide-btn-quiet:hover:not([disabled]) { background: var(--panel-2); color: var(--ink); border-color: var(--ink-3); }
+
+.guide-spot {
+  outline: 2px solid var(--gilt) !important;
+  outline-offset: 4px;
+  animation: guidePulse 1.9s ease-in-out infinite;
+}
+@keyframes guidePulse {
+  0%, 100% { outline-color: var(--gilt); }
+  50%      { outline-color: transparent; }
+}
+
+@media (max-width: 640px) {
+  .guide { right: 12px; left: 12px; bottom: 12px; align-items: stretch; }
+  .guide-panel { width: auto; }
+  .guide-fab { align-self: flex-end; }
+  .guide-body { max-height: 40vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+
+@media (max-width: 900px) {
+  :root { --pad: 22px; --rail: 100%; }
+  .shell { grid-template-columns: 1fr; }
+  .rail { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .nav { flex-direction: row; overflow-x: auto; }
+  .nav-btn { border-left: 0; border-bottom: 1px solid transparent; padding: 12px 16px; white-space: nowrap; }
+  .nav-btn[aria-selected="true"] { border-left-color: transparent; border-bottom-color: var(--gilt); }
+  .trace { grid-template-columns: minmax(0, 1fr) 70px; }
+  .trace .waterfall { display: none; }
+}
+</style>
+
+<div class="shell">
+  <!-- ── Rail ──────────────────────────────────────────────────── -->
+  <aside class="rail">
+    <div class="mark">
+      <div class="mark-name">CONCENTUS</div>
+      <div class="mark-rule"></div>
+      <div class="label">Orchestration Console</div>
+    </div>
+
+    <nav class="nav" role="tablist" aria-label="Console sections">
+      <button class="nav-btn" role="tab" aria-selected="true" data-panel="orchestrator">
+        <strong>Orchestrator</strong><span>Live · click to learn</span>
+      </button>
+      <button class="nav-btn" role="tab" aria-selected="false" data-panel="workflows">
+        <strong>Workflows</strong><span>4 defined · 3 running</span>
+      </button>
+      <button class="nav-btn" role="tab" aria-selected="false" data-panel="agents">
+        <strong>Agents</strong><span>6 in pool · 1 offline</span>
+      </button>
+      <button class="nav-btn" role="tab" aria-selected="false" data-panel="integrations">
+        <strong>Integrations</strong><span>6 connected</span>
+      </button>
+      <button class="nav-btn" role="tab" aria-selected="false" data-panel="telemetry">
+        <strong>Telemetry</strong><span>Traces &amp; cache</span>
+      </button>
+      <button class="nav-btn" role="tab" aria-selected="false" data-panel="swarm">
+        <strong>Swarm</strong><span>Evolving agent pool</span>
+      </button>
+      <button class="nav-btn" role="tab" aria-selected="false" data-panel="simulation">
+        <strong>Simulation</strong><span>Load &amp; synthetic</span>
+      </button>
+    </nav>
+
+    <div class="rail-foot">
+      <button class="theme-toggle" id="themeBtn">Switch theme</button>
+      <div class="label" style="line-height:1.6">Build 0.9.4<br>node&nbsp;us-east-1</div>
+    </div>
+  </aside>
+
+  <!-- ── Stage ─────────────────────────────────────────────────── -->
+  <main class="stage">
+    <header class="masthead">
+      <div class="mast-left">
+        <h1 class="mast-title serif" id="mastTitle">Orchestrator</h1>
+        <span class="mast-sub" id="mastSub">A live population you can click, break, and breed</span>
+      </div>
+      <div class="mast-right">
+        <span class="chip chip-demo" id="dataChip">Representative data</span>
+        <div class="readout">
+          <span class="label">Throughput</span>
+          <span class="readout-val" id="tput">4,231<span class="unit">OPS/S</span></span>
+        </div>
+        <div class="readout">
+          <span class="label">Platform</span>
+          <span class="readout-val" style="display:flex;align-items:center;gap:9px;justify-content:flex-end;font-size:14px;">
+            <span class="pulse"></span>Healthy
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══ ORCHESTRATOR ══════════════════════════════════════════ -->
+    <section class="panel is-active" id="panel-orchestrator" role="tabpanel">
+
+      <div class="coach" id="coach">
+        <div class="coach-mark">?</div>
+        <div class="coach-body">
+          <strong id="coach-title">This is the orchestrator.</strong>
+          <p id="coach-text">The centre node hands work to the ring of subagents around it. Click any node — or any button below — and this bubble tells you what it is and what it does. Nothing here is a mock-up: the population really dispatches, fails, heals, and breeds as you watch.</p>
+        </div>
+      </div>
+
+      <div class="stage-grid">
+        <div class="frame orch-frame">
+          <div class="frame-head">
+            <h4>Live population</h4>
+            <span class="label" id="orch-clock">idle</span>
+          </div>
+          <svg class="orch-svg" id="orchSvg" viewBox="0 0 620 430" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Orchestrator and its subagents"></svg>
+          <div class="legend">
+            <span class="legend-item"><i class="dot dot-live"></i>Healthy</span>
+            <span class="legend-item"><i class="dot dot-healed"></i>Degraded</span>
+            <span class="legend-item"><i class="dot dot-dead"></i>Quarantined</span>
+            <span class="legend-item legend-note">Ring size is how much work it has done</span>
+          </div>
+        </div>
+
+        <aside class="frame inspector" id="inspector">
+          <div class="frame-head"><h4 id="insp-title">Nothing selected</h4></div>
+          <div id="insp-body">
+            <p class="insp-empty">Click the conductor in the middle, or any subagent around it.</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Controls</h3>
+          <span class="section-note">Hover a button to see what it will do before you press it</span>
+        </div>
+        <div class="controls">
+          <button class="ctl" id="ctl-run"
+            data-what="Send work"
+            data-does="Submits 25 tasks. Watch them travel out to the subagents and come back — green pulses succeeded, red ones failed. Whoever has the fewest samples gets fed first, because a genome you haven't measured can't be judged.">
+            <b>Send 25 tasks</b><span>watch dispatch</span>
+          </button>
+
+          <button class="ctl" id="ctl-break"
+            data-what="Break an agent"
+            data-does="Sabotages the busiest subagent so every call it makes crashes. This is how you see self-healing: it will fail, trip its circuit breaker, restart, fail again, and after three restarts the supervisor stops trying and quarantines it.">
+            <b>Break an agent</b><span>trigger self-healing</span>
+          </button>
+
+          <button class="ctl" id="ctl-load"
+            data-what="Flood the queue"
+            data-does="Dumps 60 tasks at once. Queue depth per agent crosses the threshold and the replication controller clones the fittest proven genome to add capacity — scaling up also spreads whatever configuration is currently winning.">
+            <b>Flood the queue</b><span>force replication</span>
+          </button>
+
+          <button class="ctl" id="ctl-evolve"
+            data-what="Run a generation"
+            data-does="Scores everyone, kills the weakest two, and breeds two replacements from tournament-selected parents with crossover and mutation. Newborns are exempt from culling until they have enough samples to judge fairly.">
+            <b>Run a generation</b><span>breed and cull</span>
+          </button>
+
+          <button class="ctl ctl-quiet" id="ctl-reset"
+            data-what="Start over"
+            data-does="Throws away this population and seeds eight fresh random genomes at generation zero. Everything you have watched evolve is discarded.">
+            <b>Reset</b><span>new founders</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>What just happened</h3>
+          <span class="section-note">Plain English, newest first</span>
+        </div>
+        <div class="narration" id="narration">
+          <div class="narr-row"><span class="narr-tag">Ready</span><span class="narr-text">Eight founding subagents are standing by. Press <b>Send 25 tasks</b> to start.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ WORKFLOWS ═════════════════════════════════════════════ -->
+    <section class="panel" id="panel-workflows" role="tabpanel">
+      <div class="band">
+        <div class="stat">
+          <span class="label">Executions today</span>
+          <span class="stat-fig">8,151</span>
+          <span class="stat-delta up">↑ 12.4% vs. yesterday</span>
+        </div>
+        <div class="stat">
+          <span class="label">Success rate</span>
+          <span class="stat-fig">98.7<span class="unit">%</span></span>
+          <span class="stat-delta up">106 failures, all retried</span>
+        </div>
+        <div class="stat">
+          <span class="label">Median duration</span>
+          <span class="stat-fig">2.31<span class="unit">S</span></span>
+          <span class="stat-delta down">↑ 0.18s since deploy</span>
+        </div>
+        <div class="stat">
+          <span class="label">In flight</span>
+          <span class="stat-fig">23</span>
+          <span class="stat-delta">peak 41 at 14:20</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>In flight</h3>
+          <span class="section-note">Streaming over the workflows channel · refreshed continuously</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Execution</th><th>Current step</th><th>Progress</th>
+                <th>Elapsed</th><th>Status</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-sev="ok">
+                <td class="stripe primary">Customer Onboarding <span class="mono" style="color:var(--ink-3)">#5847</span></td>
+                <td>Provision workspace</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill ok" style="width:65%"></div></div><span class="meter-val">65%</span></div></td>
+                <td class="num">1m 58s</td>
+                <td><span class="pill ok">Running</span></td>
+                <td><button class="btn btn-quiet" style="padding:6px 12px">Cancel</button></td>
+              </tr>
+              <tr data-sev="ok">
+                <td class="stripe primary">Order Processing <span class="mono" style="color:var(--ink-3)">#9234</span></td>
+                <td>Validate payment · Stripe</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill ok" style="width:30%"></div></div><span class="meter-val">30%</span></div></td>
+                <td class="num">45s</td>
+                <td><span class="pill ok">Running</span></td>
+                <td><button class="btn btn-quiet" style="padding:6px 12px">Cancel</button></td>
+              </tr>
+              <tr data-sev="warn">
+                <td class="stripe primary">Data Pipeline Sync <span class="mono" style="color:var(--ink-3)">#4012</span></td>
+                <td>Reconcile Salesforce records</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill warn" style="width:88%"></div></div><span class="meter-val">88%</span></div></td>
+                <td class="num">4m 12s</td>
+                <td><span class="pill warn">Retrying</span></td>
+                <td><button class="btn btn-quiet" style="padding:6px 12px">Cancel</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Definitions</h3>
+          <span class="section-note">Last 24 hours of run volume per workflow</span>
+        </div>
+        <div class="grid">
+          <button class="tile" aria-pressed="true">
+            <div class="tile-head">
+              <div><div class="tile-name">Customer Onboarding</div><div class="tile-kicker">Development track · 9 steps</div></div>
+              <span class="pill ok">Active</span>
+            </div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Runs</span><b>1,247</b></div>
+              <div class="tile-fig"><span class="label">Success</span><b>98.2%</b></div>
+              <div class="tile-fig"><span class="label">Median</span><b>2.3s</b></div>
+            </div>
+            <canvas class="spark" data-series="18,24,21,30,27,34,31,38,35,42,39,47,44,52,49,58" data-tone="gilt"></canvas>
+          </button>
+
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head">
+              <div><div class="tile-name">Order Processing</div><div class="tile-kicker">Business track · 12 steps</div></div>
+              <span class="pill ok">Active</span>
+            </div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Runs</span><b>3,892</b></div>
+              <div class="tile-fig"><span class="label">Success</span><b>99.7%</b></div>
+              <div class="tile-fig"><span class="label">Median</span><b>1.8s</b></div>
+            </div>
+            <canvas class="spark" data-series="62,58,71,68,84,79,92,88,103,97,112,108,121,115,128,134" data-tone="ok"></canvas>
+          </button>
+
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head">
+              <div><div class="tile-name">Content Generation</div><div class="tile-kicker">LangGraph · 6 nodes, 2 branches</div></div>
+              <span class="pill idle">Idle</span>
+            </div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Runs</span><b>2,156</b></div>
+              <div class="tile-fig"><span class="label">Success</span><b>96.8%</b></div>
+              <div class="tile-fig"><span class="label">Median</span><b>4.5s</b></div>
+            </div>
+            <canvas class="spark" data-series="44,51,38,62,47,55,41,68,52,39,58,46,61,43,50,37" data-tone="gilt"></canvas>
+          </button>
+
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head">
+              <div><div class="tile-name">Data Pipeline Sync</div><div class="tile-kicker">Multi-agent · 4 systems</div></div>
+              <span class="pill warn">Degraded</span>
+            </div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Runs</span><b>856</b></div>
+              <div class="tile-fig"><span class="label">Success</span><b>97.3%</b></div>
+              <div class="tile-fig"><span class="label">Median</span><b>5.2s</b></div>
+            </div>
+            <canvas class="spark" data-series="30,33,31,36,34,29,38,26,41,22,35,19,28,16,24,14" data-tone="warn"></canvas>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ AGENTS ════════════════════════════════════════════════ -->
+    <section class="panel" id="panel-agents" role="tabpanel">
+      <div class="band">
+        <div class="stat">
+          <span class="label">Agents online</span>
+          <span class="stat-fig">5<span class="unit">/ 6</span></span>
+          <span class="stat-delta down">HealthTech offline 12m</span>
+        </div>
+        <div class="stat">
+          <span class="label">Tasks completed</span>
+          <span class="stat-fig">10,192</span>
+          <span class="stat-delta up">↑ 8.1% this hour</span>
+        </div>
+        <div class="stat">
+          <span class="label">Queue depth</span>
+          <span class="stat-fig">17</span>
+          <span class="stat-delta">4 critical priority</span>
+        </div>
+        <div class="stat">
+          <span class="label">Mean task time</span>
+          <span class="stat-fig">3.14<span class="unit">S</span></span>
+          <span class="stat-delta up">↓ 0.4s after cache warm</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Ensemble</h3>
+          <span class="section-note">Load is the share of each agent's concurrency budget in use</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Agent</th><th>Capabilities</th><th>Load</th><th class="num">Tasks</th><th class="num">Success</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr data-sev="ok">
+                <td class="stripe primary">Development · 1</td>
+                <td>GitHub, Slack, Docker, Shell</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill ok" style="width:34%"></div></div><span class="meter-val">34%</span></div></td>
+                <td class="num">487</td><td class="num">98.2%</td>
+                <td><span class="pill ok">Online</span></td>
+              </tr>
+              <tr data-sev="ok">
+                <td class="stripe primary">Business · 1</td>
+                <td>Salesforce, Shopify, Stripe</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill ok" style="width:52%"></div></div><span class="meter-val">52%</span></div></td>
+                <td class="num">1,234</td><td class="num">99.7%</td>
+                <td><span class="pill ok">Online</span></td>
+              </tr>
+              <tr data-sev="warn">
+                <td class="stripe primary">Vertical · SaaS</td>
+                <td>Churn scoring, expansion, MRR</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill warn" style="width:78%"></div></div><span class="meter-val">78%</span></div></td>
+                <td class="num">2,156</td><td class="num">96.8%</td>
+                <td><span class="pill warn">Saturated</span></td>
+              </tr>
+              <tr data-sev="ok">
+                <td class="stripe primary">Vertical · E-commerce</td>
+                <td>Catalog, inventory, fulfilment</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill ok" style="width:62%"></div></div><span class="meter-val">62%</span></div></td>
+                <td class="num">3,892</td><td class="num">99.2%</td>
+                <td><span class="pill ok">Online</span></td>
+              </tr>
+              <tr data-sev="ok">
+                <td class="stripe primary">Vertical · Enterprise</td>
+                <td>HR, finance, compliance review</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill ok" style="width:41%"></div></div><span class="meter-val">41%</span></div></td>
+                <td class="num">1,567</td><td class="num">99.1%</td>
+                <td><span class="pill ok">Online</span></td>
+              </tr>
+              <tr data-sev="crit">
+                <td class="stripe primary">Vertical · HealthTech</td>
+                <td>Records, scheduling, claims</td>
+                <td><div class="meter"><div class="meter-track"><div class="meter-fill" style="width:0%"></div></div><span class="meter-val">—</span></div></td>
+                <td class="num">856</td><td class="num">98.9%</td>
+                <td><span class="pill crit">Offline</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Task queue</h3>
+          <span class="section-note">Ordered by priority, then submission time</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Task</th><th>Assigned to</th><th>Priority</th><th class="num">Duration</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr data-sev="crit">
+                <td class="stripe primary">Validate payment · order 56789</td>
+                <td>Business · 1</td>
+                <td><span class="pill crit">Critical</span></td>
+                <td class="num">1.2s</td>
+                <td><span class="pill ok">Running</span></td>
+              </tr>
+              <tr data-sev="warn">
+                <td class="stripe primary">Review PR 1234 · add cache layer</td>
+                <td>Development · 1</td>
+                <td><span class="pill warn">High</span></td>
+                <td class="num">3.2s</td>
+                <td><span class="pill ok">Done</span></td>
+              </tr>
+              <tr data-sev="idle">
+                <td class="stripe primary">Generate Q4 analytics report</td>
+                <td>Vertical · Enterprise</td>
+                <td><span class="pill idle">Normal</span></td>
+                <td class="num">5.8s</td>
+                <td><span class="pill ok">Done</span></td>
+              </tr>
+              <tr data-sev="crit">
+                <td class="stripe primary">Sync inventory · 500 SKUs</td>
+                <td>Vertical · E-commerce</td>
+                <td><span class="pill idle">Normal</span></td>
+                <td class="num">2.1s</td>
+                <td><span class="pill crit">Failed</span></td>
+              </tr>
+              <tr data-sev="idle">
+                <td class="stripe primary">Refresh churn scores · 2,400 accounts</td>
+                <td>Vertical · SaaS</td>
+                <td><span class="pill idle">Low</span></td>
+                <td class="num">—</td>
+                <td><span class="pill idle">Queued</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ INTEGRATIONS ══════════════════════════════════════════ -->
+    <section class="panel" id="panel-integrations" role="tabpanel">
+      <div class="band">
+        <div class="stat">
+          <span class="label">Connected</span>
+          <span class="stat-fig">6</span>
+          <span class="stat-delta">5 healthy · 1 degraded</span>
+        </div>
+        <div class="stat">
+          <span class="label">Events today</span>
+          <span class="stat-fig">15,256</span>
+          <span class="stat-delta up">↑ 3,100 vs. yesterday</span>
+        </div>
+        <div class="stat">
+          <span class="label">Delivery rate</span>
+          <span class="stat-fig">99.4<span class="unit">%</span></span>
+          <span class="stat-delta down">91 in dead-letter queue</span>
+        </div>
+        <div class="stat">
+          <span class="label">Mean latency</span>
+          <span class="stat-fig">148<span class="unit">MS</span></span>
+          <span class="stat-delta up">p95 at 340 ms</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Connections</h3>
+          <span class="section-note">Credentials held in the MCP vault · no plaintext keys stored</span>
+        </div>
+        <div class="grid">
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head"><div><div class="tile-name">GitHub</div><div class="tile-kicker">Repository events, checks, releases</div></div><span class="pill ok">Healthy</span></div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Events</span><b>842</b></div>
+              <div class="tile-fig"><span class="label">Delivered</span><b>99.1%</b></div>
+              <div class="tile-fig"><span class="label">Synced</span><b>2m</b></div>
+            </div>
+            <canvas class="spark" data-series="12,18,14,22,19,26,21,29,24,31,27,34,30,36,33,38" data-tone="ok"></canvas>
+          </button>
+
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head"><div><div class="tile-name">Slack</div><div class="tile-kicker">Notifications and slash commands</div></div><span class="pill ok">Healthy</span></div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Events</span><b>1,234</b></div>
+              <div class="tile-fig"><span class="label">Delivered</span><b>100%</b></div>
+              <div class="tile-fig"><span class="label">Synced</span><b>18s</b></div>
+            </div>
+            <canvas class="spark" data-series="40,44,41,49,46,53,50,57,54,61,58,64,61,68,65,71" data-tone="ok"></canvas>
+          </button>
+
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head"><div><div class="tile-name">Salesforce</div><div class="tile-kicker">Accounts, opportunities, activity</div></div><span class="pill warn">Degraded</span></div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Events</span><b>567</b></div>
+              <div class="tile-fig"><span class="label">Delivered</span><b>98.2%</b></div>
+              <div class="tile-fig"><span class="label">Synced</span><b>14m</b></div>
+            </div>
+            <canvas class="spark" data-series="34,31,36,28,33,25,30,21,27,18,24,15,21,12,18,10" data-tone="warn"></canvas>
+          </button>
+
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head"><div><div class="tile-name">Shopify</div><div class="tile-kicker">Orders, products, fulfilment</div></div><span class="pill ok">Healthy</span></div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Events</span><b>3,456</b></div>
+              <div class="tile-fig"><span class="label">Delivered</span><b>99.8%</b></div>
+              <div class="tile-fig"><span class="label">Synced</span><b>4s</b></div>
+            </div>
+            <canvas class="spark" data-series="88,94,90,101,97,108,104,115,110,121,117,127,123,132,128,138" data-tone="ok"></canvas>
+          </button>
+
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head"><div><div class="tile-name">Stripe</div><div class="tile-kicker">Payments, subscriptions, disputes</div></div><span class="pill ok">Healthy</span></div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Events</span><b>8,923</b></div>
+              <div class="tile-fig"><span class="label">Delivered</span><b>99.9%</b></div>
+              <div class="tile-fig"><span class="label">Synced</span><b>1s</b></div>
+            </div>
+            <canvas class="spark" data-series="140,152,147,164,158,176,170,188,182,196,190,204,199,212,206,218" data-tone="ok"></canvas>
+          </button>
+
+          <button class="tile" aria-pressed="false">
+            <div class="tile-head"><div><div class="tile-name">Internal MCP</div><div class="tile-kicker">Private tools over the MCP bridge</div></div><span class="pill idle">Idle</span></div>
+            <div class="tile-figs">
+              <div class="tile-fig"><span class="label">Events</span><b>234</b></div>
+              <div class="tile-fig"><span class="label">Delivered</span><b>95.1%</b></div>
+              <div class="tile-fig"><span class="label">Synced</span><b>41m</b></div>
+            </div>
+            <canvas class="spark" data-series="8,6,9,5,7,4,8,3,6,5,4,6,3,5,4,3" data-tone="gilt"></canvas>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Event stream</h3>
+          <span class="section-note">Most recent first · retained 30 days</span>
+        </div>
+        <div class="stream">
+          <div class="stream-row"><span class="stream-src">Stripe</span><span class="stream-evt mono">payment_intent.succeeded · cus_QK4h2</span><span class="stream-t">142 ms</span><span class="pill ok">Processed</span></div>
+          <div class="stream-row"><span class="stream-src">GitHub</span><span class="stream-evt mono">push · concentus/core · main</span><span class="stream-t">234 ms</span><span class="pill ok">Processed</span></div>
+          <div class="stream-row"><span class="stream-src">Shopify</span><span class="stream-evt mono">orders/create · #10442</span><span class="stream-t">89 ms</span><span class="pill ok">Processed</span></div>
+          <div class="stream-row"><span class="stream-src">Slack</span><span class="stream-evt mono">app_mention · #ops-alerts</span><span class="stream-t">156 ms</span><span class="pill ok">Processed</span></div>
+          <div class="stream-row"><span class="stream-src">Salesforce</span><span class="stream-evt mono">opportunity.updated · 0068d000 — timed out upstream</span><span class="stream-t">2,100 ms</span><span class="pill crit">Dead-lettered</span></div>
+          <div class="stream-row"><span class="stream-src">Stripe</span><span class="stream-evt mono">charge.dispute.created · dp_1Nx8</span><span class="stream-t">118 ms</span><span class="pill ok">Processed</span></div>
+          <div class="stream-row"><span class="stream-src">GitHub</span><span class="stream-evt mono">check_run.completed · ci/build</span><span class="stream-t">201 ms</span><span class="pill ok">Processed</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ TELEMETRY ═════════════════════════════════════════════ -->
+    <section class="panel" id="panel-telemetry" role="tabpanel">
+      <div class="band">
+        <div class="stat"><span class="label">CPU</span><span class="stat-fig">47<span class="unit">%</span></span><span class="stat-delta">4 cores · load 1.9</span></div>
+        <div class="stat"><span class="label">Memory</span><span class="stat-fig">62<span class="unit">%</span></span><span class="stat-delta">9.9 of 16 GB</span></div>
+        <div class="stat"><span class="label">Cache hit rate</span><span class="stat-fig">87.3<span class="unit">%</span></span><span class="stat-delta up">↑ 3.2 pts since tagging</span></div>
+        <div class="stat"><span class="label">Redis memory</span><span class="stat-fig">1.2<span class="unit">GB</span></span><span class="stat-delta">18,402 keys · 156 tags</span></div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>System</h3>
+          <span class="section-note">Rolling 24 hours, sampled every 10 minutes</span>
+        </div>
+        <div class="charts">
+          <div class="frame">
+            <div class="frame-head"><h4>Query latency</h4><span class="label">p50 · milliseconds</span></div>
+            <canvas class="chart" id="chartLatency"
+              data-series="45,49,52,48,44,47,51,55,62,58,54,51,49,53,58,64,61,57,52,48,46,49,47,45"
+              data-tone="gilt"></canvas>
+          </div>
+          <div class="frame">
+            <div class="frame-head"><h4>Throughput</h4><span class="label">operations per second</span></div>
+            <canvas class="chart" id="chartThroughput"
+              data-series="3200,3410,3620,3980,4110,3870,3640,4020,4480,5200,4930,4610,4380,4520,4870,5140,4760,4290,3980,3740,3520,3410,3380,3290"
+              data-tone="ok"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Traces</h3>
+          <span class="section-note">LangSmith spans · bar length is proportional to span duration</span>
+        </div>
+        <div class="traces">
+          <div class="trace">
+            <div class="trace-name"><b>Multi-agent workflow orchestration</b><span class="mono">trace_9e3c1d · 28 spans</span></div>
+            <div class="waterfall">
+              <div class="wf-bar ok" style="width:100%"></div>
+              <div class="wf-bar ok" style="width:64%;margin-left:6%"></div>
+              <div class="wf-bar ok" style="width:38%;margin-left:22%"></div>
+              <div class="wf-bar" style="width:19%;margin-left:58%"></div>
+            </div>
+            <div class="num mono" style="font-size:12.5px;color:var(--ink)">5,234 ms</div>
+            <div><span class="pill ok">Success</span></div>
+          </div>
+          <div class="trace">
+            <div class="trace-name"><b>Generate customer insight · Llama 3 70B</b><span class="mono">trace_5a2f8b · 12 spans</span></div>
+            <div class="waterfall">
+              <div class="wf-bar ok" style="width:100%"></div>
+              <div class="wf-bar ok" style="width:71%;margin-left:11%"></div>
+              <div class="wf-bar" style="width:24%;margin-left:52%"></div>
+            </div>
+            <div class="num mono" style="font-size:12.5px;color:var(--ink)">2,456 ms</div>
+            <div><span class="pill ok">Success</span></div>
+          </div>
+          <div class="trace">
+            <div class="trace-name"><b>Vector retrieval · Qdrant RAG</b><span class="mono">trace_3c8e5f · 8 spans</span></div>
+            <div class="waterfall">
+              <div class="wf-bar crit" style="width:100%"></div>
+              <div class="wf-bar crit" style="width:82%;margin-left:9%"></div>
+              <div class="wf-bar" style="width:15%;margin-left:71%"></div>
+            </div>
+            <div class="num mono" style="font-size:12.5px;color:var(--ink)">1,123 ms</div>
+            <div><span class="pill crit">Error</span></div>
+          </div>
+          <div class="trace">
+            <div class="trace-name"><b>Embed batch · Cohere v3</b><span class="mono">trace_7b4f2a · 3 spans</span></div>
+            <div class="waterfall">
+              <div class="wf-bar ok" style="width:100%"></div>
+              <div class="wf-bar ok" style="width:44%;margin-left:31%"></div>
+            </div>
+            <div class="num mono" style="font-size:12.5px;color:var(--ink)">834 ms</div>
+            <div><span class="pill ok">Success</span></div>
+          </div>
+          <div class="trace">
+            <div class="trace-name"><b>Validate workflow state · Zod</b><span class="mono">trace_6d2e9c · 5 spans</span></div>
+            <div class="waterfall">
+              <div class="wf-bar ok" style="width:100%"></div>
+              <div class="wf-bar ok" style="width:29%;margin-left:14%"></div>
+            </div>
+            <div class="num mono" style="font-size:12.5px;color:var(--ink)">234 ms</div>
+            <div><span class="pill ok">Success</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SIMULATION ════════════════════════════════════════════ -->
+    <section class="panel" id="panel-simulation" role="tabpanel">
+      <div class="section">
+        <div class="section-head">
+          <h3>Rehearsal</h3>
+          <span class="section-note">Drive real workflows with synthetic inputs before they meet production traffic</span>
+        </div>
+        <div class="frame">
+          <div class="fields">
+            <div class="field">
+              <label class="label" for="simTemplate">Workflow</label>
+              <select id="simTemplate">
+                <option>Customer Onboarding</option>
+                <option selected>Order Processing</option>
+                <option>Content Generation</option>
+                <option>Data Pipeline Sync</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="simCount">Executions</label>
+              <input id="simCount" type="number" value="1000" min="1" max="100000">
+            </div>
+            <div class="field">
+              <label class="label" for="simRps">Requests per second</label>
+              <input id="simRps" type="number" value="100" min="1" max="5000">
+            </div>
+            <div class="field">
+              <label class="label" for="simDur">Duration (seconds)</label>
+              <input id="simDur" type="number" value="60" min="5" max="3600">
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn" id="runBulk">Run batch</button>
+            <button class="btn btn-quiet" id="runLoad">Run load test</button>
+          </div>
+          <div class="log" id="simLog">
+            <div class="log-line"><time>—</time><span>No run started. Configure above and press <em>Run batch</em>.</span></div>
+          </div>
+          <p class="hint">Runs execute against the staging orchestrator. Synthetic records are tagged <span class="mono">source=simulation</span> and excluded from production analytics.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Last load test</h3>
+          <span class="section-note">Order Processing · 60 s at 100 rps · 6,000 requests</span>
+        </div>
+        <div class="charts">
+          <div class="frame">
+            <div class="frame-head"><h4>Latency distribution</h4><span class="label">seconds</span></div>
+            <div class="pcts">
+              <div class="pct"><span class="pct-k">p50</span><div class="pct-track"><div class="pct-fill" style="width:38%"></div></div><span class="pct-v">1.71 s</span></div>
+              <div class="pct"><span class="pct-k">p75</span><div class="pct-track"><div class="pct-fill" style="width:52%"></div></div><span class="pct-v">2.34 s</span></div>
+              <div class="pct"><span class="pct-k">p90</span><div class="pct-track"><div class="pct-fill" style="width:66%"></div></div><span class="pct-v">2.97 s</span></div>
+              <div class="pct"><span class="pct-k">p95</span><div class="pct-track"><div class="pct-fill" style="width:78%"></div></div><span class="pct-v">3.51 s</span></div>
+              <div class="pct"><span class="pct-k">p99</span><div class="pct-track"><div class="pct-fill warn" style="width:100%"></div></div><span class="pct-v">4.50 s</span></div>
+            </div>
+          </div>
+          <div class="frame">
+            <div class="frame-head"><h4>Sustained throughput</h4><span class="label">requests per second</span></div>
+            <canvas class="chart"
+              data-series="0,42,78,96,100,99,101,100,98,100,102,99,100,101,97,100,100,99,101,100,98,64,22,0"
+              data-tone="ok"></canvas>
+          </div>
+        </div>
+
+        <div class="band" style="margin-top:var(--gap)">
+          <div class="stat"><span class="label">Requests</span><span class="stat-fig">6,000</span><span class="stat-delta">100% dispatched</span></div>
+          <div class="stat"><span class="label">Succeeded</span><span class="stat-fig">5,988</span><span class="stat-delta up">99.8% success rate</span></div>
+          <div class="stat"><span class="label">Failed</span><span class="stat-fig">12</span><span class="stat-delta down">all upstream timeouts</span></div>
+          <div class="stat"><span class="label">Error budget</span><span class="stat-fig">83<span class="unit">%</span></span><span class="stat-delta">remaining this month</span></div>
+        </div>
+      </div>
+    </section>
+    <!-- ═══ SWARM ═════════════════════════════════════════════════ -->
+    <section class="panel" id="panel-swarm" role="tabpanel">
+      <div class="band">
+        <div class="stat">
+          <span class="label">Generation</span>
+          <span class="stat-fig" id="sw-gen">—</span>
+          <span class="stat-delta" id="sw-gen-sub">—</span>
+        </div>
+        <div class="stat">
+          <span class="label">Living population</span>
+          <span class="stat-fig" id="sw-alive">—</span>
+          <span class="stat-delta" id="sw-alive-sub">—</span>
+        </div>
+        <div class="stat">
+          <span class="label">Best fitness</span>
+          <span class="stat-fig" id="sw-best">—</span>
+          <span class="stat-delta up" id="sw-best-sub">—</span>
+        </div>
+        <div class="stat">
+          <span class="label">Diversity</span>
+          <span class="stat-fig" id="sw-div">—</span>
+          <span class="stat-delta" id="sw-div-sub">—</span>
+        </div>
+        <div class="stat">
+          <span class="label">Heals</span>
+          <span class="stat-fig" id="sw-heals">—</span>
+          <span class="stat-delta" id="sw-heals-sub">—</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Lineage</h3>
+          <span class="section-note">Each column is a generation. Lines run from parent to offspring; faded nodes were culled.</span>
+        </div>
+        <div class="frame">
+          <canvas class="lineage" id="lineageCanvas"></canvas>
+          <div class="legend">
+            <span class="legend-item"><i class="dot dot-live"></i>Living</span>
+            <span class="legend-item"><i class="dot dot-elite"></i>Pareto-optimal</span>
+            <span class="legend-item"><i class="dot dot-healed"></i>Healed at least once</span>
+            <span class="legend-item"><i class="dot dot-dead"></i>Culled</span>
+            <span class="legend-item legend-note">Node size is sample count</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Selection pressure</h3>
+          <span class="section-note">Fitness climbing while diversity falls is convergence; both falling is collapse</span>
+        </div>
+        <div class="charts">
+          <div class="frame">
+            <div class="frame-head"><h4>Fitness by generation</h4><span class="label">best vs. population mean</span></div>
+            <canvas class="chart" id="fitnessChart"></canvas>
+          </div>
+          <div class="frame">
+            <div class="frame-head"><h4>Genetic diversity</h4><span class="label">mean pairwise genome distance</span></div>
+            <canvas class="chart" id="diversityChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Leaderboard</h3>
+          <span class="section-note">Objectives are scored independently, then weighted — the scalar is not the whole story</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Genome</th><th>Gen</th><th class="num">Fitness</th>
+                <th style="min-width:220px">Objectives</th>
+                <th class="num">Samples</th><th>State</th>
+              </tr>
+            </thead>
+            <tbody id="sw-leaderboard"></tbody>
+          </table>
+        </div>
+        <p class="hint" id="sw-pareto-note"></p>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h3>Supervisor log</h3>
+          <span class="section-note">Restart → escalate → quarantine. A restart loop is worse than an absent agent.</span>
+        </div>
+        <div class="stream" id="sw-log"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ── Theme toggle ─────────────────────────────────────────────── */
+  function currentTheme() {
+    var stamped = root.getAttribute("data-theme");
+    if (stamped) return stamped;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  try {
+    var saved = localStorage.getItem("concentus-theme");
+    if (saved === "dark" || saved === "light") root.setAttribute("data-theme", saved);
+  } catch (e) { /* storage unavailable — system theme stands */ }
+
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var next = currentTheme() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("concentus-theme", next); } catch (e) {}
+    drawAll();
+  });
+
+  /* ── Section switching ────────────────────────────────────────── */
+  var COPY = {
+    orchestrator: ["Orchestrator", "A live population you can click, break, and breed"],
+    workflows:    ["Workflows",    "Definitions, live executions, and run history"],
+    agents:       ["Agents",       "Pool health, capabilities, and the task queue"],
+    integrations: ["Integrations", "Connected systems and the inbound event stream"],
+    telemetry:    ["Telemetry",    "System load, cache behaviour, and LangSmith traces"],
+    swarm:        ["Swarm",        "A self-healing, self-replicating population under selection"],
+    simulation:   ["Simulation",   "Synthetic runs and load tests against staging"]
+  };
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".nav-btn"));
+  var title = document.getElementById("mastTitle");
+  var sub = document.getElementById("mastSub");
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      var key = tab.getAttribute("data-panel");
+      tabs.forEach(function (t) { t.setAttribute("aria-selected", String(t === tab)); });
+      document.querySelectorAll(".panel").forEach(function (p) {
+        p.classList.toggle("is-active", p.id === "panel-" + key);
+      });
+      title.textContent = COPY[key][0];
+      updateChip(key);
+      sub.textContent = COPY[key][1];
+      window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+      drawAll();
+    });
+  });
+
+  /* ── Tile selection ───────────────────────────────────────────── */
+  document.querySelectorAll(".tile").forEach(function (tile) {
+    tile.addEventListener("click", function () {
+      var siblings = tile.parentElement.querySelectorAll(".tile");
+      siblings.forEach(function (t) { t.setAttribute("aria-pressed", String(t === tile)); });
+    });
+  });
+
+  /* ── Canvas drawing ───────────────────────────────────────────── */
+  function token(name) {
+    return getComputedStyle(root).getPropertyValue(name).trim();
+  }
+
+  function toneColor(tone) {
+    if (tone === "idle") return token("--ink-3");
+    if (tone === "ok") return token("--ok");
+    if (tone === "warn") return token("--warn");
+    if (tone === "crit") return token("--crit");
+    return token("--gilt");
+  }
+
+  function fit(canvas) {
+    var dpr = window.devicePixelRatio || 1;
+    var rect = canvas.getBoundingClientRect();
+    if (!rect.width) return null;
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, rect.width, rect.height);
+    return { ctx: ctx, w: rect.width, h: rect.height };
+  }
+
+  function hexToRgba(hex, alpha) {
+    var h = hex.replace("#", "");
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var n = parseInt(h, 16);
+    return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + alpha + ")";
+  }
+
+  function drawSpark(canvas) {
+    var f = fit(canvas);
+    if (!f) return;
+    var data = canvas.getAttribute("data-series").split(",").map(Number);
+    var color = toneColor(canvas.getAttribute("data-tone"));
+    var pad = 3;
+    var min = Math.min.apply(null, data), max = Math.max.apply(null, data);
+    var span = (max - min) || 1;
+    var stepX = (f.w - pad * 2) / (data.length - 1);
+    var y = function (v) { return f.h - pad - ((v - min) / span) * (f.h - pad * 2); };
+
+    f.ctx.beginPath();
+    data.forEach(function (v, i) {
+      var px = pad + i * stepX;
+      i === 0 ? f.ctx.moveTo(px, y(v)) : f.ctx.lineTo(px, y(v));
+    });
+    f.ctx.lineTo(f.w - pad, f.h);
+    f.ctx.lineTo(pad, f.h);
+    f.ctx.closePath();
+    var grad = f.ctx.createLinearGradient(0, 0, 0, f.h);
+    grad.addColorStop(0, hexToRgba(color, 0.26));
+    grad.addColorStop(1, hexToRgba(color, 0));
+    f.ctx.fillStyle = grad;
+    f.ctx.fill();
+
+    f.ctx.beginPath();
+    data.forEach(function (v, i) {
+      var px = pad + i * stepX;
+      i === 0 ? f.ctx.moveTo(px, y(v)) : f.ctx.lineTo(px, y(v));
+    });
+    f.ctx.strokeStyle = color;
+    f.ctx.lineWidth = 1.25;
+    f.ctx.lineJoin = "round";
+    f.ctx.stroke();
+
+    var lastX = pad + (data.length - 1) * stepX, lastY = y(data[data.length - 1]);
+    f.ctx.beginPath();
+    f.ctx.arc(lastX, lastY, 2.4, 0, Math.PI * 2);
+    f.ctx.fillStyle = color;
+    f.ctx.fill();
+  }
+
+  function drawChart(canvas) {
+    var f = fit(canvas);
+    if (!f) return;
+    var data = canvas.getAttribute("data-series").split(",").map(Number);
+    var color = toneColor(canvas.getAttribute("data-tone"));
+    var line = token("--line");
+    var padL = 40, padR = 8, padT = 10, padB = 20;
+    var min = Math.min.apply(null, data), max = Math.max.apply(null, data);
+    var lo = min - (max - min) * 0.18, hi = max + (max - min) * 0.12;
+    if (hi === lo) { hi = lo + 1; }
+    var plotW = f.w - padL - padR, plotH = f.h - padT - padB;
+    var stepX = plotW / (data.length - 1);
+    var y = function (v) { return padT + plotH - ((v - lo) / (hi - lo)) * plotH; };
+
+    // grid + axis labels
+    f.ctx.strokeStyle = line;
+    f.ctx.lineWidth = 1;
+    f.ctx.font = '10px "IBM Plex Mono", monospace';
+    f.ctx.fillStyle = token("--ink-3");
+    f.ctx.textAlign = "right";
+    f.ctx.textBaseline = "middle";
+    for (var i = 0; i <= 3; i++) {
+      var v = lo + ((hi - lo) / 3) * i;
+      var gy = Math.round(y(v)) + 0.5;
+      f.ctx.beginPath();
+      f.ctx.moveTo(padL, gy);
+      f.ctx.lineTo(f.w - padR, gy);
+      f.ctx.stroke();
+      var label = v >= 1000 ? (v / 1000).toFixed(1) + "k" : Math.round(v);
+      f.ctx.fillText(String(label), padL - 8, gy);
+    }
+
+    // area
+    f.ctx.beginPath();
+    data.forEach(function (v, i) {
+      var px = padL + i * stepX;
+      i === 0 ? f.ctx.moveTo(px, y(v)) : f.ctx.lineTo(px, y(v));
+    });
+    f.ctx.lineTo(padL + plotW, padT + plotH);
+    f.ctx.lineTo(padL, padT + plotH);
+    f.ctx.closePath();
+    var grad = f.ctx.createLinearGradient(0, padT, 0, padT + plotH);
+    grad.addColorStop(0, hexToRgba(color, 0.24));
+    grad.addColorStop(1, hexToRgba(color, 0));
+    f.ctx.fillStyle = grad;
+    f.ctx.fill();
+
+    // line
+    f.ctx.beginPath();
+    data.forEach(function (v, i) {
+      var px = padL + i * stepX;
+      i === 0 ? f.ctx.moveTo(px, y(v)) : f.ctx.lineTo(px, y(v));
+    });
+    f.ctx.strokeStyle = color;
+    f.ctx.lineWidth = 1.5;
+    f.ctx.lineJoin = "round";
+    f.ctx.stroke();
+
+    // endpoint
+    var lx = padL + (data.length - 1) * stepX, ly = y(data[data.length - 1]);
+    f.ctx.beginPath();
+    f.ctx.arc(lx, ly, 3.2, 0, Math.PI * 2);
+    f.ctx.fillStyle = token("--panel");
+    f.ctx.fill();
+    f.ctx.lineWidth = 1.6;
+    f.ctx.strokeStyle = color;
+    f.ctx.stroke();
+
+    // x labels
+    f.ctx.textAlign = "left";
+    f.ctx.fillStyle = token("--ink-3");
+    f.ctx.fillText("24h ago", padL, f.h - 8);
+    f.ctx.textAlign = "right";
+    f.ctx.fillText("now", f.w - padR, f.h - 8);
+  }
+
+  function drawAll() {
+    requestAnimationFrame(function () {
+      document.querySelectorAll(".panel.is-active .spark").forEach(drawSpark);
+      document.querySelectorAll(".panel.is-active .chart[data-series]").forEach(drawChart);
+      if (document.getElementById("panel-swarm").classList.contains("is-active")) drawSwarm();
+    });
+  }
+
+  var resizeTimer;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(drawAll, 140);
+  });
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+  drawAll();
+
+  /* ── Live throughput readout ──────────────────────────────────── */
+  var tput = document.getElementById("tput");
+  var base = 4231;
+  if (!reduced) {
+    setInterval(function () {
+      base += Math.round((Math.random() - 0.48) * 180);
+      base = Math.max(2800, Math.min(5600, base));
+      tput.innerHTML = base.toLocaleString("en-US") + '<span class="unit">OPS/S</span>';
+    }, 2200);
+  }
+
+
+  /* Panel-aware honesty chip. */
+  var LIVE_PANELS = { orchestrator: 1, swarm: 1 };
+  function updateChip(key) {
+    var chip = document.getElementById("dataChip");
+    if (!chip) return;
+    var live = !!LIVE_PANELS[key];
+    chip.textContent = live ? "Live engine" : "Representative data";
+    chip.classList.toggle("chip-demo", !live);
+    chip.classList.toggle("chip-live", live);
+  }
+
+  /* ── Swarm ────────────────────────────────────────────────────── */
+  var SWARM = {"generations":[{"generation":1,"best":0.8308,"mean":0.6529,"diversity":0.474,"survivors":9,"culled":3},{"generation":2,"best":0.8536,"mean":0.7213,"diversity":0.4452,"survivors":9,"culled":3},{"generation":3,"best":0.852,"mean":0.7611,"diversity":0.3961,"survivors":9,"culled":3},{"generation":4,"best":0.8581,"mean":0.7811,"diversity":0.3417,"survivors":9,"culled":3},{"generation":5,"best":0.8689,"mean":0.8098,"diversity":0.2906,"survivors":9,"culled":3},{"generation":6,"best":0.864,"mean":0.8015,"diversity":0.2613,"survivors":9,"culled":3},{"generation":7,"best":0.951,"mean":0.8491,"diversity":0.2322,"survivors":9,"culled":3},{"generation":8,"best":0.9535,"mean":0.855,"diversity":0.1795,"survivors":9,"culled":3},{"generation":9,"best":0.9592,"mean":0.8582,"diversity":0.2094,"survivors":9,"culled":3},{"generation":10,"best":0.9567,"mean":0.8672,"diversity":0.1695,"survivors":9,"culled":3}],"population":[{"id":"gen_1efmqx","g":0,"par":[],"s":"idle","c":"closed","f":0.8591,"n":322,"r":0,"o":{"success":0.956,"latency":1.0,"cost":0.958,"quality":0.399,"stability":1},"sum":"gen_1efmqx \u00b7 llama-3.1-8b@1.43 \u00b7 plan:3 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_1o5vuc","g":0,"par":[],"s":"dead","c":"closed","f":0.7848,"n":8,"r":0,"o":{"success":0.676,"latency":1.0,"cost":0.971,"quality":0.499,"stability":1},"sum":"gen_1o5vuc \u00b7 claude-sonnet@0.22 \u00b7 plan:3 \u00b7 no-reflect \u00b7 conc:10 \u00b7 tools:4"},{"id":"gen_si3h3y","g":0,"par":[],"s":"dead","c":"closed","f":0.5283,"n":7,"r":0,"o":{"success":0.25,"latency":1,"cost":0.964,"quality":0.036,"stability":1},"sum":"gen_si3h3y \u00b7 llama-3.1-8b@0.84 \u00b7 plan:1 \u00b7 no-reflect \u00b7 conc:11 \u00b7 tools:8"},{"id":"gen_1ccc93","g":0,"par":[],"s":"dead","c":"closed","f":0.6656,"n":7,"r":0,"o":{"success":0.25,"latency":1,"cost":0.969,"quality":0.566,"stability":1},"sum":"gen_1ccc93 \u00b7 claude-sonnet@0.41 \u00b7 plan:1 \u00b7 no-reflect \u00b7 conc:14 \u00b7 tools:3"},{"id":"gen_1tlro6","g":0,"par":[],"s":"dead","c":"closed","f":0.5899,"n":6,"r":0,"o":{"success":0.436,"latency":1.0,"cost":0.918,"quality":0.02,"stability":1},"sum":"gen_1tlro6 \u00b7 claude-haiku@0.84 \u00b7 plan:0 \u00b7 no-reflect \u00b7 conc:12 \u00b7 tools:8"},{"id":"gen_1ct9gv","g":0,"par":[],"s":"dead","c":"closed","f":0.6821,"n":9,"r":0,"o":{"success":0.701,"latency":1,"cost":0.91,"quality":0.031,"stability":1},"sum":"gen_1ct9gv \u00b7 llama-3.3-70b@1.30 \u00b7 plan:1 \u00b7 no-reflect \u00b7 conc:13 \u00b7 tools:5"},{"id":"gen_mi99h7","g":0,"par":[],"s":"dead","c":"closed","f":0.7191,"n":13,"r":0,"o":{"success":0.424,"latency":1,"cost":0.986,"quality":0.552,"stability":1},"sum":"gen_mi99h7 \u00b7 mixtral-8x7b@0.81 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:4 \u00b7 tools:5"},{"id":"gen_19gsyt","g":0,"par":[],"s":"dead","c":"closed","f":0.594,"n":7,"r":0,"o":{"success":0.158,"latency":1,"cost":0.991,"quality":0.405,"stability":1},"sum":"gen_19gsyt \u00b7 claude-haiku@0.52 \u00b7 plan:5 \u00b7 reflect \u00b7 conc:14 \u00b7 tools:1"},{"id":"gen_p24zhk","g":0,"par":[],"s":"dead","c":"closed","f":0.5024,"n":6,"r":0,"o":{"success":0.188,"latency":1,"cost":0.969,"quality":0.013,"stability":1},"sum":"gen_p24zhk \u00b7 mixtral-8x7b@1.47 \u00b7 plan:5 \u00b7 no-reflect \u00b7 conc:8 \u00b7 tools:8"},{"id":"gen_icw91a","g":0,"par":[],"s":"dead","c":"closed","f":0.7088,"n":7,"r":0,"o":{"success":0.359,"latency":1,"cost":0.979,"quality":0.623,"stability":1},"sum":"gen_icw91a \u00b7 claude-sonnet@0.46 \u00b7 plan:5 \u00b7 reflect \u00b7 conc:6 \u00b7 tools:3"},{"id":"gen_1t6qka","g":0,"par":[],"s":"dead","c":"closed","f":0.6394,"n":8,"r":0,"o":{"success":0.409,"latency":1,"cost":0.961,"quality":0.246,"stability":1},"sum":"gen_1t6qka \u00b7 llama-3.3-70b@0.96 \u00b7 plan:4 \u00b7 no-reflect \u00b7 conc:11 \u00b7 tools:1"},{"id":"gen_9byia3","g":0,"par":[],"s":"dead","c":"closed","f":0.62,"n":7,"r":0,"o":{"success":0.25,"latency":1.0,"cost":0.955,"quality":0.398,"stability":1},"sum":"gen_9byia3 \u00b7 llama-3.3-70b@1.05 \u00b7 plan:2 \u00b7 no-reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_i4ocdb","g":1,"par":["gen_1o5vuc","gen_icw91a"],"s":"idle","c":"closed","f":0.8555,"n":14,"r":0,"o":{"success":0.785,"latency":1.0,"cost":0.971,"quality":0.672,"stability":1},"sum":"gen_i4ocdb \u00b7 claude-sonnet@0.33 \u00b7 plan:4 \u00b7 no-reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_1y1ik4","g":1,"par":["gen_1o5vuc","gen_icw91a"],"s":"dead","c":"closed","f":0.8164,"n":13,"r":0,"o":{"success":0.772,"latency":1.0,"cost":0.971,"quality":0.518,"stability":1},"sum":"gen_1y1ik4 \u00b7 claude-sonnet@0.29 \u00b7 plan:5 \u00b7 reflect \u00b7 conc:10 \u00b7 tools:4"},{"id":"gen_11kjzw","g":1,"par":["gen_1ct9gv","gen_1o5vuc"],"s":"dead","c":"closed","f":0.729,"n":11,"r":0,"o":{"success":0.623,"latency":1,"cost":0.928,"quality":0.358,"stability":1},"sum":"gen_11kjzw \u00b7 claude-sonnet@1.29 \u00b7 plan:3 \u00b7 reflect \u00b7 conc:12 \u00b7 tools:4"},{"id":"gen_qbt769","g":2,"par":["gen_1efmqx"],"s":"dead","c":"closed","f":0.7784,"n":10,"r":0,"o":{"success":0.722,"latency":1,"cost":0.955,"quality":0.415,"stability":1},"sum":"gen_qbt769 \u00b7 llama-3.1-8b@1.43 \u00b7 plan:3 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_1j5zwg","g":2,"par":["gen_11kjzw","gen_1efmqx"],"s":"dead","c":"closed","f":0.7356,"n":7,"r":0,"o":{"success":0.646,"latency":1,"cost":0.958,"quality":0.346,"stability":1},"sum":"gen_1j5zwg \u00b7 claude-sonnet@1.40 \u00b7 plan:3 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_xbjspd","g":2,"par":["gen_1efmqx","gen_i4ocdb"],"s":"dead","c":"open","f":0.6262,"n":15,"r":3,"o":{"success":0.48,"latency":1,"cost":0.98,"quality":0.767,"stability":0},"sum":"gen_xbjspd \u00b7 llama-3.1-8b@0.48 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:3"},{"id":"gen_1yffcx","g":3,"par":["gen_i4ocdb"],"s":"dead","c":"closed","f":0.8234,"n":9,"r":0,"o":{"success":0.701,"latency":1.0,"cost":0.971,"quality":0.66,"stability":1},"sum":"gen_1yffcx \u00b7 claude-sonnet@0.33 \u00b7 plan:4 \u00b7 no-reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_1kr4w5","g":3,"par":["gen_i4ocdb"],"s":"idle","c":"closed","f":0.9577,"n":259,"r":0,"o":{"success":0.985,"latency":1.0,"cost":0.971,"quality":0.821,"stability":1},"sum":"gen_1kr4w5 \u00b7 claude-haiku@0.33 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_cgb57e","g":3,"par":["gen_1efmqx","gen_i4ocdb"],"s":"dead","c":"closed","f":0.7177,"n":7,"r":0,"o":{"success":0.646,"latency":1.0,"cost":0.964,"quality":0.269,"stability":1},"sum":"gen_cgb57e \u00b7 claude-haiku@0.74 \u00b7 plan:3 \u00b7 no-reflect \u00b7 conc:9 \u00b7 tools:6"},{"id":"gen_15qsfp","g":4,"par":["gen_1yffcx","gen_1kr4w5"],"s":"idle","c":"closed","f":0.8689,"n":10,"r":0,"o":{"success":0.722,"latency":1,"cost":0.971,"quality":0.828,"stability":1},"sum":"gen_15qsfp \u00b7 claude-sonnet@0.33 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_1jpxy5","g":4,"par":["gen_xbjspd","gen_1efmqx"],"s":"dead","c":"closed","f":0.7391,"n":7,"r":0,"o":{"success":0.646,"latency":1,"cost":0.957,"quality":0.366,"stability":1},"sum":"gen_1jpxy5 \u00b7 llama-3.3-70b@1.27 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_r7fb0r","g":4,"par":["gen_i4ocdb","gen_xbjspd"],"s":"idle","c":"closed","f":0.8752,"n":14,"r":0,"o":{"success":0.785,"latency":1,"cost":0.971,"quality":0.762,"stability":1},"sum":"gen_r7fb0r \u00b7 llama-3.1-8b@0.56 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_1g0xkp","g":5,"par":["gen_xbjspd","gen_1kr4w5"],"s":"dead","c":"closed","f":0.8306,"n":10,"r":0,"o":{"success":0.722,"latency":1,"cost":0.978,"quality":0.658,"stability":1},"sum":"gen_1g0xkp \u00b7 mixtral-8x7b@0.50 \u00b7 plan:5 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:6"},{"id":"gen_jxnpwz","g":5,"par":["gen_1efmqx","gen_xbjspd"],"s":"dead","c":"closed","f":0.7734,"n":6,"r":0,"o":{"success":0.61,"latency":1,"cost":0.963,"quality":0.557,"stability":1},"sum":"gen_jxnpwz \u00b7 llama-3.1-8b@1.26 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_15p5yk","g":5,"par":["gen_1efmqx","gen_1kr4w5"],"s":"dead","c":"closed","f":0.6938,"n":7,"r":0,"o":{"success":0.646,"latency":1,"cost":0.958,"quality":0.198,"stability":1},"sum":"gen_15p5yk \u00b7 llama-3.1-8b@0.76 \u00b7 plan:4 \u00b7 no-reflect \u00b7 conc:9 \u00b7 tools:6"},{"id":"gen_11ctnk","g":6,"par":["gen_1kr4w5","gen_15qsfp"],"s":"dead","c":"closed","f":0.8533,"n":8,"r":0,"o":{"success":0.676,"latency":1,"cost":0.971,"quality":0.834,"stability":1},"sum":"gen_11ctnk \u00b7 claude-haiku@0.33 \u00b7 plan:2 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_m08kup","g":6,"par":["gen_1efmqx","gen_15qsfp"],"s":"idle","c":"closed","f":0.866,"n":8,"r":0,"o":{"success":0.676,"latency":1,"cost":0.965,"quality":0.858,"stability":1},"sum":"gen_m08kup \u00b7 claude-sonnet@0.24 \u00b7 plan:3 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_1gnb9c","g":6,"par":["gen_1kr4w5"],"s":"idle","c":"closed","f":0.8686,"n":10,"r":0,"o":{"success":0.722,"latency":1,"cost":0.973,"quality":0.832,"stability":1},"sum":"gen_1gnb9c \u00b7 llama-3.3-70b@0.33 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_ooz6x4","g":7,"par":["gen_1kr4w5","gen_1kr4w5"],"s":"dead","c":"closed","f":0.8233,"n":6,"r":0,"o":{"success":0.61,"latency":1.0,"cost":0.971,"quality":0.812,"stability":1},"sum":"gen_ooz6x4 \u00b7 claude-haiku@0.33 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_17pq3h","g":7,"par":["gen_11ctnk","gen_15qsfp"],"s":"idle","c":"closed","f":0.8564,"n":8,"r":0,"o":{"success":0.676,"latency":1,"cost":0.981,"quality":0.837,"stability":1},"sum":"gen_17pq3h \u00b7 claude-haiku@0.33 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_12ben1","g":7,"par":["gen_15qsfp","gen_1kr4w5"],"s":"dead","c":"closed","f":0.8224,"n":6,"r":0,"o":{"success":0.61,"latency":1,"cost":0.971,"quality":0.802,"stability":1},"sum":"gen_12ben1 \u00b7 claude-haiku@0.41 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:6 \u00b7 tools:5"},{"id":"gen_1a9oxc","g":8,"par":["gen_1efmqx","gen_r7fb0r"],"s":"dead","c":"closed","f":0.8469,"n":9,"r":0,"o":{"success":0.701,"latency":1,"cost":0.957,"quality":0.743,"stability":1},"sum":"gen_1a9oxc \u00b7 llama-3.1-8b@0.40 \u00b7 plan:3 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_33fj7d","g":8,"par":["gen_1efmqx","gen_15qsfp"],"s":"dead","c":"closed","f":0.765,"n":9,"r":0,"o":{"success":0.701,"latency":1,"cost":0.972,"quality":0.412,"stability":1},"sum":"gen_33fj7d \u00b7 claude-sonnet@1.47 \u00b7 plan:3 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_mcuxuh","g":8,"par":["gen_m08kup","gen_1kr4w5"],"s":"dead","c":"closed","f":0.8334,"n":6,"r":0,"o":{"success":0.61,"latency":1,"cost":0.968,"quality":0.835,"stability":1},"sum":"gen_mcuxuh \u00b7 claude-sonnet@0.30 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_bc4ffx","g":9,"par":["gen_r7fb0r","gen_1kr4w5"],"s":"dead","c":"closed","f":0.835,"n":7,"r":0,"o":{"success":0.646,"latency":1,"cost":0.971,"quality":0.806,"stability":1},"sum":"gen_bc4ffx \u00b7 claude-haiku@0.50 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_14s664","g":9,"par":["gen_1kr4w5"],"s":"dead","c":"closed","f":0.8526,"n":8,"r":0,"o":{"success":0.676,"latency":1,"cost":0.971,"quality":0.836,"stability":1},"sum":"gen_14s664 \u00b7 claude-haiku@0.33 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_1jm2ry","g":9,"par":["gen_1kr4w5","gen_1gnb9c"],"s":"idle","c":"closed","f":0.8583,"n":9,"r":0,"o":{"success":0.701,"latency":1,"cost":0.972,"quality":0.822,"stability":1},"sum":"gen_1jm2ry \u00b7 llama-3.3-70b@0.33 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_5uas9d","g":10,"par":["gen_1kr4w5"],"s":"idle","c":"closed","f":0.0112,"n":0,"r":0,"o":{"success":0,"latency":0,"cost":0,"quality":0,"stability":0},"sum":"gen_5uas9d \u00b7 claude-haiku@0.33 \u00b7 plan:5 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"},{"id":"gen_fme4xa","g":10,"par":["gen_1kr4w5","gen_r7fb0r"],"s":"idle","c":"closed","f":0.0135,"n":0,"r":0,"o":{"success":0,"latency":0,"cost":0,"quality":0,"stability":0},"sum":"gen_fme4xa \u00b7 llama-3.1-8b@0.39 \u00b7 plan:5 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:4"},{"id":"gen_1aazuj","g":10,"par":["gen_1kr4w5","gen_1gnb9c"],"s":"idle","c":"closed","f":0.0104,"n":0,"r":0,"o":{"success":0,"latency":0,"cost":0,"quality":0,"stability":0},"sum":"gen_1aazuj \u00b7 llama-3.3-70b@0.33 \u00b7 plan:4 \u00b7 reflect \u00b7 conc:9 \u00b7 tools:5"}],"stats":{"alive":12,"healthy":12,"quarantined":0,"dead":30,"replicas":0,"queueDepth":0,"diversity":0.1737,"bestFitness":0.9577,"meanFitness":0.6584,"totalTasks":900,"totalHeals":4},"pareto":["gen_1efmqx","gen_i4ocdb","gen_1kr4w5","gen_r7fb0r","gen_m08kup","gen_1gnb9c","gen_17pq3h"],"events":[{"type":"agent:died","agentId":"gen_1tlro6","reason":"culled in generation 1","at":1787597375936},{"type":"agent:died","agentId":"gen_si3h3y","reason":"culled in generation 1","at":1787597375936},{"type":"agent:died","agentId":"gen_p24zhk","reason":"culled in generation 1","at":1787597375936},{"type":"offspring:bred","childId":"gen_i4ocdb","parents":["gen_1o5vuc","gen_icw91a"],"mutations":["maxTokens"],"at":1787597375936},{"type":"offspring:bred","childId":"gen_1y1ik4","parents":["gen_1o5vuc","gen_icw91a"],"mutations":["tools","promptTraits"],"at":1787597375936},{"type":"offspring:bred","childId":"gen_11kjzw","parents":["gen_1ct9gv","gen_1o5vuc"],"mutations":["temperature","topP","reflection","memoryDepth"],"at":1787597375936},{"type":"generation:completed","generation":1,"best":"gen_1efmqx","bestFitness":0.8307665687933675,"meanFitness":0.6529261364103119,"diversity":0.47397848293725103,"survivors":9,"culled":3,"at":1787597375936},{"type":"agent:died","agentId":"gen_1t6qka","reason":"culled in generation 2","at":1787597375941},{"type":"agent:died","agentId":"gen_9byia3","reason":"culled in generation 2","at":1787597375941},{"type":"agent:died","agentId":"gen_19gsyt","reason":"culled in generation 2","at":1787597375941},{"type":"offspring:bred","childId":"gen_qbt769","parents":["gen_1efmqx"],"mutations":["maxTokens","memoryDepth","backoffMultiplier"],"at":1787597375941},{"type":"offspring:bred","childId":"gen_1j5zwg","parents":["gen_11kjzw","gen_1efmqx"],"mutations":["topP","tools"],"at":1787597375941},{"type":"offspring:bred","childId":"gen_xbjspd","parents":["gen_1efmqx","gen_i4ocdb"],"mutations":[],"at":1787597375941},{"type":"generation:completed","generation":2,"best":"gen_1efmqx","bestFitness":0.8536146835760265,"meanFitness":0.7213246982441192,"diversity":0.4451907667541265,"survivors":9,"culled":3,"at":1787597375941},{"type":"agent:died","agentId":"gen_1j5zwg","reason":"culled in generation 3","at":1787597375949},{"type":"agent:died","agentId":"gen_1ct9gv","reason":"culled in generation 3","at":1787597375949},{"type":"agent:died","agentId":"gen_1ccc93","reason":"culled in generation 3","at":1787597375949},{"type":"offspring:bred","childId":"gen_1yffcx","parents":["gen_i4ocdb"],"mutations":["backoffMs","tools"],"at":1787597375949},{"type":"offspring:bred","childId":"gen_1kr4w5","parents":["gen_i4ocdb"],"mutations":["model","reflection","backoffMultiplier"],"at":1787597375949},{"type":"offspring:bred","childId":"gen_cgb57e","parents":["gen_1efmqx","gen_i4ocdb"],"mutations":["model","retryAttempts","backoffMultiplier"],"at":1787597375949},{"type":"generation:completed","generation":3,"best":"gen_1efmqx","bestFitness":0.8519857622947726,"meanFitness":0.7610859367847728,"diversity":0.3961316976589812,"survivors":9,"culled":3,"at":1787597375949},{"type":"agent:died","agentId":"gen_mi99h7","reason":"culled in generation 4","at":1787597375952},{"type":"agent:died","agentId":"gen_cgb57e","reason":"culled in generation 4","at":1787597375952},{"type":"agent:died","agentId":"gen_icw91a","reason":"culled in generation 4","at":1787597375952},{"type":"offspring:bred","childId":"gen_15qsfp","parents":["gen_1yffcx","gen_1kr4w5"],"mutations":["model","timeoutMs","retryAttempts","promptTraits"],"at":1787597375952},{"type":"offspring:bred","childId":"gen_1jpxy5","parents":["gen_xbjspd","gen_1efmqx"],"mutations":["model","backoffMultiplier"],"at":1787597375952},{"type":"offspring:bred","childId":"gen_r7fb0r","parents":["gen_i4ocdb","gen_xbjspd"],"mutations":["temperature","promptTraits"],"at":1787597375952},{"type":"generation:completed","generation":4,"best":"gen_1efmqx","bestFitness":0.8581086937786915,"meanFitness":0.7810891360761563,"diversity":0.3417370794775309,"survivors":9,"culled":3,"at":1787597375952},{"type":"agent:died","agentId":"gen_qbt769","reason":"culled in generation 5","at":1787597375956},{"type":"agent:died","agentId":"gen_1jpxy5","reason":"culled in generation 5","at":1787597375956},{"type":"agent:died","agentId":"gen_11kjzw","reason":"culled in generation 5","at":1787597375957},{"type":"offspring:bred","childId":"gen_1g0xkp","parents":["gen_xbjspd","gen_1kr4w5"],"mutations":["model","maxTokens","planningDepth","tools"],"at":1787597375957},{"type":"offspring:bred","childId":"gen_jxnpwz","parents":["gen_1efmqx","gen_xbjspd"],"mutations":["retryAttempts","backoffMs"],"at":1787597375957},{"type":"offspring:bred","childId":"gen_15p5yk","parents":["gen_1efmqx","gen_1kr4w5"],"mutations":["temperature","reflection","promptTraits"],"at":1787597375957},{"type":"generation:completed","generation":5,"best":"gen_xbjspd","bestFitness":0.8688653750287973,"meanFitness":0.809750550222823,"diversity":0.29057670639830685,"survivors":9,"culled":3,"at":1787597375957},{"type":"agent:healed","agentId":"gen_xbjspd","restarts":1,"at":1787597375958},{"type":"circuit:opened","agentId":"gen_xbjspd","failures":1,"at":1787597375958},{"type":"agent:healed","agentId":"gen_xbjspd","restarts":2,"at":1787597375958},{"type":"circuit:opened","agentId":"gen_xbjspd","failures":1,"at":1787597375958},{"type":"agent:healed","agentId":"gen_xbjspd","restarts":3,"at":1787597375958},{"type":"circuit:opened","agentId":"gen_xbjspd","failures":1,"at":1787597375958},{"type":"supervisor:escalated","agentId":"gen_xbjspd","reason":"3 restarts in 60s","at":1787597375958},{"type":"agent:quarantined","agentId":"gen_xbjspd","untilAt":1787597495958,"reason":"injected fault: runtime segfault","at":1787597375958},{"type":"agent:died","agentId":"gen_jxnpwz","reason":"culled in generation 6","at":1787597375964},{"type":"agent:died","agentId":"gen_15p5yk","reason":"culled in generation 6","at":1787597375964},{"type":"agent:died","agentId":"gen_xbjspd","reason":"culled in generation 6","at":1787597375964},{"type":"offspring:bred","childId":"gen_11ctnk","parents":["gen_1kr4w5","gen_15qsfp"],"mutations":["planningDepth"],"at":1787597375964},{"type":"offspring:bred","childId":"gen_m08kup","parents":["gen_1efmqx","gen_15qsfp"],"mutations":["timeoutMs"],"at":1787597375964},{"type":"offspring:bred","childId":"gen_1gnb9c","parents":["gen_1kr4w5"],"mutations":["model","maxTokens"],"at":1787597375964},{"type":"generation:completed","generation":6,"best":"gen_1kr4w5","bestFitness":0.8639666782337448,"meanFitness":0.8015220496357566,"diversity":0.2613087197977286,"survivors":9,"culled":3,"at":1787597375964},{"type":"agent:died","agentId":"gen_1yffcx","reason":"culled in generation 7","at":1787597375967},{"type":"agent:died","agentId":"gen_1y1ik4","reason":"culled in generation 7","at":1787597375967},{"type":"agent:died","agentId":"gen_1o5vuc","reason":"culled in generation 7","at":1787597375967},{"type":"offspring:bred","childId":"gen_ooz6x4","parents":["gen_1kr4w5","gen_1kr4w5"],"mutations":["backoffMultiplier"],"at":1787597375967},{"type":"offspring:bred","childId":"gen_17pq3h","parents":["gen_11ctnk","gen_15qsfp"],"mutations":["maxTokens","retryAttempts"],"at":1787597375967},{"type":"offspring:bred","childId":"gen_12ben1","parents":["gen_15qsfp","gen_1kr4w5"],"mutations":["temperature","topP","maxConcurrency","backoffMultiplier"],"at":1787597375967},{"type":"generation:completed","generation":7,"best":"gen_1kr4w5","bestFitness":0.9509729233943586,"meanFitness":0.8490769947470748,"diversity":0.23221239042082067,"survivors":9,"culled":3,"at":1787597375967},{"type":"agent:died","agentId":"gen_1g0xkp","reason":"culled in generation 8","at":1787597375971},{"type":"agent:died","agentId":"gen_ooz6x4","reason":"culled in generation 8","at":1787597375971},{"type":"agent:died","agentId":"gen_12ben1","reason":"culled in generation 8","at":1787597375971},{"type":"offspring:bred","childId":"gen_1a9oxc","parents":["gen_1efmqx","gen_r7fb0r"],"mutations":["memoryDepth"],"at":1787597375971},{"type":"offspring:bred","childId":"gen_33fj7d","parents":["gen_1efmqx","gen_15qsfp"],"mutations":["memoryDepth","backoffMultiplier"],"at":1787597375971},{"type":"offspring:bred","childId":"gen_mcuxuh","parents":["gen_m08kup","gen_1kr4w5"],"mutations":["backoffMs"],"at":1787597375971},{"type":"generation:completed","generation":8,"best":"gen_1kr4w5","bestFitness":0.9534559744708535,"meanFitness":0.8550049374869699,"diversity":0.17948852146983116,"survivors":9,"culled":3,"at":1787597375971},{"type":"agent:died","agentId":"gen_1a9oxc","reason":"culled in generation 9","at":1787597375974},{"type":"agent:died","agentId":"gen_mcuxuh","reason":"culled in generation 9","at":1787597375974},{"type":"agent:died","agentId":"gen_33fj7d","reason":"culled in generation 9","at":1787597375974},{"type":"offspring:bred","childId":"gen_bc4ffx","parents":["gen_r7fb0r","gen_1kr4w5"],"mutations":["topP"],"at":1787597375974},{"type":"offspring:bred","childId":"gen_14s664","parents":["gen_1kr4w5"],"mutations":["promptTraits"],"at":1787597375974},{"type":"offspring:bred","childId":"gen_1jm2ry","parents":["gen_1kr4w5","gen_1gnb9c"],"mutations":[],"at":1787597375974},{"type":"generation:completed","generation":9,"best":"gen_1kr4w5","bestFitness":0.9592103317994859,"meanFitness":0.8582092787555303,"diversity":0.20936909875405144,"survivors":9,"culled":3,"at":1787597375974},{"type":"agent:died","agentId":"gen_11ctnk","reason":"culled in generation 10","at":1787597375976},{"type":"agent:died","agentId":"gen_14s664","reason":"culled in generation 10","at":1787597375976},{"type":"agent:died","agentId":"gen_bc4ffx","reason":"culled in generation 10","at":1787597375976},{"type":"offspring:bred","childId":"gen_5uas9d","parents":["gen_1kr4w5"],"mutations":["planningDepth"],"at":1787597375976},{"type":"offspring:bred","childId":"gen_fme4xa","parents":["gen_1kr4w5","gen_r7fb0r"],"mutations":["planningDepth"],"at":1787597375976},{"type":"offspring:bred","childId":"gen_1aazuj","parents":["gen_1kr4w5","gen_1gnb9c"],"mutations":[],"at":1787597375976},{"type":"generation:completed","generation":10,"best":"gen_1kr4w5","bestFitness":0.9566521297678284,"meanFitness":0.8671661187636398,"diversity":0.1694760419547687,"survivors":9,"culled":3,"at":1787597375976}]};
+
+  function fmt(n, places) { return Number(n).toFixed(places === undefined ? 3 : places); }
+
+  function renderSwarmStats() {
+    var s = SWARM.stats;
+    var gens = SWARM.generations;
+    var first = gens[0], last = gens[gens.length - 1];
+
+    set('sw-gen', String(SWARM.generations.length));
+    set('sw-gen-sub', s.totalTasks.toLocaleString('en-US') + ' tasks settled');
+
+    set('sw-alive', String(s.alive));
+    set('sw-alive-sub', s.dead + ' culled \u00b7 ' + s.replicas + ' replicas');
+
+    set('sw-best', fmt(s.bestFitness));
+    var lift = ((last.mean - first.mean) / Math.max(0.0001, first.mean)) * 100;
+    set('sw-best-sub', 'mean ' + fmt(first.mean) + ' \u2192 ' + fmt(last.mean) + '  (' + (lift >= 0 ? '+' : '') + lift.toFixed(1) + '%)');
+
+    set('sw-div', fmt(last.diversity));
+    set('sw-div-sub', 'from ' + fmt(first.diversity) + ' at founding');
+
+    set('sw-heals', String(s.totalHeals));
+    var quarantines = SWARM.events.filter(function (e) { return e.type === 'agent:quarantined'; }).length;
+    set('sw-heals-sub', quarantines + ' escalated to quarantine');
+  }
+
+  function set(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  var OBJ_KEYS = ['success', 'latency', 'cost', 'quality', 'stability'];
+
+  function renderLeaderboard() {
+    var body = document.getElementById('sw-leaderboard');
+    if (!body) return;
+    var pareto = {};
+    SWARM.pareto.forEach(function (id) { pareto[id] = true; });
+
+    var rows = SWARM.population
+      .filter(function (p) { return p.s !== 'dead'; })
+      .sort(function (a, b) { return b.f - a.f; })
+      .slice(0, 10);
+
+    body.innerHTML = rows.map(function (p) {
+      var sev = p.s === 'quarantined' ? 'crit' : (p.r > 0 ? 'warn' : 'ok');
+      var bars = OBJ_KEYS.map(function (k) {
+        var v = p.o[k] === undefined ? 0 : p.o[k];
+        var cls = v < 0.4 ? 'low' : (v < 0.7 ? 'mid' : '');
+        return '<div class="objbar ' + cls + '"><span>' + k + '</span><i style="--w:' + Math.round(v * 100) + '%"></i></div>';
+      }).join('');
+
+      var state = p.s === 'quarantined'
+        ? '<span class="pill crit">Quarantined</span>'
+        : (pareto[p.id] ? '<span class="pill ok">Pareto</span>' : '<span class="pill idle">' + p.s + '</span>');
+
+      return '<tr data-sev="' + sev + '">' +
+        '<td class="stripe"><div class="genome-id">' + p.id + '</div><div class="genome-sum">' + p.sum.split(' \u00b7 ').slice(1).join(' \u00b7 ') + '</div></td>' +
+        '<td class="num">' + p.g + '</td>' +
+        '<td class="num primary">' + fmt(p.f) + '</td>' +
+        '<td><div class="objbars">' + bars + '</div></td>' +
+        '<td class="num">' + p.n + '</td>' +
+        '<td>' + state + '</td>' +
+        '</tr>';
+    }).join('');
+
+    var note = document.getElementById('sw-pareto-note');
+    if (note) {
+      note.textContent = SWARM.pareto.length + ' of ' + SWARM.stats.alive +
+        ' living genomes sit on the Pareto front \u2014 no other genome beats them on every objective at once. ' +
+        'Which of them wins is decided by the objective weights, not by the search.';
+    }
+  }
+
+  var EVENT_COPY = {
+    'agent:healed':        function (e) { return ['Heal',       e.agentId + ' restarted (attempt ' + e.restarts + ')', 'warn']; },
+    'agent:quarantined':   function (e) { return ['Quarantine', e.agentId + ' benched \u2014 ' + e.reason, 'crit']; },
+    'agent:degraded':      function (e) { return ['Degraded',   e.agentId + ' \u2014 ' + e.reason, 'warn']; },
+    'supervisor:escalated':function (e) { return ['Escalated',  e.agentId + ' \u2014 ' + e.reason, 'crit']; },
+    'circuit:opened':      function (e) { return ['Circuit',    e.agentId + ' opened after ' + e.failures + ' consecutive failures', 'warn']; },
+    'circuit:closed':      function (e) { return ['Circuit',    e.agentId + ' closed \u2014 recovered', 'ok']; },
+    'replica:added':       function (e) { return ['Replicate',  e.agentId + ' cloned from ' + e.sourceId + ' \u2014 ' + e.reason, 'ok']; },
+    'agent:died':          function (e) { return ['Reaped',     e.agentId + ' \u2014 ' + e.reason, 'idle']; },
+    'offspring:bred':      function (e) { return ['Bred',       e.childId + ' from ' + e.parents.join(' \u00d7 ') + (e.mutations.length ? ' \u00b7 mutated ' + e.mutations.join(', ') : ' \u00b7 no mutation'), 'ok']; }
+  };
+
+  function renderSwarmLog() {
+    var host = document.getElementById('sw-log');
+    if (!host) return;
+
+    var priority = { 'supervisor:escalated': 0, 'agent:quarantined': 1, 'agent:healed': 2, 'circuit:opened': 3, 'agent:degraded': 4, 'replica:added': 5, 'offspring:bred': 6, 'agent:died': 7 };
+    var rows = SWARM.events
+      .filter(function (e) { return EVENT_COPY[e.type]; })
+      .sort(function (a, b) { return (priority[a.type] - priority[b.type]) || (b.at - a.at); })
+      .slice(0, 14);
+
+    host.innerHTML = rows.map(function (e) {
+      var parts = EVENT_COPY[e.type](e);
+      return '<div class="stream-row">' +
+        '<span class="stream-src">' + parts[0] + '</span>' +
+        '<span class="stream-evt mono">' + parts[1] + '</span>' +
+        '<span class="stream-t"></span>' +
+        '<span class="pill ' + parts[2] + '">' + e.type.split(':')[1] + '</span>' +
+        '</div>';
+    }).join('');
+  }
+
+  /* Generation charts — two series on one frame. */
+  function drawGenerationChart(canvas, series, yMin, yMax) {
+    var f = fit(canvas);
+    if (!f) return;
+    var padL = 42, padR = 10, padT = 12, padB = 22;
+    var plotW = f.w - padL - padR, plotH = f.h - padT - padB;
+    var n = series[0].values.length;
+    if (n < 2) return;
+    var stepX = plotW / (n - 1);
+    var y = function (v) { return padT + plotH - ((v - yMin) / (yMax - yMin || 1)) * plotH; };
+
+    f.ctx.strokeStyle = token('--line');
+    f.ctx.lineWidth = 1;
+    f.ctx.font = '10px "IBM Plex Mono", monospace';
+    f.ctx.fillStyle = token('--ink-3');
+    f.ctx.textAlign = 'right';
+    f.ctx.textBaseline = 'middle';
+    for (var i = 0; i <= 3; i++) {
+      var v = yMin + ((yMax - yMin) / 3) * i;
+      var gy = Math.round(y(v)) + 0.5;
+      f.ctx.beginPath(); f.ctx.moveTo(padL, gy); f.ctx.lineTo(f.w - padR, gy); f.ctx.stroke();
+      f.ctx.fillText(v.toFixed(2), padL - 8, gy);
+    }
+
+    series.forEach(function (s, idx) {
+      var color = toneColor(s.tone);
+      if (idx === 0) {
+        f.ctx.beginPath();
+        s.values.forEach(function (v, i) { var px = padL + i * stepX; i === 0 ? f.ctx.moveTo(px, y(v)) : f.ctx.lineTo(px, y(v)); });
+        f.ctx.lineTo(padL + plotW, padT + plotH);
+        f.ctx.lineTo(padL, padT + plotH);
+        f.ctx.closePath();
+        var grad = f.ctx.createLinearGradient(0, padT, 0, padT + plotH);
+        grad.addColorStop(0, hexToRgba(color, 0.22));
+        grad.addColorStop(1, hexToRgba(color, 0));
+        f.ctx.fillStyle = grad;
+        f.ctx.fill();
+      }
+
+      f.ctx.beginPath();
+      s.values.forEach(function (v, i) { var px = padL + i * stepX; i === 0 ? f.ctx.moveTo(px, y(v)) : f.ctx.lineTo(px, y(v)); });
+      f.ctx.strokeStyle = color;
+      f.ctx.lineWidth = 1.5;
+      if (s.dashed) f.ctx.setLineDash([4, 3]);
+      f.ctx.lineJoin = 'round';
+      f.ctx.stroke();
+      f.ctx.setLineDash([]);
+
+      s.values.forEach(function (v, i) {
+        f.ctx.beginPath();
+        f.ctx.arc(padL + i * stepX, y(v), 2.2, 0, Math.PI * 2);
+        f.ctx.fillStyle = color;
+        f.ctx.fill();
+      });
+    });
+
+    f.ctx.textAlign = 'left';
+    f.ctx.fillStyle = token('--ink-3');
+    f.ctx.fillText('gen 1', padL, f.h - 8);
+    f.ctx.textAlign = 'right';
+    f.ctx.fillText('gen ' + n, f.w - padR, f.h - 8);
+
+    // Inline series key, top-left of the plot.
+    f.ctx.textAlign = 'left';
+    f.ctx.textBaseline = 'top';
+    var keyX = padL + 6;
+    series.forEach(function (s) {
+      f.ctx.fillStyle = toneColor(s.tone);
+      f.ctx.fillRect(keyX, padT + 3, 9, 2);
+      f.ctx.fillStyle = token('--ink-2');
+      f.ctx.fillText(s.name, keyX + 14, padT);
+      keyX += 16 + f.ctx.measureText(s.name).width + 14;
+    });
+  }
+
+  /* Lineage graph — generations across, individuals down, edges to parents. */
+  function drawLineage(canvas) {
+    var f = fit(canvas);
+    if (!f) return;
+
+    var byId = {};
+    SWARM.population.forEach(function (p) { byId[p.id] = p; });
+
+    var pareto = {};
+    SWARM.pareto.forEach(function (id) { pareto[id] = true; });
+
+    var maxGen = 0;
+    SWARM.population.forEach(function (p) { if (p.g > maxGen) maxGen = p.g; });
+
+    var cols = [];
+    for (var g = 0; g <= maxGen; g++) cols.push([]);
+    SWARM.population.forEach(function (p) { cols[p.g].push(p); });
+    cols[0].sort(function (a, b) { return b.f - a.f; });
+
+    var padX = 34, padY = 26;
+    var colW = maxGen > 0 ? (f.w - padX * 2) / maxGen : 0;
+    var maxSamples = 1;
+    SWARM.population.forEach(function (p) { if (p.n > maxSamples) maxSamples = p.n; });
+
+    /* Children are placed at their parents' height, not ranked by fitness, so a
+       lineage reads as a thread running left to right. Ranking each column
+       independently is what turns a genealogy into a scribble. */
+    var pos = {};
+    var top = padY, bottom = f.h - padY, minGap = 13;
+
+    // Founders that produced no offspring are dead ends. Spacing them evenly
+    // alongside the ones that did would push every surviving lineage into the
+    // top of the frame and leave the bottom half empty, so the fertile founders
+    // are spread across the full height and the dead ends slot into the gaps.
+    var hasChild = {};
+    SWARM.population.forEach(function (p) {
+      p.par.forEach(function (id) { hasChild[id] = true; });
+    });
+
+    cols.forEach(function (col, g) {
+      if (g === 0) {
+        var fertile = col.filter(function (p) { return hasChild[p.id]; });
+        var barren = col.filter(function (p) { return !hasChild[p.id]; });
+
+        var span = bottom - top;
+        fertile.forEach(function (p, i) {
+          var yy = fertile.length === 1 ? f.h / 2 : top + (span / (fertile.length - 1)) * i;
+          pos[p.id] = { x: padX, y: yy };
+        });
+
+        var slot = fertile.length > 1 ? span / (fertile.length - 1) : span;
+        barren.forEach(function (p, i) {
+          // Offset into the gap following each fertile founder, wrapping around.
+          var anchor = fertile.length ? pos[fertile[i % fertile.length].id].y : top;
+          var nudge = slot * (0.34 + 0.32 * Math.floor(i / Math.max(1, fertile.length)));
+          pos[p.id] = { x: padX, y: Math.max(top, Math.min(bottom, anchor + nudge)) };
+        });
+        return;
+      }
+
+      var wanted = col.map(function (p) {
+        var ys = p.par
+          .map(function (id) { return pos[id] ? pos[id].y : null; })
+          .filter(function (v) { return v !== null; });
+        return { p: p, y: ys.length ? ys.reduce(function (a, b) { return a + b; }, 0) / ys.length : f.h / 2 };
+      }).sort(function (a, b) { return a.y - b.y; });
+
+      // Push apart any siblings that landed on top of each other, then pull the
+      // whole column back inside the frame if that pushed it past the bottom.
+      for (var i = 1; i < wanted.length; i++) {
+        if (wanted[i].y - wanted[i - 1].y < minGap) wanted[i].y = wanted[i - 1].y + minGap;
+      }
+      var overflow = wanted.length ? wanted[wanted.length - 1].y - bottom : 0;
+      if (overflow > 0) wanted.forEach(function (w) { w.y -= overflow; });
+
+      wanted.forEach(function (w) {
+        pos[w.p.id] = { x: padX + colW * g, y: Math.max(top, Math.min(bottom, w.y)) };
+      });
+    });
+
+    // Generation gridlines and labels first, so nodes sit above them.
+    f.ctx.font = '9px "IBM Plex Mono", monospace';
+    f.ctx.textAlign = 'center';
+    f.ctx.textBaseline = 'top';
+    for (var gi = 0; gi <= maxGen; gi++) {
+      var gx = Math.round(padX + colW * gi) + 0.5;
+      f.ctx.strokeStyle = token('--line');
+      f.ctx.lineWidth = 1;
+      f.ctx.beginPath();
+      f.ctx.moveTo(gx, padY - 14);
+      f.ctx.lineTo(gx, f.h - padY + 14);
+      f.ctx.stroke();
+      f.ctx.fillStyle = token('--ink-3');
+      f.ctx.fillText(String(gi), gx, f.h - padY + 18);
+    }
+
+    // Edges.
+    SWARM.population.forEach(function (p) {
+      var childPos = pos[p.id];
+      if (!childPos) return;
+      p.par.forEach(function (parentId) {
+        var parentPos = pos[parentId];
+        if (!parentPos) return;
+        var alive = p.s !== 'dead';
+        f.ctx.strokeStyle = hexToRgba(toneColor(alive ? 'gilt' : 'idle'), alive ? 0.34 : 0.13);
+        f.ctx.lineWidth = 1;
+        f.ctx.beginPath();
+        f.ctx.moveTo(parentPos.x, parentPos.y);
+        var midX = (parentPos.x + childPos.x) / 2;
+        f.ctx.bezierCurveTo(midX, parentPos.y, midX, childPos.y, childPos.x, childPos.y);
+        f.ctx.stroke();
+      });
+    });
+
+    // Nodes — the dead first, so survivors always sit on top of them.
+    var ordered = SWARM.population.slice().sort(function (a, b) {
+      return (a.s === 'dead' ? 0 : 1) - (b.s === 'dead' ? 0 : 1);
+    });
+
+    ordered.forEach(function (p) {
+      var pt = pos[p.id];
+      if (!pt) return;
+      var dead = p.s === 'dead';
+      var radius = (dead ? 1.8 : 2.6) + Math.sqrt(p.n / maxSamples) * (dead ? 3.4 : 6);
+      var color = dead ? token('--ink-3')
+        : (p.s === 'quarantined' ? token('--crit')
+        : (p.r > 0 ? token('--warn')
+        : (pareto[p.id] ? token('--ok') : token('--gilt'))));
+
+      f.ctx.globalAlpha = dead ? 0.38 : 1;
+      f.ctx.beginPath();
+      f.ctx.arc(pt.x, pt.y, radius, 0, Math.PI * 2);
+      f.ctx.fillStyle = dead ? hexToRgba(color, 0.10) : hexToRgba(color, 0.22);
+      f.ctx.fill();
+      f.ctx.strokeStyle = color;
+      f.ctx.lineWidth = dead ? 1 : 1.5;
+      f.ctx.stroke();
+      f.ctx.globalAlpha = 1;
+    });
+  }
+
+  function drawSwarm() {
+    var lineage = document.getElementById('lineageCanvas');
+    if (lineage) drawLineage(lineage);
+
+    var gens = SWARM.generations;
+    var fitnessCanvas = document.getElementById('fitnessChart');
+    if (fitnessCanvas) {
+      var best = gens.map(function (g) { return g.best; });
+      var mean = gens.map(function (g) { return g.mean; });
+      var lo = Math.min.apply(null, mean) - 0.06;
+      var hi = Math.max.apply(null, best) + 0.04;
+      drawGenerationChart(fitnessCanvas, [
+        { name: 'mean', values: mean, tone: 'gilt' },
+        { name: 'best', values: best, tone: 'ok', dashed: true }
+      ], Math.max(0, lo), Math.min(1.1, hi));
+    }
+
+    var divCanvas = document.getElementById('diversityChart');
+    if (divCanvas) {
+      var div = gens.map(function (g) { return g.diversity; });
+      drawGenerationChart(divCanvas, [
+        { name: 'diversity', values: div, tone: 'warn' }
+      ], Math.max(0, Math.min.apply(null, div) - 0.06), Math.max.apply(null, div) + 0.04);
+    }
+  }
+
+  updateChip("orchestrator");
+  renderSwarmStats();
+  renderLeaderboard();
+  renderSwarmLog();
+
+  /* ── Orchestrator: a real, small swarm running in the page ──────────────
+     This is a compact port of the TypeScript engine — same dispatch rule,
+     same circuit breaker, same restart-then-quarantine escalation, same
+     tournament breeding. It is not a canned animation; every pulse you see
+     is an actual task settling against an actual genome. */
+
+  var ORCH = (function () {
+    var SVG_NS = 'http://www.w3.org/2000/svg';
+    var CX = 310, CY = 196, RING = 138;
+
+    var TOOLSETS = [['search'], ['search', 'sql'], ['http'], ['search', 'http'], ['sql', 'vector.query'], ['summarise']];
+    var seq = 0;
+
+    var state = null;
+    var pulses = [];
+    var selected = null;
+    var rafId = null;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* Hidden landscape the population has to find. Never shown to the swarm. */
+    function affinity(g) {
+      var s = 0;
+      s += 0.34 * Math.exp(-Math.pow(g.temp - 0.35, 2) / 0.08);
+      s += 0.22 * Math.exp(-Math.pow(g.plan - 3, 2) / 2.0);
+      s += g.reflect ? 0.18 : 0;
+      s += g.tools.indexOf('search') >= 0 ? 0.26 : 0;
+      return Math.min(1, s);
+    }
+
+    function newGenome(gen, parents, genes) {
+      seq += 1;
+      return {
+        id: 'ag' + String(seq).padStart(2, '0'),
+        gen: gen,
+        parents: parents || [],
+        genes: genes || {
+          temp: Math.round(Math.random() * 150) / 100,
+          plan: Math.floor(Math.random() * 6),
+          reflect: Math.random() < 0.5,
+          conc: 2 + Math.floor(Math.random() * 5),
+          tools: TOOLSETS[Math.floor(Math.random() * TOOLSETS.length)]
+        }
+      };
+    }
+
+    function spawn(gen, parents, genes, replicaOf) {
+      var g = newGenome(gen, parents, genes);
+      return {
+        id: g.id, gen: g.gen, parents: g.parents, genes: g.genes,
+        status: 'idle', circuit: 'closed',
+        fails: 0, restarts: 0, sabotaged: false,
+        inFlight: 0, samples: 0, ok: 0, crashes: 0,
+        fitness: 0, replicaOf: replicaOf || null,
+        born: Date.now()
+      };
+    }
+
+    function reset() {
+      seq = 0;
+      state = { agents: [], generation: 0, queue: 0, settled: 0, heals: 0, replicas: 0, dispatched: 0 };
+      for (var i = 0; i < 8; i++) state.agents.push(spawn(0, [], null, null));
+      pulses = [];
+      selected = null;
+      score();
+      return state;
+    }
+
+    function living() {
+      return state.agents.filter(function (a) { return a.status !== 'dead'; });
+    }
+
+    function score() {
+      state.agents.forEach(function (a) {
+        if (a.samples === 0) { a.fitness = 0; return; }
+        // Wilson lower bound — three-for-three must not outrank 190-for-200.
+        var p = a.ok / a.samples, z = 1.96, n = a.samples, z2 = z * z;
+        var wilson = ((p + z2 / (2 * n)) - z * Math.sqrt((p * (1 - p) + z2 / (4 * n)) / n)) / (1 + z2 / n);
+        var stability = Math.max(0, 1 - (a.crashes / a.samples) * 4);
+        a.fitness = Math.max(0, Math.min(1, wilson * 0.72 + stability * 0.28));
+      });
+    }
+
+    /* Dispatch is an explore/exploit decision, not load balancing. */
+    function pick() {
+      var open = living().filter(function (a) {
+        return a.status !== 'quarantined' && a.circuit !== 'open' && a.inFlight < a.genes.conc;
+      });
+      if (!open.length) return null;
+
+      var unproven = open.filter(function (a) { return a.samples < 6; });
+      if (unproven.length) {
+        return unproven.sort(function (a, b) { return a.samples - b.samples; })[0];
+      }
+      if (open.length > 1 && Math.random() < 0.15) {
+        return open[Math.floor(Math.random() * open.length)];
+      }
+      return open.sort(function (a, b) {
+        var la = a.inFlight / a.genes.conc, lb = b.inFlight / b.genes.conc;
+        if (Math.abs(la - lb) > 0.15) return la - lb;
+        return b.fitness - a.fitness;
+      })[0];
+    }
+
+    function settle(agent, ok, crashed) {
+      agent.inFlight = Math.max(0, agent.inFlight - 1);
+      agent.samples += 1;
+      state.settled += 1;
+      if (ok) {
+        agent.ok += 1;
+        agent.fails = 0;
+        if (agent.circuit !== 'closed') { agent.circuit = 'closed'; narrate('Circuit', agent.id + ' recovered — its circuit breaker closed and it is taking work again.', 'ok'); }
+        if (agent.status === 'degraded') agent.status = 'idle';
+        else if (agent.inFlight === 0 && agent.status === 'busy') agent.status = 'idle';
+      } else {
+        agent.fails += 1;
+        if (crashed) agent.crashes += 1;
+
+        if (agent.circuit === 'closed' && agent.fails >= 3) {
+          agent.circuit = 'open';
+          agent.status = 'degraded';
+          narrate('Circuit', agent.id + ' failed 3 times in a row. Its circuit breaker opened — no more work goes to it until it proves it has recovered.', 'warn');
+        }
+        if (crashed) heal(agent);
+        if (agent.inFlight === 0 && agent.status === 'busy') agent.status = 'idle';
+      }
+      score();
+    }
+
+    /* Restart, then escalate. A restart loop is worse than an absent agent. */
+    function heal(agent) {
+      if (agent.restarts >= 3) {
+        agent.status = 'quarantined';
+        agent.circuit = 'open';
+        narrate('Quarantine', agent.id + ' has now crashed through 3 restarts. The supervisor has stopped restarting it and benched it instead — a restart loop is worse than an absent agent.', 'crit');
+        replicateIfNeeded('lost ' + agent.id + ' to quarantine');
+        return;
+      }
+      agent.restarts += 1;
+      agent.fails = 0;
+      agent.status = 'idle';
+      agent.circuit = 'half-open';
+      state.heals += 1;
+      narrate('Heal', agent.id + ' crashed, so the supervisor replaced its runtime (restart ' + agent.restarts + ' of 3). Its genome survives — healing is not supposed to undo evolution.', 'warn');
+    }
+
+    function replicateIfNeeded(reason) {
+      var healthy = living().filter(function (a) { return a.status !== 'quarantined' && a.circuit !== 'open'; });
+      if (!healthy.length) return;
+      var perAgent = state.queue / healthy.length;
+      if (perAgent < 3 && healthy.length >= 4) return;
+      if (living().length >= 14) return;
+
+      var proven = healthy.filter(function (a) { return a.samples >= 4; });
+      var source = (proven.length ? proven : healthy).sort(function (a, b) { return b.fitness - a.fitness; })[0];
+      if (!source) return;
+
+      var clone = spawn(source.gen, [source.id], JSON.parse(JSON.stringify(source.genes)), source.id);
+      clone.status = 'idle';
+      state.agents.push(clone);
+      state.replicas += 1;
+      narrate('Replicate', clone.id + ' was cloned from ' + source.id + ', the fittest proven genome (' + reason + '). Scaling up also spreads whatever configuration is currently winning.', 'ok');
+    }
+
+    function evolve() {
+      score();
+      var judgeable = living().filter(function (a) { return a.samples >= 6 && a.status !== 'quarantined'; });
+      if (judgeable.length < 4) {
+        narrate('Generation', 'Not enough evidence yet — most of the population has run fewer than 6 tasks. Send more work first, or selection would be culling genomes it knows nothing about.', 'warn');
+        return;
+      }
+
+      state.generation += 1;
+      var ranked = judgeable.sort(function (a, b) { return b.fitness - a.fitness; });
+      var doomed = ranked.slice(-2);
+
+      doomed.forEach(function (a) { a.status = 'dead'; });
+      narrate('Cull', 'Generation ' + state.generation + ': ' + doomed.map(function (a) { return a.id; }).join(' and ') +
+        ' scored lowest and were retired.', 'idle');
+
+      var pool = living().filter(function (a) { return a.status !== 'quarantined'; });
+      for (var i = 0; i < 2 && pool.length >= 2; i++) {
+        var pa = tournament(pool), pb = tournament(pool);
+        // Crossing a genome with itself is just cloning it under a new name, so
+        // draw again rather than pretending a clone is offspring.
+        var tries = 0;
+        while (pb.id === pa.id && tries < 4) { pb = tournament(pool); tries += 1; }
+        if (pb.id === pa.id) pb = pool.filter(function (x) { return x.id !== pa.id; })[0] || pb;
+
+        var child = spawn(state.generation, [pa.id, pb.id], cross(pa.genes, pb.genes), null);
+        var muts = mutate(child.genes);
+        state.agents.push(child);
+        narrate('Breed', child.id + ' was born from ' + pa.id + ' × ' + pb.id +
+          (muts.length ? ', with ' + muts.join(' and ') + ' mutated.' : ', with no mutation.') +
+          ' It is exempt from culling until it has run 6 tasks.', 'ok');
+      }
+      score();
+    }
+
+    function tournament(pool) {
+      var a = pool[Math.floor(Math.random() * pool.length)];
+      var b = pool[Math.floor(Math.random() * pool.length)];
+      var c = pool[Math.floor(Math.random() * pool.length)];
+      return [a, b, c].sort(function (x, y) { return y.fitness - x.fitness; })[0];
+    }
+
+    function cross(a, b) {
+      var blend = Math.random();
+      return {
+        temp: Math.round((a.temp + blend * (b.temp - a.temp)) * 100) / 100,
+        plan: Math.round(a.plan + blend * (b.plan - a.plan)),
+        reflect: Math.random() < 0.5 ? a.reflect : b.reflect,
+        conc: Math.round((a.conc + b.conc) / 2),
+        tools: Math.random() < 0.5 ? a.tools.slice() : b.tools.slice()
+      };
+    }
+
+    function mutate(g) {
+      var changed = [];
+      if (Math.random() < 0.35) { g.temp = Math.max(0, Math.min(1.5, Math.round((g.temp + (Math.random() - 0.5) * 0.4) * 100) / 100)); changed.push('temperature'); }
+      if (Math.random() < 0.3) { g.plan = Math.max(0, Math.min(5, g.plan + (Math.random() < 0.5 ? -1 : 1))); changed.push('planning depth'); }
+      if (Math.random() < 0.25) { g.reflect = !g.reflect; changed.push('reflection'); }
+      if (Math.random() < 0.2) { g.tools = TOOLSETS[Math.floor(Math.random() * TOOLSETS.length)]; changed.push('tools'); }
+      return changed;
+    }
+
+    // ── Task flow ───────────────────────────────────────────────────────────
+
+    function submit(count, why) {
+      state.queue += count;
+      replicateIfNeeded(why || 'queue pressure');
+      pump();
+    }
+
+    function pump() {
+      var guard = 0;
+      while (state.queue > 0 && guard < 40) {
+        guard += 1;
+        var agent = pick();
+        if (!agent) break;
+        state.queue -= 1;
+        state.dispatched += 1;
+        agent.inFlight += 1;
+        agent.status = 'busy';
+        launch(agent);
+      }
+      if (state.queue > 0) replicateIfNeeded('queue backing up');
+    }
+
+    function launch(agent) {
+      var quality = affinity(agent.genes);
+      var crashed = agent.sabotaged;
+      var ok = !crashed && Math.random() < 0.25 + quality * 0.72;
+      var flight = reduced ? 1 : 620 + Math.random() * 520;
+
+      pulses.push({
+        agent: agent, t: 0, dur: flight, out: true,
+        ok: ok, crashed: crashed,
+        angle: angleOf(agent)
+      });
+    }
+
+    function angleOf(agent) {
+      var pool = living();
+      var i = pool.indexOf(agent);
+      if (i < 0) i = 0;
+      return (-Math.PI / 2) + (Math.PI * 2 * i) / Math.max(1, pool.length);
+    }
+
+    function posOf(agent) {
+      var a = angleOf(agent);
+      return { x: CX + Math.cos(a) * RING, y: CY + Math.sin(a) * RING };
+    }
+
+    // ── Rendering ───────────────────────────────────────────────────────────
+
+    function svgEl(name, attrs) {
+      var el = document.createElementNS(SVG_NS, name);
+      for (var k in attrs) if (attrs.hasOwnProperty(k)) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+
+    function colorFor(agent) {
+      if (agent.status === 'quarantined') return 'var(--crit)';
+      if (agent.status === 'degraded' || agent.circuit !== 'closed' || agent.restarts > 0) return 'var(--warn)';
+      return 'var(--gilt)';
+    }
+
+    function render() {
+      var svg = document.getElementById('orchSvg');
+      if (!svg) return;
+      svg.innerHTML = '';
+
+      var pool = living();
+      var maxSamples = 1;
+      pool.forEach(function (a) { if (a.samples > maxSamples) maxSamples = a.samples; });
+
+      // Spokes
+      pool.forEach(function (a) {
+        var p = posOf(a);
+        var line = svgEl('line', {
+          x1: CX, y1: CY, x2: p.x, y2: p.y,
+          stroke: 'var(--line-strong)', 'stroke-width': 1,
+          'stroke-dasharray': a.status === 'quarantined' ? '3 4' : 'none',
+          opacity: a.status === 'quarantined' ? 0.4 : 0.75
+        });
+        svg.appendChild(line);
+      });
+
+      // Pulses
+      pulses.forEach(function (pl) {
+        var p = posOf(pl.agent);
+        var k = Math.min(1, pl.t / pl.dur);
+        var fx, fy;
+        if (pl.out) { fx = CX + (p.x - CX) * k; fy = CY + (p.y - CY) * k; }
+        else { fx = p.x + (CX - p.x) * k; fy = p.y + (CY - p.y) * k; }
+        var tone = pl.out ? 'var(--ink-3)' : (pl.crashed ? 'var(--crit)' : (pl.ok ? 'var(--ok)' : 'var(--warn)'));
+        svg.appendChild(svgEl('circle', { cx: fx, cy: fy, r: pl.out ? 2.6 : 3.4, fill: tone, opacity: 0.95 }));
+      });
+
+      // Conductor
+      var conductorSelected = selected === 'conductor';
+      var cg = svgEl('g', { class: 'orch-node', 'data-node': 'conductor', tabindex: '0', role: 'button' });
+      cg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: 46, fill: 'var(--gilt-wash)', stroke: 'var(--gilt)', 'stroke-width': conductorSelected ? 2.5 : 1.5 }));
+      var t1 = svgEl('text', { x: CX, y: CY - 4, 'text-anchor': 'middle', fill: 'var(--ink)', 'font-size': '13', 'font-weight': '600' });
+      t1.textContent = 'Conductor';
+      var t2 = svgEl('text', { x: CX, y: CY + 13, 'text-anchor': 'middle', fill: 'var(--ink-3)', 'font-size': '10.5' });
+      t2.textContent = state.queue + ' queued';
+      cg.appendChild(t1); cg.appendChild(t2);
+      svg.appendChild(cg);
+
+      // Subagents
+      pool.forEach(function (a) {
+        var p = posOf(a);
+        var r = 13 + Math.sqrt(a.samples / maxSamples) * 9;
+        var g = svgEl('g', { class: 'orch-node', 'data-node': a.id, tabindex: '0', role: 'button' });
+        var col = colorFor(a);
+
+        if (a.inFlight > 0) {
+          g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: r + 6, fill: 'none', stroke: col, 'stroke-width': 1, opacity: 0.35 }));
+        }
+        g.appendChild(svgEl('circle', {
+          cx: p.x, cy: p.y, r: r,
+          fill: a.status === 'quarantined' ? 'transparent' : 'var(--panel-2)',
+          stroke: col, 'stroke-width': selected === a.id ? 3 : 1.6,
+          'stroke-dasharray': a.status === 'quarantined' ? '4 3' : 'none'
+        }));
+        var lbl = svgEl('text', { x: p.x, y: p.y + 3.5, 'text-anchor': 'middle', fill: 'var(--ink-2)', 'font-size': '9.5', 'font-family': 'IBM Plex Mono, monospace' });
+        lbl.textContent = a.id;
+        g.appendChild(lbl);
+
+        if (a.replicaOf) {
+          var badge = svgEl('text', { x: p.x, y: p.y - r - 6, 'text-anchor': 'middle', fill: 'var(--ink-3)', 'font-size': '8.5', 'letter-spacing': '.08em' });
+          badge.textContent = 'CLONE';
+          g.appendChild(badge);
+        }
+        svg.appendChild(g);
+      });
+
+      document.getElementById('orch-clock').textContent =
+        pool.length + ' agents · gen ' + state.generation + ' · ' + state.settled + ' settled';
+    }
+
+    // ── Animation loop ──────────────────────────────────────────────────────
+
+    var last = 0;
+    function tick(now) {
+      var dt = last ? now - last : 16;
+      last = now;
+
+      var finished = [];
+      pulses.forEach(function (pl) {
+        pl.t += dt;
+        if (pl.t >= pl.dur) {
+          if (pl.out) { pl.out = false; pl.t = 0; }
+          else finished.push(pl);
+        }
+      });
+
+      finished.forEach(function (pl) {
+        pulses.splice(pulses.indexOf(pl), 1);
+        settle(pl.agent, pl.ok, pl.crashed);
+        if (selected === pl.agent.id) inspect(pl.agent.id);
+      });
+
+      if (finished.length) pump();
+      render();
+
+      if (pulses.length || state.queue > 0) rafId = requestAnimationFrame(tick);
+      else { rafId = null; last = 0; render(); }
+    }
+
+    function start() {
+      if (!rafId) { last = 0; rafId = requestAnimationFrame(tick); }
+    }
+
+    // ── Narration ───────────────────────────────────────────────────────────
+
+    function narrate(tag, text, tone) {
+      var host = document.getElementById('narration');
+      if (!host) return;
+      var row = document.createElement('div');
+      row.className = 'narr-row narr-' + (tone || 'idle');
+      row.innerHTML = '<span class="narr-tag">' + tag + '</span><span class="narr-text">' + text + '</span>';
+      host.insertBefore(row, host.firstChild);
+      while (host.children.length > 26) host.removeChild(host.lastChild);
+    }
+
+    // ── Inspector ───────────────────────────────────────────────────────────
+
+    function row(k, v) {
+      return '<div class="insp-row"><span>' + k + '</span><b>' + v + '</b></div>';
+    }
+
+    function inspect(nodeId) {
+      selected = nodeId;
+      var title = document.getElementById('insp-title');
+      var body = document.getElementById('insp-body');
+      if (!title || !body) return;
+
+      if (nodeId === 'conductor') {
+        title.textContent = 'The conductor';
+        body.innerHTML =
+          '<p class="insp-lede">The orchestrator. It is the only thing here allowed to create or destroy a subagent — so when something dies, there is exactly one place to look.</p>' +
+          '<div class="insp-rows">' +
+          row('Queued now', state.queue) +
+          row('Dispatched', state.dispatched) +
+          row('Settled', state.settled) +
+          row('Generation', state.generation) +
+          row('Heals performed', state.heals) +
+          row('Replicas made', state.replicas) +
+          '</div>' +
+          '<p class="insp-note"><b>What it does when work arrives:</b> it does not simply pick the best agent. Anyone below 6 samples goes first, because a genome you have never measured cannot be judged — and if the current leader took every task, its rivals would sit at zero forever and selection would have nothing to compare.</p>';
+        render();
+        return;
+      }
+
+      var a = state.agents.filter(function (x) { return x.id === nodeId; })[0];
+      if (!a) return;
+
+      var rate = a.samples ? Math.round((a.ok / a.samples) * 100) : 0;
+      var statusLine = {
+        idle: 'Healthy and waiting for work.',
+        busy: 'Running ' + a.inFlight + ' task' + (a.inFlight === 1 ? '' : 's') + ' right now.',
+        degraded: 'Failing repeatedly. Its circuit breaker is open, so the conductor has stopped sending it work.',
+        quarantined: 'Benched. It crashed through three restarts, so the supervisor gave up on restarting it.',
+        dead: 'Retired by selection.'
+      }[a.status] || a.status;
+
+      title.textContent = a.id + (a.replicaOf ? ' (clone)' : '');
+      body.innerHTML =
+        '<p class="insp-lede">' + statusLine + '</p>' +
+        '<div class="insp-rows">' +
+        row('Fitness', a.samples ? a.fitness.toFixed(3) : '—') +
+        row('Tasks run', a.samples) +
+        row('Success rate', a.samples ? rate + '%' : '—') +
+        row('Restarts', a.restarts + ' of 3') +
+        row('Circuit', a.circuit) +
+        row('Generation', a.gen) +
+        (a.parents.length ? row('Parents', a.parents.join(' × ')) : row('Origin', 'founder')) +
+        '</div>' +
+        '<div class="insp-genome"><span class="label">Its genome</span>' +
+        row('temperature', a.genes.temp.toFixed(2)) +
+        row('planning depth', a.genes.plan) +
+        row('reflection', a.genes.reflect ? 'on' : 'off') +
+        row('concurrency', a.genes.conc) +
+        row('tools', a.genes.tools.join(', ')) +
+        '</div>' +
+        '<p class="insp-note">' + (a.samples < 6
+          ? '<b>Protected.</b> It has run ' + a.samples + ' of the 6 tasks it needs before selection is allowed to judge it. Culling it now would be culling a genome nobody has measured.'
+          : (a.status === 'quarantined'
+            ? '<b>What happens next.</b> It stays benched. Its genome is still on record, so a descendant can inherit whatever was good about it.'
+            : '<b>What happens if it fails.</b> Three consecutive failures open its circuit breaker. A crash triggers a restart that replaces its runtime but keeps this genome — after three of those, the supervisor quarantines it instead of looping.')) +
+        '</p>';
+      render();
+    }
+
+    // ── Wiring ──────────────────────────────────────────────────────────────
+
+    function bind() {
+      var svg = document.getElementById('orchSvg');
+      if (!svg) return;
+
+      svg.addEventListener('click', function (e) {
+        var g = e.target.closest ? e.target.closest('.orch-node') : null;
+        if (g) inspect(g.getAttribute('data-node'));
+      });
+      svg.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var g = e.target.closest ? e.target.closest('.orch-node') : null;
+        if (g) { e.preventDefault(); inspect(g.getAttribute('data-node')); }
+      });
+
+      // Hovering a control explains it before it is pressed.
+      var coachTitle = document.getElementById('coach-title');
+      var coachText = document.getElementById('coach-text');
+      var restore = {
+        title: coachTitle.textContent,
+        text: coachText.textContent
+      };
+
+      document.querySelectorAll('.ctl').forEach(function (btn) {
+        function show() {
+          coachTitle.textContent = btn.getAttribute('data-what');
+          coachText.textContent = btn.getAttribute('data-does');
+        }
+        function hide() {
+          coachTitle.textContent = restore.title;
+          coachText.textContent = restore.text;
+        }
+        btn.addEventListener('mouseenter', show);
+        btn.addEventListener('focus', show);
+        btn.addEventListener('mouseleave', hide);
+        btn.addEventListener('blur', hide);
+      });
+
+      document.getElementById('ctl-run').addEventListener('click', function () {
+        narrate('Dispatch', 'Submitted 25 tasks. The conductor is feeding the least-sampled agents first.', 'ok');
+        submit(25, 'batch submitted');
+        start();
+      });
+
+      document.getElementById('ctl-break').addEventListener('click', function () {
+        var pool = living().filter(function (a) { return a.status !== 'quarantined' && !a.sabotaged; });
+        if (!pool.length) { narrate('Break', 'Every agent is already broken or benched. Try Reset.', 'warn'); return; }
+        var victim = pool.sort(function (a, b) { return b.samples - a.samples; })[0];
+        victim.sabotaged = true;
+        narrate('Fault injected', victim.id + ' now crashes on every call. Send it work and watch the supervisor try to save it, then give up.', 'crit');
+        submit(14, 'fault injected');
+        start();
+      });
+
+      document.getElementById('ctl-load').addEventListener('click', function () {
+        narrate('Load', 'Dumped 60 tasks into the queue at once.', 'warn');
+        submit(60, 'traffic spike');
+        start();
+      });
+
+      document.getElementById('ctl-evolve').addEventListener('click', function () {
+        evolve();
+        render();
+      });
+
+      document.getElementById('ctl-reset').addEventListener('click', function () {
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        reset();
+        document.getElementById('narration').innerHTML =
+          '<div class="narr-row"><span class="narr-tag">Ready</span><span class="narr-text">Eight fresh founding subagents at generation zero. Press <b>Send 25 tasks</b> to start.</span></div>';
+        document.getElementById('insp-title').textContent = 'Nothing selected';
+        document.getElementById('insp-body').innerHTML =
+          '<p class="insp-empty">Click the conductor in the middle, or any subagent around it.</p>';
+        render();
+      });
+
+      reset();
+      render();
+    }
+
+    /* ── Advisories and the subagents that resolve them ──────────────────
+       The same conditions the counsellor reports, expressed as data so a
+       subagent can act on them. Mirrors src/swarm/ops in the TypeScript
+       package: diagnose, plan, then execute — never plan-free action. */
+
+    function advisories() {
+      if (!state) return [];
+      score(); // decisions read fitness; make sure it is current, not stale
+
+      var pool = living();
+      var out = [];
+
+      var unproven = pool.filter(function (a) { return a.status !== 'quarantined' && a.samples < 6; });
+      if (unproven.length) {
+        out.push({
+          id: 'under-sampled:' + unproven.map(function (a) { return a.id; }).sort().join(','),
+          kind: 'under-sampled', severity: 'warn', subjects: unproven.map(function (a) { return a.id; }),
+          headline: unproven.length + ' agent' + (unproven.length === 1 ? '' : 's') + ' still unproven',
+          detail: 'They have run fewer than 6 tasks. A generation now would judge genomes nobody has measured, so they are protected from culling until they catch up.',
+          remediable: true
+        });
+      }
+
+      var open = pool.filter(function (a) { return a.circuit === 'open' && a.status !== 'quarantined'; });
+      if (open.length) {
+        out.push({
+          id: 'circuit-open:' + open.map(function (a) { return a.id; }).sort().join(','),
+          kind: 'circuit-open', severity: 'warn', subjects: open.map(function (a) { return a.id; }),
+          headline: open.length + ' circuit open',
+          detail: 'That agent failed three times in a row and is being held out of rotation. One successful probe closes the circuit again.',
+          remediable: true
+        });
+      }
+
+      var benched = pool.filter(function (a) { return a.status === 'quarantined'; });
+      if (benched.length) {
+        out.push({
+          id: 'quarantined:' + benched.map(function (a) { return a.id; }).sort().join(','),
+          kind: 'quarantined', severity: 'crit', subjects: benched.map(function (a) { return a.id; }),
+          headline: benched.length + ' agent' + (benched.length === 1 ? '' : 's') + ' benched',
+          detail: 'It crashed through three restarts, so the supervisor stopped trying. Its genome is still on record — a descendant can inherit whatever was good about it.',
+          remediable: true
+        });
+      }
+
+      var clones = pool.filter(function (a) { return a.replicaOf && a.inFlight === 0 && a.status === 'idle'; });
+      if (clones.length && state.queue === 0 && pool.length > 4) {
+        out.push({
+          id: 'idle-replicas:' + clones.map(function (a) { return a.id; }).sort().join(','),
+          kind: 'idle-replicas', severity: 'info', subjects: clones.map(function (a) { return a.id; }),
+          headline: clones.length + ' clone' + (clones.length === 1 ? '' : 's') + ' in the pool',
+          detail: 'Made under load from the fittest proven genome. Clones are drained first when pressure drops — founders and bred agents never are.',
+          remediable: true
+        });
+      }
+
+      return out;
+    }
+
+    /* What resolving would do, with nothing done. */
+    function planFor(adv) {
+      var pool = living();
+      var subjects = pool.filter(function (a) { return adv.subjects.indexOf(a.id) >= 0; });
+      if (!subjects.length) return null;
+
+      if (adv.kind === 'under-sampled') {
+        var shortfall = subjects.reduce(function (s, a) { return s + Math.max(0, 6 - a.samples); }, 0);
+        return {
+          agent: 'prover',
+          summary: 'Send ' + Math.ceil(shortfall * 1.35) + ' warm-up tasks so these genomes reach the 6-sample bar.',
+          steps: subjects.map(function (a) { return a.id + ': ' + a.samples + '/6 samples'; }),
+          destructive: false
+        };
+      }
+      if (adv.kind === 'circuit-open') {
+        return {
+          agent: 'prober',
+          summary: 'Send one canary task each to see whether they have recovered.',
+          steps: subjects.map(function (a) { return a.id + ': ' + a.fails + ' consecutive failures'; }),
+          destructive: false
+        };
+      }
+      if (adv.kind === 'quarantined') {
+        return {
+          agent: 'rehab',
+          summary: 'Retire the benched agents, breeding descendants from any whose measured performance was worth inheriting.',
+          steps: subjects.map(function (a) {
+            return a.id + ': fitness ' + a.fitness.toFixed(3) + ' over ' + a.samples + ' tasks — ' +
+              (a.samples >= 6 && a.fitness >= 0.45 ? 'breed a descendant, then retire' : 'retire, not worth inheriting');
+          }),
+          destructive: true
+        };
+      }
+      return {
+        agent: 'drainer',
+        summary: 'Drain the idle clones now that the queue is empty.',
+        steps: subjects.map(function (a) { return a.id + ': clone of ' + a.replicaOf + ', idle'; }),
+        destructive: true
+      };
+    }
+
+    function resolve(advId) {
+      var adv = advisories().filter(function (a) { return a.id === advId; })[0];
+      if (!adv) return { ok: false, note: 'that condition has already cleared' };
+
+      var pool = living();
+      var subjects = pool.filter(function (a) { return adv.subjects.indexOf(a.id) >= 0; });
+      var actions = [];
+
+      if (adv.kind === 'under-sampled') {
+        var budget = subjects.reduce(function (s, a) { return s + Math.max(0, 6 - a.samples); }, 0);
+        budget = Math.ceil(budget * 1.35);
+        var sent = 0;
+        for (var i = 0; i < budget; i++) {
+          var short = living().filter(function (a) { return adv.subjects.indexOf(a.id) >= 0 && a.samples + a.inFlight < 6; })
+            .sort(function (a, b) { return (a.samples + a.inFlight) - (b.samples + b.inFlight); })[0];
+          if (!short) break;
+          short.inFlight += 1; short.status = 'busy';
+          state.dispatched += 1;
+          launch(short);
+          sent += 1;
+        }
+        start();
+        narrate('Prover', 'Dispatched ' + sent + ' warm-up tasks to the unproven genomes. Selection can judge them once they land.', 'ok');
+        return { ok: true, note: 'Sent ' + sent + ' warm-up tasks.' };
+      }
+
+      if (adv.kind === 'circuit-open') {
+        subjects.forEach(function (a) {
+          a.circuit = 'half-open';
+          a.inFlight += 1; a.status = 'busy';
+          launch(a);
+          actions.push(a.id + ' probed');
+        });
+        start();
+        narrate('Prober', 'Sent one canary task to ' + subjects.length + ' agent' + (subjects.length === 1 ? '' : 's') +
+          '. A pass closes the circuit; a failure reopens it and leaves the agent to selection.', 'warn');
+        return { ok: true, note: 'Probing ' + subjects.length + ' agent(s).' };
+      }
+
+      if (adv.kind === 'quarantined') {
+        subjects.forEach(function (a) {
+          if (a.samples >= 6 && a.fitness >= 0.45) {
+            var mate = living().filter(function (x) {
+              return x.id !== a.id && x.status !== 'quarantined' && x.samples >= 6;
+            }).sort(function (x, y) { return y.fitness - x.fitness; })[0];
+            var childGenes = mate ? cross(a.genes, mate.genes) : JSON.parse(JSON.stringify(a.genes));
+            mutate(childGenes);
+            var child = spawn(state.generation, mate ? [a.id, mate.id] : [a.id], childGenes, null);
+            state.agents.push(child);
+            actions.push(child.id + ' bred from ' + a.id);
+            narrate('Rehab', child.id + ' was bred from ' + a.id + '’s genome' + (mate ? ' crossed with ' + mate.id : '') +
+              '. What was working about it survives; the broken runtime does not.', 'ok');
+          } else {
+            narrate('Rehab', a.id + ' retired without issue — fitness ' + a.fitness.toFixed(3) +
+              ' did not justify passing anything on.', 'idle');
+          }
+          a.status = 'dead';
+          actions.push(a.id + ' retired');
+        });
+        replicateIfNeeded('benched agents retired');
+        render();
+        return { ok: true, note: actions.join('; ') };
+      }
+
+      // idle replicas
+      var drained = 0;
+      subjects.forEach(function (a) {
+        if (state.queue > 0 || a.inFlight > 0) return;
+        a.status = 'dead';
+        drained += 1;
+      });
+      narrate('Drainer', 'Reclaimed ' + drained + ' idle clone' + (drained === 1 ? '' : 's') +
+        '. Founders and bred agents were left alone.', 'idle');
+      render();
+      return { ok: drained > 0, note: 'Drained ' + drained + ' clone(s).' };
+    }
+
+    function resolveAll() {
+      var list = advisories();
+      var notes = [];
+      // Bounded, exactly like the ops orchestrator: one bad state must not
+      // trigger a dozen simultaneous interventions.
+      list.slice(0, 4).forEach(function (adv) {
+        notes.push(resolve(adv.id).note);
+      });
+      return notes;
+    }
+
+    /* Exposed so the floating counsellor can read real state rather than guess. */
+    function stats() {
+      if (!state) return null;
+      var pool = living();
+      return {
+        agents: pool.length,
+        generation: state.generation,
+        settled: state.settled,
+        queue: state.queue,
+        heals: state.heals,
+        replicas: state.replicas,
+        unproven: pool.filter(function (a) { return a.samples < 6; }).length,
+        quarantined: pool.filter(function (a) { return a.status === 'quarantined'; }).length,
+        degraded: pool.filter(function (a) { return a.circuit === 'open' && a.status !== 'quarantined'; }).length,
+        sabotaged: pool.filter(function (a) { return a.sabotaged; }).length,
+        best: pool.reduce(function (m, a) { return Math.max(m, a.fitness); }, 0),
+        mean: pool.length ? pool.reduce(function (s, a) { return s + a.fitness; }, 0) / pool.length : 0,
+        selected: selected
+      };
+    }
+
+    return {
+      bind: bind, render: render, stats: stats, inspect: inspect,
+      advisories: advisories, planFor: planFor, resolve: resolve, resolveAll: resolveAll,
+    };
+  })();
+
+  ORCH.bind();
+
+  /* ── Floating guide ─────────────────────────────────────────────────────
+     Three jobs, one widget:
+       Guide      click anything in the console and it says what that thing is
+       Suggest    what is worth doing next, from where you are standing
+       Counsel    what the live numbers actually mean, and what to do about it
+     Plus a walkthrough that steps you across the whole platform. */
+
+  (function () {
+    'use strict';
+
+    // ── What things are ───────────────────────────────────────────────────
+    // Ordered most specific first; the first rule an element matches wins.
+    var GUIDE = [
+      ['#ctl-run', 'Send 25 tasks',
+        'Submits 25 units of work. Each pale dot travelling outward is a task being dispatched; the dot coming back is green if it succeeded, amber if it failed, red if the agent crashed. Whoever has the fewest samples gets fed first.'],
+      ['#ctl-break', 'Break an agent',
+        'Sabotages the busiest subagent so every call it makes crashes. Press it, then watch the log: the circuit breaker opens, the supervisor restarts it three times, and then deliberately stops trying and benches it.'],
+      ['#ctl-load', 'Flood the queue',
+        'Dumps 60 tasks in at once. When queue depth per healthy agent crosses the threshold, the replication controller clones the fittest proven genome. Scaling up is also how a winning configuration spreads.'],
+      ['#ctl-evolve', 'Run a generation',
+        'Scores everyone, retires the weakest two, and breeds two replacements from tournament-selected parents. If most agents are still unproven it will refuse — and tell you why.'],
+      ['#ctl-reset', 'Reset',
+        'Discards this population and seeds eight fresh random genomes at generation zero. Everything you have watched evolve is thrown away.'],
+
+      ['[data-node="conductor"]', 'The conductor',
+        'The orchestrator itself. It is the only component allowed to create or destroy a subagent, so when something dies there is exactly one place to look. It routes work, collects outcomes, and decides when a generation runs.'],
+      ['.orch-node', 'A subagent',
+        'One worker carrying one genome — its model settings, planning depth, tool set, concurrency and retry schedule. The ring grows with how much work it has done. Click it for its full state and what happens if it fails.'],
+      ['.orch-svg', 'The live population',
+        'The conductor in the centre, subagents around the ring, and work travelling along the spokes. Every dot is a real task settling against a real genome — this is the engine running, not a loop of animation.'],
+      ['.coach', 'The briefing bar',
+        'A running explanation of the panel you are on. Hover any control and it previews what that control will do before you commit to pressing it.'],
+      ['.narration', 'What just happened',
+        'Every heal, quarantine, replication, cull and birth, written in plain English, newest first. If you ever wonder why an agent vanished, the reason is in here.'],
+      ['#inspector', 'The inspector',
+        'Details for whatever you last clicked: live status, fitness, sample count, the genome itself, and — most usefully — what the system will do next if this agent keeps failing.'],
+
+      ['.nav-btn[data-panel="orchestrator"]', 'Orchestrator',
+        'The live engine, and the best place to start. Everything else in the console reports on work this layer performs.'],
+      ['.nav-btn[data-panel="workflows"]', 'Workflows',
+        'The processes you define — the steps, branches and error handling that agents execute. Executions in flight are tracked here.'],
+      ['.nav-btn[data-panel="agents"]', 'Agents',
+        'The standing pool: what each agent can do, how loaded it is, and the task queue waiting on it. This is the operational view; Swarm is the evolutionary one.'],
+      ['.nav-btn[data-panel="integrations"]', 'Integrations',
+        'The outside systems wired in — GitHub, Slack, Salesforce, Shopify, Stripe — and the stream of events arriving from them. Credentials live in the MCP vault, never in plaintext.'],
+      ['.nav-btn[data-panel="telemetry"]', 'Telemetry',
+        'System load, cache behaviour, and LangSmith traces. When something is slow, the span waterfall here shows which step actually cost the time.'],
+      ['.nav-btn[data-panel="swarm"]', 'Swarm',
+        'The evolutionary record: lineage, fitness across generations, and the leaderboard. This is output from a real 900-task engine run, not sample figures.'],
+      ['.nav-btn[data-panel="simulation"]', 'Simulation',
+        'Rehearsal. Drive real workflows with synthetic inputs and load-test them before they meet production traffic.'],
+      ['.nav-btn', 'A section',
+        'One area of the platform. The line underneath is its current state at a glance.'],
+
+      ['#lineageCanvas', 'The lineage graph',
+        'A genealogy. Each column is a generation, each node an individual, and each line runs from a parent to its offspring. Faded nodes were culled. Node size is how many tasks that genome ran.'],
+      ['#fitnessChart', 'Fitness by generation',
+        'Solid is the population mean, dashed is the best individual. Mean rising is the whole population improving; only the best rising means one lucky genome and no real progress.'],
+      ['#diversityChart', 'Genetic diversity',
+        'Mean pairwise distance between genomes. Falling alongside rising fitness is healthy convergence. Falling while fitness stalls means the search collapsed early and stopped exploring.'],
+      ['#sw-leaderboard', 'The leaderboard',
+        'Ranked by the scalar fitness, but the five bars matter more: success, latency, cost, quality and stability are scored independently. A genome can win overall while being poor at one of them.'],
+      ['.objbars', 'The five objectives',
+        'Each scored 0 to 1, higher is better, then combined using weights you control. Collapsing them into one number too early is how you evolve a swarm that is fast, cheap and wrong.'],
+
+      ['.dataChip, #dataChip', 'Data honesty chip',
+        'Says whether the section you are on is running a real engine or showing representative figures. Orchestrator and Swarm are live; the rest are sample data until you wire the API.'],
+      ['#themeBtn', 'Theme',
+        'Switches between the hall (dark) and the printed programme (light). Both are designed, not inverted.'],
+      ['.stat', 'A headline figure',
+        'One number with its context underneath. The small line below is the comparison that makes the number mean something.'],
+      ['.pill', 'A status pill',
+        'State encoded as shape and colour as well as text, so a row that needs attention reads at a glance without being parsed.'],
+      ['.trace', 'A trace',
+        'One LLM or workflow operation, broken into spans. Bar length is proportional to how long that span took — the longest bar is where the time actually went.'],
+      ['.tile', 'A card',
+        'A summary you can select. The sparkline is the last 24 hours of activity for this item.'],
+      ['table', 'A data table',
+        'The coloured stripe on the left of each row is its severity. Rows are ordered by whatever matters most for this table — usually priority, then time.'],
+      ['.rail', 'The section rail',
+        'Every area of the platform. You are always one click from anywhere else; nothing here is buried.'],
+      ['.masthead', 'The masthead',
+        'Where you are, whether this section is live or sample data, and the platform-wide throughput and health readout.']
+    ];
+
+    // ── Suggestions per section ───────────────────────────────────────────
+    var SUGGEST = {
+      orchestrator: [
+        ['Send work and watch it flow', 'Press Send 25 tasks, then click any subagent mid-flight to see it running.', function () { click('#ctl-run'); }],
+        ['See self-healing for real', 'Break an agent, then read the log. The supervisor gives up on purpose after three restarts.', function () { click('#ctl-break'); }],
+        ['Force the swarm to grow', 'Flood the queue and the fittest proven genome gets cloned to absorb the spike.', function () { click('#ctl-load'); }],
+        ['Breed a new generation', 'Retire the weakest two and breed replacements — but only once agents have enough samples.', function () { click('#ctl-evolve'); }]
+      ],
+      workflows: [
+        ['Look at what is in flight', 'The in-flight table shows live executions and which step each is on.', null],
+        ['Compare definitions', 'Each card carries 24 hours of run volume. A falling sparkline on a healthy workflow is worth investigating.', null]
+      ],
+      agents: [
+        ['Find the saturated agent', 'Look for the amber load meter — that is the one to give more concurrency or a replica.', null],
+        ['Check the queue', 'Critical-priority tasks should never be sitting behind normal ones for long.', null]
+      ],
+      integrations: [
+        ['Find the degraded connection', 'One integration is amber. Its sparkline is falling and events are dead-lettering.', null],
+        ['Read the event stream', 'Failures show their upstream reason, which is usually a timeout rather than your bug.', null]
+      ],
+      telemetry: [
+        ['Find the slow trace', 'The error trace has the longest first span — that is where the time went.', null],
+        ['Check the cache', 'Hit rate and commands per second tell you whether caching is actually earning its keep.', null]
+      ],
+      swarm: [
+        ['Read the lineage', 'Follow a thread left to right. Every survivor descends from just a couple of founders.', null],
+        ['Compare the two charts', 'Fitness up while diversity falls is convergence. Both falling would be collapse.', null],
+        ['Study the objective bars', 'The top genome is not best at everything — see where it trades quality for speed.', null]
+      ],
+      simulation: [
+        ['Run a batch', 'Drive a real workflow with synthetic inputs before it meets production traffic.', function () { click('#runBulk'); }],
+        ['Read the percentiles', 'p99 is what your worst-served users actually experience, not the average.', null]
+      ]
+    };
+
+    // ── Walkthrough ───────────────────────────────────────────────────────
+    var TOUR = [
+      ['orchestrator', '.orch-svg', 'Start here',
+        'The conductor sits in the middle and eight subagents ring it. This is a real engine running in the page — not a recording. Everything else in the console reports on work this layer does.'],
+      ['orchestrator', '#ctl-run', 'Give it work',
+        'Press this and 25 tasks fan out along the spokes. Green dots came back successful, amber failed, red means the agent crashed rather than just returning an error. That distinction matters — an agent that reliably reports failures is working correctly.'],
+      ['orchestrator', '#inspector', 'Click to understand',
+        'Click any node and this panel tells you what it is, what it is doing right now, its actual genome, and what will happen to it if it keeps failing. That last line is the useful one.'],
+      ['orchestrator', '#ctl-break', 'Watch it heal',
+        'This sabotages an agent so every call crashes. The supervisor restarts it three times, then deliberately stops and benches it — because a restart loop is worse than an absent agent.'],
+      ['orchestrator', '#narration', 'Follow the reasoning',
+        'Every heal, quarantine, replication, cull and birth lands here in plain English. If an agent ever disappears, the reason is in this log.'],
+      ['workflows', '.band', 'The processes you define',
+        'Workflows are the steps agents execute. This band is the health of the whole set; the table below is what is running right now.'],
+      ['agents', 'table', 'The standing pool',
+        'The operational view of your agents — capabilities, load, and the queue. Load leads because a marginally fitter agent that is already saturated is the slower choice.'],
+      ['integrations', '.stream', 'The outside world',
+        'Events arriving from GitHub, Slack, Salesforce, Shopify and Stripe. Failures carry their upstream reason so you are not debugging your own code by mistake.'],
+      ['telemetry', '.traces', 'Where the time goes',
+        'Each trace breaks into spans, and bar length is duration. The longest bar is the answer to "why was that slow".'],
+      ['swarm', '#lineageCanvas', 'The family tree',
+        'Ten generations of a real 900-task run. Columns are generations, lines run parent to child, faded nodes were culled. Every survivor descends from two founders.'],
+      ['swarm', '#fitnessChart', 'Did it actually learn?',
+        'Mean fitness climbed 33% while diversity fell — the population converged on a hidden optimum it was never told about. Mean rising is what matters; only the best rising would mean one lucky genome.'],
+      ['simulation', '.frame', 'Rehearse before production',
+        'Drive real workflows with synthetic inputs at whatever rate you like. Synthetic records are tagged and excluded from production analytics.']
+    ];
+
+    // ── State ─────────────────────────────────────────────────────────────
+    var mode = 'guide';
+    var tourStep = -1;
+    var spotlit = null;
+    var open = true;
+
+    var el = {};
+
+    function click(sel) {
+      var n = document.querySelector(sel);
+      if (n) n.click();
+    }
+
+    function currentPanel() {
+      var active = document.querySelector('.panel.is-active');
+      return active ? active.id.replace('panel-', '') : 'orchestrator';
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ── Build the widget ──────────────────────────────────────────────────
+    function build() {
+      var host = document.createElement('div');
+      host.className = 'guide';
+      host.id = 'guide';
+      host.innerHTML =
+        '<button class="guide-fab" id="guideFab" aria-label="Open the guide" title="Open the guide">' +
+          '<span>?</span></button>' +
+        '<section class="guide-panel" id="guidePanel" role="complementary" aria-label="Guide">' +
+          '<header class="guide-head">' +
+            '<div class="guide-id"><i></i><span>Guide</span></div>' +
+            '<button class="guide-min" id="guideMin" aria-label="Minimise the guide" title="Minimise">–</button>' +
+          '</header>' +
+          '<nav class="guide-tabs" role="tablist">' +
+            '<button class="guide-tab is-on" data-mode="guide" role="tab">What is this</button>' +
+            '<button class="guide-tab" data-mode="suggest" role="tab">Try next</button>' +
+            '<button class="guide-tab" data-mode="counsel" role="tab">Advice</button>' +
+          '</nav>' +
+          '<div class="guide-body" id="guideBody"></div>' +
+          '<footer class="guide-foot" id="guideFoot"></footer>' +
+        '</section>';
+      document.body.appendChild(host);
+
+      el.fab = document.getElementById('guideFab');
+      el.panel = document.getElementById('guidePanel');
+      el.body = document.getElementById('guideBody');
+      el.foot = document.getElementById('guideFoot');
+
+      el.fab.addEventListener('click', function () { setOpen(true); });
+      document.getElementById('guideMin').addEventListener('click', function () { setOpen(false); });
+
+      host.querySelectorAll('.guide-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          mode = tab.getAttribute('data-mode');
+          host.querySelectorAll('.guide-tab').forEach(function (t) { t.classList.toggle('is-on', t === tab); });
+          tab.classList.remove('has-new');
+          if (tourStep >= 0) endTour();
+          render();
+        });
+      });
+
+      try {
+        if (localStorage.getItem('concentus-guide') === 'closed') setOpen(false);
+      } catch (e) { /* storage blocked — the guide simply starts open */ }
+    }
+
+    function setOpen(next) {
+      open = next;
+      document.getElementById('guide').classList.toggle('is-open', open);
+      try { localStorage.setItem('concentus-guide', open ? 'open' : 'closed'); } catch (e) {}
+    }
+
+    // ── Explain-on-click ──────────────────────────────────────────────────
+    function explain(target) {
+      var node = target;
+      while (node && node !== document.body) {
+        for (var i = 0; i < GUIDE.length; i++) {
+          try {
+            if (node.matches && node.matches(GUIDE[i][0])) {
+              return { title: GUIDE[i][1], text: GUIDE[i][2], node: node };
+            }
+          } catch (e) { /* malformed selector — skip it */ }
+        }
+        node = node.parentElement;
+      }
+      return null;
+    }
+
+    var lastExplained = null;
+
+    function onDocumentClick(e) {
+      // Only react to a real person clicking. The walkthrough navigates between
+      // panels by clicking nav buttons itself, and a suggestion's "Do it" presses
+      // a control the same way — without this guard the guide would read its own
+      // actions as the user clicking away and cancel the tour mid-step.
+      if (!e.isTrusted) return;
+      if (e.target.closest && e.target.closest('#guide')) return;
+      var found = explain(e.target);
+      if (!found) return;
+      lastExplained = found;
+      if (tourStep >= 0) endTour();
+      if (!open) setOpen(true);
+
+      // Deliberately does NOT switch tabs. Yanking someone off Advice because
+      // they pressed a button is hostile; the explanation is waiting for them
+      // under "What is this" whenever they want it. Re-rendering in place is
+      // still worth it — advice is state-dependent, so it refreshes itself.
+      // A dot on the tab is enough to say something new is waiting.
+      if (mode !== 'guide') {
+        var tab = document.querySelector('.guide-tab[data-mode="guide"]');
+        if (tab) tab.classList.add('has-new');
+      }
+      render();
+    }
+
+    // ── Counsel: read the live state and say something useful ─────────────
+    function counsel() {
+      var panel = currentPanel();
+      var items = [];
+
+      if (panel === 'orchestrator' && typeof ORCH !== 'undefined' && ORCH.stats) {
+        var s = ORCH.stats();
+        if (s) {
+          if (s.settled === 0) {
+            items.push(['Nothing has run yet', 'Fitness is meaningless until agents have done work. Press <b>Send 25 tasks</b> — the conductor will feed the least-sampled agents first.']);
+          }
+          if (s.unproven > 0 && s.settled > 0) {
+            items.push([s.unproven + ' agent' + (s.unproven === 1 ? '' : 's') + ' still unproven',
+              'They have run fewer than 6 tasks. A generation now would judge genomes nobody has measured, so they are protected from culling until they catch up. Send more work first.']);
+          }
+          if (s.quarantined > 0) {
+            items.push([s.quarantined + ' agent benched',
+              'It crashed through three restarts, so the supervisor stopped trying. Its genome is still on record — a descendant can inherit whatever was good about it. Capacity dropped, so replication may have already compensated.']);
+          }
+          if (s.degraded > 0) {
+            items.push([s.degraded + ' circuit open',
+              'That agent failed three times in a row and is being held out of rotation. One successful probe closes the circuit again. If it never recovers, it will be culled on fitness.']);
+          }
+          if (s.queue > 0) {
+            items.push([s.queue + ' tasks queued',
+              'Every healthy agent is at its concurrency ceiling. If this persists the replication controller will clone the fittest proven genome rather than the nearest one — scaling up spreads what is winning.']);
+          }
+          if (s.generation === 0 && s.settled >= 24 && s.unproven === 0) {
+            items.push(['Ready for a generation', 'Everyone has enough samples to be judged fairly. <b>Run a generation</b> will retire the weakest two and breed replacements.']);
+          }
+          if (s.generation >= 1) {
+            items.push(['Generation ' + s.generation + ' · best ' + s.best.toFixed(3) + ', mean ' + s.mean.toFixed(3),
+              (s.best - s.mean > 0.25
+                ? 'The gap between best and mean is wide — one genome is carrying the population. Run more generations so the rest catch up, or the swarm depends on a single agent.'
+                : 'Best and mean are close, which means the whole population improved rather than one lucky individual. That is what you want.')]);
+          }
+          if (s.replicas > 0) {
+            items.push([s.replicas + ' clone' + (s.replicas === 1 ? '' : 's') + ' in the pool',
+              'These were made under load from the fittest proven genome. They are the first to be drained when pressure drops — founders and bred agents are never drained for capacity.']);
+          }
+        }
+      }
+
+      if (panel === 'swarm' && typeof SWARM !== 'undefined') {
+        var st = SWARM.stats, gens = SWARM.generations;
+        var first = gens[0], last = gens[gens.length - 1];
+        items.push(['The run did learn',
+          'Mean fitness went ' + first.mean.toFixed(3) + ' → ' + last.mean.toFixed(3) + '. Because the <i>mean</i> moved and not just the best, this was the population improving rather than one lucky genome.']);
+        items.push(['Diversity at ' + last.diversity.toFixed(3),
+          'Down from ' + first.diversity.toFixed(3) + '. Falling diversity alongside rising fitness is healthy convergence. If it approaches zero the search has stopped exploring — raise the mutation rate or the novelty weight to reopen it.']);
+        if (st.totalHeals > 0) {
+          items.push([st.totalHeals + ' heals during the run',
+            'One agent escalated all the way to quarantine. Worth checking whether that was a bad genome or a bad host — the supervisor cannot tell the difference, which is exactly why it caps restarts.']);
+        }
+        items.push([SWARM.pareto.length + ' genomes on the Pareto front',
+          'None of them beats the others on every objective. Which one wins is decided by your objective weights, not by the search. If the winner is wrong for you, change the weights before changing the algorithm.']);
+      }
+
+      if (!items.length) {
+        items.push(['This section is reporting, not running',
+          'The figures here are representative until you point the console at your API. The <b>Orchestrator</b> and <b>Swarm</b> sections run real engines — start there if you want to see behaviour rather than layout.']);
+      }
+      return items;
+    }
+
+    // ── Tour ──────────────────────────────────────────────────────────────
+    function gotoPanel(key) {
+      var btn = document.querySelector('.nav-btn[data-panel="' + key + '"]');
+      if (btn && currentPanel() !== key) btn.click();
+    }
+
+    function spotlight(selector) {
+      clearSpot();
+      var node = document.querySelector(selector);
+      if (!node) return;
+      node.classList.add('guide-spot');
+      spotlit = node;
+      try { node.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { node.scrollIntoView(); }
+    }
+
+    function clearSpot() {
+      if (spotlit) spotlit.classList.remove('guide-spot');
+      spotlit = null;
+    }
+
+    function startTour() {
+      tourStep = 0;
+      mode = 'guide';
+      document.querySelectorAll('.guide-tab').forEach(function (t) {
+        t.classList.toggle('is-on', t.getAttribute('data-mode') === 'guide');
+      });
+      showTourStep();
+    }
+
+    function showTourStep() {
+      var step = TOUR[tourStep];
+      if (!step) { endTour(); return; }
+      gotoPanel(step[0]);
+      setTimeout(function () { spotlight(step[1]); }, 60);
+      render();
+    }
+
+    function endTour() {
+      tourStep = -1;
+      clearSpot();
+      render();
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────
+    function render() {
+      if (!el.body) return;
+
+      if (tourStep >= 0) {
+        var step = TOUR[tourStep];
+        el.body.innerHTML =
+          '<div class="guide-step">Step ' + (tourStep + 1) + ' of ' + TOUR.length + '</div>' +
+          '<h4>' + esc(step[2]) + '</h4>' +
+          '<p>' + step[3] + '</p>';
+        el.foot.innerHTML =
+          '<button class="guide-btn guide-btn-quiet" data-act="prev"' + (tourStep === 0 ? ' disabled' : '') + '>Back</button>' +
+          '<button class="guide-btn" data-act="next">' + (tourStep === TOUR.length - 1 ? 'Finish' : 'Next') + '</button>' +
+          '<button class="guide-btn guide-btn-quiet" data-act="exit">Exit</button>';
+        bindFoot();
+        return;
+      }
+
+      if (mode === 'guide') {
+        if (lastExplained) {
+          el.body.innerHTML = '<h4>' + esc(lastExplained.title) + '</h4><p>' + lastExplained.text + '</p>';
+        } else {
+          el.body.innerHTML =
+            '<h4>Click anything</h4>' +
+            '<p>Click any part of the console — a node, a button, a chart, a section in the rail — and this panel tells you what it is and what it does.</p>' +
+            '<p class="guide-dim">Or take the walkthrough and it will step you across the whole platform.</p>';
+        }
+        el.foot.innerHTML = '<button class="guide-btn" data-act="tour">Walk me through it</button>';
+        bindFoot();
+        return;
+      }
+
+      if (mode === 'suggest') {
+        var panel = currentPanel();
+        var list = SUGGEST[panel] || [];
+        el.body.innerHTML =
+          '<h4>From here, try</h4>' +
+          '<ul class="guide-list">' + list.map(function (s, i) {
+            return '<li><button class="guide-item" data-sugg="' + i + '"' + (s[2] ? '' : ' data-inert="1"') + '>' +
+              '<b>' + esc(s[0]) + '</b><span>' + esc(s[1]) + '</span>' +
+              (s[2] ? '<i>Do it</i>' : '') + '</button></li>';
+          }).join('') + '</ul>';
+        el.body.querySelectorAll('.guide-item').forEach(function (btn) {
+          var idx = Number(btn.getAttribute('data-sugg'));
+          if (list[idx] && list[idx][2]) btn.addEventListener('click', function () { list[idx][2](); render(); });
+        });
+        el.foot.innerHTML = '<button class="guide-btn" data-act="tour">Walk me through it</button>';
+        bindFoot();
+        return;
+      }
+
+      // On the orchestrator the advice is not just narration — each item is a
+      // condition a remediation subagent knows how to clear, so it comes with
+      // the plan it would carry out and a button to carry it out.
+      var live = currentPanel() === 'orchestrator' && typeof ORCH !== 'undefined' && ORCH.advisories;
+      if (live) {
+        var advisories = ORCH.advisories();
+        if (advisories.length === 0) {
+          el.body.innerHTML =
+            '<h4>Nothing to fix</h4>' +
+            '<p>No open advisories. Send work, break an agent, or flood the queue and this panel will fill up with things the subagents can resolve.</p>';
+          el.foot.innerHTML = '<button class="guide-btn guide-btn-quiet" data-act="refresh">Re-check</button>' +
+                              '<button class="guide-btn" data-act="tour">Walk me through it</button>';
+          bindFoot();
+          return;
+        }
+
+        el.body.innerHTML =
+          '<h4>' + advisories.length + ' open advisor' + (advisories.length === 1 ? 'y' : 'ies') + '</h4>' +
+          '<ul class="guide-advice">' + advisories.map(function (a, i) {
+            var plan = ORCH.planFor(a);
+            return '<li class="adv adv-' + a.severity + '">' +
+              '<b>' + esc(a.headline) + '</b>' +
+              '<span>' + esc(a.detail) + '</span>' +
+              (plan
+                ? '<div class="adv-plan"><i>' + esc(plan.agent) + '</i> ' + esc(plan.summary) +
+                  (plan.destructive ? ' <em>destructive</em>' : '') + '</div>' +
+                  '<button class="adv-fix" data-adv="' + i + '">Resolve</button>'
+                : '<div class="adv-plan">nothing useful to do about this right now</div>') +
+              '</li>';
+          }).join('') + '</ul>';
+
+        el.body.querySelectorAll('.adv-fix').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var adv = advisories[Number(btn.getAttribute('data-adv'))];
+            if (!adv) return;
+            var result = ORCH.resolve(adv.id);
+            btn.disabled = true;
+            btn.textContent = result.ok ? 'Resolved' : 'No change';
+            // Warm-up and probe tasks settle over the next second or so, and
+            // the advisory only clears once they land — so re-read then.
+            setTimeout(function () { if (mode === 'counsel') render(); }, 1600);
+          });
+        });
+
+        el.foot.innerHTML =
+          '<button class="guide-btn guide-btn-quiet" data-act="refresh">Re-check</button>' +
+          '<button class="guide-btn" data-act="fixall">Resolve all</button>';
+        bindFoot();
+        return;
+      }
+
+      var advice = counsel();
+      el.body.innerHTML =
+        '<h4>Reading the room</h4>' +
+        '<ul class="guide-advice">' + advice.map(function (a) {
+          return '<li><b>' + esc(a[0]) + '</b><span>' + a[1] + '</span></li>';
+        }).join('') + '</ul>';
+      el.foot.innerHTML = '<button class="guide-btn guide-btn-quiet" data-act="refresh">Re-read state</button>' +
+                          '<button class="guide-btn" data-act="tour">Walk me through it</button>';
+      bindFoot();
+    }
+
+    function bindFoot() {
+      el.foot.querySelectorAll('[data-act]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var act = btn.getAttribute('data-act');
+          if (act === 'tour') startTour();
+          else if (act === 'next') { tourStep += 1; if (tourStep >= TOUR.length) endTour(); else showTourStep(); }
+          else if (act === 'prev') { tourStep = Math.max(0, tourStep - 1); showTourStep(); }
+          else if (act === 'exit') endTour();
+          else if (act === 'refresh') render();
+          else if (act === 'fixall') {
+            if (typeof ORCH !== 'undefined' && ORCH.resolveAll) ORCH.resolveAll();
+            setTimeout(function () { if (mode === 'counsel') render(); }, 1800);
+          }
+        });
+      });
+    }
+
+    // ── Go ────────────────────────────────────────────────────────────────
+    build();
+    setOpen(open);
+    render();
+
+    document.addEventListener('click', onDocumentClick, true);
+
+    // Advice and suggestions are section-specific, so refresh when the section changes.
+    document.querySelectorAll('.nav-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (tourStep < 0 && mode !== 'guide') setTimeout(render, 40);
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && tourStep >= 0) endTour();
+    });
+  })();
+
+  /* ── Simulation runner ────────────────────────────────────────── */
+  var log = document.getElementById("simLog");
+  var running = false;
+
+  function stamp() {
+    var d = new Date();
+    return String(d.getHours()).padStart(2, "0") + ":" +
+           String(d.getMinutes()).padStart(2, "0") + ":" +
+           String(d.getSeconds()).padStart(2, "0");
+  }
+
+  function say(html) {
+    var row = document.createElement("div");
+    row.className = "log-line";
+    row.innerHTML = "<time>" + stamp() + "</time><span>" + html + "</span>";
+    log.appendChild(row);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function run(kind) {
+    if (running) return;
+    running = true;
+    log.innerHTML = "";
+
+    var wf = document.getElementById("simTemplate").value;
+    var count = parseInt(document.getElementById("simCount").value, 10) || 100;
+    var rps = parseInt(document.getElementById("simRps").value, 10) || 50;
+    var dur = parseInt(document.getElementById("simDur").value, 10) || 30;
+    var total = kind === "load" ? rps * dur : count;
+
+    say("Queued <em>" + wf + "</em> — " + total.toLocaleString("en-US") +
+        (kind === "load" ? " requests at " + rps + " rps over " + dur + " s" : " executions"));
+
+    var done = 0, failed = 0, ticks = 0;
+    var timer = setInterval(function () {
+      ticks++;
+      var slice = Math.ceil(total / 8);
+      done = Math.min(total, done + slice);
+      failed += Math.random() < 0.35 ? Math.ceil(slice * 0.002) : 0;
+      say("Dispatched " + done.toLocaleString("en-US") + " / " + total.toLocaleString("en-US") +
+          " · " + failed + " failed · p95 " + (2.9 + Math.random() * 0.9).toFixed(2) + " s");
+      if (done >= total || ticks >= 8) {
+        clearInterval(timer);
+        var rate = (((total - failed) / total) * 100).toFixed(2);
+        say("<em>Complete.</em> " + rate + "% succeeded · results written to the run history");
+        running = false;
+      }
+    }, reduced ? 60 : 520);
+  }
+
+  document.getElementById("runBulk").addEventListener("click", function () { run("bulk"); });
+  document.getElementById("runLoad").addEventListener("click", function () { run("load"); });
+})();
+</script>
+</body>
+</html>
