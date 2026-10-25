@@ -35,7 +35,7 @@ PUBLIC_URLS = {
     "LeadFinder EPIC": "https://stacey77.github.io/rag7/nova-digitus-site/try/leadfinder-epic/",
     "MCP Trading Desk": "https://stacey77.github.io/rag7/nova-digitus-site/try/mcp-trading-desk/",
     "Nova Trading Platform": "https://stacey77.github.io/rag7/nova-digitus-site/try/nova-trading-platform/",
-    "Crown & Council": "https://aistudio.google.com/apps/11de2624-0a51-483a-8037-d010deb28e52?showPreview=true",
+    "Crown & Council": "https://stacey77.github.io/rag7/nova-digitus-site/try/crown-council/",
     "IRIEBOT7.io Autonomous Trading Dashboard": "https://aistudio.google.com/apps/545e3ecf-6b90-48c3-9697-a3dbb7fe90aa?showPreview=true",
     "AI Agentic Brain: Digital Illustration Platform": "https://aistudio.google.com/apps/c292afb7-1efd-4159-8d97-ca793f318eb7?showPreview=true",
     "AI Business Operations Orchestrator": "https://aistudio.google.com/apps/a228c806-02ab-4eda-a22e-e908c3f55578?showPreview=true",
