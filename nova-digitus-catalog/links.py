@@ -35,6 +35,7 @@ PUBLIC_URLS = {
     "LeadFinder EPIC": "https://stacey77.github.io/rag7/nova-digitus-site/try/leadfinder-epic/",
     "MCP Trading Desk": "https://stacey77.github.io/rag7/nova-digitus-site/try/mcp-trading-desk/",
     "Nova Trading Platform": "https://stacey77.github.io/rag7/nova-digitus-site/try/nova-trading-platform/",
+    "Crown & Council": "https://aistudio.google.com/apps/11de2624-0a51-483a-8037-d010deb28e52?showPreview=true",
     # "TerraFleet Autonomous Garden Robotics": "https://example.com/try/terrafleet/",
 }
 
