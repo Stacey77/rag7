@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Consilium Mobile: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Consilium Mobile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Home-screen install for the demo.
+
+     A published artifact is one file on a shared origin, so it cannot serve
+     /sw.js or /manifest.webmanifest — a real service worker is impossible
+     here. These tags are what actually works: iOS reads them directly, so
+     Add to Home Screen gives a full-screen launcher with the right icon.
+     The installable-with-offline version is the platform itself. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Consilium">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2438C8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0C13" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAACZUlEQVR42u3c0VWDQBRFUeatlII1iP1/iDVIL1hBlhIjzFz3biBKzrq+5MM2dWBe1n0iwrYu7crXbwImKfAmYpLibiImKe4mZJLCLjGT9IVAEzJJa11iJmmtm5BJWusSM0lrXWImKeoSM0lRl5hJirrETFLUJWaSoi4xkxR1eUQkKetM0kqXmEmK2slB/slhnRl1pUvMJEXt5CD35LDOjL7SFpr8D4UwfNDODRLODguNkwN61ZwbWGgQNAgajgXtfsZCg6BB0CBoBA2CBkGDoEHQCBoEDYIGQYOgETQIGgQNgoZ7bmm/0Of7q3f1gJe3DwsNggZBg6ARNAgaBA2CBkEjaBA0CBoEDYJG0CBoEDQIGgSNoEHQIGgQNAgaQYOgQdAgaBA0ggZBw7luHsFzpf2/ZQsNggZBg6ARNAgaBA2CBkEjaBA0CBoEDYJG0CBoEDQIGkGDoEHQIGgQNIIGQYOgQdAgaAQNggZBg6BB0AgaBA2CBkGDoBE0CBoEDYIGQROszcu6ewxYaBA0CBoEjaBB0CBoEDQIGkGDoEHQIGgQNIIGQYOgQdAgaPKD3taleQxYaBA0CBqOBe2OJsG2Ls1C4+SA7oN2djD6uWGhcXLAMEE7Oxj53LDQ5J8cVppR1/nuQouaEWN2cpB/clhpRl3nbxda1IwUs5OD/3NyWGlGW+cfL7SoGSHmQyeHqOk95sM3tKjpOeaHPhSKml5jfihoUdNrzA8HLWp6jHmapukpUc7LunsLuDLkXy+0taa3mJ+20NaaXgaxev7hEPPlC22tuXL4TltTcXPGX+9LzgNxi/ivfAEdt7mGDINz0QAAAABJRU5ErkJggg==">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F1F2F7; --surface:#FFFFFF; --surface-2:#E9EAF2;
+  --line:#D6D9E8; --line-soft:#E5E7F1;
+  --ink:#12131C; --ink-2:#3C3F52; --muted:#63677E;
+  --accent:#2438C8; --accent-ink:#1B2B9E; --accent-soft:#E3E6FA; --on-accent:#FFFFFF;
+  --good:#166B4E; --good-soft:#DCEFE7;
+  --warn:#87540A; --warn-soft:#F6E9D1;
+  --crit:#A32017; --crit-soft:#F7DFDD;
+  --bezel:#C7CADB; --screen:#F7F8FC;
+  --shadow-lift:0 2px 4px rgba(18,19,28,.08), 0 30px 60px -24px rgba(18,19,28,.45);
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --ui:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B0C13; --surface:#14161F; --surface-2:#1C1F2C;
+    --line:#2B2F42; --line-soft:#232636;
+    --ink:#E8E9F2; --ink-2:#C1C4D6; --muted:#8D91A8;
+    --accent:#8B98FF; --accent-ink:#B6BEFF; --accent-soft:#1D2250; --on-accent:#0B0C13;
+    --good:#5FCFA6; --good-soft:#10312A;
+    --warn:#E0AC4E; --warn-soft:#33260F;
+    --crit:#F08A80; --crit-soft:#3A1B18;
+    --bezel:#2A2E40; --screen:#0F111A;
+    --shadow-lift:0 2px 6px rgba(0,0,0,.6), 0 34px 66px -26px rgba(0,0,0,1);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B0C13; --surface:#14161F; --surface-2:#1C1F2C;
+  --line:#2B2F42; --line-soft:#232636;
+  --ink:#E8E9F2; --ink-2:#C1C4D6; --muted:#8D91A8;
+  --accent:#8B98FF; --accent-ink:#B6BEFF; --accent-soft:#1D2250; --on-accent:#0B0C13;
+  --good:#5FCFA6; --good-soft:#10312A;
+  --warn:#E0AC4E; --warn-soft:#33260F;
+  --crit:#F08A80; --crit-soft:#3A1B18;
+  --bezel:#2A2E40; --screen:#0F111A;
+  --shadow-lift:0 2px 6px rgba(0,0,0,.6), 0 34px 66px -26px rgba(0,0,0,1);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;padding:26px 16px 34px;-webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.stage-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;text-align:center}
+.mark{width:22px;height:22px;border-radius:6px;background:var(--accent);position:relative;flex:none}
+.mark::after{content:"";position:absolute;inset:6px;border-radius:2px;background:var(--bg);
+  clip-path:polygon(0 0,100% 0,100% 42%,42% 42%,42% 100%,0 100%)}
+.stage-head h1{font-family:var(--display);font-weight:800;letter-spacing:-.025em;font-size:17px;margin:0}
+.stage-head .sub{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);border-left:1px solid var(--line);padding-left:12px}
+
+/* ---------- phone ---------- */
+.phone{width:100%;max-width:376px;background:var(--bezel);border-radius:42px;padding:10px;box-shadow:var(--shadow-lift)}
+.glass{background:var(--screen);border-radius:33px;overflow:hidden;display:flex;flex-direction:column;height:min(742px,calc(100vh - 168px));min-height:560px}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;
+  font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sig{display:flex;gap:3px;align-items:flex-end}
+.sig i{width:3px;background:var(--muted);border-radius:1px;display:block}
+
+.apphead{padding:6px 18px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line-soft)}
+.who{display:flex;align-items:center;gap:9px;min-width:0}
+.avatar{width:31px;height:31px;border-radius:9px;background:var(--accent);flex:none;position:relative}
+.avatar::after{content:"";position:absolute;inset:8px;border-radius:2px;background:var(--screen);
+  clip-path:polygon(0 0,100% 0,100% 42%,42% 42%,42% 100%,0 100%)}
+.nmwrap .nm{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.02em;line-height:1.1}
+.nmwrap .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.headright{display:flex;align-items:center;gap:7px;flex:none}
+.reset{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:var(--surface);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:none}
+.reset:hover{border-color:var(--accent);color:var(--accent-ink)}
+.badge{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;background:var(--accent);
+  color:var(--on-accent);border-radius:20px;padding:4px 9px;white-space:nowrap}
+.badge.done{background:var(--good-soft);color:var(--good)}
+
+.screens{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+.screen{display:none;padding:14px 14px 22px;flex-direction:column;gap:10px;min-height:100%}
+.screen.is-active{display:flex}
+
+.sechead{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:6px 2px 0}
+.screen > .sechead:first-child{margin-top:0}
+
+.pill{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;padding:2.5px 7px;border-radius:5px;white-space:nowrap;background:var(--surface-2);color:var(--ink-2)}
+.pill.ok{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}
+.pill.acc{background:var(--accent-soft);color:var(--accent-ink)}
+
+.agentchip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;
+  font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--accent-ink)}
+.agentchip .sq{width:7px;height:7px;border-radius:2px;background:var(--accent);flex:none}
+
+/* cards */
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 14px;
+  text-align:left;width:100%;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;gap:7px;
+  transition:transform .16s ease,border-color .16s ease}
+.pcard:hover{border-color:var(--accent);transform:translateY(-1px)}
+.pcard[data-state="approved"],.pcard[data-state="declined"]{opacity:.5;cursor:default}
+.pcard[data-state="approved"]:hover,.pcard[data-state="declined"]:hover{transform:none;border-color:var(--line)}
+.pcard .top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.pcard h2{margin:0;font-family:var(--display);font-weight:700;font-size:14.5px;line-height:1.22;letter-spacing:-.015em}
+.pcard .line{margin:0;font-size:12.4px;line-height:1.42;color:var(--muted)}
+.pcard .cta{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.stamp{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase}
+.stamp.ok{color:var(--good)}
+.stamp.no{color:var(--muted)}
+
+/* detail */
+.back{background:none;border:0;padding:2px 0;font:inherit;cursor:pointer;color:var(--muted);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;align-self:flex-start}
+.back:hover{color:var(--accent-ink)}
+.dtitle{margin:2px 0 0;font-family:var(--display);font-weight:800;font-size:19px;line-height:1.14;letter-spacing:-.025em;color:var(--ink)}
+.dline{margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 13px}
+.block h3{margin:0 0 7px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.block ul{margin:0;padding-left:1.05em;font-size:12.4px;line-height:1.45;color:var(--ink-2)}
+.block li{margin-bottom:5px}
+.block li:last-child{margin-bottom:0}
+.block p{margin:0;font-size:12.8px;line-height:1.5;color:var(--ink-2)}
+.draft{font-family:var(--mono);font-size:11.4px;line-height:1.62;color:var(--ink-2);white-space:pre-wrap;
+  background:var(--surface-2);border-radius:8px;padding:11px;margin:0;max-height:170px;overflow-y:auto}
+.gatebar{display:flex;gap:9px;align-items:flex-start;background:var(--warn-soft);border-radius:10px;
+  padding:10px 12px;font-size:11.8px;line-height:1.42;color:var(--warn)}
+.gatebar svg{flex:none;margin-top:1px}
+.actions{display:flex;gap:8px;margin-top:2px}
+.btn{flex:1;font:inherit;font-family:var(--ui);font-weight:600;font-size:13px;border-radius:11px;
+  padding:11px 8px;cursor:pointer;border:1px solid transparent;transition:filter .15s ease}
+.btn:hover{filter:brightness(1.07)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:var(--surface);border-color:var(--line);color:var(--ink-2);flex:0 0 auto;padding:11px 14px}
+
+.done{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.donemark{width:38px;height:38px;border-radius:11px;background:var(--good-soft);color:var(--good);
+  display:flex;align-items:center;justify-content:center}
+.donetitle{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;line-height:1.2}
+.audit{font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--muted);background:var(--surface-2);
+  border-radius:8px;padding:11px;white-space:pre-wrap;width:100%;overflow-x:auto}
+
+/* ask */
+.thread{display:flex;flex-direction:column;gap:9px;flex:1}
+.bub{max-width:86%;padding:10px 12px;border-radius:14px;font-size:13px;line-height:1.45}
+.bub.me{align-self:flex-end;background:var(--accent);color:var(--on-accent);border-bottom-right-radius:5px}
+.bub.consilium{align-self:flex-start;background:var(--surface);border:1px solid var(--line);color:var(--ink-2);border-bottom-left-radius:5px}
+.bub.route{align-self:flex-start;background:none;border:0;padding:2px 2px;font-family:var(--mono);
+  font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.bub .mini{margin-top:9px;padding-top:9px;border-top:1px solid var(--line-soft);
+  font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--muted);white-space:pre-wrap}
+.chips{display:flex;flex-wrap:wrap;gap:7px;padding-top:6px;border-top:1px solid var(--line-soft);margin-top:auto}
+.chip{font:inherit;font-size:11.5px;background:var(--surface);border:1px solid var(--line);color:var(--ink-2);
+  border-radius:20px;padding:7px 12px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent-ink)}
+.chip[disabled]{opacity:.4;cursor:default}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:4px;height:4px;border-radius:50%;background:var(--muted);animation:bl 1.1s infinite}
+.dots i:nth-child(2){animation-delay:.16s}
+.dots i:nth-child(3){animation-delay:.32s}
+@keyframes bl{0%,60%,100%{opacity:.28}30%{opacity:1}}
+
+/* team */
+.arow{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--line);
+  border-radius:12px;padding:11px 12px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  transition:border-color .16s ease}
+.arow:hover{border-color:var(--accent)}
+.arow .sq{width:9px;height:9px;border-radius:3px;flex:none;margin-top:4px}
+.arow .nm{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:-.015em;line-height:1.2}
+.arow .rl{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.arow .ac{font-size:12px;line-height:1.4;color:var(--ink-2);margin-top:4px}
+.arow .st{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+/* tier control */
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--surface-2);padding:4px;border-radius:11px}
+.tierbtn{font:inherit;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;
+  border:0;background:none;color:var(--muted);padding:8px 2px;border-radius:8px;cursor:pointer;font-weight:600}
+.tierbtn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.tierbtn[disabled]{opacity:.32;cursor:not-allowed}
+.tierhint{font-size:11.8px;line-height:1.45;color:var(--muted);margin:8px 0 0}
+.locked{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);padding:6px 0;border-bottom:1px solid var(--line-soft)}
+.locked:last-child{border-bottom:0}
+.locked svg{flex:none;color:var(--muted)}
+.savedline{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--good);
+  display:flex;align-items:center;gap:6px;min-height:14px}
+
+/* connect */
+.crow{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.crow .ic{width:28px;height:28px;border-radius:8px;background:var(--surface-2);flex:none;display:flex;
+  align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--ink-2)}
+.crow .nm{font-size:13px;font-weight:500;line-height:1.2}
+.crow .sc{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tgl{margin-left:auto;width:38px;height:22px;border-radius:20px;border:0;cursor:pointer;background:var(--surface-2);
+  position:relative;padding:0;flex:none;transition:background .18s ease}
+.tgl::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;
+  background:var(--muted);transition:transform .18s ease,background .18s ease}
+.tgl[aria-pressed="true"]{background:var(--accent)}
+.tgl[aria-pressed="true"]::after{transform:translateX(16px);background:#fff}
+
+/* tabs */
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--surface)}
+.tab{background:none;border:0;padding:10px 4px 15px;cursor:pointer;font:inherit;display:flex;
+  flex-direction:column;align-items:center;gap:4px;color:var(--muted)}
+.tab span{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.tab[aria-selected="true"]{color:var(--accent-ink)}
+
+/* stage footer */
+.stage-foot{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.linkbtn{font:inherit;background:none;border:1px solid var(--line);color:var(--muted);border-radius:20px;
+  padding:6px 13px;cursor:pointer;letter-spacing:.09em}
+.linkbtn:hover{border-color:var(--accent);color:var(--accent-ink)}
+
+/* ---------------------------------------------------------------
+   Full-bleed on a real phone.
+
+   Below this width the viewer IS the device, so the bezel, the stage
+   and the fake status bar all come off and the app fills the screen.
+   Safe-area insets keep the header clear of the notch and the tab bar
+   clear of the home indicator; dvh keeps the layout honest while the
+   browser chrome slides away on scroll.
+   --------------------------------------------------------------- */
+@media (max-width:560px){
+  body{display:block;padding:0;gap:0;background:var(--screen);height:100dvh;overflow:hidden}
+  .stage-head,.stage-foot{display:none}
+  .phone{max-width:none;padding:0;border-radius:0;box-shadow:none;background:var(--screen)}
+  .glass{border-radius:0;height:100dvh;min-height:0}
+  .statusbar{display:none}                       /* the device already has one */
+  .apphead{padding-top:calc(14px + env(safe-area-inset-top));
+           padding-left:calc(16px + env(safe-area-inset-left));
+           padding-right:calc(16px + env(safe-area-inset-right))}
+  .screens{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+  .tabs{padding-bottom:env(safe-area-inset-bottom)}
+  .tab{padding:11px 4px 13px}
+  /* Touch targets, not mouse targets. */
+  .pcard{padding:15px 16px}
+  .btn{padding:14px 10px;font-size:14px}
+  .chip{padding:9px 14px;font-size:12.5px}
+  .tierbtn{padding:11px 4px}
+  .tgl{width:44px;height:26px}
+  .tgl::after{width:20px;height:20px}
+  .tgl[aria-pressed="true"]::after{transform:translateX(18px)}
+}
+@media (max-width:380px){
+  .tab span{font-size:8.5px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+
+<div class="stage-head">
+  <div class="mark" aria-hidden="true"></div>
+  <h1>Consilium Orchestrator</h1>
+  <div class="sub">Mobile prototype &middot; Nova Digitus Designs</div>
+</div>
+
+<div class="phone">
+  <div class="glass">
+
+    <div class="statusbar">
+      <span>7:19</span>
+      <span class="sig" aria-hidden="true"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i></span>
+    </div>
+
+    <div class="apphead">
+      <div class="who">
+        <div class="avatar" aria-hidden="true"></div>
+        <div class="nmwrap">
+          <div class="nm">Consilium</div>
+          <div class="sub">Orchestrator &middot; 9 agents</div>
+        </div>
+      </div>
+      <div class="headright">
+        <div class="badge" id="badge">4 waiting</div>
+        <button class="reset" id="resetBtn" type="button" title="Reset the demo" aria-label="Reset the demo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="screens" id="screens">
+
+      <div class="screen is-active" id="s-today" role="tabpanel" aria-label="Today">
+        <p class="sechead">Sunday, August 23 &middot; morning brief</p>
+        <div id="feed" style="display:flex;flex-direction:column;gap:10px"></div>
+        <p class="sechead">Handled overnight</p>
+        <div class="pcard" data-state="approved" style="cursor:default">
+          <div class="top"><span class="agentchip"><span class="sq"></span>Rig</span><span class="stamp ok">&#10003; 04:02</span></div>
+          <h2>Square sync had drifted 6 hours</h2>
+          <p class="line">Re-authorized and backfilled 41 transactions. Tier: notice.</p>
+        </div>
+      </div>
+
+      <div class="screen" id="s-detail" role="tabpanel" aria-label="Proposal">
+        <button class="back" type="button" data-go="s-today">&larr; Today</button>
+        <div id="detailBody" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+
+      <div class="screen" id="s-ask" role="tabpanel" aria-label="Ask Consilium">
+        <div class="thread" id="thread"></div>
+        <div class="chips" id="chips"></div>
+      </div>
+
+      <div class="screen" id="s-team" role="tabpanel" aria-label="Team">
+        <p class="sechead">On duty &middot; tap to set autonomy</p>
+        <div id="teamList" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+
+      <div class="screen" id="s-agent" role="tabpanel" aria-label="Agent settings">
+        <button class="back" type="button" data-go="s-team">&larr; Team</button>
+        <div id="agentBody" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+
+      <div class="screen" id="s-connect" role="tabpanel" aria-label="Connections">
+        <p class="sechead">Money</p>
+        <div class="crow"><div class="ic">QB</div><div><div class="nm">QuickBooks</div><div class="sc">AR/AP &middot; read + gated write</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="QuickBooks"></button></div>
+        <div class="crow"><div class="ic">SQ</div><div><div class="nm">Square</div><div class="sc">Settlements &middot; read</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="Square"></button></div>
+        <p class="sechead">Customers</p>
+        <div class="crow"><div class="ic">HS</div><div><div class="nm">HubSpot</div><div class="sc">Deals, contacts &middot; read + write</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="HubSpot"></button></div>
+        <div class="crow"><div class="ic">GM</div><div><div class="nm">Gmail</div><div class="sc">Drafts only &middot; never auto-send</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="Gmail"></button></div>
+        <p class="sechead">Time</p>
+        <div class="crow"><div class="ic">CAL</div><div><div class="nm">Google Calendar</div><div class="sc">Holds &amp; confirmations</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="Calendar"></button></div>
+        <p class="sechead">Not connected</p>
+        <div class="crow"><div class="ic">IG</div><div><div class="nm">Instagram</div><div class="sc">Echo runs at reduced signal</div></div><button class="tgl" type="button" aria-pressed="false" aria-label="Instagram"></button></div>
+        <div class="crow"><div class="ic">DS</div><div><div class="nm">DocuSign</div><div class="sc">Required for contract gates</div></div><button class="tgl" type="button" aria-pressed="false" aria-label="DocuSign"></button></div>
+      </div>
+
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" type="button" data-screen="s-today" role="tab" aria-selected="true">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg><span>Today</span>
+      </button>
+      <button class="tab" type="button" data-screen="s-ask" role="tab" aria-selected="false">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15a3 3 0 0 1-3 3H8l-4 3V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3z"/></svg><span>Ask</span>
+      </button>
+      <button class="tab" type="button" data-screen="s-team" role="tab" aria-selected="false">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg><span>Team</span>
+      </button>
+      <button class="tab" type="button" data-screen="s-connect" role="tab" aria-selected="false">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 15 4.5 19.5a3.5 3.5 0 0 0 5 5L14 20"/><path d="M15 9l4.5-4.5a3.5 3.5 0 0 0-5-5L10 4"/><path d="M9.5 14.5l5-5"/></svg><span>Connect</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div class="stage-foot">
+  <span>Tap a card &rarr; approve, edit or decline &middot; four tabs below</span>
+</div>
+
+<div class="a2hs" id="a2hs" hidden>
+  <span>Share &rarr; <b>Add to Home Screen</b> to run this full-screen.</span>
+  <button type="button" id="a2hsClose" aria-label="Dismiss">&times;</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- data ---------------- */
+  var PROPOSALS = [
+    {
+      id:"p1", agent:"Sentinel", tier:"Approve", tierClass:"warn",
+      title:"Three invoices cross 30 days on Thursday",
+      line:"$4,180 in receivables. Two are first-time late, one is a repeat.",
+      why:["Riverbend Cafe — 28 days, first time late, historically pays within 3 days of a nudge",
+           "Hollis Property Group — 31 days, late on 4 of the last 6 invoices",
+           "M. Ortega Landscaping — 29 days, but she always pays on day 33"],
+      plan:"Send two reminders, tone-matched to each payer's history — gentle for Riverbend, firm and specific for Hollis. Ortega gets nothing. She's inside her own normal pattern and a nudge would only cost goodwill.",
+      draftLabel:"Draft — Riverbend Cafe",
+      draft:"Hi Dana — hope patio season is treating you well.\n\nInvoice #1042 ($1,340) came due last Thursday. No rush if it's already in motion, just flagging it in case it slipped past.\n\nPay link: consilium.co/inv/1042\n\n— Stacey",
+      impact:["2 emails sent from your address","2 QuickBooks invoices marked “reminded”","Nothing charged. No invoice amounts change."],
+      gate:"Hard gate: external_send. Consilium cannot write in your voice without this tap."
+    },
+    {
+      id:"p2", agent:"Echo", tier:"Propose", tierClass:"acc",
+      title:"Patio heaters are outselling last August 2.4×",
+      line:"The window closes in about five weeks and nothing is scheduled against it.",
+      why:["Units up 2.4× vs August 2025 across both channels",
+           "Local search for “patio heater” up 61% week over week",
+           "Your last post about them was eleven months ago",
+           "Forge flagged the same SKU independently on margin"],
+      plan:"A three-post social run over nine days plus one email to the 1,180 customers who bought outdoor goods in the last 18 months. Spark has the images ready in your brand kit. Nothing sends until you've seen all four pieces.",
+      draftLabel:"Draft — post 1 of 3",
+      draft:"The first cold night always catches people off guard.\n\nWe've got patio heaters in stock now — not in October, when everyone remembers at once.\n\n→ link in bio",
+      impact:["3 posts scheduled: Aug 26, Aug 29, Sep 3","1 email queued to 1,180 recipients — second approval required","Spark generates 3 assets, sized per channel"],
+      gate:"Hard gate: external_send over 25 recipients. Copy approval and send approval are separate taps."
+    },
+    {
+      id:"p3", agent:"Atlas", tier:"Propose", tierClass:"acc",
+      title:"Tuesday has a 90-minute hole between two jobs",
+      line:"Riverbend wraps 10:40, Hollis starts 12:30. Eleven minutes of drive between them.",
+      why:["Two estimate requests have been waiting on you for 9+ days",
+           "Both addresses are within 6 minutes of the Riverbend stop",
+           "Tuesday forecast: clear, 71° — no weather risk",
+           "Marisol Vega asked twice about timing"],
+      plan:"Offer Marisol the 11:00 slot, hold 11:45 as buffer so a long estimate can't push Hollis late. If she declines within 4 hours, the slot goes to the second request automatically — same gate, new card.",
+      draftLabel:"Draft — text to Marisol",
+      draft:"Hi Marisol — Stacey with Fortis. I've got an opening Tuesday at 11:00 and I'll already be four minutes from you. Want me to swing by and walk the job?\n\nTakes about 30 minutes.",
+      impact:["1 text sent","Calendar hold 11:00–11:45 Tuesday, marked tentative","Hollis job untouched","Hold releases automatically if she doesn't reply by 3pm Monday"],
+      gate:"Hard gate: customer_commitment. Offering a time is a promise, so it needs you."
+    },
+    {
+      id:"p4", agent:"Vortex", tier:"Propose", tierClass:"acc",
+      title:"Marisol opened your quote four times. Six days of silence.",
+      line:"Highest-intent signal in the pipeline this week, and it's going cold.",
+      why:["Quote opened 4×, twice after 9pm — she's thinking about it",
+           "No reply in 6 days; your median close is 4",
+           "She asked about timeline twice before the quote went out",
+           "Sage found two comparable jobs that closed after the same question"],
+      plan:"A short follow-up that answers the two questions people actually stall on at this stage — when you'd start, and what happens if the scope grows. No discount, no pressure. Atlas has a Tuesday slot open if she wants to move.",
+      draftLabel:"Draft — follow-up email",
+      draft:"Marisol — two things I should have put in the quote:\n\nStart: I could begin the week of Sept 8.\n\nScope: if we open it up and find more than we planned for, I stop and re-quote before doing the work. You'd never get a surprise number.\n\nHappy to walk it in person if that's easier.\n\n— Stacey",
+      impact:["1 email sent from your address","HubSpot deal moved to “Follow-up sent”","Re-check scheduled for 4 days out"],
+      gate:"Hard gate: external_send. Vortex drafts in your voice but never speaks in it unprompted."
+    }
+  ];
+
+  var TIERS = ["Observe","Propose","Notice","Approve"];
+  var TIER_HINT = {
+    Observe:"Reads and summarizes. Writes nothing, anywhere.",
+    Propose:"Does the work in full, then stops and waits for you. The default.",
+    Notice:"Acts, then sends you a receipt. You get a 15-minute undo window.",
+    Approve:"Same as propose, but can never be lowered to notice. Used where mistakes are expensive."
+  };
+
+  var TEAM = [
+    {n:"Consilium", r:"Orchestrator", act:"Ranking today's four cards", st:"working", c:"acc", tier:"Propose", floor:1,
+     watches:["Every other agent's output","Your stated goals for the quarter","Calendar load, so it knows when not to ask"],
+     gates:["Cannot raise another agent's tier","Cannot suppress a hard gate"]},
+    {n:"Sentinel", r:"Finance", act:"Watching AR aging · 3 items at 28+ days", st:"working", c:"warn", tier:"Approve", floor:3,
+     watches:["AR/AP aging and payment history","Cash runway against payroll dates","Uncategorized and duplicate transactions"],
+     gates:["Money out — always","Refunds — always","Anything over $2,500 needs two approvers"]},
+    {n:"Echo", r:"Marketing", act:"Seasonality pass complete · 1 brief ready", st:"working", c:"acc", tier:"Propose", floor:0,
+     watches:["Sales mix and seasonality","Search and social signal in your metro","Gaps in your own posting history"],
+     gates:["Sends over 25 recipients","Anything quoting a price"]},
+    {n:"Vortex", r:"Sales", act:"Scoring 14 open deals by intent", st:"working", c:"acc", tier:"Propose", floor:0,
+     watches:["Quote opens and reply latency","Deals going quiet against your median","Inbound lead fit and urgency"],
+     gates:["Outbound sends in your voice","Any new commitment to a customer"]},
+    {n:"Atlas", r:"Scheduling", act:"Next gap: Tuesday 10:40–12:30", st:"working", c:"acc", tier:"Propose", floor:0,
+     watches:["Calendar gaps and drive time","Crew load and no-show risk","Weather against outdoor jobs"],
+     gates:["Offering a time to a customer","Rescheduling a confirmed job"]},
+    {n:"Spark", r:"Creative", act:"3 assets staged, awaiting copy approval", st:"idle", c:"muted", tier:"Observe", floor:0,
+     watches:["Your brand kit and asset library","What performed, by channel and format"],
+     gates:["Nothing publishes without Echo's card"]},
+    {n:"Sage", r:"Knowledge", act:"Indexed 2 contracts overnight", st:"watching", c:"muted", tier:"Observe", floor:0,
+     watches:["Contracts, SOPs, past decisions","Customer history and precedent"],
+     gates:["Read-only by design — cannot be raised"]},
+    {n:"Cyber", r:"Security", act:"No anomalies in 14 days", st:"watching", c:"ok", tier:"Approve", floor:3,
+     watches:["Access patterns and connector scopes","Data handling against your obligations"],
+     gates:["Any change to permissions","Any export of customer data"]},
+    {n:"Forge", r:"Opportunity", act:"Weekly budget: 1 card, unspent", st:"watching", c:"muted", tier:"Propose", floor:0,
+     watches:["Patterns across every other agent","Outside signal — weather, events, local demand"],
+     gates:["One card per week, hard budget"]},
+    {n:"Rig", r:"Integrations", act:"2 connectors idle · Square resynced 04:02", st:"working", c:"ok", tier:"Notice", floor:0,
+     watches:["Connector health and auth expiry","Sync drift between systems"],
+     gates:["Cannot add a connector — that's you","Cannot widen an existing scope"]}
+  ];
+
+  var ASKS = [
+    { q:"How's cash looking?", route:"Routing to Sentinel",
+      a:"Eleven weeks of runway at current burn, which is two weeks better than last month. The thing worth your attention is timing, not total: $4,180 lands late this week if nobody nudges, and payroll clears Friday.",
+      mini:"runway     11.0 weeks  (+2.0 vs Jul)\nAR 30+     $4,180      3 invoices\npayroll    Fri Aug 28\nafter      comfortable, not tight" },
+    { q:"Who should I call today?", route:"Routing to Vortex · Sage",
+      a:"Marisol Vega, and it isn't close. Four quote opens, two of them after 9pm, six days of silence against your four-day median. Two comparable jobs closed right after the same timeline question she asked twice. I've got the follow-up drafted on your Today tab.",
+      mini:"1  Marisol Vega     intent 94\n2  Hollis Property  intent 61\n3  D. Nakamura      intent 58" },
+    { q:"What does Tuesday look like?", route:"Routing to Atlas",
+      a:"Two jobs and a 90-minute hole in the middle of them. Riverbend wraps 10:40, Hollis starts 12:30, eleven minutes of drive between. I'd put Marisol's estimate in it — she's four minutes off that route.",
+      mini:"09:00  Riverbend Cafe    (2h)\n10:40  — open —        90 min\n12:30  Hollis Property   (3h)\n16:00  — open —" },
+    { q:"Anything I'm not seeing?", route:"Routing to Forge",
+      a:"One thing, and it's a quiet one. Three of your five best repeat customers last year haven't ordered since June. No complaints, no disputes — they just stopped. That pattern usually means someone else showed up, and it doesn't set off any alarm because nothing happened.",
+      mini:"dormant 60d+   3 of top 5\nlast contact   Jun 11, Jun 19, Jun 30\ndisputes       none\ntrigger        silence" }
+  ];
+
+  /* ---------------- state ---------------- */
+  var STATE = {}, current = PROPOSALS[0], askIdx = {}, busy = false;
+  function resetState(){
+    STATE = {}; PROPOSALS.forEach(function(p){ STATE[p.id] = "open"; });
+    askIdx = {}; current = PROPOSALS[0];
+    TEAM.forEach(function(a, i){ a.tier = ["Propose","Approve","Propose","Propose","Propose","Observe","Observe","Approve","Propose","Notice"][i]; });
+  }
+
+  var feed = document.getElementById("feed"),
+      badge = document.getElementById("badge"),
+      detailBody = document.getElementById("detailBody"),
+      agentBody = document.getElementById("agentBody"),
+      teamList = document.getElementById("teamList"),
+      thread = document.getElementById("thread"),
+      chips = document.getElementById("chips"),
+      screensEl = document.getElementById("screens");
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;" }[c];
+    });
+  }
+  function el(tag, cls, html){
+    var d = document.createElement(tag);
+    if (cls) d.className = cls;
+    if (html != null) d.innerHTML = html;
+    return d;
+  }
+
+  /* ---------------- today ---------------- */
+  function renderFeed(){
+    feed.innerHTML = "";
+    PROPOSALS.forEach(function(p){
+      var st = STATE[p.id];
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "pcard"; b.setAttribute("data-state", st);
+      var stamp = st === "approved" ? '<span class="stamp ok">&#10003; Approved</span>'
+                : st === "declined" ? '<span class="stamp no">Declined</span>'
+                : '<span class="pill ' + p.tierClass + '">' + esc(p.tier) + '</span>';
+      b.innerHTML = '<div class="top"><span class="agentchip"><span class="sq"></span>' + esc(p.agent) + '</span>' + stamp + '</div>' +
+                    '<h2>' + esc(p.title) + '</h2>' +
+                    '<p class="line">' + esc(p.line) + '</p>' +
+                    (st === "open" ? '<span class="cta">Review &rarr;</span>' : '');
+      if (st === "open") b.addEventListener("click", function(){ current = p; renderDetail(p); show("s-detail"); });
+      feed.appendChild(b);
+    });
+    var open = PROPOSALS.filter(function(p){ return STATE[p.id] === "open"; }).length;
+    badge.className = open ? "badge" : "badge done";
+    badge.textContent = open ? open + " waiting" : "All clear";
+  }
+
+  function renderDetail(p){
+    var st = STATE[p.id];
+    if (st !== "open") return renderDone(p, st);
+    detailBody.innerHTML =
+      '<div style="display:flex;align-items:center;gap:8px;margin-top:8px">' +
+        '<span class="agentchip"><span class="sq"></span>' + esc(p.agent) + '</span>' +
+        '<span class="pill ' + p.tierClass + '">' + esc(p.tier) + '</span></div>' +
+      '<div class="dtitle">' + esc(p.title) + '</div>' +
+      '<p class="dline">' + esc(p.line) + '</p>' +
+      '<div class="block"><h3>Why this, now</h3><ul>' + p.why.map(function(w){ return '<li>' + esc(w) + '</li>'; }).join("") + '</ul></div>' +
+      '<div class="block"><h3>What ' + esc(p.agent) + ' proposes</h3><p>' + esc(p.plan) + '</p></div>' +
+      '<div class="block"><h3>' + esc(p.draftLabel) + '</h3><pre class="draft">' + esc(p.draft) + '</pre></div>' +
+      '<div class="block"><h3>If you approve</h3><ul>' + p.impact.map(function(w){ return '<li>' + esc(w) + '</li>'; }).join("") + '</ul></div>' +
+      '<div class="gatebar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>' + esc(p.gate) + '</span></div>' +
+      '<div class="actions">' +
+        '<button class="btn primary" type="button" data-act="approve">Approve &amp; send</button>' +
+        '<button class="btn ghost" type="button" data-act="edit">Edit</button>' +
+        '<button class="btn ghost" type="button" data-act="decline">No</button></div>';
+  }
+
+  function renderDone(p, st){
+    var t = "07:1" + (9 - PROPOSALS.indexOf(p));
+    if (st === "approved") {
+      detailBody.innerHTML =
+        '<div class="done" style="margin-top:14px">' +
+          '<div class="donemark"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>' +
+          '<div><div class="donetitle">Done, and verified.</div>' +
+          '<p class="dline" style="margin-top:5px">' + esc(p.agent) + ' executed and confirmed delivery. Here is the record.</p></div>' +
+          '<div class="audit">' + esc("audit/" + p.id + "\ntrigger    " + p.agent.toLowerCase() + " · " + t + " CDT\nagent      " + p.agent + "\ntier       " + p.tier.toLowerCase() + " (gated)\napprover   stacey.lee\npayload    retained, hash 4f1c…a09\nverified   delivery confirmed\nretention  90d") + '</div>' +
+          '<button class="btn ghost" type="button" data-act="feed" style="flex:0 0 auto">Back to today</button></div>';
+    } else {
+      detailBody.innerHTML =
+        '<div class="done" style="margin-top:14px">' +
+          '<div class="donemark" style="background:var(--surface-2);color:var(--muted)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>' +
+          '<div><div class="donetitle">Declined. Nothing happened.</div>' +
+          '<p class="dline" style="margin-top:5px">Logged with the trigger that raised it. Two more declines on this trigger and ' + esc(p.agent) + ' stops raising it — and tells you it stopped.</p></div>' +
+          '<button class="btn ghost" type="button" data-act="feed" style="flex:0 0 auto">Back to today</button></div>';
+    }
+  }
+
+  detailBody.addEventListener("click", function(e){
+    var b = e.target.closest("button[data-act]"); if (!b) return;
+    var act = b.getAttribute("data-act");
+    if (act === "approve" || act === "decline") {
+      STATE[current.id] = act === "approve" ? "approved" : "declined";
+      renderFeed(); renderDone(current, STATE[current.id]); screensEl.scrollTop = 0;
+    } else if (act === "edit") {
+      var pre = detailBody.querySelector(".draft");
+      if (pre) {
+        pre.setAttribute("contenteditable", "true");
+        pre.style.outline = "2px solid var(--accent)";
+        pre.focus();
+        b.textContent = "Editing"; b.disabled = true;
+      }
+    } else if (act === "feed") {
+      show("s-today");
+    }
+  });
+
+  /* ---------------- ask ---------------- */
+  function renderChips(){
+    chips.innerHTML = "";
+    ASKS.forEach(function(a, i){
+      var c = el("button", "chip", esc(a.q));
+      c.type = "button";
+      if (askIdx[i]) c.disabled = true;
+      c.addEventListener("click", function(){ runAsk(i, c); });
+      chips.appendChild(c);
+    });
+  }
+
+  function runAsk(i, chipEl){
+    if (busy) return;
+    busy = true; chipEl.disabled = true;
+    var a = ASKS[i];
+    askIdx[i] = true;
+    thread.appendChild(el("div", "bub me", esc(a.q)));
+    screensEl.scrollTop = screensEl.scrollHeight;
+    var route = el("div", "bub route", esc(a.route) + ' <span class="dots"><i></i><i></i><i></i></span>');
+    thread.appendChild(route);
+    screensEl.scrollTop = screensEl.scrollHeight;
+    setTimeout(function(){
+      route.innerHTML = esc(a.route);
+      thread.appendChild(el("div", "bub consilium", esc(a.a) + '<div class="mini">' + esc(a.mini) + '</div>'));
+      screensEl.scrollTop = screensEl.scrollHeight;
+      busy = false;
+    }, 1100);
+  }
+
+  function seedThread(){
+    thread.innerHTML = "";
+    thread.appendChild(el("div", "bub consilium",
+      "Morning. Four things are waiting on your Today tab and none of them are on fire. Ask me anything — I'll pull the specialist who owns it."));
+    renderChips();
+  }
+
+  /* ---------------- team ---------------- */
+  function renderTeam(){
+    teamList.innerHTML = "";
+    var colors = { acc:"var(--accent)", warn:"var(--warn)", ok:"var(--good)", muted:"var(--muted)" };
+    TEAM.forEach(function(a){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "arow";
+      b.innerHTML = '<span class="sq" style="background:' + colors[a.c] + '"></span>' +
+        '<div style="min-width:0"><div class="nm">' + esc(a.n) + '</div>' +
+        '<div class="rl">' + esc(a.r) + ' · ' + esc(a.tier) + '</div>' +
+        '<div class="ac">' + esc(a.act) + '</div></div>' +
+        '<span class="st">' + esc(a.st) + '</span>';
+      b.addEventListener("click", function(){ renderAgent(a); show("s-agent"); });
+      teamList.appendChild(b);
+    });
+  }
+
+  function renderAgent(a){
+    agentBody.innerHTML =
+      '<div class="dtitle" style="margin-top:8px">' + esc(a.n) + '</div>' +
+      '<p class="dline">' + esc(a.r) + ' · ' + esc(a.st) + ' · ' + esc(a.act) + '</p>' +
+      '<div class="block"><h3>Watches</h3><ul>' + a.watches.map(function(w){ return '<li>' + esc(w) + '</li>'; }).join("") + '</ul></div>' +
+      '<div class="block"><h3>Autonomy tier</h3><div class="tiers" id="tierCtl"></div>' +
+        '<p class="tierhint" id="tierHint"></p></div>' +
+      '<div class="block"><h3>Hard gates · locked</h3>' +
+        a.gates.map(function(g){
+          return '<div class="locked"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>' + esc(g) + '</span></div>';
+        }).join("") + '</div>' +
+      '<div class="savedline" id="savedLine"></div>';
+
+    var ctl = document.getElementById("tierCtl");
+    TIERS.forEach(function(t, idx){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "tierbtn"; b.textContent = t;
+      b.setAttribute("aria-pressed", a.tier === t ? "true" : "false");
+      if (idx < a.floor) b.disabled = true;
+      b.addEventListener("click", function(){
+        a.tier = t;
+        Array.prototype.forEach.call(ctl.children, function(c){
+          c.setAttribute("aria-pressed", c.textContent === t ? "true" : "false");
+        });
+        document.getElementById("tierHint").textContent = TIER_HINT[t];
+        var sv = document.getElementById("savedLine");
+        sv.innerHTML = '&#10003; Written to consilium.config.yaml · v' + (14 + Object.keys(askIdx).length);
+        renderTeam();
+      });
+      ctl.appendChild(b);
+    });
+    document.getElementById("tierHint").textContent = TIER_HINT[a.tier];
+    if (a.floor > 0) {
+      document.getElementById("savedLine").innerHTML =
+        '<span style="color:var(--muted)">Floor set by hard gate — cannot go lower</span>';
+    }
+  }
+
+  /* ---------------- nav ---------------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  function show(id){
+    if (id === "s-detail") renderDetail(current);
+    Array.prototype.forEach.call(document.querySelectorAll(".screen"), function(s){
+      s.classList.toggle("is-active", s.id === id);
+    });
+    var parent = (id === "s-detail") ? "s-today" : (id === "s-agent") ? "s-team" : id;
+    tabs.forEach(function(t){ t.setAttribute("aria-selected", t.getAttribute("data-screen") === parent ? "true" : "false"); });
+    if (id !== "s-ask") screensEl.scrollTop = 0;
+  }
+  tabs.forEach(function(t){ t.addEventListener("click", function(){ show(t.getAttribute("data-screen")); }); });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-go]"), function(b){
+    b.addEventListener("click", function(){ show(b.getAttribute("data-go")); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".tgl"), function(t){
+    t.addEventListener("click", function(){
+      t.setAttribute("aria-pressed", t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+    });
+  });
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    // iOS gives no install prompt event, so the hint has to be shown by hand —
+  // and only to a phone browser that is not already running standalone.
+  var standalone = window.navigator.standalone === true ||
+                   window.matchMedia("(display-mode: standalone)").matches;
+  var isPhone = window.matchMedia("(max-width: 560px)").matches;
+  if (isPhone && !standalone) {
+    setTimeout(function(){ document.getElementById("a2hs").hidden = false; }, 2200);
+  }
+  function dismissHint(){ document.getElementById("a2hs").hidden = true; }
+  document.getElementById("a2hsClose").addEventListener("click", dismissHint);
+  // Any real interaction means they have found their way; stop advertising.
+  document.addEventListener("pointerdown", function once(e){
+    if (e.target.closest("#a2hs")) return;
+    dismissHint();
+    document.removeEventListener("pointerdown", once);
+  });
+
+  resetState(); renderFeed(); renderTeam(); seedThread(); show("s-today");
+  });
+
+  // iOS gives no install prompt event, so the hint has to be shown by hand —
+  // and only to a phone browser that is not already running standalone.
+  var standalone = window.navigator.standalone === true ||
+                   window.matchMedia("(display-mode: standalone)").matches;
+  var isPhone = window.matchMedia("(max-width: 560px)").matches;
+  if (isPhone && !standalone) {
+    setTimeout(function(){ document.getElementById("a2hs").hidden = false; }, 2200);
+  }
+  function dismissHint(){ document.getElementById("a2hs").hidden = true; }
+  document.getElementById("a2hsClose").addEventListener("click", dismissHint);
+  // Any real interaction means they have found their way; stop advertising.
+  document.addEventListener("pointerdown", function once(e){
+    if (e.target.closest("#a2hs")) return;
+    dismissHint();
+    document.removeEventListener("pointerdown", once);
+  });
+
+  resetState(); renderFeed(); renderTeam(); seedThread();
+})();
+</script>
+</body>
+</html>

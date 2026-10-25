@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Private Assistant: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Private Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a calm client workspace. Conversation with their own documents is the centre;
+   documents and background tasks sit in a side column; usage and privacy in the header. */
+:root{
+  --bg:#eef2f1; --panel:#ffffff; --panel2:#f5f8f7; --ink:#14201d; --dim:#5a6b66; --line:#d6e0dd;
+  --accent:#0f6e64; --accent-ink:#ffffff; --accent-soft:#dcefeb; --you:#e8eefc; --you-ink:#1b2a55;
+  --money:#9a5a1d; --ok:#17784a; --warn:#a36200; --bad:#b4363a; --bad-soft:#fbe4e4;
+  --shadow:0 1px 2px rgba(20,32,29,.06),0 8px 26px rgba(20,32,29,.06);
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1312; --panel:#141d1b; --panel2:#1a2523; --ink:#e3ece9; --dim:#93a6a1; --line:#25322f;
+  --accent:#4fc1b2; --accent-ink:#0c1312; --accent-soft:#163430; --you:#1d2747; --you-ink:#dbe3ff;
+  --money:#e6a467; --ok:#5ccf92; --warn:#f0b65a; --bad:#f08a8a; --bad-soft:#2f1717;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 26px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1312; --panel:#141d1b; --panel2:#1a2523; --ink:#e3ece9; --dim:#93a6a1; --line:#25322f;
+  --accent:#4fc1b2; --accent-ink:#0c1312; --accent-soft:#163430; --you:#1d2747; --you-ink:#dbe3ff;
+  --money:#e6a467; --ok:#5ccf92; --warn:#f0b65a; --bad:#f08a8a; --bad-soft:#2f1717;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 26px rgba(0,0,0,.25); color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);padding-inline:16px;padding-block:14px 24px}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.shell{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.mono{font-family:var(--f-mono)}
+/* header */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow)}
+.who{display:flex;flex-direction:column;margin-right:auto;min-width:0}
+.who b{font:700 22px/1.1 var(--f-display);letter-spacing:-.01em}
+.who span{font-size:12.5px;color:var(--dim)}
+.badge{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;padding:6px 11px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:500;white-space:nowrap}
+.badge svg{width:14px;height:14px}
+.meter{display:flex;flex-direction:column;gap:3px;min-width:170px}
+.meter label{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
+.meter label b{color:var(--ink);font-variant-numeric:tabular-nums}
+.bar{height:7px;border-radius:4px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .4s}
+.bar.hot i{background:var(--warn)}
+.inv{text-align:right}
+.inv b{display:block;font:600 20px/1 var(--f-display);color:var(--money);font-variant-numeric:tabular-nums}
+.inv span{font-size:12px;color:var(--dim)}
+.btn{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:8px 13px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:default}
+/* grid */
+.grid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.side{order:2}}
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.panel h2{margin:0;font:600 17px/1.2 var(--f-display);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.panel h2 small{font:400 12px var(--f-body);color:var(--dim)}
+.empty{color:var(--dim);font-size:13px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--dim);font-size:13px;cursor:pointer;display:block}
+.drop b{color:var(--ink);font-weight:600}
+.drop.over{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.docs{display:flex;flex-direction:column;gap:4px;max-height:280px;overflow:auto}
+.doc{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 9px;background:var(--panel2);border-radius:8px;font-size:13.5px}
+.doc small{display:block;color:var(--dim);font:400 11.5px var(--f-mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc button{border:0;background:none;color:var(--dim);font-size:17px;line-height:1;padding:2px 6px;border-radius:6px}
+.doc button:hover{color:var(--bad);background:var(--bad-soft)}
+.tasks{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}
+.task{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;font-size:13px;padding:6px 9px;background:var(--panel2);border-radius:8px}
+.task span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st{font:600 10.5px var(--f-mono);text-transform:uppercase}
+.st.succeeded{color:var(--ok)}.st.failed{color:var(--bad)}.st.queued{color:var(--dim)}.st.running{color:var(--accent)}
+.row{display:flex;gap:8px}
+.row input{flex:1;min-width:0;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--panel2)}
+/* chat */
+.chat{min-height:calc(100vh - 150px);display:flex;flex-direction:column;padding:0;overflow:hidden}
+@media (max-width:900px){.chat{min-height:70vh}}
+.chathead{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.chathead h2{margin:0;font:600 18px var(--f-display)}
+.chathead span{font-size:12.5px;color:var(--dim)}
+.msgs{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.msg{max-width:min(720px,92%);display:flex;flex-direction:column;gap:6px}
+.msg.you{align-self:flex-end;background:var(--you);color:var(--you-ink);padding:9px 13px;border-radius:14px 14px 4px 14px}
+.msg.bot{align-self:flex-start}
+.msg.bot .text{background:var(--panel2);border:1px solid var(--line);padding:11px 14px;border-radius:14px 14px 14px 4px;line-height:1.6}
+.msg.bot mark{background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:0 4px;font:600 11px var(--f-mono);cursor:pointer;border:0}
+.cites{display:flex;flex-wrap:wrap;gap:6px}
+.cite{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--dim);text-align:left}
+.cite b{color:var(--ink);font-weight:600}
+.cite[aria-expanded="true"]{border-color:var(--accent);color:var(--ink)}
+.excerpt{font-size:13px;color:var(--dim);border-left:3px solid var(--accent);padding:6px 10px;background:var(--panel);border-radius:0 8px 8px 0;white-space:pre-wrap}
+.meta{font:400 11.5px var(--f-mono);color:var(--dim)}
+.welcome{margin:auto 0;display:flex;flex-direction:column;gap:12px;align-items:flex-start;max-width:640px}
+.welcome h3{margin:0;font:700 28px/1.15 var(--f-display);text-wrap:balance}
+.welcome p{margin:0;color:var(--dim)}
+.sugg{display:flex;flex-wrap:wrap;gap:8px}
+.sugg button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 13px;font-size:13.5px;text-align:left}
+.sugg button:hover{border-color:var(--accent);color:var(--accent)}
+.typing{display:inline-flex;gap:4px;padding:12px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:14px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--dim);animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.composer{border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:flex-end;background:var(--panel)}
+.composer textarea{flex:1;min-width:0;resize:none;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel2);max-height:160px;line-height:1.45}
+.icon{border:1px solid var(--line);background:var(--panel2);border-radius:999px;width:42px;height:42px;display:grid;place-items:center;flex:none}
+.icon svg{width:19px;height:19px}
+.icon[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.icon.rec{background:var(--bad);color:#fff;border-color:transparent;animation:rec 1.2s infinite}
+@keyframes rec{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--bad) 55%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+/* gate */
+.gate{min-height:calc(100vh - 40px);display:grid;place-items:center}
+.gate form{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;width:min(440px,100%);display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+.gate h1{margin:0;font:700 28px/1.1 var(--f-display)}
+.gate p{margin:0;color:var(--dim);font-size:14px}
+.gate label{font-size:13px;color:var(--dim);display:flex;flex-direction:column;gap:5px}
+.gate input{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:var(--panel2);font-family:var(--f-mono)}
+.gate .err{color:var(--bad);font-size:13px}
+.gate .alt{font-size:13px;color:var(--dim);text-align:center}
+.gate .alt button{border:0;background:none;color:var(--accent);text-decoration:underline;padding:0}
+.toasts{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:60;width:min(380px,calc(100% - 32px))}
+.toast{background:var(--ink);color:var(--bg);border-radius:10px;padding:10px 14px;font-size:13.5px;box-shadow:var(--shadow)}
+.toast.err{background:var(--bad);color:#fff}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<div class="shell">
+  <section class="gate" id="gate" hidden>
+    <form id="gateForm" autocomplete="off">
+      <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Private AI · runs on your own hardware</span>
+      <h1>Sign in to your assistant</h1>
+      <p>Paste the access key your provider gave you when your account went live. It starts with <span class="mono">nk_</span>.</p>
+      <label id="srvWrap" hidden>Server address<input id="srv" placeholder="http://localhost:8080" inputmode="url"></label>
+      <label>Access key<input id="key" type="password" placeholder="nk_…" autocomplete="current-password"></label>
+      <span class="err" id="gateErr" hidden></span>
+      <button class="btn primary" type="submit">Sign in</button>
+      <span class="alt" id="demoWrap" hidden>No key yet? <button type="button" id="demoBtn">Try the demo</button></span>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <header class="top">
+      <div class="who"><b id="cName">Your assistant</b><span id="cSub"></span></div>
+      <span class="badge" title="Your documents and questions are processed on your own server. Nothing is sent to outside AI services."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><span id="privacy">Private · on your network</span></span>
+      <div class="meter"><label>Questions this period <b id="uQ">0</b></label><div class="bar" id="uBar"><i id="uFill" style="width:0"></i></div></div>
+      <div class="inv"><b id="invTot">$0</b><span id="invSub">draft invoice</span></div>
+      <button class="btn sm" type="button" id="signOut">Sign out</button>
+    </header>
+
+    <div class="grid">
+      <div class="side">
+        <section class="panel" aria-labelledby="h-docs">
+          <h2 id="h-docs">Your documents <small id="docCount"></small></h2>
+          <label class="drop" id="drop" for="file"><b>Add documents</b><br>Drop PDFs, Word, Markdown or text here, or click to choose. They stay on your server.</label>
+          <input type="file" id="file" multiple accept=".pdf,.docx,.md,.markdown,.txt,.html,.htm" hidden>
+          <div class="docs" id="docs"></div>
+        </section>
+        <section class="panel" aria-labelledby="h-tasks">
+          <h2 id="h-tasks">Background tasks <small>run by your agents</small></h2>
+          <form class="row" id="taskForm"><label for="taskQ" hidden>Task</label><input id="taskQ" placeholder="e.g. summarise this week's new contracts"><button class="btn" type="submit">Queue</button></form>
+          <div class="tasks" id="tasks"></div>
+        </section>
+      </div>
+
+      <section class="panel chat" aria-labelledby="h-chat">
+        <div class="chathead"><h2 id="h-chat">Ask your documents</h2><span id="chatHint">Answers quote your own files, with sources.</span></div>
+        <div class="msgs" id="msgs" aria-live="polite"></div>
+        <form class="composer" id="ask">
+          <label for="q" hidden>Your question</label>
+          <textarea id="q" rows="1" placeholder="Ask about your documents…"></textarea>
+          <button class="icon" type="button" id="mic" aria-label="Ask by voice" title="Ask by voice (transcribed on your server)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+          <button class="icon" type="button" id="spk" aria-pressed="false" aria-label="Read answers aloud" title="Read answers aloud"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+          <button class="btn primary" type="submit">Ask</button>
+        </form>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>window.EMPIRE_DEMO=true;</script>
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});};
+var money=function(n){return "$"+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2});};
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){return null;}}
+var STANDALONE=location.protocol==="file:"||!!window.EMPIRE_STANDALONE;
+var DEMO=!!window.EMPIRE_DEMO||store("portal.demo")==="1";
+function base(){return (STANDALONE?(store("portal.server")||"http://localhost:8080").replace(/\/+$/,""):"")+"/api/v1/empire";}
+function toast(m,err){var t=document.createElement("div");t.className="toast"+(err?" err":"");t.textContent=m;var b=$("toasts");b.appendChild(t);while(b.children.length>3)b.removeChild(b.firstChild);setTimeout(function(){t.remove();},err?6000:3500);}
+function fail(e){toast((e&&e.detail)||String(e),true);}
+
+/* ---------------- demo engine ---------------- */
+var Demo=(function(){
+  var me={id:"ten_demo",client_name:"Harbor Dental",tier:"pilot",stage:"live"},docs=[],jobs=[],usage={kb_query:0,agent_run:0},seq=0;
+  function hex(n){var s="";while(s.length<n)s+=Math.floor(Math.random()*16).toString(16);return s;}
+  function parse(title,text,filename){var secs=[],cur={title:title,text:""};text.split(/\n/).forEach(function(l){var m=l.match(/^#{1,6}\s+(.+)/);if(m){if(cur.text.trim())secs.push(cur);cur={title:m[1].trim(),text:""};}else cur.text+=l+"\n";});if(cur.text.trim())secs.push(cur);
+    return {id:"doc_"+hex(10),title:title,filename:filename||title+".md",sections:secs.length+1,pages:1,chunks:secs.length,bytes:text.length,secs:secs};}
+  function add(title,text,fn){var d=parse(title,text,fn);docs.unshift(d);return d;}
+  add("Office Handbook","# Office Handbook\n## Cancellations\nPatients must cancel at least 24 hours before their appointment. Late cancellations are charged a $45 fee. Two missed appointments in a row means future bookings must be prepaid.\n## New patients\nNew patients should arrive 15 minutes early to complete intake forms. Bring photo ID and your insurance card.\n## Payment plans\nTreatment over $1,000 can be split into up to 6 monthly payments with no interest.\n## Insurance\nWe are in network with Delta Dental, Cigna and MetLife. Out-of-network claims are filed as a courtesy.","handbook.md");
+  add("Privacy Policy","# Privacy Policy\n## Records\nPatient records are kept for 7 years after the last visit. The first copy of a records request is free and sent within 30 days.\n## Breach response\nAny suspected breach must be reported to the privacy officer within 24 hours.","privacy.md");
+  var STOP=/^(the|a|an|is|are|what|how|do|does|we|our|for|of|to|in|on|and|or|can|who|when|where|which|with|be|by|at|it|this|that|my|i|you)$/;
+  var SYN={installments:["payment","monthly"],installment:["payment","monthly"],cost:["fee","charge"],price:["fee"],keep:["kept"],long:["years"]};
+  function ask(q){usage.kb_query++;var terms=(q.toLowerCase().match(/[\w$-]+/g)||[]).filter(function(t){return !STOP.test(t)&&t.length>1;});terms.slice().forEach(function(t){(SYN[t]||[]).forEach(function(x){terms.push(x);});});
+    var stems=terms.map(function(t){return t.slice(0,5);}),best=[];
+    docs.forEach(function(d){d.secs.forEach(function(sec){(sec.text.match(/[^.!?]+[.!?]/g)||[]).forEach(function(sent){var w=(sent.toLowerCase().match(/[\w$-]+/g)||[]).map(function(x){return x.slice(0,5);});var sc=stems.filter(function(s){return w.indexOf(s)>=0;}).length+0.5*stems.filter(function(s){return sec.title.toLowerCase().indexOf(s)>=0;}).length;if(sc>0)best.push({sc:sc,sent:sent.trim(),d:d,sec:sec});});});});
+    best.sort(function(a,b){return b.sc-a.sc;});if(!best.length)return {answer:"I couldn't find anything about that in your documents.",citations:[],mode:"none",ms:2};
+    var top=best.filter(function(b){return b.sc>=best[0].sc*0.6;}).slice(0,2),cites=[],idx={};
+    top.forEach(function(b){var k=b.d.id+b.sec.title;if(!idx[k]){idx[k]=cites.length+1;cites.push({n:cites.length+1,document:b.d.title,section:b.d.title+" > "+b.sec.title,page:null,excerpt:b.sec.text.trim().slice(0,400)});}});
+    return {answer:top.map(function(b){return b.sent+" ["+idx[b.d.id+b.sec.title]+"]";}).join(" "),citations:cites,mode:"extractive",ms:2};}
+  function inv(){var base=1500,over=Math.max(0,usage.agent_run-500)*0.05;return {total_usd:base+over,lines:[{description:"Pilot (one-time)",amount_usd:base}],usage:usage,included:{agent_run:500,kb_query:0}};}
+  setInterval(function(){jobs.forEach(function(j){if(j.status==="queued"&&Math.random()<.6)j.status="running";else if(j.status==="running"&&Math.random()<.5){j.status="succeeded";usage.agent_run++;}});},900);
+  function route(m,p,body){var mm;
+    if(p==="/tenant/me")return {tenant:me,invoice:inv()};
+    if(p==="/tenant/kb"&&m==="GET")return {stats:{documents:docs.length,chunks:docs.reduce(function(a,d){return a+d.chunks;},0),pages:docs.length,bytes:0},documents:docs.map(function(d){return {id:d.id,title:d.title,filename:d.filename,sections:d.sections,pages:d.pages};})};
+    if(p==="/tenant/kb/documents"&&m==="POST"){if(!/\.(md|markdown|txt)$/i.test(body.filename))throw {status:422,detail:"The demo reads .md and .txt files. Your real assistant also reads PDF, Word and HTML."};var raw;try{raw=decodeURIComponent(escape(atob(body.content_base64||"")));}catch(e){throw {status:422,detail:"couldn't read that file"};}return add(body.filename.replace(/\.\w+$/,""),raw,body.filename);}
+    if((mm=p.match(/^\/tenant\/kb\/documents\/(.+)$/))&&m==="DELETE"){docs=docs.filter(function(d){return d.id!==mm[1];});return {deleted:true};}
+    if(p==="/tenant/kb/ask")return ask(body.question);
+    if(p==="/tenant/jobs"&&m==="POST"){var j={id:"job_"+hex(8),goal:body.goal,status:"queued",seq:++seq};jobs.unshift(j);return j;}
+    if(p==="/tenant/jobs"&&m==="GET")return jobs.slice(0,30);
+    if(p.indexOf("/tenant/voice/")===0)throw {status:503,detail:"Voice runs on your own server. Try it on your deployed assistant."};
+    throw {status:404,detail:"not in demo"};}
+  return {route:route};
+})();
+
+/* ---------------- api ---------------- */
+function api(method,path,body){
+  if(DEMO)return new Promise(function(res,rej){setTimeout(function(){try{res(Demo.route(method,path,body));}catch(e){rej(e);}},120);});
+  var h={"content-type":"application/json"},k=store("portal.key");if(k)h["X-Tenant-Key"]=k;
+  return fetch(base()+path,{method:method,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){
+    return r.json().catch(function(){return null;}).then(function(j){if(r.status===401)throw {status:401,detail:"That key wasn't accepted."};if(!r.ok)throw {status:r.status,detail:j&&j.detail?String(j.detail):r.statusText};return j;});},
+    function(){throw {status:0,detail:"Can't reach the server at "+base().replace("/api/v1/empire","")+"."};});
+}
+
+/* ---------------- sign in ---------------- */
+function showGate(err){$("app").hidden=true;$("gate").hidden=false;$("srvWrap").hidden=!STANDALONE;$("demoWrap").hidden=!STANDALONE&&!window.EMPIRE_DEMO;
+  $("srv").value=store("portal.server")||"http://localhost:8080";$("gateErr").hidden=!err;$("gateErr").textContent=err||"";setTimeout(function(){$("key").focus();},30);}
+$("gateForm").addEventListener("submit",function(e){e.preventDefault();DEMO=false;store("portal.demo",null);
+  if(STANDALONE)store("portal.server",$("srv").value.trim()||"http://localhost:8080");store("portal.key",$("key").value.trim());start();});
+$("demoBtn").addEventListener("click",function(){DEMO=true;store("portal.demo","1");start();});
+$("signOut").addEventListener("click",function(){store("portal.key",null);store("portal.demo",null);DEMO=!!window.EMPIRE_DEMO;if(DEMO){toast("This is the demo. Nothing to sign out of.");return;}showGate();});
+
+var ME=null,timer=null;
+function start(){
+  api("GET","/tenant/me").then(function(r){ME=r;$("gate").hidden=true;$("app").hidden=false;renderMe();loadDocs();loadTasks();if(!$("msgs").children.length)welcome();
+    clearInterval(timer);timer=setInterval(function(){refreshMe();loadTasks();},4000);})
+  .catch(function(e){showGate(e.status===401?"That key wasn't accepted. Check it and try again.":e.detail);});
+}
+function refreshMe(){api("GET","/tenant/me").then(function(r){ME=r;renderMe();}).catch(function(){});}
+function renderMe(){var t=ME.tenant,inv=ME.invoice;$("cName").textContent=t.client_name;document.title=t.client_name+" · Private Assistant";
+  $("cSub").textContent=t.tier.charAt(0).toUpperCase()+t.tier.slice(1)+" plan · "+(DEMO?"demo data":"assistant online");
+  $("privacy").textContent=DEMO?"Demo · sample documents":"Private · on "+(STANDALONE?(store("portal.server")||"").replace(/^https?:\/\//,""):location.host);
+  var used=(inv.usage&&inv.usage.kb_query)||0;$("uQ").textContent=used.toLocaleString();
+  var runs=(inv.usage&&inv.usage.agent_run)||0,inc=(inv.included&&inv.included.agent_run)||0,pct=inc?Math.min(100,100*runs/inc):Math.min(100,used);
+  $("uFill").style.width=pct+"%";$("uBar").className="bar"+(pct>=80?" hot":"");$("uBar").title=inc?runs+" of "+inc+" included agent runs":"";
+  $("invTot").textContent=money(inv.total_usd);}
+
+/* ---------------- documents ---------------- */
+var DOCS=[];
+function loadDocs(){api("GET","/tenant/kb").then(function(k){DOCS=k.documents;$("docCount").textContent=k.stats.documents+" file"+(k.stats.documents===1?"":"s");
+  $("docs").innerHTML=DOCS.map(function(d){return '<div class="doc"><span>'+esc(d.title)+'<small>'+esc(d.filename)+' · '+d.sections+' sections</small></span><button type="button" data-del="'+d.id+'" aria-label="Remove '+esc(d.title)+'">×</button></div>';}).join("")||'<div class="empty">No documents yet. Add your handbook, policies or contracts to start asking questions.</div>';
+  if($("msgs").querySelector(".welcome"))welcome();}).catch(fail);}
+$("docs").addEventListener("click",function(e){var b=e.target.closest("[data-del]");if(!b)return;
+  if(b.dataset.confirm!=="1"){b.dataset.confirm="1";b.textContent="Remove?";b.style.fontSize="12px";setTimeout(function(){if(b.isConnected){b.dataset.confirm="";b.textContent="×";b.style.fontSize="";}},3000);return;}
+  api("DELETE","/tenant/kb/documents/"+b.dataset.del).then(function(){toast("Document removed.");loadDocs();}).catch(fail);});
+function upload(files){var list=[].slice.call(files||[]);if(!list.length)return;toast("Reading "+list.length+" file"+(list.length>1?"s":"")+"…");
+  Promise.all(list.map(function(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res({filename:f.name,content_base64:String(r.result).split(",")[1]||""});};r.onerror=rej;r.readAsDataURL(f);}).then(function(b){return api("POST","/tenant/kb/documents",b);});}))
+  .then(function(out){var n=out.filter(function(o){return !o.duplicate;}).length;toast(n?("Added "+n+" document"+(n>1?"s":"")+". You can ask about "+(n>1?"them":"it")+" now."):"Those documents were already here.");loadDocs();}).catch(fail);}
+$("file").addEventListener("change",function(){upload(this.files);this.value="";});
+["dragover","dragenter"].forEach(function(ev){$("drop").addEventListener(ev,function(e){e.preventDefault();$("drop").classList.add("over");});});
+["dragleave","drop"].forEach(function(ev){$("drop").addEventListener(ev,function(e){e.preventDefault();$("drop").classList.remove("over");});});
+$("drop").addEventListener("drop",function(e){upload(e.dataTransfer.files);});
+
+/* ---------------- tasks ---------------- */
+function loadTasks(){api("GET","/tenant/jobs").then(function(js){$("tasks").innerHTML=js.slice(0,12).map(function(j){return '<div class="task"><span title="'+esc(j.goal)+'">'+esc(j.goal)+'</span><span class="st '+j.status+'">'+(j.status==="succeeded"?"done":j.status)+'</span></div>';}).join("")||'<div class="empty">Nothing running. Queue a task and your agents will pick it up.</div>';}).catch(function(){});}
+$("taskForm").addEventListener("submit",function(e){e.preventDefault();var g=$("taskQ").value.trim();if(!g)return;api("POST","/tenant/jobs",{goal:g,priority:5}).then(function(){$("taskQ").value="";toast("Task queued.");loadTasks();}).catch(fail);});
+
+/* ---------------- chat ---------------- */
+function welcome(){
+  var name=ME?ME.tenant.client_name:"your team",sugg=suggestions();
+  $("msgs").innerHTML='<div class="welcome"><h3>Ask anything about '+esc(name)+'\'s documents.</h3><p>Every answer quotes your own files and shows where it came from. '+(DOCS.length?"Try one of these:":"Add a document on the left to get started.")+'</p><div class="sugg">'+sugg.map(function(s){return '<button type="button">'+esc(s)+'</button>';}).join("")+'</div></div>';}
+function suggestions(){if(!DOCS.length)return [];var t=DOCS.map(function(d){return d.title.toLowerCase();}).join(" ");var out=[];
+  if(/handbook|policy|procedure/.test(t))out.push("What is our cancellation policy?","Do we offer payment plans?");
+  if(/privacy|hipaa|records/.test(t))out.push("How long do we keep records?");
+  if(/contract|agreement|lease/.test(t))out.push("What are the termination terms?");
+  if(/contract|agreement|lease|terms/.test(t))out.push("When can either side cancel?");
+  return out.slice(0,4);}
+$("msgs").addEventListener("click",function(e){var s=e.target.closest(".sugg button");if(s){send(s.textContent);return;}
+  var c=e.target.closest(".cite");if(c){var ex=c.parentNode.nextElementSibling;var open=c.getAttribute("aria-expanded")==="true";
+    c.parentNode.querySelectorAll(".cite").forEach(function(x){x.setAttribute("aria-expanded","false");});
+    if(open){ex.hidden=true;}else{c.setAttribute("aria-expanded","true");ex.textContent=c.dataset.ex||"(no excerpt)";ex.hidden=false;}return;}
+  var m=e.target.closest("mark[data-n]");if(m){var cite=m.closest(".msg").querySelector('.cite[data-n="'+m.dataset.n+'"]');if(cite)cite.click();}});
+function add(html,cls){var w=$("msgs").querySelector(".welcome");if(w)w.remove();var d=document.createElement("div");d.className="msg "+cls;d.innerHTML=html;$("msgs").appendChild(d);$("msgs").scrollTop=$("msgs").scrollHeight;return d;}
+function send(q){q=q.trim();if(!q)return;add(esc(q),"you");$("q").value="";grow();
+  var wait=add('<span class="typing" aria-label="Reading your documents"><i></i><i></i><i></i></span>',"bot");
+  api("POST","/tenant/kb/ask",{question:q}).then(function(a){wait.remove();
+    var used=a.citations.filter(function(c){return a.answer.indexOf("["+c.n+"]")>=0;});if(!used.length)used=a.citations;
+    var txt=esc(a.answer).replace(/\[(\d+)\]/g,'<mark data-n="$1" title="Show source $1">$1</mark>');
+    add('<div class="text">'+txt+'</div>'+(used.length?'<div class="cites">'+used.map(function(c){return '<button type="button" class="cite" data-n="'+c.n+'" aria-expanded="false" data-ex="'+esc(c.excerpt||"")+'"><b>'+c.n+' · '+esc(c.document)+'</b> › '+esc((c.section.split(" > ").slice(1).join(" › "))||c.section)+(c.page?' · p. '+c.page:'')+'</button>';}).join("")+'</div><div class="excerpt" hidden></div>':'')+
+      '<span class="meta">'+(a.mode==="model"?"written by your private model from these sources":a.mode==="none"?"no matching passages":"quoted from your documents")+' · '+a.ms+' ms</span>',"bot");
+    say(a.answer.replace(/\[\d+\]/g,""));refreshMe();})
+  .catch(function(e){wait.remove();add('<div class="text">Sorry, that didn\'t work: '+esc(e.detail||"unknown error")+'</div>',"bot");});}
+$("ask").addEventListener("submit",function(e){e.preventDefault();send($("q").value);});
+$("q").addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send($("q").value);}});
+function grow(){var t=$("q");t.style.height="auto";t.style.height=Math.min(160,t.scrollHeight)+"px";}
+$("q").addEventListener("input",grow);
+
+/* ---------------- voice ---------------- */
+var speak=store("portal.speak")==="1",rec=null,chunks=[],audio=null;
+function setSpeak(v){speak=v;store("portal.speak",v?"1":"0");$("spk").setAttribute("aria-pressed",String(v));}
+setSpeak(speak);
+$("spk").addEventListener("click",function(){setSpeak(!speak);toast(speak?"Answers will be read aloud.":"Read-aloud off.");});
+function localSay(t){try{var u=new SpeechSynthesisUtterance(t);var v=speechSynthesis.getVoices().filter(function(x){return x.localService;})[0];if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function say(t){if(!speak||!t)return;t=String(t).slice(0,600);if(DEMO){localSay(t);return;}
+  var h={"content-type":"application/json","X-Tenant-Key":store("portal.key")||""};
+  fetch(base()+"/tenant/voice/tts",{method:"POST",headers:h,body:JSON.stringify({text:t})}).then(function(r){if(!r.ok)throw r;return r.blob();})
+  .then(function(b){if(audio)audio.pause();audio=new Audio(URL.createObjectURL(b));return audio.play();}).catch(function(){localSay(t);});}
+$("mic").addEventListener("click",function(){
+  if(rec&&rec.state==="recording"){rec.stop();return;}
+  if(DEMO){toast("Voice questions run on your own server. Try it on your deployed assistant.",true);return;}
+  if(!navigator.mediaDevices||!window.MediaRecorder){toast("This browser can't record audio.",true);return;}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){chunks=[];rec=new MediaRecorder(stream);$("mic").classList.add("rec");
+    rec.ondataavailable=function(e){if(e.data.size)chunks.push(e.data);};
+    rec.onstop=function(){stream.getTracks().forEach(function(t){t.stop();});$("mic").classList.remove("rec");var blob=new Blob(chunks,{type:rec.mimeType||"audio/webm"});
+      var fr=new FileReader();fr.onload=function(){api("POST","/tenant/voice/stt",{audio_base64:String(fr.result).split(",")[1],mime:blob.type}).then(function(r){if(r.text)send(r.text);else toast("I didn't hear anything.",true);}).catch(fail);};fr.readAsDataURL(blob);};
+    rec.start();toast("Listening. Tap the mic again when you're done.");setTimeout(function(){if(rec&&rec.state==="recording")rec.stop();},20000);
+  }).catch(function(){toast("Microphone permission was refused.",true);});
+});
+
+if(DEMO||store("portal.key"))start();else showGate();
+})();
+</script>
+</body>
+</html>

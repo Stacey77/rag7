@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Earth Tube Planner: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Earth Tube Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: field-notebook tool. Inputs rail left, live readouts right, then charts, then the build spec with a trench cross-section. */
+:root{
+  --bg:#edf0ee; --surface:#f8faf9; --ink:#18211d; --muted:#56635d; --line:#cdd5d1;
+  --cold:#1d6a86; --hot:#b8452f; --soil:#7d6040; --soil-2:#c9b393; --warn:#8a5f00; --good:#2f7a4f; --bad:#a83a2a;
+  --display:"Saira Condensed","Arial Narrow",sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121816; --surface:#1a2220; --ink:#e3ebe7; --muted:#93a39b; --line:#2d3a35;
+  --cold:#5cb4d4; --hot:#e57a62; --soil:#c39d70; --soil-2:#4a3b2a; --warn:#e0b44a; --good:#6cc08f; --bad:#ef7f6c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121816; --surface:#1a2220; --ink:#e3ebe7; --muted:#93a39b; --line:#2d3a35;
+  --cold:#5cb4d4; --hot:#e57a62; --soil:#c39d70; --soil-2:#4a3b2a; --warn:#e0b44a; --good:#6cc08f; --bad:#ef7f6c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+h1{font-size:clamp(2.4rem,6vw,3.6rem)}
+h2{font-size:1.9rem}
+h3{font-size:1.25rem}
+.eyebrow{font:600 .75rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header{display:flex;flex-direction:column;gap:10px;max-width:70ch}
+header p{margin:0;color:var(--muted)}
+.planner{display:grid;grid-template-columns:330px minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:880px){.planner{grid-template-columns:1fr}}
+.rail{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:18px}
+fieldset{border:0;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+legend{font:600 .72rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding:0}
+label{display:flex;flex-direction:column;gap:3px;font-size:.85rem;color:var(--muted);min-width:0}
+label.full{grid-column:1/-1}
+input,select{font:500 .95rem var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:7px 8px;width:100%;min-width:0}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--cold);outline-offset:1px}
+.seg{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg button{font:600 .85rem var(--body);background:var(--bg);color:var(--muted);border:0;padding:8px 6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--cold);color:var(--surface)}
+.presets{display:flex;flex-wrap:wrap;gap:8px}
+.presets button{font:600 .8rem var(--body);background:transparent;color:var(--cold);border:1px solid var(--cold);border-radius:999px;padding:5px 12px;cursor:pointer}
+.presets button:hover{background:var(--cold);color:var(--surface)}
+.note{font-size:.78rem;color:var(--muted);grid-column:1/-1;margin:0}
+.results{display:flex;flex-direction:column;gap:20px;min-width:0}
+.hero{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;border-bottom:1px solid var(--line);padding-bottom:18px}
+.temps{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.tcol{display:flex;flex-direction:column}
+.tcol .v{font:700 clamp(2.6rem,7vw,4.4rem)/1 var(--display);font-variant-numeric:tabular-nums}
+.tcol .k{font:600 .7rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.arrow{font:400 2rem var(--display);color:var(--muted);padding-bottom:10px}
+.v.hot{color:var(--hot)} .v.soil{color:var(--soil)} .v.cold{color:var(--cold)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+@media (max-width:620px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat .k{font:600 .68rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font:600 1.35rem var(--mono);font-variant-numeric:tabular-nums}
+.stat .s{font-size:.8rem;color:var(--muted)}
+.v.neg{color:var(--bad)} .v.pos{color:var(--good)}
+.verdict{font-size:1.08rem;max-width:68ch;margin:0}
+.flags{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.flags li{display:grid;grid-template-columns:62px 1fr;gap:12px;align-items:baseline;font-size:.93rem;padding:8px 0;border-top:1px solid var(--line)}
+.chip{font:600 .65rem var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 6px;border-radius:3px;text-align:center;border:1px solid currentColor}
+.chip.warn{color:var(--warn)} .chip.bad{color:var(--bad)} .chip.good{color:var(--good)} .chip.info{color:var(--cold)}
+.charts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+@media (max-width:880px){.charts{grid-template-columns:1fr}}
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+figcaption{font-size:.85rem;color:var(--muted)}
+svg text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font:500 .75rem var(--mono);color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:14px;height:3px;margin-right:6px;vertical-align:middle;background:var(--c)}
+.spec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+@media (max-width:880px){.spec{grid-template-columns:1fr}}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:14px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:10px}
+.steps li::before{content:counter(s);font:700 1.5rem/1 var(--display);color:var(--cold)}
+.steps b{display:block;font-weight:600}
+.steps p{margin:2px 0 0;color:var(--muted);font-size:.93rem}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .7rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+td:first-child{font-weight:600;white-space:nowrap}
+section{display:flex;flex-direction:column;gap:16px}
+.small{font-size:.82rem;color:var(--muted);max-width:80ch;margin:0}
+.lede{margin:0;max-width:72ch}
+.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+#cost td:first-child{white-space:normal;font-weight:400}
+#cost tfoot td{font-weight:600;border-top:2px solid var(--ink);border-bottom:0}
+#c-sum td:first-child{font-weight:600}
+#c-sum tr.ref td{color:var(--muted)}
+.callout{border-left:3px solid var(--bad);padding:10px 14px;background:var(--surface);font-size:.93rem;max-width:80ch}
+.callout b{color:var(--bad)}
+.costseg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:4px;overflow:hidden;max-width:340px}
+.costseg button{font:600 .85rem var(--body);background:var(--surface);color:var(--muted);border:0;padding:8px 6px;cursor:pointer}
+.costseg button[aria-pressed="true"]{background:var(--cold);color:var(--surface)}
+.divider{border:0;border-top:1px solid var(--line);margin:8px 0 0}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Earth-coupled cooling · North Mississippi soil and summers</span>
+  <h1>Earth Tube Planner</h1>
+  <p>Yes, it works. The question is how much. Set your trench, pipe and fan below and the planner runs the heat transfer for your ground temperature and humidity, then tells you what actually reaches the house.</p>
+</header>
+
+<div class="planner">
+<form class="rail" id="f" autocomplete="off">
+  <div class="presets" role="group" aria-label="Presets">
+    <button type="button" data-preset="video">One 280 ft run</button>
+    <button type="button" data-preset="ms">Recommended MS layout</button>
+  </div>
+
+  <fieldset>
+    <legend>Air source</legend>
+    <div class="seg" role="group" aria-label="Air source">
+      <button type="button" id="m-out" aria-pressed="false">Outdoor air in</button>
+      <button type="button" id="m-rec" aria-pressed="true">Recirculate house air</button>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Trench and pipe</legend>
+    <label>Length per run (ft)<input id="len" type="number" min="20" max="600" step="10" value="280"></label>
+    <label>Parallel runs<input id="runs" type="number" min="1" max="12" step="1" value="1"></label>
+    <label>Diameter (in)<select id="dia"><option>3</option><option selected>4</option><option>6</option><option>8</option></select></label>
+    <label>Pipe<select id="mat"><option value="sch40" selected>Sch 40 PVC</option><option value="sdr35">SDR-35 sewer</option></select></label>
+    <label>Depth (ft)<input id="depth" type="number" min="3" max="16" step="1" value="8"></label>
+    <label>Soil<select id="soil"><option value="0.4">Dry sand</option><option value="0.9">Moist loam</option><option value="1.3" selected>Moist clay / loess</option><option value="1.8">Wet clay</option></select></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Weather and house</legend>
+    <label>Month<select id="month"></select></label>
+    <label>Ground temp (°F)<input id="tg" type="number" step="0.5" placeholder="auto"></label>
+    <label>Outdoor temp (°F)<input id="tout" type="number" step="1" value="97"></label>
+    <label>Outdoor dewpoint (°F)<input id="td" type="number" step="1" value="73"></label>
+    <label>House setpoint (°F)<input id="troom" type="number" step="1" value="76"></label>
+    <label>Indoor RH (%)<input id="rh" type="number" min="20" max="80" step="1" value="50"></label>
+    <p class="note" id="tgnote"></p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Fan</legend>
+    <label>Total airflow (CFM)<input id="cfm" type="number" min="10" max="3000" step="10" value="100"></label>
+    <label>Hours per day<input id="hrs" type="number" min="1" max="24" step="1" value="12"></label>
+    <label class="full">Power rate ($/kWh)<input id="rate" type="number" min="0.05" max="0.5" step="0.01" value="0.13"></label>
+  </fieldset>
+</form>
+
+<div class="results" aria-live="polite">
+  <div class="hero">
+    <div class="temps">
+      <div class="tcol"><span class="k" id="in-k">Air in</span><span class="v hot" id="r-in">–</span></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="tcol"><span class="k">Soil</span><span class="v soil" id="r-tg">–</span></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="tcol"><span class="k">Air out</span><span class="v cold" id="r-out">–</span></div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="k">Net cooling to house</span><span class="v" id="s-net">–</span><span class="s" id="s-net-s"></span></div>
+    <div class="stat"><span class="k">Sensible cooling</span><span class="v" id="s-sens">–</span><span class="s" id="s-sens-s"></span></div>
+    <div class="stat"><span class="k">Water in pipe</span><span class="v" id="s-water">–</span><span class="s" id="s-water-s"></span></div>
+    <div class="stat"><span class="k">Fan</span><span class="v" id="s-fan">–</span><span class="s" id="s-fan-s"></span></div>
+  </div>
+  <p class="verdict" id="verdict"></p>
+  <ul class="flags" id="flags"></ul>
+</div>
+</div>
+
+<div class="charts">
+  <figure>
+    <h3>Along the pipe</h3>
+    <svg id="prof" viewBox="0 0 560 250" role="img" aria-label="Air temperature along the pipe"></svg>
+    <figcaption id="prof-cap">Air temperature from intake to house. Where the curve goes flat, extra pipe is doing nothing.</figcaption>
+  </figure>
+  <figure>
+    <h3>Through the year at your depth</h3>
+    <svg id="year" viewBox="0 0 560 250" role="img" aria-label="Monthly outdoor high, ground and outlet temperatures"></svg>
+    <div class="legend"><span style="--c:var(--hot)">Outdoor high</span><span style="--c:var(--soil)">Soil at depth</span><span style="--c:var(--cold)">Air out</span><span style="--c:var(--muted)">Setpoint</span></div>
+    <figcaption>Soil lags the surface by weeks. It is coolest in early summer and warmest in September, right when you need it least and most.</figcaption>
+  </figure>
+</div>
+
+<section>
+  <span class="eyebrow">Design A</span>
+  <h2>Earth-tube build spec for an Olive Branch yard</h2>
+  <p class="small">The video build is in dry country. Mississippi soil and air change three things: the ground runs warmer, summer dewpoints sit around 70–74°F, and clay holds water. This spec adjusts for that.</p>
+  <div class="spec">
+    <ol class="steps">
+      <li><div><b>Call 811 and check the water table</b><p>Mississippi 811 locates lines free. Dig a test hole to full depth after a rain. If water seeps in above your pipe depth, go shallower or pick another spot; a flooded tube is a mold tube.</p></div></li>
+      <li><div><b>Dig 10–12 ft if you can, 8 ft minimum</b><p>At 4–6 ft the August soil here is 72°F and up. Every extra foot cuts the summer swing. A mini-excavator rental gets you there in a day.</p></div></li>
+      <li><div><b>Several shorter 6-in runs, not one long 4-in</b><p>4 to 6 parallel runs of 100–150 ft on a manifold, spaced at least 3 ft apart so each has its own cool soil. Bigger pipe drops air speed, fan power and noise.</p></div></li>
+      <li><div><b>Schedule 40, solvent-welded, bedded in sand</b><p>Your lesson holds: Sch 40 only. Lay 4–6 in of sand or pea gravel, set the pipe, then hand-place the first foot of backfill with no rocks before the machine touches it.</p></div></li>
+      <li><div><b>Slope 1–2% to a sealed condensate sump</b><p>Clay will not drain into pea gravel the way desert soil does. Run the low end to a sealed sump with a trap and a small condensate pump. An open drain in clay lets groundwater and soil gas into the pipe.</p></div></li>
+      <li><div><b>Run it as a closed loop in summer</b><p>Pull air from the house, through the ground, back into the house. Indoor air at 50% RH has a dewpoint near 56°F, so it stays dry in the pipe. Use outdoor-air mode in spring and fall when dewpoints are low.</p></div></li>
+      <li><div><b>Filter the intake and keep a dehumidifier</b><p>MERV 8 filter at the intake, screened cap, at least 3 ft above grade and away from the AC condenser. A dehumidifier handles the latent load the tube cannot. Run a radon test after install.</p></div></li>
+    </ol>
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <figure>
+        <svg viewBox="0 0 520 260" role="img" aria-label="Trench cross-section: house, sloped pipe to condensate sump, intake standpipe">
+          <rect x="0" y="70" width="520" height="190" fill="var(--soil-2)" opacity=".55"/>
+          <line x1="0" y1="70" x2="520" y2="70" stroke="var(--soil)" stroke-width="2"/>
+          <rect x="18" y="20" width="110" height="50" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+          <polygon points="12,22 73,0 134,22" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="48" y="50" style="fill:var(--ink)">HOUSE</text>
+          <rect x="455" y="28" width="16" height="42" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+          <rect x="449" y="20" width="28" height="9" fill="var(--good)"/>
+          <text x="388" y="16">filtered intake</text>
+          <path d="M463 70 L463 196 L120 206 L120 70" fill="none" stroke="var(--cold)" stroke-width="9" stroke-linejoin="round"/>
+          <rect x="90" y="206" width="60" height="34" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="94" y="228">sump</text>
+          <line x1="128" y1="206" x2="128" y2="70" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="134" y="140">pump line</text>
+          <path d="M300 190 l-30 1" stroke="var(--ink)" stroke-width="1.2" fill="none"/>
+          <polygon points="268,191 276,187 276,195" fill="var(--ink)"/>
+          <text x="232" y="184">1–2% fall</text>
+          <rect x="140" y="208" width="320" height="10" fill="var(--soil)" opacity=".35"/>
+          <text x="250" y="232">sand bedding</text>
+          <line x1="500" y1="70" x2="500" y2="196" stroke="var(--ink)" stroke-width="1"/>
+          <line x1="494" y1="70" x2="506" y2="70" stroke="var(--ink)"/><line x1="494" y1="196" x2="506" y2="196" stroke="var(--ink)"/>
+          <text x="478" y="138" transform="rotate(-90 486 138)">10–12 ft</text>
+        </svg>
+        <figcaption>Side view of one run. Air enters at the right, falls to depth, travels toward the house on a slight downhill, and condensate collects at the low end.</figcaption>
+      </figure>
+      <div class="tbl">
+        <table>
+          <thead><tr><th></th><th>Video build</th><th>Olive Branch</th></tr></thead>
+          <tbody>
+            <tr><td>Climate</td><td>Dry. Low dewpoints.</td><td>Humid. 70–74°F summer dewpoints.</td></tr>
+            <tr><td>Air source</td><td>Outdoor air, window cracked</td><td>House air loop in summer</td></tr>
+            <tr><td>Drain</td><td>Open into pea gravel</td><td>Sealed sump and pump</td></tr>
+            <tr><td>Mold risk</td><td>Low</td><td>Real unless pipe stays dry</td></tr>
+            <tr><td>Pipe</td><td>Cracked at thin wall</td><td>Sch 40, sand-bedded</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <p class="small">Model notes: ground temperature uses the Kusuda equation with a 63°F annual mean and 20.5°F surface swing, typical of the Memphis area. Heat transfer uses the Gnielinski correlation inside the pipe plus pipe-wall and soil resistance. Soil around the pipe warms with heavy daily use, so treat late-summer numbers as best case. Monthly outdoor values are approximate Memphis normals.</p>
+</section>
+
+<hr class="divider">
+
+<section id="design-b">
+  <span class="eyebrow">Alternate design</span>
+  <h2>Design B: water-loop ground coil</h2>
+  <p class="lede">Move water through the ground instead of air. A small pump circulates water through coils of 1-in HDPE pipe buried in a trench. The cooled water feeds a fan coil inside the house, like a car radiator running in reverse. Water carries heat far better than air, so the pipe is small and cheap, and no air you breathe ever touches the soil. Condensation forms on the indoor coil and drains from a pan, the same as a regular AC.</p>
+  <div class="planner">
+    <form class="rail" id="fb" autocomplete="off">
+      <fieldset>
+        <legend>Ground loop</legend>
+        <label>Total loop (ft)<input id="b-loop" type="number" min="200" max="6000" step="100" value="1500"></label>
+        <label>Layout<select id="b-layout"><option value="slinky" selected>Slinky coils</option><option value="straight">Straight runs</option></select></label>
+        <label>Trench depth (ft)<input id="b-depth" type="number" min="4" max="14" step="1" value="8"></label>
+        <label>Pump flow (GPM)<input id="b-gpm" type="number" min="1" max="15" step="0.5" value="4"></label>
+        <label class="full">Fan coil airflow (CFM)<input id="b-cfm" type="number" min="200" max="2000" step="50" value="800"></label>
+        <p class="note">Uses the soil, month, setpoint and indoor humidity from the planner above. Pipe is 1-in HDPE SDR-11, heat-fused.</p>
+      </fieldset>
+    </form>
+    <div class="results" aria-live="polite">
+      <div class="hero"><div class="temps">
+        <div class="tcol"><span class="k">House air</span><span class="v hot" id="b-in">–</span></div>
+        <span class="arrow" aria-hidden="true">→</span>
+        <div class="tcol"><span class="k">Loop water</span><span class="v soil" id="b-w">–</span></div>
+        <span class="arrow" aria-hidden="true">→</span>
+        <div class="tcol"><span class="k">Air off coil</span><span class="v cold" id="b-off">–</span></div>
+      </div></div>
+      <div class="stats">
+        <div class="stat"><span class="k">Cooling</span><span class="v" id="b-cool">–</span><span class="s" id="b-cool-s"></span></div>
+        <div class="stat"><span class="k">Per watt</span><span class="v" id="b-eff">–</span><span class="s">BTU/h per W</span></div>
+        <div class="stat"><span class="k">Power</span><span class="v" id="b-pow">–</span><span class="s" id="b-pow-s"></span></div>
+        <div class="stat"><span class="k">Trench</span><span class="v" id="b-tr">–</span><span class="s" id="b-tr-s"></span></div>
+      </div>
+      <p class="verdict" id="b-verdict"></p>
+      <ul class="flags" id="b-flags"></ul>
+    </div>
+  </div>
+  <div class="spec">
+    <figure>
+      <svg viewBox="0 0 520 260" role="img" aria-label="Water loop cross-section: fan coil and pump in house, supply and return lines to slinky coils in trench">
+        <rect x="0" y="70" width="520" height="190" fill="var(--soil-2)" opacity=".55"/>
+        <line x1="0" y1="70" x2="520" y2="70" stroke="var(--soil)" stroke-width="2"/>
+        <rect x="18" y="22" width="150" height="48" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+        <polygon points="12,24 93,0 174,24" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+        <rect x="28" y="32" width="50" height="22" fill="var(--surface)" stroke="var(--cold)" stroke-width="2"/>
+        <line x1="26" y1="60" x2="80" y2="60" stroke="var(--ink)" stroke-width="2"/>
+        <text x="30" y="47" style="fill:var(--cold)">coil</text>
+        <text x="84" y="64">pan</text>
+        <circle cx="122" cy="44" r="9" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+        <text x="108" y="34">pump</text>
+        <path d="M78 42 L113 44" stroke="var(--cold)" stroke-width="2.5" fill="none"/>
+        <path d="M131 44 L148 44 L148 190 L180 190" stroke="var(--cold)" stroke-width="3" fill="none"/>
+        <path d="M78 50 L160 50 L160 212 L488 212 L488 196" stroke="var(--hot)" stroke-width="3" fill="none"/>
+        <g fill="none" stroke="var(--cold)" stroke-width="2.5">
+          <ellipse cx="200" cy="196" rx="22" ry="10"/><ellipse cx="230" cy="196" rx="22" ry="10"/><ellipse cx="260" cy="196" rx="22" ry="10"/>
+          <ellipse cx="290" cy="196" rx="22" ry="10"/><ellipse cx="320" cy="196" rx="22" ry="10"/><ellipse cx="350" cy="196" rx="22" ry="10"/>
+          <ellipse cx="380" cy="196" rx="22" ry="10"/><ellipse cx="410" cy="196" rx="22" ry="10"/><ellipse cx="440" cy="196" rx="22" ry="10"/>
+          <ellipse cx="466" cy="196" rx="22" ry="10"/>
+        </g>
+        <text x="236" y="238">slinky coils, 1-in HDPE</text>
+        <text x="176" y="120">supply (cool)</text>
+        <text x="176" y="136" style="fill:var(--hot)">return (warm)</text>
+        <line x1="508" y1="70" x2="508" y2="196" stroke="var(--ink)" stroke-width="1"/>
+        <line x1="502" y1="70" x2="514" y2="70" stroke="var(--ink)"/><line x1="502" y1="196" x2="514" y2="196" stroke="var(--ink)"/>
+        <text x="486" y="138" transform="rotate(-90 494 138)">8–10 ft</text>
+      </svg>
+      <figcaption>Water is pumped from the coil down to the slinky loops, gives its heat to the soil, and returns cool. A slinky packs 4–5 ft of pipe into each foot of trench.</figcaption>
+    </figure>
+    <div class="tbl">
+      <table>
+        <thead><tr><th></th><th>A: Earth tubes</th><th>B: Water loop</th></tr></thead>
+        <tbody>
+          <tr><td>In the ground</td><td>Air</td><td>Sealed water</td></tr>
+          <tr><td>Pipe</td><td>6-in Sch 40 PVC</td><td>1-in HDPE, heat-fused</td></tr>
+          <tr><td>Trench</td><td>Long and deep, one per run</td><td>About a fifth of the loop length</td></tr>
+          <tr><td>Mold in pipe</td><td>Managed by keeping it dry</td><td>Not possible</td></tr>
+          <tr><td>Dehumidifies</td><td>No</td><td>When loop water runs below indoor dewpoint</td></tr>
+          <tr><td>Without power</td><td>Trickle flow in outdoor mode</td><td>No, needs pump and fan</td></tr>
+          <tr><td>Skills</td><td>PVC gluing, ductwork</td><td>Heat fusion, basic plumbing</td></tr>
+          <tr><td>Indoor gear</td><td>Fan, registers</td><td>Fan coil, pump, expansion tank</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="cost">
+  <span class="eyebrow">Cost assessment</span>
+  <h2>What each design costs</h2>
+  <p class="lede">Line items follow your settings in both planners, so change a pipe size or loop length and the budget moves with it. Prices are 2026 estimate ranges for big-box materials and rental-yard equipment; get local quotes before you buy.</p>
+  <div class="costseg" role="group" aria-label="Who builds it">
+    <button type="button" id="c-diy" aria-pressed="true">Do it yourself</button>
+    <button type="button" id="c-pro" aria-pressed="false">Hire it out</button>
+  </div>
+  <div class="tbl">
+    <table id="c-sum"></table>
+  </div>
+  <p class="verdict" id="c-verdict"></p>
+  <div class="spec">
+    <div class="tbl" style="display:flex;flex-direction:column;gap:8px"><h3>Design A line items</h3><table id="c-a"></table></div>
+    <div class="tbl" style="display:flex;flex-direction:column;gap:8px"><h3>Design B line items</h3><table id="c-b"></table></div>
+  </div>
+  <div class="callout"><b>Trench safety.</b> OSHA treats any trench deeper than 5 ft as a cave-in hazard that needs sloping, benching or a trench box before anyone steps in. Both designs dig deeper than that. Set pipe from the surface, rent a trench box, or bench the walls back. Clay walls can collapse without warning, especially after rain.</div>
+  <p class="small">Season savings: May through September at the planner's hours per day and power rate, crediting each design with the AC electricity it displaces (about 13 BTU per watt-hour) minus its own fan and pump power. Payback divides the middle of the cost range by that yearly saving. Reference rows are typical installed prices for comparison.</p>
+</section>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const HI=[50,55,64,73,81,89,92,91,85,74,62,52];
+const DP=[31,34,41,50,60,68,71,70,64,52,42,34];
+const MID=[15,46,74,105,135,166,196,227,258,288,319,349];
+const PIPES={sch40:{3:[3.068,3.5],4:[4.026,4.5],6:[6.065,6.625],8:[7.981,8.625]},sdr35:{4:[3.975,4.215],6:[5.915,6.275],8:[7.92,8.4]}};
+const P=101325, CP=1006, RHO=1.18, NU=1.6e-5, KAIR=0.026, PR=0.71, KPVC=0.19, KMINOR=5, FANEFF=0.3;
+const fc=f=>(f-32)/1.8, cf=c=>c*1.8+32;
+const psat=c=>610.94*Math.exp(17.625*c/(c+243.04));
+const Wf=pv=>0.622*pv/(P-pv);
+const dewC=pv=>{const g=Math.log(pv/610.94);return 243.04*g/(17.625-g)};
+const btu=w=>w*3.412;
+let mode="rec";
+
+MONTHS.forEach((m,i)=>{const o=document.createElement("option");o.value=i;o.textContent=m;if(i===7)o.selected=true;$("month").appendChild(o)});
+
+function groundF(depth,day){
+  const a=0.6, w=2*Math.PI/365;
+  const damp=Math.exp(-depth*Math.sqrt(Math.PI/(365*a)));
+  const lag=depth/2*Math.sqrt(365/(Math.PI*a));
+  return 63-20.5*damp*Math.cos(w*(day-17-lag));
+}
+
+function sim(p,TinF,TgF,cfm){
+  const [di,dout]=PIPES[p.mat][p.dia]||PIPES.sch40[p.dia];
+  const Di=di*0.0254, Do=dout*0.0254, A=Math.PI*Di*Di/4;
+  const Qp=Math.max(cfm,0.1)*0.000471947/p.runs, v=Qp/A, Re=v*Di/NU;
+  let Nu,f;
+  if(Re<2300){Nu=3.66;f=64/Math.max(Re,1)}
+  else{f=Math.pow(0.79*Math.log(Re)-1.64,-2);Nu=Math.max(3.66,(f/8)*(Re-1000)*PR/(1+12.7*Math.sqrt(f/8)*(Math.pow(PR,2/3)-1)))}
+  const h=Nu*KAIR/Di;
+  const R=1/(h*Math.PI*Di)+Math.log(Do/Di)/(2*Math.PI*KPVC)+Math.log(1.0/Do)/(2*Math.PI*p.soil);
+  const Lm=p.len*0.3048, UA=Lm/R, m=RHO*Qp, NTU=UA/(m*CP);
+  const TinC=fc(TinF), TgC=fc(TgF);
+  const ToutC=TgC+(TinC-TgC)*Math.exp(-NTU);
+  const K=f*Lm/Di+KMINOR, dP=K*RHO*v*v/2;
+  return {ToutF:cf(ToutC),NTU,v,Re,dP,K,A,mTot:m*p.runs,Lm,Di,
+    at:x=>cf(TgC+(TinC-TgC)*Math.exp(-NTU*x/p.len))};
+}
+
+function read(){
+  const n=id=>parseFloat($(id).value);
+  let dia=$("dia").value, mat=$("mat").value;
+  if(mat==="sdr35"&&dia==="3"){$("dia").value="4";dia="4"}
+  return {len:n("len")||100,runs:Math.max(1,Math.round(n("runs")||1)),dia,mat,depth:n("depth")||8,soil:n("soil"),
+    month:+$("month").value,tgo:$("tg").value===""?null:n("tg"),tout:n("tout"),td:n("td"),troom:n("troom"),rh:(n("rh")||50)/100,
+    cfm:n("cfm")||100,hrs:n("hrs")||12,rate:n("rate")||0.13};
+}
+
+const f1=x=>Math.round(x).toLocaleString();
+const deg=x=>`${x.toFixed(1)}°`;
+
+function update(){
+  const p=read();
+  const tgAuto=groundF(p.depth,MID[p.month]);
+  const Tg=p.tgo??tgAuto;
+  $("tgnote").textContent=`Auto: ${tgAuto.toFixed(1)}°F at ${p.depth} ft in ${MONTHS[p.month]}.`;
+  const TroomC=fc(p.troom), pvRoom=p.rh*psat(TroomC), Wroom=Wf(pvRoom), TdRoomF=cf(dewC(pvRoom));
+  const Tin=mode==="out"?p.tout:p.troom;
+  const TdIn=Math.min(Tin,mode==="out"?p.td:TdRoomF);
+  const Win=Wf(psat(fc(TdIn)));
+  const r=sim(p,Tin,Tg,p.cfm);
+  const Wout=Math.min(Win,Wf(psat(fc(r.ToutF))));
+  const waterKgS=r.mTot*(Win-Wout);
+  const galDay=waterKgS*3600*p.hrs/3.785;
+  const sensW=r.mTot*CP*(TroomC-fc(r.ToutF));
+  const latW=mode==="out"?r.mTot*(Wout-Wroom)*2.45e6:0;
+  const netW=sensW-latW;
+  const Qtot=p.cfm*0.000471947;
+  const fanW=r.dP*Qtot/FANEFF;
+  const kwhDay=fanW*p.hrs/1000, costMo=kwhDay*30*p.rate;
+  const tons=btu(netW)/12000;
+
+  $("in-k").textContent=mode==="out"?"Outdoor air":"House air";
+  $("r-in").textContent=deg(Tin); $("r-tg").textContent=deg(Tg); $("r-out").textContent=deg(r.ToutF);
+
+  const netB=btu(netW);
+  $("s-net").textContent=`${netB>=0?"":"−"}${f1(Math.abs(netB))}`;
+  $("s-net").className="v "+(netB>=0?"pos":"neg");
+  $("s-net-s").textContent=netB>=0?`BTU/h · ${tons.toFixed(2)} tons`:"BTU/h added load";
+  $("s-sens").textContent=f1(btu(sensW));
+  $("s-sens-s").textContent=mode==="out"?`BTU/h · ${f1(btu(r.mTot*CP*(fc(Tin)-fc(r.ToutF))))} vs open window`:"BTU/h · heat only";
+  $("s-water").textContent=galDay<0.05?"0":galDay.toFixed(1);
+  $("s-water-s").textContent=`gal per ${p.hrs} h day`;
+  $("s-fan").textContent=`${f1(fanW)} W`;
+  $("s-fan-s").textContent=`${(r.dP/249).toFixed(2)} in w.c. · $${costMo.toFixed(2)}/mo`;
+
+  // no-fan flow (outdoor mode only)
+  let natCfm=0;
+  if(mode==="out"&&Tin>Tg){
+    let c=20;
+    for(let i=0;i<40;i++){
+      const s=sim(p,Tin,Tg,c);
+      const dT=fc(Tin)-fc(s.ToutF);
+      const dPs=RHO*9.81*(p.depth*0.3048)*dT/(fc(s.ToutF)+273.15);
+      const v=Math.sqrt(2*dPs/(s.K*RHO));
+      c=0.5*c+0.5*(v*s.A*p.runs/0.000471947);
+    }
+    natCfm=c;
+  }
+
+  // flags
+  const fl=[];
+  if(r.ToutF>=p.troom) fl.push(["bad","Air leaves the pipe warmer than the house. No cooling at these settings."]);
+  if(Tg<TdIn-0.5) fl.push(["warn",`Pipe walls (${Tg.toFixed(0)}°F) sit below the incoming air's dewpoint (${TdIn.toFixed(0)}°F). Water will form inside the pipe: about ${galDay.toFixed(1)} gal per day. Slope it and drain it to a sump.`]);
+  else fl.push(["good",`Incoming air's dewpoint (${TdIn.toFixed(0)}°F) is below the soil temperature. The pipe stays dry.`]);
+  if(mode==="out"&&latW>0) fl.push([netW<0?"bad":"warn",`Outdoor air arrives near saturation. It brings ${f1(btu(latW))} BTU/h of moisture your AC or dehumidifier has to pull back out${netW<0?", more than the cooling it delivers":""}.`]);
+  if(r.NTU>3){const L95=Math.round(p.len*3/r.NTU);fl.push(["info",`The air is fully cooled by about ${L95} ft. The last ${Math.round(p.len-L95)} ft does almost nothing at this airflow. Push more air or split the length into parallel runs.`])}
+  const fpm=r.v*196.85;
+  if(fpm>800) fl.push(["warn",`Air speed is ${f1(fpm)} ft/min. Above about 800 the fan works hard and gets loud. Add runs or go to bigger pipe.`]);
+  if(mode==="out"&&natCfm>0) fl.push(["info",`With no fan and a window cracked, natural draft moves roughly ${f1(natCfm)} CFM through this layout today. It works, at a trickle.`]);
+  if(mode==="rec") fl.push(["info","No-fan mode only works with outdoor air. A closed house loop needs a fan."]);
+  $("flags").innerHTML=fl.map(([k,t])=>`<li><span class="chip ${k}">${{good:"OK",warn:"Watch",bad:"Problem",info:"Note"}[k]}</span><span>${t}</span></li>`).join("");
+
+  // verdict
+  const totalFt=p.len*p.runs;
+  const layout=`${p.runs>1?p.runs+" runs of ":"One "}${p.len} ft${p.runs>1?"":" run"} of ${p.dia}-in pipe (${f1(totalFt)} ft total) at ${f1(p.cfm)} CFM`;
+  let v=`In ${MONTHS[p.month]} at ${p.depth} ft, the soil sits near ${Tg.toFixed(0)}°F. ${layout} `;
+  if(netW>0){
+    const room=tons<0.15?"about one bedroom's worth of help":tons<0.5?"enough to carry a room or two":tons<1.2?"a real dent in the cooling load":"a serious share of a small home's cooling";
+    v+=`delivers about ${f1(netB)} BTU/h of net cooling to a ${p.troom}°F house, ${tons.toFixed(2)} tons. That is ${room}. A typical 1,500 sq ft home here needs 2.5 to 3 tons on a hot afternoon.`;
+    if(fanW>0) v+=` The fan uses ${f1(fanW)} W, so each watt moves ${(btu(netW)/fanW).toFixed(1)} BTU/h, versus about 11 for a standard AC.`;
+  } else {
+    v+=`cools the air to ${r.ToutF.toFixed(0)}°F, but ${mode==="out"?"the moisture it carries in outweighs that cooling for an air-conditioned house":"that is not below your setpoint"}. ${mode==="out"?"Switch to recirculating house air to see the dry-pipe numbers.":""}`;
+  }
+  $("verdict").textContent=v;
+
+  drawProfile(r,p,Tin,Tg,TdIn);
+  drawYear(p);
+  const b=updateB(p);
+  updateCost(p,b);
+}
+
+/* ---------- Design B: water loop ---------- */
+function readB(){const n=id=>parseFloat($(id).value);return {loop:n("b-loop")||1500,layout:$("b-layout").value,depth:n("b-depth")||8,gpm:n("b-gpm")||4,cfm:n("b-cfm")||800}}
+function simB(b,p,m){
+  const Tg=p.tgo??groundF(b.depth,MID[m]);
+  const Do=1.315*0.0254, Di=1.075*0.0254;
+  const R=Math.log(1.0/Do)/(2*Math.PI*p.soil)+Math.log(Do/Di)/(2*Math.PI*0.4);
+  const UA=b.loop*0.3048/R*(b.layout==="slinky"?0.55:0.9);
+  const Cw=b.gpm*0.0631*4180, Ca=b.cfm*0.000471947*RHO*CP, Cmin=Math.min(Ca,Cw);
+  const eg=1-Math.exp(-UA/Cw), ec=0.65, a=1-eg;
+  const dT=fc(p.troom)-fc(Tg);
+  const Q=dT>0?ec*Cmin*dT/(1+ec*Cmin*a/(Cw*eg)):0;
+  return {Tg,Q,eg,T1:cf(fc(Tg)+a*Q/(Cw*eg)),off:cf(fc(p.troom)-Q/Ca),
+    pw:25+b.gpm*10+b.cfm*0.15,trench:b.layout==="slinky"?b.loop/5:b.loop/2};
+}
+function updateB(p){
+  const b=readB(), r=simB(b,p,p.month);
+  const TdR=cf(dewC(p.rh*psat(fc(p.troom))));
+  const B=btu(r.Q), tons=B/12000;
+  $("b-in").textContent=deg(p.troom); $("b-w").textContent=deg(r.T1); $("b-off").textContent=deg(r.off);
+  $("b-cool").textContent=f1(B); $("b-cool-s").textContent=`BTU/h · ${tons.toFixed(2)} tons`;
+  $("b-eff").textContent=(B/r.pw).toFixed(1);
+  $("b-pow").textContent=`${f1(r.pw)} W`; $("b-pow-s").textContent=`pump + fan · $${(r.pw*p.hrs*30/1000*p.rate).toFixed(2)}/mo`;
+  $("b-tr").textContent=`${f1(r.trench)} ft`; $("b-tr-s").textContent=`at ${b.depth} ft deep`;
+  const fl=[];
+  if(r.Q<=0) fl.push(["bad","Soil is warmer than the house at these settings. No cooling."]);
+  if(r.T1+2<TdR) fl.push(["good",`Loop water (${r.T1.toFixed(0)}°F) runs below indoor dewpoint (${TdR.toFixed(0)}°F). The coil pulls moisture out of the air and drains it from the pan.`]);
+  else fl.push(["info",`Loop water (${r.T1.toFixed(0)}°F) runs above indoor dewpoint (${TdR.toFixed(0)}°F), so this is sensible cooling only. Keep the dehumidifier.`]);
+  if(r.eg>0.9) fl.push(["info","The loop is long for this pump flow. Raise the flow or shorten the loop for the same result."]);
+  fl.push(["info","A cooling-only loop below the frost line needs no antifreeze. Insulate or drain any piping above ground before a hard freeze."]);
+  $("b-flags").innerHTML=fl.map(([k,t])=>`<li><span class="chip ${k}">${{good:"OK",warn:"Watch",bad:"Problem",info:"Note"}[k]}</span><span>${t}</span></li>`).join("");
+  $("b-verdict").textContent=r.Q>0
+    ?`In ${MONTHS[p.month]} at ${b.depth} ft, ${f1(b.loop)} ft of ${b.layout==="slinky"?"slinky-coiled":"straight"} loop delivers about ${f1(B)} BTU/h (${tons.toFixed(2)} tons) for ${f1(r.pw)} W. It runs into the same soil-temperature ceiling as the air tubes. Its advantages are a shorter trench, cheaper pipe, a sealed system with nothing to grow mold, and real dehumidification whenever the loop water runs cold enough.`
+    :`The soil at ${b.depth} ft in ${MONTHS[p.month]} is no cooler than the house. Go deeper.`;
+  return {b,r};
+}
+
+/* ---------- Cost assessment ---------- */
+const PRICE={sch40:{3:[2.2,3.2],4:[3,4.5],6:[5.5,8],8:[9,13]},sdr35:{4:[1.6,2.4],6:[3.2,4.8],8:[5.5,8]}};
+let pro=false;
+const money=x=>"$"+(Math.round(x/10)*10).toLocaleString();
+function dig(ft,depth){const days=Math.ceil(ft/(depth>8?90:150))+1;const r=depth>10?[550,800]:[325,450];return {days,lo:days*r[0]+150,hi:days*r[1]+300,big:depth>10}}
+function linesA(p){
+  const ft=p.len*p.runs, pr=(PRICE[p.mat]||PRICE.sch40)[p.dia]||PRICE.sch40[p.dia];
+  const d=dig(ft,p.depth), nf=Math.max(1,Math.ceil(p.cfm/400)), sand=ft*0.06;
+  return [
+    [`${p.dia}-in ${p.mat==="sch40"?"Sch 40":"SDR-35"} pipe, ${f1(ft)} ft`,ft*pr[0],ft*pr[1]],
+    [`Excavator rental, ${d.days} days with delivery${d.big?" (larger machine past 10 ft)":""}`,d.lo,d.hi],
+    [`Bedding sand, about ${sand.toFixed(0)} tons`,sand*35,sand*55],
+    [`Manifold and fittings, ${p.runs} run${p.runs>1?"s":""}`,p.runs*60+150,p.runs*120+300],
+    [`Inline fan${nf>1?"s":""} (${nf})`,nf*180,nf*400],
+    ["Condensate sump and pump",200,450],
+    ["Intake standpipe, filter box, caps",150,350],
+    ["Ducting and registers into the house",250,700],
+    ["Dehumidifier",250,400],
+    ["Radon test kit",20,40]];
+}
+function linesB(b){
+  const d=dig(b.trench??0,b.depth), coils=Math.ceil(b.loop/500), sand=b.trench*(b.layout==="slinky"?0.15:0.06);
+  return [
+    [`1-in HDPE SDR-11, ${f1(b.loop)} ft (${coils} coil${coils>1?"s":""})`,b.loop*0.55,b.loop*0.85],
+    [`Excavator rental, ${d.days} days with delivery (${f1(b.trench)} ft trench)`,d.lo,d.hi],
+    [`Bedding sand, about ${sand.toFixed(0)} tons`,sand*35,sand*55],
+    ["Fusion tool rental and fittings",200,450],
+    ["Circulator pump",180,350],
+    ["Fan coil with drain pan",700,1600],
+    ["Expansion tank, valves, purge and fill",150,300],
+    ["Insulated lines into the house",100,250],
+    ["Thermostat and controls",60,180]];
+}
+const sumL=L=>L.reduce((s,l)=>[s[0]+l[1],s[1]+l[2]],[0,0]);
+function withPro(L){if(!pro)return L;const s=sumL(L);return L.concat([["Contractor labor, crew and markup",s[0]*1.0,s[1]*1.8]])}
+function costTable(id,L){
+  const s=sumL(L);
+  $(id).innerHTML=`<thead><tr><th>Item</th><th class="num">Low</th><th class="num">High</th></tr></thead><tbody>${L.map(l=>`<tr><td>${l[0]}</td><td class="num">${money(l[1])}</td><td class="num">${money(l[2])}</td></tr>`).join("")}</tbody><tfoot><tr><td>Total</td><td class="num">${money(s[0])}</td><td class="num">${money(s[1])}</td></tr></tfoot>`;
+  return s;
+}
+function netA(p,m){
+  const Tg=p.tgo??groundF(p.depth,MID[m]);
+  const TroomC=fc(p.troom), pvR=p.rh*psat(TroomC), Wr=Wf(pvR), TdR=cf(dewC(pvR));
+  const Tin=mode==="out"?HI[m]:p.troom, Td=Math.min(Tin,mode==="out"?DP[m]:TdR);
+  const r=sim(p,Tin,Tg,p.cfm);
+  const Win=Wf(psat(fc(Td))), Wout=Math.min(Win,Wf(psat(fc(r.ToutF))));
+  const sens=r.mTot*CP*(TroomC-fc(r.ToutF)), lat=mode==="out"?r.mTot*(Wout-Wr)*2.45e6:0;
+  return {net:sens-lat,pw:r.dP*p.cfm*0.000471947/FANEFF};
+}
+function season(p,fn){
+  let kwh=0, acKwh=0;
+  for(let m=4;m<=8;m++){const {net,pw}=fn(m);const ac=net>0?btu(net)/13:0;acKwh+=ac*30*p.hrs/1000;kwh+=(ac-pw)*30*p.hrs/1000}
+  return {usd:kwh*p.rate,acUsd:acKwh*p.rate};
+}
+function updateCost(p,{b,r}){
+  const sA=costTable("c-a",withPro(linesA(p)));
+  const sB=costTable("c-b",withPro(linesB({...b,trench:r.trench})));
+  const aNow=netA(p,p.month), bNow={net:r.Q,pw:r.pw};
+  const seaA=season(p,m=>netA(p,m)), seaB=season(p,m=>{const x=simB(b,p,m);return {net:x.Q,pw:x.pw}});
+  const row=(name,s,now,sea,ref)=>{
+    const mid=(s[0]+s[1])/2, B=btu(now.net), t=B/12000;
+    const perTon=t>0.01?money(mid/t):"—";
+    let pay="—", sav="—";
+    if(sea){sav=sea.usd>0?`${money(sea.usd)}/yr`:"None";pay=sea.usd>0?(mid/sea.usd>50?"50+ yrs":`${(mid/sea.usd).toFixed(0)} yrs`):"Never"}
+    else sav=ref;
+    return `<tr${sea?"":' class="ref"'}><td>${name}</td><td class="num">${money(s[0])} – ${money(s[1])}</td><td class="num">${B>0?f1(B):"0"} · ${Math.max(t,0).toFixed(2)} t</td><td class="num">${perTon}</td><td class="num">${f1(now.pw)} W</td><td class="num">${sav}</td><td class="num">${pay}</td></tr>`;
+  };
+  const ms=pro?[3000,5000]:[1300,2200], gs=[20000,35000];
+  $("c-sum").innerHTML=`<thead><tr><th>Design</th><th class="num">Build cost</th><th class="num">${MONTHS[p.month]} cooling BTU/h</th><th class="num">Cost per ton</th><th class="num">Power</th><th class="num">Season savings</th><th class="num">Payback</th></tr></thead><tbody>
+    ${row("A: Earth tubes",sA,aNow,seaA)}
+    ${row("B: Water loop",sB,bNow,seaB)}
+    ${row("Ductless mini-split, 1 ton",ms,{net:12000/3.412,pw:900},null,"Adds grid load")}
+    ${row("Ground-source heat pump, 3 ton",gs,{net:36000/3.412,pw:1800},null,"Replaces AC")}
+  </tbody>`;
+  const tA=btu(aNow.net)/12000, tB=btu(r.Q)/12000;
+  const pA=tA>0.01?((sA[0]+sA[1])/2)/tA:Infinity, pB=tB>0.01?((sB[0]+sB[1])/2)/tB:Infinity;
+  const better=pB<pA?"B":"A";
+  const msPer=(ms[0]+ms[1])/2;
+  let v=`On dollars alone, neither ground design pays back fast. The AC electricity Design A displaces is worth about ${money(seaA.acUsd)} a season, and Design B about ${money(seaB.acUsd)}, at ${(p.rate*100).toFixed(0)}¢ per kWh. `;
+  if(isFinite(pA)||isFinite(pB)) v+=`Design ${better} buys cooling for less, about ${money(Math.min(pA,pB))} per ton of capacity in ${MONTHS[p.month]}. A 1-ton mini-split comes in near ${money(msPer)} per ton. `;
+  v+="Build the ground system for compressor-free comfort, quiet, and cooling that keeps running on a small battery or solar panel through an outage. Expect the power bill to drop only a little.";
+  $("c-verdict").textContent=v;
+}
+function setPro(v){pro=v;$("c-diy").setAttribute("aria-pressed",!v);$("c-pro").setAttribute("aria-pressed",v);update()}
+$("c-diy").addEventListener("click",()=>setPro(false));
+$("c-pro").addEventListener("click",()=>setPro(true));
+$("fb").addEventListener("input",update);
+$("fb").addEventListener("submit",e=>e.preventDefault());
+
+function axes(svg,W,H,m,x0,x1,y0,y1,xt,yt,xlab){
+  const X=x=>m.l+(x-x0)/(x1-x0)*(W-m.l-m.r), Y=y=>H-m.b-(y-y0)/(y1-y0)*(H-m.t-m.b);
+  let s="";
+  yt.forEach(t=>{s+=`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)" stroke-width="1"/><text x="${m.l-6}" y="${Y(t)+4}" text-anchor="end">${t}°</text>`});
+  xt.forEach(([t,l])=>{s+=`<text x="${X(t)}" y="${H-m.b+16}" text-anchor="middle">${l}</text>`});
+  if(xlab) s+=`<text x="${W-m.r}" y="${H-4}" text-anchor="end">${xlab}</text>`;
+  return {X,Y,s};
+}
+function ticks(lo,hi){const step=(hi-lo)>30?10:5;const a=[];for(let t=Math.ceil(lo/step)*step;t<=hi;t+=step)a.push(t);return a}
+
+function drawProfile(r,p,Tin,Tg,Td){
+  const W=560,H=250,m={l:42,r:14,t:14,b:36};
+  const lo=Math.floor(Math.min(Tg,r.ToutF,Td)-3), hi=Math.ceil(Math.max(Tin,Td)+3);
+  const step=p.len<=150?25:p.len<=400?50:100;
+  const xt=[];for(let x=0;x<=p.len;x+=step)xt.push([x,x]);
+  const a=axes(null,W,H,m,0,p.len,lo,hi,xt,ticks(lo,hi),"ft along pipe");
+  let s=a.s;
+  s+=`<line x1="${a.X(0)}" x2="${a.X(p.len)}" y1="${a.Y(Tg)}" y2="${a.Y(Tg)}" stroke="var(--soil)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="${a.X(p.len)-4}" y="${a.Y(Tg)+14}" text-anchor="end" style="fill:var(--soil)">soil ${Tg.toFixed(0)}°</text>`;
+  if(Td>lo&&Td<hi) s+=`<line x1="${a.X(0)}" x2="${a.X(p.len)}" y1="${a.Y(Td)}" y2="${a.Y(Td)}" stroke="var(--warn)" stroke-width="1" stroke-dasharray="2 3"/><text x="${a.X(p.len)-4}" y="${a.Y(Td)-5}" text-anchor="end" style="fill:var(--warn)">dewpoint ${Td.toFixed(0)}°</text>`;
+  let d="", area="";
+  for(let i=0;i<=60;i++){const x=p.len*i/60, y=r.at(x);d+=(i?"L":"M")+a.X(x).toFixed(1)+" "+a.Y(y).toFixed(1)}
+  area=d+`L${a.X(p.len)} ${H-m.b}L${a.X(0)} ${H-m.b}Z`;
+  s+=`<path d="${area}" fill="var(--cold)" opacity=".08"/><path d="${d}" fill="none" stroke="var(--cold)" stroke-width="2.5"/>`;
+  s+=`<circle cx="${a.X(p.len)}" cy="${a.Y(r.ToutF)}" r="4.5" fill="var(--cold)"/><text x="${a.X(p.len)-8}" y="${a.Y(r.ToutF)-8}" text-anchor="end" style="fill:var(--cold);font-weight:600">${r.ToutF.toFixed(1)}°</text>`;
+  s+=`<circle cx="${a.X(0)}" cy="${a.Y(Tin)}" r="4" fill="var(--hot)"/><text x="${a.X(0)+8}" y="${a.Y(Tin)+4}" style="fill:var(--hot);font-weight:600">${Tin.toFixed(0)}° in</text>`;
+  $("prof").innerHTML=s;
+}
+
+function drawYear(p){
+  const W=560,H=250,m={l:42,r:14,t:14,b:36};
+  const rows=MONTHS.map((_,i)=>{
+    const Tg=p.tgo??groundF(p.depth,MID[i]);
+    const Tin=mode==="out"?HI[i]:p.troom;
+    return {Tg,hi:HI[i],out:sim(p,Tin,Tg,p.cfm).ToutF};
+  });
+  const lo=40, hi=100;
+  const a=axes(null,W,H,m,0,11,lo,hi,MONTHS.map((l,i)=>[i,l[0]]),ticks(lo,hi),"");
+  let s=a.s;
+  s+=`<rect x="${a.X(p.month)-14}" y="${m.t}" width="28" height="${H-m.t-m.b}" fill="var(--cold)" opacity=".07"/>`;
+  s+=`<line x1="${a.X(0)}" x2="${a.X(11)}" y1="${a.Y(p.troom)}" y2="${a.Y(p.troom)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="4 4"/>`;
+  const line=(k,c,w)=>{const d=rows.map((r,i)=>(i?"L":"M")+a.X(i).toFixed(1)+" "+a.Y(Math.max(lo,Math.min(hi,r[k]))).toFixed(1)).join("");return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}"/>`};
+  s+=line("hi","var(--hot)",2)+line("Tg","var(--soil)",2)+line("out","var(--cold)",2.5);
+  const cur=rows[p.month];
+  s+=`<circle cx="${a.X(p.month)}" cy="${a.Y(cur.out)}" r="4.5" fill="var(--cold)"/><circle cx="${a.X(p.month)}" cy="${a.Y(cur.Tg)}" r="3.5" fill="var(--soil)"/>`;
+  $("year").innerHTML=s;
+}
+
+function setMode(m){mode=m;$("m-out").setAttribute("aria-pressed",m==="out");$("m-rec").setAttribute("aria-pressed",m==="rec");update()}
+$("m-out").addEventListener("click",()=>setMode("out"));
+$("m-rec").addEventListener("click",()=>setMode("rec"));
+$("month").addEventListener("change",()=>{const i=+$("month").value;$("tout").value=HI[i];$("td").value=DP[i];update()});
+$("f").addEventListener("input",update);
+$("f").addEventListener("submit",e=>e.preventDefault());
+
+const PRESETS={
+  video:{len:280,runs:1,dia:"4",mat:"sch40",depth:8,cfm:100,mode:"out"},
+  ms:{len:120,runs:5,dia:"6",mat:"sch40",depth:11,cfm:600,mode:"rec"}
+};
+document.querySelectorAll("[data-preset]").forEach(b=>b.addEventListener("click",()=>{
+  const ps=PRESETS[b.dataset.preset];
+  ["len","runs","dia","mat","depth","cfm"].forEach(k=>$(k).value=ps[k]);
+  setMode(ps.mode);
+}));
+
+update();
+})();
+</script>
+</body>
+</html>

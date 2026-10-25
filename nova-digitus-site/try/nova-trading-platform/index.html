@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Nova Trading Platform: live preview by Nova Digitus Designs.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Trading Platform - AI Orchestrated</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brain-status {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 200, 100, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(0, 200, 100, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00c864;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #00d4ff;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        /* Real-time Trading Window */
+        .trading-window {
+            grid-column: 1 / -1;
+            max-height: 500px;
+            overflow-y: auto;
+            background: rgba(0, 50, 100, 0.1);
+            border: 1px solid rgba(0, 150, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .trading-window-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trading-window-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00c864;
+            animation: pulse 2s infinite;
+        }
+
+        .trade-entry {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid #0099ff;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 16px;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .trade-entry.buy {
+            border-left-color: #00c864;
+        }
+
+        .trade-entry.sell {
+            border-left-color: #ff3b30;
+        }
+
+        .trade-time {
+            color: #999;
+            min-width: 60px;
+        }
+
+        .trade-symbol {
+            font-weight: 600;
+            color: #00d4ff;
+        }
+
+        .trade-action {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .trade-action.buy {
+            background: rgba(0, 200, 100, 0.2);
+            color: #00c864;
+            border: 1px solid rgba(0, 200, 100, 0.4);
+        }
+
+        .trade-action.sell {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+            border: 1px solid rgba(255, 59, 48, 0.4);
+        }
+
+        .trade-action.hold {
+            background: rgba(255, 150, 50, 0.2);
+            color: #ff9932;
+            border: 1px solid rgba(255, 150, 50, 0.4);
+        }
+
+        .trade-action.tp {
+            background: rgba(100, 150, 255, 0.2);
+            color: #64b5ff;
+            border: 1px solid rgba(100, 150, 255, 0.4);
+        }
+
+        .trade-details {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .trade-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            color: #999;
+            font-size: 11px;
+        }
+
+        .detail-value {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Agent Swarm Visualization */
+        .swarm-section {
+            grid-column: 1 / -1;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border-radius: 2px;
+        }
+
+        .swarm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 200, 100, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00c864, transparent);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .agent-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .agent-name {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #00d4ff;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .agent-status {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .agent-metric {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00c864;
+            margin-bottom: 4px;
+        }
+
+        .agent-task {
+            font-size: 10px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .brain-card {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 100, 200, 0.1) 100%);
+            border: 2px solid rgba(0, 212, 255, 0.5);
+        }
+
+        .brain-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .brain-stat {
+            text-align: center;
+        }
+
+        .brain-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 8px;
+        }
+
+        .brain-stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .brain-queue {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .queue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .queue-item-symbol {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .queue-item-agent {
+            color: #00c864;
+            font-size: 11px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            color: #000;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 212, 255, 0.5);
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .brain-content {
+                grid-template-columns: 1fr;
+            }
+
+            .swarm-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .swarm-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trade-entry {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 NOVA ORCHESTRATED TRADING</h1>
+            <div class="brain-status">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Brain Active</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>9 Agents Online</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <div class="card">
+                <div class="card-title">Portfolio Value</div>
+                <div class="card-value">$150,432.45</div>
+                <div style="color: #00c864; font-size: 14px;">+2.35% (AI-driven)</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Brain Performance</div>
+                <div class="card-value">67.2%</div>
+                <div style="color: #00c864; font-size: 14px;">Win Rate | 2.14 Sharpe</div>
+            </div>
+
+            <!-- Real-time Trading Window -->
+            <div class="trading-window">
+                <div class="trading-window-title">Live Trading Stream</div>
+                <div id="tradingStream"></div>
+            </div>
+        </div>
+
+        <!-- AI Brain & Agent Swarm -->
+        <div class="section-title">AI Orchestration Layer</div>
+
+        <div class="card brain-card">
+            <div class="card-title" style="margin-bottom: 20px;">🧠 Nova Orchestrator Brain</div>
+            <div class="brain-content">
+                <div class="brain-stat">
+                    <div class="brain-stat-value" id="brainDecisions">0</div>
+                    <div class="brain-stat-label">Decisions Made</div>
+                </div>
+                <div class="brain-stat">
+                    <div class="brain-stat-value" id="brainAccuracy">0%</div>
+                    <div class="brain-stat-label">Accuracy Rate</div>
+                </div>
+                <div class="brain-stat">
+                    <div class="brain-stat-value" id="brainLatency">0ms</div>
+                    <div class="brain-stat-label">Avg Latency</div>
+                </div>
+                <div class="brain-queue">
+                    <div style="font-size: 11px; color: #00d4ff; margin-bottom: 12px; font-weight: 600;">Processing Queue</div>
+                    <div id="processingQueue"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <div class="section-title">Specialized Agent Swarm</div>
+            <div class="swarm-grid">
+                <div class="agent-card">
+                    <div class="agent-icon">📊</div>
+                    <div class="agent-name">Data Gatherer</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="gatherCount">0</div>
+                    <div class="agent-task">Collecting market data</div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-icon">✅</div>
+                    <div class="agent-name">Data Verifier</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="verifyCount">0</div>
+                    <div class="agent-task">Validating signals</div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-icon">🤖</div>
+                    <div class="agent-name">ML Model Agent</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="mlCount">0</div>
+                    <div class="agent-task">Running predictions</div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-icon">📈</div>
+                    <div class="agent-name">Buy Agent</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="buyCount">0</div>
+                    <div class="agent-task">Entry analysis</div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-icon">📉</div>
+                    <div class="agent-name">Sell Agent</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="sellCount">0</div>
+                    <div class="agent-task">Exit analysis</div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-icon">⏸️</div>
+                    <div class="agent-name">Hold Agent</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="holdCount">0</div>
+                    <div class="agent-task">Position maintenance</div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-icon">💰</div>
+                    <div class="agent-name">Take Profit Agent</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="tpCount">0</div>
+                    <div class="agent-task">Profit optimization</div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-icon">⚠️</div>
+                    <div class="agent-name">Risk Manager</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="riskCount">0</div>
+                    <div class="agent-task">Limiting exposure</div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-icon">🔔</div>
+                    <div class="agent-name">Alert Agent</div>
+                    <div class="agent-status">ACTIVE</div>
+                    <div class="agent-metric" id="alertCount">0</div>
+                    <div class="agent-task">Notifying users</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-primary" onclick="startBrain()">Start AI Brain</button>
+            <button class="btn-secondary" onclick="pauseBrain()">Pause</button>
+            <button class="btn-secondary" onclick="viewBrainLogs()">Brain Logs</button>
+        </div>
+    </div>
+
+    <script>
+        // Simulate real-time trades
+        const symbols = ['AAPL', 'GOOGL', 'MSFT', 'BTCUSD', 'ETHUSD'];
+        const actions = ['BUY', 'SELL', 'HOLD', 'TP'];
+        const actionColors = {
+            'BUY': 'buy',
+            'SELL': 'sell',
+            'HOLD': 'hold',
+            'TP': 'tp'
+        };
+
+        const agents = {
+            gatherCount: 0,
+            verifyCount: 0,
+            mlCount: 0,
+            buyCount: 0,
+            sellCount: 0,
+            holdCount: 0,
+            tpCount: 0,
+            riskCount: 0,
+            alertCount: 0,
+            brainDecisions: 0
+        };
+
+        const agentMap = {
+            'BUY': 'buyCount',
+            'SELL': 'sellCount',
+            'HOLD': 'holdCount',
+            'TP': 'tpCount'
+        };
+
+        function addTrade() {
+            const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            const quantity = Math.floor(Math.random() * 100) + 10;
+            const price = Math.floor(Math.random() * 10000) / 100;
+            const confidence = (Math.random() * 30 + 70).toFixed(1);
+
+            const time = new Date().toLocaleTimeString();
+            const tradeHtml = `
+                <div class="trade-entry ${actionColors[action]}">
+                    <div class="trade-time">${time}</div>
+                    <div class="trade-symbol">${symbol}</div>
+                    <div class="trade-details">
+                        <div class="trade-detail-item">
+                            <span class="detail-label">Qty</span>
+                            <span class="detail-value">${quantity}</span>
+                        </div>
+                        <div class="trade-detail-item">
+                            <span class="detail-label">Price</span>
+                            <span class="detail-value">$${price}</span>
+                        </div>
+                        <div class="trade-detail-item">
+                            <span class="detail-label">Confidence</span>
+                            <span class="detail-value">${confidence}%</span>
+                        </div>
+                    </div>
+                    <span class="trade-action ${actionColors[action]}">${action}</span>
+                </div>
+            `;
+
+            const stream = document.getElementById('tradingStream');
+            stream.insertAdjacentHTML('afterbegin', tradeHtml);
+
+            // Keep only last 20 trades visible
+            while (stream.children.length > 20) {
+                stream.removeChild(stream.lastChild);
+            }
+
+            // Update agent metrics
+            agents.gatherCount++;
+            agents.verifyCount++;
+            agents.mlCount++;
+            agents.brainDecisions++;
+            if (agentMap[action]) {
+                agents[agentMap[action]]++;
+            }
+            agents.riskCount++;
+            agents.alertCount++;
+
+            updateAgentMetrics();
+        }
+
+        function updateAgentMetrics() {
+            document.getElementById('gatherCount').textContent = agents.gatherCount;
+            document.getElementById('verifyCount').textContent = agents.verifyCount;
+            document.getElementById('mlCount').textContent = agents.mlCount;
+            document.getElementById('buyCount').textContent = agents.buyCount;
+            document.getElementById('sellCount').textContent = agents.sellCount;
+            document.getElementById('holdCount').textContent = agents.holdCount;
+            document.getElementById('tpCount').textContent = agents.tpCount;
+            document.getElementById('riskCount').textContent = agents.riskCount;
+            document.getElementById('alertCount').textContent = agents.alertCount;
+            document.getElementById('brainDecisions').textContent = agents.brainDecisions;
+
+            const accuracy = Math.min(95, 60 + (agents.brainDecisions * 0.5));
+            document.getElementById('brainAccuracy').textContent = accuracy.toFixed(1) + '%';
+
+            const latency = Math.max(10, 50 - (agents.brainDecisions * 0.1));
+            document.getElementById('brainLatency').textContent = latency.toFixed(0) + 'ms';
+
+            // Update processing queue
+            const queue = document.getElementById('processingQueue');
+            const queueItems = [
+                `AAPL - ${agentMap[actions[0]]} analyzing entry`,
+                `BTCUSD - Risk Manager evaluating position`,
+                `GOOGL - Take Profit Agent optimizing`,
+                `MSFT - Alert Agent notifying user`
+            ];
+
+            queue.innerHTML = queueItems.map(item =>
+                `<div class="queue-item"><span>${item}</span><span class="queue-item-agent">processing</span></div>`
+            ).join('');
+        }
+
+        function startBrain() {
+            alert('🧠 Nova Brain activated! Running orchestrated AI trading...');
+            // Start adding trades every 2 seconds
+            setInterval(addTrade, 2000);
+        }
+
+        function pauseBrain() {
+            alert('Brain paused. All agent processing suspended.');
+        }
+
+        function viewBrainLogs() {
+            alert('Opening orchestrator logs...\n\nBrain Activity Log:\n' +
+                  '- Data Gatherer: Collected 1,245 data points\n' +
+                  '- Verifier: Validated 1,203 signals (96.6%)\n' +
+                  '- ML Model: Generated predictions for 8 symbols\n' +
+                  '- Buy Agent: 24 entry opportunities identified\n' +
+                  '- Sell Agent: 18 exit signals confirmed\n' +
+                  '- Risk Manager: 3 positions risk-adjusted');
+        }
+
+        // Initialize with some trades
+        for (let i = 0; i < 8; i++) {
+            setTimeout(addTrade, i * 300);
+        }
+    </script>
+</body>
+</html>
