@@ -1,0 +1,1648 @@
+<!doctype html><html><head><meta name="robots" content="noindex"><meta name="description" content="Where They're Biting: live preview by Nova Digitus Designs."><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Where They're Biting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#E9EEEC; --panel:#F7F9F8; --ink:#0F2A30; --muted:#566D71; --line:#C9D5D3;
+  --water:#B7D3DA; --water2:#9CC3CD; --water3:#7FB0BE; --water4:#5F98A9;
+  --land:#DCE3D2; --land-edge:#9AAA8C; --contour:#4F8797;
+  --accent:#E0612A; --accent-ink:#FFFFFF;
+  --hot:#D2412A; --good:#E39B25; --fair:#6A9E6F; --slow:#8BA1A5;
+  --chip:#E1E9E7;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0A171B; --panel:#10232A; --ink:#DCEBEC; --muted:#8FA8AC; --line:#22393F;
+    --water:#0F3441; --water2:#124050; --water3:#154C5E; --water4:#19596D;
+    --land:#15241F; --land-edge:#2E4639; --contour:#3E8CA2;
+    --accent:#F07437; --chip:#18313A;
+    --slow:#5F7B80;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0A171B; --panel:#10232A; --ink:#DCEBEC; --muted:#8FA8AC; --line:#22393F;
+  --water:#0F3441; --water2:#124050; --water3:#154C5E; --water4:#19596D;
+  --land:#15241F; --land-edge:#2E4639; --contour:#3E8CA2;
+  --accent:#F07437; --chip:#18313A;
+  --slow:#5F7B80;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;margin:0}
+.wrap{padding-inline:16px;padding-block:14px 40px;max-width:1320px;margin:0 auto;display:grid;gap:14px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand h1{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;margin:0;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
+.brand h1 span{color:var(--accent)}
+.brand p{margin:4px 0 0;color:var(--muted);max-width:60ch}
+.controls{display:flex;flex-wrap:wrap;gap:10px}
+.field{display:grid;gap:3px}
+.field label,.eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+select,input,textarea{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 9px;min-width:0}
+textarea{resize:vertical}
+select:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 12px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button:disabled{opacity:.55;cursor:default}
+
+.today{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.today > div{background:var(--panel);padding:10px 12px;display:grid;gap:2px}
+.today .v{font-family:var(--display);font-size:26px;font-weight:600;line-height:1.05;font-variant-numeric:tabular-nums}
+.today .s{color:var(--muted);font-size:12px}
+
+.main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.mapbox{position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--land);aspect-ratio:4/3;max-width:100%;touch-action:none}
+#map{width:100%;height:100%;display:block;cursor:grab}
+#map.drag{cursor:grabbing}
+.mapui{position:absolute;right:10px;top:10px;display:grid;gap:6px}
+.mapui button{width:34px;height:34px;padding:0;font-size:18px;line-height:1;background:var(--panel)}
+.legend{position:absolute;left:10px;bottom:10px;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);border-radius:6px;padding:6px 9px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;max-width:calc(100% - 20px)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.legend i.sq{border-radius:2px}
+.maptitle{position:absolute;left:12px;top:10px;font-family:var(--display);font-size:20px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink);pointer-events:none;text-shadow:0 0 6px var(--land)}
+.maptitle small{display:block;font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:.06em;color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.chipbtn{border-radius:999px;padding:4px 11px;font-size:12.5px;background:var(--chip);border-color:transparent}
+.chipbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:12px}
+.panel h2{font-family:var(--display);font-size:24px;font-weight:600;margin:0;line-height:1.1;text-wrap:balance}
+.panel h3{font-family:var(--display);font-size:17px;font-weight:600;margin:0;text-transform:uppercase;letter-spacing:.04em}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--chip)}
+.pill.rate{color:#fff}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-variant-numeric:tabular-nums}
+.baits{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.baits li{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;padding:7px 0;border-top:1px solid var(--line)}
+.baits li:first-child{border-top:0}
+.baits b{font-weight:600}
+.baits .n{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:2px}
+.chart svg{width:100%;height:auto;display:block}
+.note{font-size:12px;color:var(--muted)}
+.dirlink{color:var(--accent);font-weight:600;text-decoration:none}
+.dirlink:hover{text-decoration:underline}
+
+.lower{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:14px;align-items:start}
+.spotlist{display:grid;gap:0;max-height:330px;overflow:auto;margin:0 -4px}
+.spotlist button{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;padding:8px 4px}
+.spotlist button:hover,.spotlist button[aria-current="true"]{background:var(--chip)}
+.spotlist .dot{width:12px;height:12px;border-radius:50%}
+.spotlist .nm{font-weight:600}
+.spotlist .sub{font-size:12px;color:var(--muted)}
+.spotlist .sc{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+
+.reports{display:grid;gap:0;max-height:360px;overflow:auto}
+.rep{padding:9px 0;border-top:1px solid var(--line);display:grid;gap:3px}
+.rep:first-child{border-top:0}
+.rep .meta{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.form .full{grid-column:1/-1}
+.chat{display:grid;gap:10px}
+.answer{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;min-height:60px;max-height:340px;overflow:auto;font-size:13.5px}
+.quick{display:flex;flex-wrap:wrap;gap:6px}
+footer{color:var(--muted);font-size:12px;max-width:90ch}
+.outlook{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+@media (max-width:640px){.outlook{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.outlook button{display:grid;gap:2px;padding:8px 6px;text-align:center;background:var(--panel)}
+.outlook button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.outlook .d{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.outlook .sc{font-family:var(--display);font-size:22px;font-weight:600;line-height:1}
+.outlook .bar{height:4px;border-radius:2px;background:var(--chip);overflow:hidden}
+.outlook .bar i{display:block;height:100%}
+.outlook .w{font-size:11px;color:var(--muted)}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;align-items:center}
+.layers{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.probadge{font-family:var(--mono);font-size:10px;letter-spacing:.1em;background:var(--ink);color:var(--bg);padding:2px 6px;border-radius:3px;font-weight:500}
+button.pin[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pinhint{position:absolute;left:50%;top:54px;transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;pointer-events:none;white-space:nowrap}
+.intel{display:grid;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.intel .it{display:grid;grid-template-columns:92px 1fr;gap:8px;font-size:13px}
+.intel .it b{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500;padding-top:2px}
+.regs{display:grid;gap:8px}
+.stat3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.stat3 div{background:var(--panel);padding:8px 10px;display:grid;gap:1px}
+.stat3 .v{font-family:var(--display);font-size:20px;font-weight:600;line-height:1.1}
+.hotbaits{display:flex;flex-wrap:wrap;gap:6px}
+.wpform{display:grid;gap:8px}
+.sonarwrap{display:grid;gap:10px}
+.sonar-screen{position:relative;border-radius:10px;overflow:hidden;background:#021027;border:6px solid #1A1F22;box-shadow:inset 0 0 0 1px #2C353A;aspect-ratio:16/6;max-width:100%}
+@media (max-width:640px){.sonar-screen{aspect-ratio:4/3}}
+#sonar{width:100%;height:100%;display:block}
+.sonar-ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:5px 10px;font-size:12.5px;background:var(--panel)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.gauge{width:100%;max-width:150px;height:auto;display:block}
+.rank{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+.rank .lvl{font-family:var(--display);font-size:30px;font-weight:700;line-height:1;color:var(--accent)}
+.xpbar{height:8px;border-radius:4px;background:var(--chip);overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--good),var(--accent))}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.badge{display:grid;gap:3px;justify-items:center;text-align:center;padding:10px 6px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:12px}
+.badge svg{width:34px;height:34px}
+.badge b{font-size:12.5px;line-height:1.2}
+.badge.locked{opacity:.42;filter:grayscale(1)}
+.badge.new{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
+.pbs{display:grid;gap:0}
+.pbs div{display:grid;grid-template-columns:1fr auto;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:13px}
+.pbs div:first-child{border-top:0}
+.pbs span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.board{display:grid;gap:0}
+.board div{display:grid;grid-template-columns:28px 1fr auto;gap:8px;padding:7px 0;border-top:1px solid var(--line);align-items:center}
+.board div:first-child{border-top:0}
+.board .pos{font-family:var(--display);font-size:20px;font-weight:700;color:var(--muted)}
+.board div:nth-child(1) .pos{color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;z-index:10;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.hoverdepth{position:absolute;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:11.5px;padding:2px 7px;border-radius:4px;pointer-events:none}
+.view3d{position:relative;aspect-ratio:4/3;max-width:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden;touch-action:none;background:var(--panel)}
+#topo3d{width:100%;height:100%;display:block;cursor:grab}
+input[type=range]{accent-color:var(--accent)}
+.acc{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+.acc:hover{background:var(--chip)}
+.acc .sc{font-size:12px;color:var(--accent);font-family:var(--body);font-weight:600}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal-h{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:center}
+.cal-day{display:grid;gap:3px;padding:6px 7px;text-align:left;min-width:0}
+.cal-day[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.cal-top{display:flex;justify-content:space-between;align-items:center;gap:2px}
+.cal-n{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-sc{font-family:var(--display);font-size:22px;font-weight:600;line-height:1}
+.cal-day .bar{height:3px;border-radius:2px;background:var(--chip);overflow:hidden}.cal-day .bar i{display:block;height:100%}
+.cal-w{font-size:10.5px;color:var(--muted);font-family:var(--mono)}
+@media (max-width:560px){.cal-day{padding:4px}.cal-day svg{display:none}.cal-sc{font-size:17px}.cal-w{display:none}}
+.timeline{list-style:none;margin:0;padding:0;display:grid;gap:0;border-left:2px solid var(--line);margin-left:6px}
+.timeline li{display:grid;grid-template-columns:78px 1fr;gap:10px;padding:7px 0 7px 14px;position:relative}
+.timeline li::before{content:"";position:absolute;left:-6px;top:12px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.timeline .tm{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:2px;font-variant-numeric:tabular-nums}
+.gear{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px 14px}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13px;padding:4px 0;cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--accent)}
+.chk input:checked+span{color:var(--muted);text-decoration:line-through}
+.inline-confirm{display:flex;gap:6px;align-items:center;font-size:12px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Where They're <span>Biting</span> <span class="probadge" style="vertical-align:middle">PRO</span></h1>
+      <p>Pick your water. See the best spots right now, the bite windows for today, what to throw, and where to launch.</p>
+    </div>
+    <div class="controls">
+      <div class="field"><label for="home">Fishing from</label><select id="home"></select></div>
+      <div class="field"><label for="region">Region</label><select id="region"></select></div>
+      <div class="field"><label for="size">Size</label><select id="size"><option value="all">All waters</option><option value="big">Big lakes &amp; bays</option><option value="smallmid">Small &amp; mid-size</option><option value="small">Small lakes &amp; ponds</option></select></div>
+      <div class="field"><label for="lake">Water</label><select id="lake"></select></div>
+      <div class="field"><label for="day">Day</label><input id="day" type="date"></div>
+    </div>
+  </header>
+
+  <section class="today" id="today" aria-label="Conditions for the selected day"></section>
+
+  <section style="display:grid;gap:6px" aria-label="7-day bite outlook">
+    <div class="row" style="justify-content:space-between"><span class="eyebrow">7-day bite outlook · tap a day to plan it</span><span class="eyebrow" id="besttrip"></span></div>
+    <div class="outlook" id="outlook"></div>
+  </section>
+
+  <section class="main">
+    <div style="display:grid;gap:8px">
+      <div class="filters" id="filters" aria-label="Filter by species"></div>
+      <div class="toolbar">
+        <div class="layers" aria-label="Map layers">
+          <span class="eyebrow">Layers</span>
+          <button class="chipbtn" data-layer="heat" aria-pressed="true">Bite heat map</button>
+          <button class="chipbtn" data-layer="structure" aria-pressed="true">Structure &amp; cover</button>
+          <button class="chipbtn" data-layer="relief" aria-pressed="true">Shaded relief</button>
+          <button class="chipbtn" data-layer="contours" aria-pressed="true">Contour lines</button>
+          <button class="chipbtn" data-layer="pins" aria-pressed="true">My waypoints</button>
+        </div>
+        <div class="row"><button class="pin" id="profmode" aria-pressed="false">↔ Depth profile</button><button class="pin" id="pinmode" aria-pressed="false">＋ Drop waypoint</button></div>
+      </div>
+      <div class="toolbar">
+        <div class="layers"><span class="eyebrow">Contour interval</span><span class="seg" id="ivseg"><button data-iv="2" aria-pressed="false">2 ft</button><button data-iv="5" aria-pressed="true">5 ft</button><button data-iv="10" aria-pressed="false">10 ft</button></span></div>
+        <div class="layers"><button class="chipbtn" id="hltoggle" aria-pressed="false">Depth highlight</button>
+          <label class="note" for="hl-lo">from</label><input type="range" id="hl-lo" min="0" max="40" step="1" value="8" style="width:90px;padding:0">
+          <label class="note" for="hl-hi">to</label><input type="range" id="hl-hi" min="0" max="40" step="1" value="14" style="width:90px;padding:0">
+          <span class="note" id="hlread" style="font-family:var(--mono)"></span></div>
+      </div>
+      <div class="mapbox" id="mapbox">
+        <canvas id="map" aria-label="Interactive water chart. Click a marker for spot details."></canvas>
+        <div class="maptitle" id="maptitle"></div>
+        <div class="pinhint" id="pinhint" hidden>Tap the water to drop a waypoint</div>
+        <div class="pinhint" id="profhint" hidden>Tap point A, then point B</div>
+        <div class="hoverdepth" id="hoverdepth" hidden></div>
+        <div class="mapui">
+          <button id="zin" aria-label="Zoom in">+</button>
+          <button id="zout" aria-label="Zoom out">−</button>
+          <button id="zreset" aria-label="Reset view" style="font-size:13px">⤢</button>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--hot)"></i>On fire</span>
+          <span><i style="background:var(--good)"></i>Good</span>
+          <span><i style="background:var(--fair)"></i>Fair</span>
+          <span><i style="background:var(--slow)"></i>Slow</span>
+          <span><i class="sq" style="background:var(--ink)"></i>Ramp / access</span>
+          <span><i class="sq" style="background:var(--accent);transform:rotate(45deg)"></i>Waypoint</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel" id="detail" aria-live="polite"></aside>
+  </section>
+
+  <section class="lower" id="trip">
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><div class="row"><h3>Trip planner</h3><span class="probadge">PRO</span></div><span class="eyebrow" id="tp-date"></span></div>
+      <div class="row"><div class="field"><label for="tp-species">Target species</label><select id="tp-species"></select></div>
+        <div class="row" style="align-self:end"><button class="chipbtn" id="tp-best">Plan my best day this week</button><button class="primary" id="tp-save">Save plan</button></div></div>
+      <div id="tripplan" style="display:grid;gap:10px"></div>
+    </div>
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><h3>Pack list</h3><span class="eyebrow" id="gearcount"></span></div>
+      <div class="gear" id="gear"></div>
+    </div>
+  </section>
+
+  <section class="panel" aria-label="Solunar calendar">
+    <div class="row" style="justify-content:space-between"><h3>Solunar calendar · next 5 weeks</h3><span class="eyebrow" id="calbest"></span></div>
+    <div class="calendar" id="calendar"></div>
+    <p class="note" style="margin:0">Daily score blends the moon phase, solunar periods, sunrise and sunset and the modeled weather for this water. The time under each score is that day's peak bite. Tap a day to plan it.</p>
+  </section>
+
+  <section class="lower topo" aria-label="Topographic tools">
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><div class="row"><h3>3D bottom view</h3><span class="probadge">PRO</span></div>
+        <div class="row"><label class="note" for="ex3d">Vertical</label><input type="range" id="ex3d" min="0.5" max="4" step="0.1" value="1" style="width:100px;padding:0"><button class="chipbtn" id="reset3d">Reset</button></div></div>
+      <div class="view3d"><canvas id="topo3d" aria-label="3D view of the lake bottom. Drag to rotate."></canvas></div>
+    </div>
+    <div class="panel">
+      <h3>Depth profile &amp; bottom stats</h3>
+      <div class="stat3" id="topostats"></div>
+      <div id="profile"></div>
+      <p class="note" style="margin:0">Contours and depths are a modeled chart built for each water to plan with; they are not survey data. Trust your own sonar on the water.</p>
+    </div>
+  </section>
+
+  <section class="panel sonarwrap" aria-label="Live sonar">
+    <div class="sonar-ctl">
+      <div class="row"><h3>Live sonar</h3><span class="probadge">PRO</span><span class="note" id="sonarspot"></span></div>
+      <div class="row">
+        <span class="seg" aria-label="Sonar view"><button data-sm="2d" aria-pressed="true">2D</button><button data-sm="down" aria-pressed="false">Down imaging</button></span>
+        <span class="seg" aria-label="Frequency"><button data-sf="83" aria-pressed="false">83 kHz</button><button data-sf="200" aria-pressed="true">200 kHz</button></span>
+        <button class="chipbtn" id="fishid" aria-pressed="true">Fish ID</button>
+        <button class="chipbtn" id="sonarplay" aria-pressed="false">Pause</button>
+      </div>
+    </div>
+    <div class="sonar-screen"><canvas id="sonar" aria-label="Simulated sonar view of the selected spot"></canvas></div>
+    <p class="note" style="margin:0">A simulated fish-finder view of the selected spot: bottom depth, cover and fish activity follow the spot's depth range and bite score. Use it to picture what to look for on your own unit.</p>
+  </section>
+
+  <section class="lower">
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><h3>Best spots right now</h3><span class="eyebrow" id="rankat"></span></div>
+      <div class="spotlist" id="spotlist"></div>
+    </div>
+    <div class="panel">
+      <h3>Boat ramps &amp; access</h3>
+      <div id="realaccess" style="display:grid;gap:8px" hidden></div>
+      <span class="eyebrow">On the chart</span>
+      <div class="spotlist" id="poilist" style="max-height:200px"></div>
+    </div>
+  </section>
+
+  <section class="lower">
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><h3>My waypoints</h3><span class="eyebrow" id="wpcount"></span></div>
+      <div class="spotlist" id="wplist"></div>
+      <p class="note" id="wpnote" style="margin:0"></p>
+    </div>
+    <div class="panel regs" id="lakeinfo"></div>
+  </section>
+
+  <section class="lower">
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><h3>My catch log</h3><span class="eyebrow" id="logsync"></span></div>
+      <div class="rank" id="rank"></div>
+      <form class="form" id="catchform">
+        <div class="field"><label for="c-species">Species</label><select id="c-species"></select></div>
+        <div class="field"><label for="c-len">Length (in)</label><input id="c-len" type="number" step="0.25" min="0" max="100" placeholder="14.5"></div>
+        <div class="field"><label for="c-wt">Weight (lb)</label><input id="c-wt" type="number" step="0.01" min="0" max="300" placeholder="2.1"></div>
+        <div class="field"><label for="c-spot">Spot</label><select id="c-spot"></select></div>
+        <div class="field full"><label for="c-bait">Bait / lure</label><input id="c-bait" maxlength="80" placeholder="e.g. Bobby Garland Baby Shad, monkey milk"></div>
+        <div class="full row" style="justify-content:space-between"><label class="row note" style="gap:6px"><input type="checkbox" id="c-share"> Also post to local reports</label><button class="primary" type="submit" id="c-save">Log catch</button></div>
+      </form>
+      <div style="display:grid;gap:6px"><span class="eyebrow">Personal bests</span><div class="pbs" id="pbs"></div></div>
+      <div class="spotlist" id="loglist" style="max-height:240px"></div>
+    </div>
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><h3>Badges</h3><span class="eyebrow" id="badgecount"></span></div>
+      <div class="badges" id="badges"></div>
+      <div class="row" style="justify-content:space-between;margin-top:6px"><h3>Leaderboard · last 7 days</h3><span class="eyebrow">From local reports</span></div>
+      <div class="board" id="board"></div>
+      <div style="display:grid;gap:6px"><span class="eyebrow">Hottest waters this week</span><div class="hotbaits" id="hotwaters"></div></div>
+    </div>
+  </section>
+
+  <section class="lower">
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><h3>Local fishing reports</h3><span class="eyebrow" id="repcount"></span></div>
+      <div class="reports" id="reports"><p class="note">Loading reports…</p></div>
+      <form class="form" id="repform" hidden>
+        <div class="field"><label for="r-name">Your handle</label><input id="r-name" maxlength="40" required placeholder="e.g. CrappieKing"></div>
+        <div class="field"><label for="r-species">Species</label><select id="r-species"></select></div>
+        <div class="field"><label for="r-spot">Spot</label><select id="r-spot"></select></div>
+        <div class="field"><label for="r-count">Fish caught</label><input id="r-count" type="number" min="0" max="500" value="3"></div>
+        <div class="field full"><label for="r-bait">Bait / lure</label><input id="r-bait" maxlength="80" required placeholder="e.g. chartreuse 1/16 oz jig"></div>
+        <div class="field full"><label for="r-notes">Notes</label><textarea id="r-notes" rows="2" maxlength="400" placeholder="Depth, water color, time of day…"></textarea></div>
+        <div class="full row"><button class="primary" type="submit" id="r-submit">Post report</button><span class="note" id="r-status"></span></div>
+      </form>
+    </div>
+
+    <div class="panel chat">
+      <h3>Ask the guide</h3>
+      <p class="note" style="margin:0">Get a game plan for the spot you have selected, using this day's conditions.</p>
+      <div class="quick" id="quick"></div>
+      <div class="row"><input id="ask" style="flex:1 1 220px" placeholder="What should I throw at first light?" maxlength="300"><button class="primary" id="askbtn">Ask</button></div>
+      <div class="answer" id="answer">The guide's answer appears here.</div>
+    </div>
+  </section>
+
+  <footer>
+    Bite windows use computed moon phase, solunar periods, sunrise/sunset and, on saltwater, approximate tide timing for the date and location. Weather, pool stage and tides are modeled, not live feeds; confirm tides with NOAA before you run shallow flats. Spot and ramp markers are illustrative positions for planning. Limits shown are summaries: always check current MDWFP, FWC and local rules before you keep fish.
+  </footer>
+</div>
+
+<script>
+// Standalone build for the public site: replaces the Claude runtime.
+// downloads -> a normal browser download; sample -> the offline guide below; db/user -> not available (waypoints and catch log stay in this browser).
+window.claude={use:async(name)=>{
+  if(name==="downloads")return{save:async({filename,data})=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"text/plain"}));a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}};
+  if(name==="sample"){const f=async()=>{throw{code:"offline"}};f.offline=true;return f}
+  return null}};
+</script>
+<script>
+(()=>{
+// ---------- data ----------
+const HOMES=[
+ ["Oxford, MS",34.37,-89.52],["Southaven, MS",34.99,-90.01],["Grenada, MS",33.77,-89.81],["Tupelo, MS",34.26,-88.70],["Jackson, MS",32.30,-90.18],["Hattiesburg, MS",31.33,-89.29],["Gulfport, MS",30.37,-89.09],
+ ["Memphis, TN",35.15,-90.05],["Nashville, TN",36.16,-86.78],
+ ["Pensacola, FL",30.42,-87.22],["Tallahassee, FL",30.44,-84.28],["Jacksonville, FL",30.33,-81.66],["Gainesville, FL",29.65,-82.32],["Orlando, FL",28.54,-81.38],["Tampa, FL",27.95,-82.46],["Fort Myers, FL",26.64,-81.87],["Miami, FL",25.76,-80.19],
+ ["Dallas, TX",32.78,-96.80],["Houston, TX",29.76,-95.37],["Shreveport, LA",32.53,-93.75],["New Orleans, LA",29.95,-90.07],["Little Rock, AR",34.75,-92.29],
+ ["Oklahoma City, OK",35.47,-97.52],["St. Louis, MO",38.63,-90.20],["Chicago, IL",41.88,-87.63],["Minneapolis, MN",44.98,-93.27]
+];
+const MS_FC={crappie:"Crappie: 10 per angler per day, 25 per boat with 3+ anglers, 12-inch minimum. Clean fish only at designated cleaning stations, not on the water or in ramp lots.",src:"MDWFP"};
+const MS_GEN={crappie:"Statewide Mississippi limits apply unless posted. Check MDWFP for lake-specific rules.",src:"MDWFP"};
+const FL_FW={crappie:"Black bass: 5 per day, only one 16 inches or longer. Crappie: 25 per day. Panfish: 50 per day combined. Some lakes carry special limits.",src:"FWC"};
+const FL_SW={crappie:"Saltwater limits and slot sizes for snook, redfish, trout and tarpon vary by FWC management region and season. Check current FWC saltwater rules before keeping fish.",src:"FWC"};
+const L=(id,region,name,st,lat,lon,acres,species,clear,o={})=>({id,region,name,st,lat,lon,acres,species,clear,...o});
+const SL_SP=["Largemouth Bass","Bluegill","Redear Sunfish","Channel Catfish","Crappie"];
+const MS_SL={crappie:"State fishing lake: rod and reel or pole only. Night fishing allowed except at Lake Bill Waller. Lake-specific size and creel limits are posted by MDWFP.",src:"MDWFP"};
+const LAKES=[
+ // Mississippi
+ L("sardis","Mississippi","Sardis Lake","MS",34.44,-89.72,"32,100 acres summer pool",["Crappie","Largemouth Bass","White Bass","Channel Catfish","Blue Catfish"],"Stained, stump flats and flooded willows",{fc:true,regs:MS_FC,note:"Home of big slab crappie; long-line trolling and live-sonar crappie country."}),
+ L("arkabutla","Mississippi","Arkabutla Lake","MS",34.76,-90.10,"11,240 acres summer pool",["Crappie","Largemouth Bass","Channel Catfish","White Bass"],"Muddy to stained, shallow flats and timber",{fc:true,regs:MS_FC,note:"Closest of the big four to Memphis; fertile water grows fast crappie."}),
+ L("grenada","Mississippi","Grenada Lake","MS",33.84,-89.72,"35,000 acres summer pool",["Crappie","Largemouth Bass","Channel Catfish","Flathead Catfish"],"Stained, standing timber and stumps",{fc:true,regs:MS_FC,note:"Known nationally for heavy crappie; Yalobusha and Skuna arms hold timber."}),
+ L("enid","Mississippi","Enid Lake","MS",34.15,-89.88,"6,000 acres summer pool",["Crappie","Largemouth Bass","Channel Catfish"],"Stained, stump fields and creek channels",{fc:true,regs:MS_FC,note:"Produced the long-standing world-record white crappie (1957)."}),
+ L("barnett","Mississippi","Ross Barnett Reservoir","MS",32.45,-90.03,"33,000 acres",["Largemouth Bass","Crappie","Bluegill","Channel Catfish"],"Stained, stumps, grass and the Pearl River channel",{regs:MS_GEN}),
+ L("pickwick","Mississippi","Pickwick Lake","MS / AL / TN",34.97,-88.25,"43,100 acres",["Smallmouth Bass","Largemouth Bass","Blue Catfish","Crappie"],"Clear to stained, river ledges and shoals",{regs:MS_GEN,note:"Tennessee River current below Yellow Creek turns on the ledge bite."}),
+ L("washington","Mississippi","Lake Washington","MS",33.07,-91.07,"5,000 acres oxbow",["Crappie","Channel Catfish","Bluegill","Largemouth Bass"],"Stained oxbow, cypress and brush",{regs:{crappie:"Crappie: 20 per angler per day, 11-inch minimum.",src:"MDWFP"}}),
+ L("baysprings","Mississippi","Bay Springs Lake","MS",34.52,-88.33,"6,700 acres",["Largemouth Bass","Smallmouth Bass","Crappie"],"Clear, rock bluffs and points",{regs:MS_GEN}),
+ L("okatibbee","Mississippi","Okatibbee Lake","MS",32.49,-88.80,"3,800 acres",["Largemouth Bass","Crappie","Bluegill"],"Stained, timber and creek channels",{regs:MS_GEN}),
+ L("moon","Mississippi","Moon Lake","MS",34.44,-90.51,"Delta oxbow",["Crappie","Largemouth Bass","Bluegill"],"Stained oxbow, cypress knees",{regs:MS_GEN}),
+ L("tunica","Mississippi","Tunica Cutoff","MS",34.80,-90.44,"Mississippi River oxbow",["Crappie","Blue Catfish","Largemouth Bass","White Bass"],"Muddy river oxbow, rises and falls with the river",{regs:MS_GEN}),
+ // North Florida
+ L("seminole","North Florida","Lake Seminole","FL / GA",30.75,-84.85,"37,500 acres",["Largemouth Bass","Crappie","Bluegill","Channel Catfish"],"Clear to stained, hydrilla and standing timber",{regs:FL_FW}),
+ L("talquin","North Florida","Lake Talquin","FL",30.40,-84.55,"8,800 acres",["Crappie","Largemouth Bass","Striped Bass"],"Stained, deep river channel and timber",{regs:FL_FW,note:"One of Florida's best speckled perch lakes in winter."}),
+ L("rodman","North Florida","Rodman Reservoir","FL",29.50,-81.80,"9,500 acres",["Largemouth Bass","Crappie","Bluegill"],"Tannic, flooded timber and submerged vegetation",{regs:FL_FW,note:"Trophy largemouth among the stumps of the old Ocklawaha channel."}),
+ L("stjohns","North Florida","St. Johns River – Palatka","FL",29.65,-81.63,"Tidal river",["Largemouth Bass","Crappie","Channel Catfish","Striped Bass"],"Tannic, docks, eelgrass and pilings",{regs:FL_FW,tidal:true}),
+ L("orange","North Florida","Orange Lake","FL",29.45,-82.18,"12,500 acres",["Largemouth Bass","Crappie","Bluegill"],"Tannic, floating tussocks and lily pads",{regs:FL_FW}),
+ L("apalach","North Florida","Apalachicola Bay & St. George Sound","FL",29.72,-84.95,"Coastal bay",["Redfish","Spotted Seatrout","Flounder","Sheepshead"],"Tidal, oyster bars and grass flats",{regs:FL_SW,salt:true}),
+ L("cedarkey","North Florida","Cedar Key","FL",29.13,-83.03,"Big Bend coast",["Redfish","Spotted Seatrout","Sheepshead","Flounder"],"Tidal, oyster bars, creeks and islands",{regs:FL_SW,salt:true}),
+ // Central & South Florida
+ L("toho","South Florida","Lake Tohopekaliga","FL",28.20,-81.38,"18,800 acres",["Largemouth Bass","Crappie","Bluegill"],"Stained, hydrilla, eelgrass and pads",{regs:FL_FW,note:"Kissimmee Chain; big tournament bass in spring."}),
+ L("kissimmee","South Florida","Lake Kissimmee","FL",27.90,-81.27,"35,000 acres",["Largemouth Bass","Crappie","Bluegill"],"Stained, grass lines and offshore shell bars",{regs:FL_FW}),
+ L("istokpoga","South Florida","Lake Istokpoga","FL",27.38,-81.28,"27,700 acres",["Largemouth Bass","Crappie","Bluegill"],"Stained, hydrilla and bulrush",{regs:FL_FW}),
+ L("okeechobee","South Florida","Lake Okeechobee","FL",26.95,-80.83,"730 sq mi",["Largemouth Bass","Crappie","Bluegill","Channel Catfish"],"Stained, reeds, Kissimmee grass and hydrilla",{regs:FL_FW,note:"Florida's biggest lake; fish the rim canal and outside grass lines."}),
+ L("tampabay","South Florida","Tampa Bay","FL",27.70,-82.60,"Estuary",["Snook","Redfish","Spotted Seatrout","Tarpon"],"Tidal, grass flats, mangroves and bridges",{regs:FL_SW,salt:true}),
+ L("charlotte","South Florida","Charlotte Harbor & Boca Grande","FL",26.82,-82.15,"Estuary",["Tarpon","Snook","Redfish","Spotted Seatrout"],"Tidal, mangrove shorelines and passes",{regs:FL_SW,salt:true,note:"Boca Grande Pass is a world-famous tarpon fishery in late spring."}),
+ L("tenthousand","South Florida","Ten Thousand Islands","FL",25.85,-81.50,"Mangrove backcountry",["Snook","Redfish","Tarpon","Spotted Seatrout"],"Tidal, mangrove creeks and oyster bars",{regs:FL_SW,salt:true}),
+ L("flbay","South Florida","Everglades – Flamingo & Florida Bay","FL",25.15,-80.90,"Backcountry",["Snook","Redfish","Tarpon","Spotted Seatrout"],"Tidal, shallow basins and mangrove keys",{regs:FL_SW,salt:true}),
+ L("biscayne","South Florida","Biscayne Bay","FL",25.60,-80.23,"Clear bay",["Bonefish","Tarpon","Snook","Spotted Seatrout"],"Clear, turtle-grass flats and channels",{regs:FL_SW,salt:true}),
+ L("keys","South Florida","Florida Keys – Islamorada","FL",24.92,-80.63,"Flats and bridges",["Bonefish","Tarpon","Snook","Redfish"],"Clear, flats, channels and bridges",{regs:FL_SW,salt:true,note:"Bonefish on the rising tide over the flats; tarpon under the bridges at night."}),
+
+ // Mississippi · small waters
+ L("callingpanther","Mississippi","Calling Panther Lake","MS",32.02,-90.33,"404 acres · state fishing lake",SL_SP,"Stained, standing timber and creek channels",{size:"small",regs:MS_SL,note:"Largest of the state fishing lakes, near Crystal Springs."}),
+ L("elvis","Mississippi","Elvis Presley Lake","MS",34.29,-88.66,"322 acres · state fishing lake",SL_SP,"Stained, timber and flats",{size:"small",regs:MS_SL,note:"Tupelo-area state lake."}),
+ L("lamarbruce","Mississippi","Lake Lamar Bruce","MS",34.41,-88.77,"300 acres · state fishing lake",SL_SP,"Stained, points and coves",{size:"small",regs:MS_SL,note:"Saltillo-area state lake."}),
+ L("tippah","Mississippi","Tippah County Lake","MS",34.68,-88.87,"145 acres · state fishing lake",SL_SP,"Clear to stained, pond-style coves",{size:"small",regs:MS_SL,note:"Near Ripley."}),
+ L("monroe","Mississippi","Lake Monroe","MS",33.93,-88.46,"99 acres · state fishing lake",SL_SP,"Stained, shallow coves",{size:"small",regs:MS_SL,note:"Aberdeen–Amory area."}),
+ L("tombailey","Mississippi","Lake Tom Bailey","MS",32.42,-88.49,"182 acres · state fishing lake",SL_SP,"Clear to stained, timber",{size:"small",regs:MS_SL,note:"Meridian area."}),
+ L("bogue","Mississippi","Lake Bogue Homa","MS",31.72,-89.03,"882 acres · state fishing lake",SL_SP,"Stained, grass and cypress",{size:"small",regs:MS_SL,note:"Laurel area; the biggest acreage in the state lake system."}),
+ L("claudebennett","Mississippi","Lake Claude Bennett","MS",32.00,-89.23,"71 acres · state fishing lake",SL_SP,"Clear, pond-style",{size:"small",regs:MS_SL,note:"Bay Springs area."}),
+ L("prentisswalker","Mississippi","Prentiss Walker Lake","MS",31.86,-89.60,"81 acres · state fishing lake",SL_SP,"Stained, standing timber",{size:"small",regs:MS_SL,note:"Mize area."}),
+ L("simpson","Mississippi","Simpson County Lake","MS",31.90,-89.83,"76 acres · state fishing lake",SL_SP,"Stained, shallow flats",{size:"small",regs:MS_SL,note:"Magee area."}),
+ L("jeffdavis","Mississippi","Lake Jeff Davis","MS",31.56,-89.83,"100 acres · state fishing lake",SL_SP,"Stained, timber",{size:"small",regs:MS_SL,note:"Prentiss area."}),
+ L("mikeconner","Mississippi","Lake Mike Conner","MS",31.63,-89.45,"79 acres · state fishing lake",SL_SP,"Clear, pond-style",{size:"small",regs:MS_SL,note:"Collins area."}),
+ L("marycrawford","Mississippi","Lake Mary Crawford","MS",31.61,-90.00,"128 acres · state fishing lake",SL_SP,"Stained, timber and coves",{size:"small",regs:MS_SL,note:"Monticello area."}),
+ L("billwaller","Mississippi","Lake Bill Waller","MS",31.19,-89.93,"168 acres · state fishing lake",SL_SP,"Stained, flats and timber",{size:"small",regs:{crappie:"State fishing lake: rod and reel or pole only. No night fishing at this lake. Lake-specific limits are posted by MDWFP.",src:"MDWFP"},note:"Columbia area."}),
+ L("columbia","Mississippi","Lake Columbia","MS",31.28,-89.80,"84 acres · state fishing lake",SL_SP,"Stained, pond-style",{size:"small",regs:MS_SL,note:"Columbia area."}),
+ L("perry","Mississippi","Lake Perry","MS",31.16,-88.92,"68 acres · state fishing lake",SL_SP,"Tannic, pine-woods lake",{size:"small",regs:MS_SL,note:"Beaumont area."}),
+ L("walthall","Mississippi","Lake Walthall","MS",31.14,-90.15,"55 acres · state fishing lake",SL_SP,"Stained, pond-style",{size:"small",regs:MS_SL,note:"Tylertown area; the smallest state fishing lake."}),
+ L("puskus","Mississippi","Puskus Lake","MS",34.43,-89.35,"Small national forest lake",["Largemouth Bass","Bluegill","Crappie","Channel Catfish"],"Clear, wooded shoreline",{size:"small",regs:MS_GEN,note:"Holly Springs National Forest lake near Oxford with camping and a ramp."}),
+ L("chewalla","Mississippi","Chewalla Lake","MS",34.72,-89.33,"Small national forest lake",["Largemouth Bass","Bluegill","Crappie","Channel Catfish"],"Clear, wooded shoreline",{size:"small",regs:MS_GEN,note:"Holly Springs National Forest lake with a campground."}),
+ L("ferguson","Mississippi","Lake Ferguson","MS",33.38,-91.08,"Mississippi River oxbow · Greenville",["Crappie","Blue Catfish","White Bass","Largemouth Bass"],"Muddy, river-connected",{size:"mid",regs:MS_GEN}),
+ L("whittington","Mississippi","Lake Whittington","MS",33.60,-91.05,"Mississippi River oxbow",["Crappie","Largemouth Bass","Blue Catfish"],"Muddy to stained, willows and sandbars",{size:"mid",regs:MS_GEN}),
+ L("beulah","Mississippi","Lake Beulah","MS",33.80,-91.03,"Delta oxbow",["Crappie","Largemouth Bass","Bluegill"],"Stained oxbow, cypress",{size:"small",regs:MS_GEN}),
+ // North Florida · small waters
+ L("jackson","North Florida","Lake Jackson","FL",30.53,-84.33,"Natural sinkhole lake · Tallahassee",["Largemouth Bass","Crappie","Bluegill"],"Stained, grass, lily pads and sinkholes",{size:"mid",regs:FL_FW,note:"Historic trophy-bass lake; periodic sinkhole drains reset it."}),
+ L("merritts","North Florida","Merritt's Mill Pond","FL",30.77,-85.20,"Spring-fed millpond · Marianna",["Redear Sunfish","Largemouth Bass","Bluegill"],"Gin-clear spring water, eelgrass and cypress",{size:"small",regs:FL_FW,note:"Known for giant redear sunfish in the clear spring water."}),
+ L("ocheesee","North Florida","Ocheesee Pond","FL",30.66,-85.10,"Cypress pond",["Largemouth Bass","Bluegill","Crappie"],"Tannic, cypress and lily pads",{size:"small",regs:FL_FW}),
+ L("hurricane","North Florida","Hurricane Lake","FL",30.95,-86.83,"Blackwater River State Forest",["Largemouth Bass","Bluegill","Redear Sunfish"],"Tannic, flooded timber",{size:"small",regs:FL_FW,note:"Small forest lake north of Pensacola."}),
+ L("victor","North Florida","Lake Victor","FL",30.93,-85.83,"Small fish management lake",["Largemouth Bass","Bluegill","Redear Sunfish","Channel Catfish"],"Clear to stained, pond-style",{size:"small",regs:FL_FW}),
+ L("deadlake","North Florida","Dead Lakes","FL",30.15,-85.18,"Cypress-stump lake · Wewahitchka",["Bluegill","Redear Sunfish","Largemouth Bass","Crappie"],"Tannic, dead cypress stumps",{size:"mid",regs:FL_FW}),
+ L("newnans","North Florida","Newnans Lake","FL",29.65,-82.23,"Shallow natural lake · Gainesville",["Crappie","Largemouth Bass","Bluegill","Channel Catfish"],"Stained, cypress-lined shallow basin",{size:"mid",regs:FL_FW,note:"Winter crappie drifting is the local specialty."}),
+ L("lochloosa","North Florida","Lochloosa Lake","FL",29.52,-82.13,"Natural lake",["Largemouth Bass","Crappie","Bluegill"],"Stained, pads and cypress",{size:"mid",regs:FL_FW}),
+ L("santafe","North Florida","Lake Santa Fe","FL",29.74,-82.07,"Clear natural lake",["Largemouth Bass","Crappie","Bluegill"],"Clear, eelgrass and docks",{size:"mid",regs:FL_FW}),
+ L("alligator","North Florida","Alligator Lake","FL",30.17,-82.62,"Small lake · Lake City",["Largemouth Bass","Bluegill","Crappie"],"Stained, grass and pads",{size:"small",regs:FL_FW}),
+ L("sampson","North Florida","Lake Sampson & Lake Rowell","FL",29.93,-82.18,"Small lakes · Starke",["Largemouth Bass","Crappie","Bluegill"],"Tannic, cypress",{size:"small",regs:FL_FW}),
+ L("hamiltonpits","North Florida","Hamilton County Phosphate Pits","FL",30.40,-82.90,"Reclaimed phosphate pits",["Largemouth Bass","Bluegill","Redear Sunfish"],"Clear, steep pit walls",{size:"small",regs:FL_FW,note:"Deep, steep-sided pits; some fish management areas have special access rules."}),
+ // South & Central Florida · small waters
+ L("weir","South Florida","Lake Weir","FL",29.02,-81.93,"Clear natural lake · Ocala area",["Largemouth Bass","Bluegill","Crappie"],"Clear, eelgrass and docks",{size:"mid",regs:FL_FW}),
+ L("stickmarsh","South Florida","Stick Marsh / Farm 13","FL",27.84,-80.67,"Reservoir · Fellsmere",["Largemouth Bass","Crappie","Bluegill"],"Stained, standing timber and submerged ditches",{size:"mid",regs:FL_FW,note:"Famous catch-and-release trophy bass water; check special bass rules."}),
+ L("kenansville","South Florida","Kenansville Lake","FL",27.87,-80.95,"Reservoir",["Largemouth Bass","Crappie","Bluegill"],"Stained, timber and ditches",{size:"small",regs:FL_FW}),
+ L("tarpon","South Florida","Lake Tarpon","FL",28.12,-82.72,"Natural lake · Tampa Bay area",["Largemouth Bass","Bluegill","Crappie"],"Stained, eelgrass and docks",{size:"mid",regs:FL_FW}),
+ L("parker","South Florida","Lake Parker","FL",28.07,-81.93,"City lake · Lakeland",["Largemouth Bass","Bluegill","Crappie"],"Stained, grass lines",{size:"mid",regs:FL_FW}),
+ L("tenoroc","South Florida","Tenoroc Fish Management Area","FL",28.10,-81.88,"Reclaimed phosphate lakes · Lakeland",["Largemouth Bass","Bluegill","Redear Sunfish","Crappie"],"Clear, steep pit drop-offs",{size:"small",regs:FL_FW,note:"A set of small reclaimed-mine lakes; check FWC for access rules and open days."}),
+ L("saddlecreek","South Florida","Saddle Creek Park","FL",28.06,-81.88,"Phosphate-pit park lakes",["Largemouth Bass","Bluegill","Crappie"],"Clear, steep banks",{size:"small",regs:FL_FW}),
+ L("medard","South Florida","Edward Medard Reservoir","FL",27.92,-82.17,"Reservoir · Plant City",["Largemouth Bass","Bluegill","Crappie"],"Stained, timber and old pits",{size:"small",regs:FL_FW}),
+ L("walkinwater","South Florida","Lake Walk-in-Water","FL",27.80,-81.45,"Natural lake",["Largemouth Bass","Crappie","Bluegill"],"Stained, grass and pads",{size:"mid",regs:FL_FW}),
+ L("trafford","South Florida","Lake Trafford","FL",26.43,-81.49,"Natural lake · Immokalee",["Largemouth Bass","Crappie","Bluegill"],"Stained, grass and pads",{size:"small",regs:FL_FW}),
+ L("osborne","South Florida","Osborne Chain of Lakes","FL",26.58,-80.07,"Urban lake chain · Palm Beach County",["Largemouth Bass","Peacock Bass","Bluegill"],"Clear, seawalls and docks",{size:"small",regs:FL_FW}),
+ L("miamicanals","South Florida","Southeast Florida Canals","FL",25.95,-80.30,"Urban canal network · Miami area",["Peacock Bass","Largemouth Bass","Bluegill"],"Clear, seawalls, culverts and bridges",{size:"small",regs:FL_FW,note:"Butterfly peacock bass in warm canals; they bite best in daytime and heat."}),
+ L("wca3","South Florida","Everglades Canals (WCA 3)","FL",26.05,-80.60,"Everglades conservation area canals",["Largemouth Bass","Bluegill","Peacock Bass"],"Clear to tannic, sawgrass edges",{size:"mid",regs:FL_FW,note:"Low-water periods concentrate bass in the canals."}),
+ // Other
+ L("fork","Texas & South","Lake Fork","TX",32.83,-95.58,"27,690 acres",["Largemouth Bass","Crappie","Channel Catfish"],"Stained to clear, heavy standing timber"),
+ L("texoma","Texas & South","Lake Texoma","TX / OK",33.87,-96.65,"89,000 acres",["Striped Bass","Blue Catfish","Crappie","Smallmouth Bass"],"Stained, rocky bluffs and flats"),
+ L("toledo","Texas & South","Toledo Bend","TX / LA",31.35,-93.72,"185,000 acres",["Largemouth Bass","Crappie","Bluegill","Channel Catfish"],"Tannic, hydrilla and timber"),
+ L("kentucky","Midwest & North","Kentucky Lake","KY / TN",36.75,-88.13,"160,300 acres",["Crappie","Smallmouth Bass","Largemouth Bass","Blue Catfish"],"Stained, river ledges and brush"),
+ L("ozarks","Midwest & North","Lake of the Ozarks","MO",38.12,-92.75,"54,000 acres",["Largemouth Bass","Crappie","Blue Catfish"],"Clear to lightly stained, docks and bluffs"),
+ L("millelacs","Midwest & North","Mille Lacs","MN",46.23,-93.65,"132,500 acres",["Walleye","Smallmouth Bass","Muskie","Yellow Perch"],"Clear, rock reefs and mud flats"),
+ L("michigan","Midwest & North","Lake Michigan – Chicago Shore","IL",41.90,-87.60,"Great Lake",["Coho Salmon","Yellow Perch","Lake Trout"],"Clear, harbors and breakwalls")
+];
+const REGIONS=["Mississippi","North Florida","South Florida","Texas & South","Midwest & North"];
+LAKES.forEach(l=>{l.size=l.size||"big";l.mpu=l.size==="small"?0.9:l.size==="mid"?2.5:6});
+const SPECIES_COLOR={"Largemouth Bass":"#3D8B4F","Smallmouth Bass":"#8A6B3A","Crappie":"#6F7FB5","Channel Catfish":"#7A6A5A","Blue Catfish":"#4E6C8C","Flathead Catfish":"#6E5A3E","Striped Bass":"#5A8FA6","White Bass":"#8FA3B0","Bluegill":"#C98B2D","Walleye":"#B39A2F","Muskie":"#5E7A3B","Yellow Perch":"#C7A12E","Coho Salmon":"#B8574A","Lake Trout":"#6B7B7F","Redfish":"#C4622D","Spotted Seatrout":"#7C8C99","Snook":"#A08A3C","Tarpon":"#9AA7B3","Flounder":"#8B7355","Sheepshead":"#555F66","Bonefish":"#B5C2C9","Redear Sunfish":"#B0703A","Peacock Bass":"#D9A21B"};
+// 12 entries per species: [winter x3, spring x3, summer x3, fall x3]
+const BAITS={
+ "Largemouth Bass":[["Football jig, 3/4 oz","Drag slow on channel swings"],["Suspending jerkbait","Long pauses in cold water"],["Lipless crankbait","Rip out of grass edges"],
+   ["Spinnerbait","Slow-roll wind-blown banks"],["Soft-plastic lizard","Texas rig near spawning flats"],["Wacky-rigged stick worm","Skip under docks and bushes"],
+   ["Deep-diving crankbait","Grind 12–20 ft points and humps"],["Texas-rigged 10\" worm","Drag ledges midday"],["Hollow-body frog","Over matted grass at dawn"],
+   ["Squarebill crankbait","Bang shallow cover as shad move back"],["Buzzbait","Low light, flat water"],["Paddle-tail swimbait","Follow baitfish schools"]],
+ "Smallmouth Bass":[["Hair jig","Dead-stick on rock in cold water"],["Blade bait","Vertical over deep humps"],["Tube","Drag gravel transitions"],
+   ["Jerkbait","Pause long over rock flats"],["Ned rig","Slow on 6–12 ft rock"],["Tube","Bed fish on gravel"],
+   ["Drop shot","Isolated rock in 15–25 ft"],["Topwater walker","Calm mornings over humps"],["Ned rig","Midday grind"],
+   ["Swimbait","Wind-blown points"],["Spinnerbait","Rock with chop on it"],["Jerkbait","Cooling water, shallow rock"]],
+ "Crappie":[["Minnow on vertical rig","Hold tight to deep brush"],["1/32 oz hair jig","Slow drop, tight line"],["Long-line trolled jigs","Cover channel edges at 1 mph"],
+   ["Minnow under slip float","Shallow brush and stumps"],["1/16 oz tube jig","Chartreuse in stained water"],["Single-pole jig","Dip the stumps and willows"],
+   ["Minnows on brush piles","15–25 ft in timber"],["Spider-rig tubes","Push slow over channel"],["Jig at night under lights","Bridge pilings and docks"],
+   ["1/16 oz jig on brush","Fish move toward creeks"],["Crankbait trolling","Pull flats as water cools"],["Tube jig","Vertical on stake beds"]],
+ "Channel Catfish":[["Cut shad","Deep holes, slow bite"],["Chicken liver","Tight to channel bends"],["Punch bait","Bottom near warm inflows"],
+   ["Nightcrawler","Muddy inflows after rain"],["Punch bait on treble","Bait the hole"],["Cut shad","Creek mouths"],
+   ["Punch bait","Baited holes at dawn/dusk"],["Chicken liver","Shaded riprap"],["Cut bait at night","Main-lake flats"],
+   ["Cut shad","Follow baitfish to flats"],["Nightcrawler","Creek channels"],["Punch bait","Windy points"]],
+ "Blue Catfish":[["Fresh cut shad","Deep channel ledges"],["Cut skipjack","Anchor on channel breaks"],["Drift cut bait","Slow drift on flats"],
+   ["Cut shad","Rising water, inflows"],["Cut shad","Riprap near dam"],["Drift fresh cut bait","Wind-blown flats"],
+   ["Cut shad","Deep ledges midday"],["Santee rig, cut bait","Drift at 0.5 mph"],["Cut bait at night","Channel swings"],
+   ["Cut shad","Follow shad to flats"],["Drift cut bait","Main-lake flats"],["Cut skipjack","Channel edges"]],
+ "Flathead Catfish":[["Live bluegill","Deep holes near cover"],["Live shad","Slow, tight to logs"],["Cut bait","Channel bends"],
+   ["Live bluegill","Rocky banks at night"],["Live shad","Timber on channel"],["Live bluegill","Spawning cavities, riprap"],
+   ["Live bluegill","Night, deep wood"],["Live goldfish","Logjams"],["Live shad","Tailwaters"],
+   ["Live bluegill","Channel timber"],["Live shad","Creek mouths"],["Live bluegill","Deep holes"]],
+ "White Bass":[["Slab spoon","Deep schools on channel"],["Small jig","Tailwater eddies"],["Blade bait","Vertical on schools"],
+   ["Small inline spinner","Spawning runs up creeks"],["Curly-tail grub","Current seams"],["Small crankbait","Sandbars"],
+   ["Topwater popper","Surface jumps at dawn"],["Slab spoon","Schools under birds"],["Small swimbait","Points with wind"],
+   ["Rooster Tail spinner","Schools chasing shad"],["Small crankbait","Flats"],["Slab spoon","Channel breaks"]],
+ "Striped Bass":[["Live shad","Downline in deep schools"],["Slab spoon","Vertical under birds"],["Bucktail jig","Hop off deep points"],
+   ["Live shad","Run to river arms"],["Swimbait","Points at first light"],["Topwater walker","Surface blitzes"],
+   ["Live shad downline","Schools on humps"],["Slab spoon","Bust schools midday"],["Topwater at dawn","Watch the gulls"],
+   ["Topwater walker","Blitzes on flats"],["Bucktail with trailer","Wind-blown points"],["Live shad","Deep main lake"]],
+ "Bluegill":[["Wax worm","Tiny jig near brush"],["Red worm","Deep docks"],["Micro jig","Slow fall"],
+   ["Cricket","Shallow beds"],["Red worm under bobber","Spawning flats"],["Popping bug","Calm evenings"],
+   ["Cricket","Shade lines"],["Red worm","Deep docks midday"],["Micro jig","Grass edges"],
+   ["Red worm","Brush piles"],["Cricket","Shallow wood"],["Wax worm","Docks"]],
+ "Redear Sunfish":[["Red worm on bottom","Deep shell beds"],["Wax worm","Slow on hard bottom"],["Small jig tipped with worm","Deeper holes"],
+   ["Red worm on split shot","Spawning beds around the full moon"],["Grass shrimp","Shell and sand flats"],["Cricket on bottom","Bedding areas"],
+   ["Red worm","Deep edges of the beds"],["Grass shrimp","Shade and shell"],["Wax worm","Early morning"],
+   ["Red worm","Shell beds as water cools"],["Cricket","Hard bottom"],["Wax worm","Deeper holes"]],
+ "Peacock Bass":[["Live shiner","Warm-water discharges and deep canals"],["Small jerkbait","Sunny afternoons"],["Live shiner","Culverts"],
+   ["Small swimbait","Seawalls and culverts"],["Jerkbait","Sight-fish bedding fish"],["Live shiner","Canal intersections"],
+   ["Topwater prop bait","Mid-day heat"],["Small crankbait","Seawalls"],["Live shiner","Bridges and culverts"],
+   ["Jerkbait","Canal bends"],["Small swimbait","Seawalls"],["Live shiner","Culverts"]],
+ "Walleye":[["Jig and minnow","Mud-rock transitions"],["Jigging rap","Deep basins"],["Dead-stick minnow","Slow bite periods"],
+   ["Jig and minnow","Shoreline gravel"],["Shallow crankbait","Trolling at dusk"],["Slip bobber, leech","Rock reef tops"],
+   ["Slip bobber, leech","Reef edges at dusk"],["Crawler harness","Mud flats 20–30 ft"],["Leadcore crankbait","Troll open basin"],
+   ["Jig and minnow","Reefs as water cools"],["Shallow crankbait","Night trolling"],["Rip jig","Steep breaks"]],
+ "Muskie":[["Big glide bait","Slow in cold water"],["Swimbait","Deep weed edges"],["Jerkbait","Pause long"],
+   ["Small bucktail","Warming bays"],["Jerkbait","Shallow weeds"],["Topwater","Low light"],
+   ["Double-blade bucktail","Weed flats"],["Topwater prop bait","Dawn and dusk"],["Rubber bait","Rock reefs"],
+   ["Big swimbait","Fall turnover"],["Glide bait","Figure-eight at boat"],["Bucktail","Wind-blown reefs"]],
+ "Yellow Perch":[["Minnow on dropper","Soft bottom"],["Wax worm","Deep flats"],["Jigging spoon","Schools on mud"],
+   ["Minnow","Harbor edges"],["Spikes on jig","Rocky breakwalls"],["Minnow on crappie rig","Shallows"],
+   ["Minnow on crappie rig","Breakwalls"],["Spikes","Weed edges"],["Night crawler piece","Harbor mouths"],
+   ["Minnow","Deep flats"],["Spikes","Mud bottom"],["Jigging spoon","Schools"]],
+ "Coho Salmon":[["Spoon, slow troll","Warm-water discharges"],["Small crankbait","Harbor mouths"],["Spawn sac","Tributaries"],
+   ["Flasher and peanut fly","Surface to 20 ft"],["Orange dodger and fly","Trolling near shore"],["Small spoon","Top 15 ft"],
+   ["Flasher-fly","Deeper temperature breaks"],["Spoon on downrigger","Thermocline"],["J-plug","Early morning"],
+   ["Glow spoon","Harbors pre-spawn"],["Spawn sac","River mouths"],["Crankbait","Harbor mouths"]],
+ "Lake Trout":[["Tube jig","Vertical on structure"],["Heavy spoon","Deep structure"],["Blade bait","Hop off reefs"],
+   ["Spoon","Nearshore reefs"],["Tube jig","Rock humps"],["Cowbells and spoon","Troll reefs"],
+   ["Spoon on downrigger","Deep, cold water"],["Tube jig","Deep humps"],["Dodger and fly","Bottom bounce"],
+   ["Spoon","Spawning reefs"],["Tube jig","Reefs"],["Blade bait","Deep reefs"]],
+ "Redfish":[["Soft-plastic paddle tail on jig head","Slow on mud bottoms in creeks"],["Shrimp under popping cork","Deeper holes on low tide"],["Cut mullet","Bottom in potholes"],
+   ["Gold weedless spoon","Tailing fish on the flood"],["Live shrimp","Oyster bar edges"],["Scented jerk shad","Sight-cast on flats"],
+   ["Topwater walker","Mullet schools at first light"],["Cut pinfish","Dock pilings, midday"],["Live pinfish","Mangrove points on falling tide"],
+   ["Gold spoon","Schooling reds on the flats"],["Cut ladyfish","Passes and bar edges"],["Paddle tail","Creek mouths on outgoing tide"]],
+ "Spotted Seatrout":[["Suspending twitchbait","Deep holes and canals"],["Soft plastic, slow","Dark mud bottoms"],["Live shrimp","Deep residential canals"],
+   ["Shrimp under popping cork","Grass flats 3–5 ft"],["Paddle tail on 1/4 oz","Drift sand potholes"],["Topwater walker","Early morning on flats"],
+   ["Live pilchard","Deep grass edges"],["Popping cork and plastic","Moving tide on flats"],["Topwater at dawn","Before the heat"],
+   ["Live shrimp","Grass flats as water cools"],["Soft plastic, slow","Channel edges"],["Suspending twitchbait","Creek mouths"]],
+ "Snook":[["Live shrimp","Deep canals and river bends"],["Slow-sinking twitchbait","Warm-water refuges"],["Soft plastic, slow","Dock lights"],
+   ["Live pilchard","Mangrove shorelines on high tide"],["Paddle-tail swimbait","Points with current"],["Topwater walker","Dawn along mangroves"],
+   ["Live pilchard","Beach troughs and passes"],["Soft plastic at night","Dock and bridge shadows"],["Flair hawk jig","Passes on moving tide"],
+   ["Live pinfish","Creek mouths on falling tide"],["Topwater","Mangrove points"],["Paddle tail","Bridges on outgoing tide"]],
+ "Tarpon":[["Live mullet","Deep canals and rivers"],["Slow-sinking plug","Warm backwaters"],["Soft plastic at night","Dock lights"],
+   ["Live crab","Passes on outgoing tide"],["Swimbait, 5\"","Rolling fish on the beach"],["Fly: toad pattern","Sight-cast on the flats"],
+   ["Live crab","Passes and hill tides"],["Live pinfish","Beach strings at dawn"],["Soft plastic at night","Bridges"],
+   ["Live mullet","Backcountry rivers"],["Topwater plug","Rolling juveniles in creeks"],["Swimbait","Channel edges"]],
+ "Flounder":[["Mud minnow on Carolina rig","Deep channel edges"],["Soft plastic, slow drag","Creek mouths"],["Live shrimp","Dock pilings"],
+   ["Mud minnow","Sandy bottoms near oysters"],["Gulp shrimp on jig","Drag the drop-offs"],["Live finger mullet","Inlet edges"],
+   ["Live finger mullet","Bridge pilings"],["Soft plastic, bounced","Creek mouths on falling tide"],["Mud minnow","Jetty rocks"],
+   ["Live finger mullet","Passes during fall run"],["Gulp swimming mullet","Inlets"],["Mud minnow","Channel edges"]],
+ "Sheepshead":[["Fiddler crab","Pilings and jetties"],["Live shrimp","Bridge fenders"],["Sand fleas","Rock piles"],
+   ["Fiddler crab","Oyster bars"],["Live shrimp","Docks"],["Barnacle chum and crab","Structure"],
+   ["Live shrimp","Deep structure"],["Fiddler crab","Bridges"],["Sand fleas","Jetties"],
+   ["Fiddler crab","Oyster bars"],["Live shrimp","Pilings"],["Sand fleas","Rock piles"]],
+ "Bonefish":[["Live shrimp","Deeper flats on warm days"],["Small bucktail jig","Mud on the edges"],["Fly: Gotcha","Channels"],
+   ["Live shrimp","Rising tide on the flats"],["Small jig","Tailing fish"],["Fly: Crazy Charlie","Sight-cast mudding fish"],
+   ["Live shrimp","Early morning flats"],["Small jig","Channel edges midday"],["Fly: Bonefish Bitters","Low light"],
+   ["Live shrimp","Flats on the flood"],["Small jig","Oceanside flats"],["Fly: Gotcha","Tailing fish"]]
+};
+const STRUCT=[
+ {t:"Dam Riprap",d:[4,18],edge:.93,sp:["Striped Bass","Channel Catfish","Blue Catfish","Smallmouth Bass","Walleye","White Bass","Flathead Catfish"],fresh:1},
+ {t:"Main-Lake Point",d:[6,22],edge:.8,sp:["Largemouth Bass","Smallmouth Bass","Striped Bass","Walleye","Muskie","White Bass"],fresh:1},
+ {t:"Creek Channel Bend",d:[12,30],edge:.55,sp:["Crappie","Largemouth Bass","Blue Catfish","Channel Catfish","Flathead Catfish"],fresh:1},
+ {t:"Standing Timber Flat",d:[8,20],edge:.65,sp:["Crappie","Largemouth Bass","Bluegill","Flathead Catfish"],fresh:1},
+ {t:"Grass Line",d:[3,10],edge:.88,sp:["Largemouth Bass","Bluegill","Yellow Perch","Muskie"],fresh:1},
+ {t:"Bridge Pilings",d:[10,25],edge:.6,sp:["Crappie","Striped Bass","Channel Catfish","Yellow Perch","White Bass"],fresh:1},
+ {t:"Offshore Hump",d:[14,28],edge:.3,sp:["Largemouth Bass","Smallmouth Bass","Walleye","Striped Bass","Lake Trout","White Bass"],fresh:1},
+ {t:"Brush Pile Ledge",d:[15,25],edge:.45,sp:["Crappie","Largemouth Bass","Blue Catfish"],fresh:1},
+ {t:"Stump Flat",d:[6,14],edge:.7,sp:["Crappie","Largemouth Bass","Channel Catfish"],fresh:1},
+ {t:"Flooded Willows",d:[2,8],edge:.9,sp:["Crappie","Largemouth Bass","Bluegill"],fresh:1},
+ {t:"Cypress Trees",d:[2,8],edge:.9,sp:["Crappie","Bluegill","Largemouth Bass"],fresh:1},
+ {t:"Hydrilla Mat",d:[3,10],edge:.8,sp:["Largemouth Bass","Bluegill"],fresh:1},
+ {t:"Offshore Shell Bar",d:[6,12],edge:.4,sp:["Largemouth Bass","Crappie","Bluegill"],fresh:1},
+ {t:"River Ledge",d:[10,25],edge:.35,sp:["Smallmouth Bass","Largemouth Bass","Blue Catfish","White Bass"],fresh:1},
+ {t:"Rock Reef",d:[8,24],edge:.4,sp:["Walleye","Smallmouth Bass","Lake Trout","Yellow Perch","Muskie"],fresh:1},
+ {t:"Harbor Breakwall",d:[10,30],edge:.9,sp:["Yellow Perch","Coho Salmon","Lake Trout"],fresh:1},
+ {t:"Mud Flat Edge",d:[18,32],edge:.35,sp:["Walleye","Yellow Perch","Blue Catfish","Channel Catfish"],fresh:1},
+ {t:"Pond Dam",d:[8,20],edge:.9,sp:["Largemouth Bass","Channel Catfish","Crappie","Redear Sunfish","Bluegill"],fresh:1,small:1},
+ {t:"Fishing Pier",d:[5,14],edge:.9,sp:["Crappie","Bluegill","Channel Catfish","Redear Sunfish"],fresh:1,small:1},
+ {t:"Shoreline Pads",d:[2,6],edge:.92,sp:["Largemouth Bass","Bluegill","Redear Sunfish"],fresh:1,small:1},
+ {t:"Shell Bed",d:[4,10],edge:.6,sp:["Redear Sunfish","Bluegill"],fresh:1,small:1},
+ {t:"Pit Drop-off",d:[6,25],edge:.7,sp:["Largemouth Bass","Bluegill","Redear Sunfish","Crappie"],fresh:1,small:1},
+ {t:"Culvert & Seawall",d:[4,12],edge:.92,sp:["Peacock Bass","Largemouth Bass","Bluegill"],fresh:1,small:1},
+ {t:"Oyster Bar",d:[1,4],edge:.75,sp:["Redfish","Spotted Seatrout","Sheepshead","Flounder"],salt:1},
+ {t:"Grass Flat",d:[2,5],edge:.6,sp:["Spotted Seatrout","Redfish","Bonefish","Snook"],salt:1},
+ {t:"Mangrove Shoreline",d:[1,4],edge:.93,sp:["Snook","Redfish","Tarpon"],salt:1},
+ {t:"Pass / Inlet",d:[10,40],edge:.25,sp:["Tarpon","Snook","Flounder","Redfish"],salt:1},
+ {t:"Bridge Fender",d:[8,25],edge:.45,sp:["Sheepshead","Snook","Tarpon","Flounder"],salt:1},
+ {t:"Creek Mouth",d:[3,8],edge:.88,sp:["Redfish","Snook","Spotted Seatrout","Flounder"],salt:1},
+ {t:"Sand Pothole Flat",d:[2,5],edge:.55,sp:["Redfish","Spotted Seatrout","Bonefish"],salt:1},
+ {t:"Channel Edge",d:[6,15],edge:.4,sp:["Spotted Seatrout","Tarpon","Bonefish","Flounder","Sheepshead"],salt:1}
+];
+const INTEL={
+ "Dam Riprap":["Hold 30–40 ft off, cast parallel to the rocks","Crankbaits along the rock, bottom rigs at the base","Generation or wind pushing into the riprap stacks bait; fish it when water is moving."],
+ "Main-Lake Point":["Sit on the deep side, cast shallow and work down","Moving baits first, then slow down on the tip","The side the wind blows into usually fires first."],
+ "Creek Channel Bend":["Follow the outside bend on sonar","Vertical over brush or drag across the lip","Fish stack where the channel swings closest to a flat."],
+ "Standing Timber Flat":["Idle through slow, watch sonar for suspended fish","Vertical jig at the depth fish show on sonar","Isolated trees on the edge of the timber usually outfish the thick stuff."],
+ "Grass Line":["Parallel the outside edge","Swim or rip baits along the edge, punch holes midday","Look for points and pockets in the grass line."],
+ "Bridge Pilings":["Anchor up-current, cast to the shade side","Let baits fall straight down the pilings","The corner pilings and the ones nearest the channel hold the most fish."],
+ "Offshore Hump":["Hover on the high side, cast over the top","Deep cranks and football jigs across the crest","Schools pull up on the hump during moving water."],
+ "Brush Pile Ledge":["Mark the pile, back off one cast","Drop jigs into the pile, count them down","Small piles away from the crowd get fished less."],
+ "Stump Flat":["Troll or push slowly through the stumps","Long-line jigs or crankbaits just above the stumps","Stumps nearest the old creek channel hold the most crappie."],
+ "Flooded Willows":["Ease in with the trolling motor on low","Single-pole jig or minnow into every opening","High water pushes crappie into the willows in spring."],
+ "Cypress Trees":["Stay quiet, pitch to the knees","Jig or cricket right against the trunk","Shade side of the trunk in bright sun."],
+ "Hydrilla Mat":["Work the edge, then punch the mat","Frog on top, heavy Texas rig through it","Holes and irregular edges in the mat hold the biggest fish."],
+ "Offshore Shell Bar":["Drift over with sonar","Crankbait or Carolina rig across the shell","Fish the bar during current when the lake is pulling water."],
+ "River Ledge":["Position downstream, cast upstream over the lip","Deep cranks and swimbaits with the current","Current from dam generation turns this spot on."],
+ "Rock Reef":["Sit on the drop side, cast to the top","Jig or slip bobber on the edge","Wind blowing onto the reef stirs the bite."],
+ "Harbor Breakwall":["Parallel the wall","Minnow rigs and spoons tight to the rocks","Fish corners and gaps in the wall."],
+ "Mud Flat Edge":["Troll the transition","Crawler harness or crankbait along the edge","The edge where mud meets hard bottom concentrates fish."],
+ "Pond Dam":["Cast parallel to the dam face","Crankbaits and jigs along the riprap, bottom rigs at the base","The deepest water in a small lake is usually at the dam; fish it in heat and cold."],
+ "Fishing Pier":["Fish from the pier or idle to its end","Jigs and live bait straight down the pilings","Brush is often sunk around public piers; count your jig down."],
+ "Shoreline Pads":["Stay a long cast off the pads","Frogs over the top, weightless plastics in the holes","Pad edges next to deeper water hold the bigger fish."],
+ "Shell Bed":["Anchor on the edge, cast across","Worm or shrimp dragged on the bottom","Redear stack on shell around the spring full moons."],
+ "Pit Drop-off":["Sit off the steep wall, cast to the lip","Work baits down the wall","Old phosphate pits drop fast; fish hold on the first ledge."],
+ "Culvert & Seawall":["Walk or idle along the seawall","Live shiner or small jerkbait at culverts","Moving water at culverts is the hot spot on sunny days."],
+ "Oyster Bar":["Pole or drift, stay a long cast off","Popping cork or soft plastic along the edge","The falling tide pulls fish to the downcurrent points of the bar."],
+ "Grass Flat":["Drift with the wind across the flat","Cork and plastic over sand potholes","The rising tide brings fish up onto the flat."],
+ "Mangrove Shoreline":["Stay off 40–50 ft, cast tight under limbs","Live bait or weedless plastics into the roots","High tide lets fish get back in the roots; fish the points on the fall."],
+ "Pass / Inlet":["Drift with the current, stay out of the traffic","Heavy jigs or live bait on the bottom","Outgoing tide is usually best for snook and tarpon."],
+ "Bridge Fender":["Anchor up-current and let bait drift to the fender","Live bait close to the pilings","Shadow lines at night turn on snook and tarpon."],
+ "Creek Mouth":["Sit off the mouth where current dumps out","Paddle tail or live shrimp in the current seam","The falling tide flushes bait out of the creek."],
+ "Sand Pothole Flat":["Drift quietly, look for dark potholes","Cast past the pothole, drag into it","Fish sit in the potholes on low tide."],
+ "Channel Edge":["Position on the flat side, cast into the channel","Jig down the slope with the tide","Moving tide pushes bait along the edge."]
+};
+const AREA=["North","South","East","West","Upper","Lower","Big","Hidden","Cedar","Rocky","Pine","Cypress","Mill","Turtle","Heron","Sandy","Pelican","Osprey"];
+const POIKIND=[["Boat ramp","ramp"],["Boat ramp","ramp"],["Boat ramp","ramp"],["Bank access","bank"],["Fishing pier","bank"],["Marina & bait shop","shop"]];
+
+// ---------- utils ----------
+function rng(seed){let s=0;for(const c of String(seed))s=(s*31+c.charCodeAt(0))>>>0;return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+const $=id=>document.getElementById(id);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function haversine(a,b,c,d){const R=3958.8,r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const fmtH=h=>{h=((h%24)+24)%24;const H=Math.floor(h),M=Math.round((h-H)*60);const hh=(M===60?H+1:H)%24,mm=M===60?0:M;return `${((hh+11)%12)+1}:${String(mm).padStart(2,"0")} ${hh<12?"AM":"PM"}`};
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+// ---------- astronomy ----------
+function dayOfYear(d){return Math.floor((d-new Date(d.getFullYear(),0,0))/864e5)}
+function sunTimes(date,lat,lon){
+  const N=dayOfYear(date),r=Math.PI/180;
+  const decl=23.44*Math.sin(r*(360/365)*(N-81));
+  const B=r*(360/365)*(N-81),eot=9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B);
+  const cosH=(Math.sin(-0.833*r)-Math.sin(lat*r)*Math.sin(decl*r))/(Math.cos(lat*r)*Math.cos(decl*r));
+  const H=Math.acos(clamp(cosH,-1,1))/r/15;
+  const tz=-date.getTimezoneOffset()/60;
+  const noon=12-(lon/15)-eot/60+tz;
+  return {rise:noon-H,set:noon+H,noon};
+}
+function moon(date){
+  const syn=29.530588853,ref=Date.UTC(2000,0,6,18,14);
+  const age=(((date.getTime()-ref)/864e5)%syn+syn)%syn;
+  const frac=age/syn,illum=(1-Math.cos(2*Math.PI*frac))/2;
+  const names=["New Moon","Waxing Crescent","First Quarter","Waxing Gibbous","Full Moon","Waning Gibbous","Last Quarter","Waning Crescent"];
+  return {age,frac,illum,name:names[Math.round(frac*8)%8]};
+}
+function solunar(date,lon){
+  const m=moon(new Date(date.getFullYear(),date.getMonth(),date.getDate(),12));
+  const tz=-date.getTimezoneOffset()/60;
+  const t=((12+m.frac*24.84+tz-lon/15)%24+24)%24;
+  return {major:[t,(t+12.42)%24],minor:[(t+6.21)%24,(t+18.63)%24],moon:m};
+}
+// approximate semidiurnal tide: highs lag moon transit by a site-specific interval
+function tides(lake,sol){
+  const R=rng(lake.id+"tide");const lag=1+R()*3;
+  const highs=[(sol.major[0]+lag)%24,(sol.major[1]+lag)%24].sort((a,b)=>a-b);
+  const lows=highs.map(h=>(h+6.21)%24).sort((a,b)=>a-b);
+  const m=sol.moon, spring=Math.min(m.frac,Math.abs(.5-m.frac),1-m.frac)<.08;
+  return {highs,lows,spring,level:h=>Math.cos((h-highs[0])/12.42*2*Math.PI)};
+}
+function season(date,lat){const m=date.getMonth();let s=m<=1||m===11?0:m<=4?1:m<=7?2:3;if(lat>44&&m===4)s=1;if(lat>44&&m===10)s=0;if(lat<27.5&&m===1)s=1;return s}
+function poolStage(date){const m=date.getMonth();
+  if(m>=7&&m<=10)return["Fall drawdown","Water dropping toward winter pool; fish pull off the banks to channel edges and stumps."];
+  if(m===11||m<=1)return["Winter pool","Lake at its lowest; fish stack on creek channels and deep stump rows."];
+  if(m<=3)return["Spring fill","Rising water floods willows and buckbrush; crappie move shallow fast."];
+  return["Summer pool","Full pool; fish scatter on deeper brush, timber and the old river channel."]}
+
+// ---------- modeled weather ----------
+function weather(lake,date){
+  const R=rng(lake.id+date.toDateString());
+  const N=dayOfYear(date);
+  const amp=clamp(8+(lake.lat-25)*2,8,22);
+  const avg=Math.min(84,73-(lake.lat-30)*1.55+amp*Math.sin((N-110)/365*2*Math.PI));
+  const hi=Math.round(avg+clamp(4+(lake.lat-25)*.6,4,8)+(R()-.5)*8), lo=Math.round(hi-10-R()*8-(lake.lat>30?4:0));
+  const water=Math.round(clamp(avg-2+(R()-.5)*4,34,90));
+  const wind=Math.round(3+R()*14), dirs=["N","NE","E","SE","S","SW","W","NW"], dir=dirs[Math.floor(R()*8)];
+  const press=+(29.75+R()*0.55).toFixed(2), tv=R(), trend=tv<.33?"Falling":tv<.7?"Steady":"Rising";
+  const sv=R(), sky=sv<.35?"Sunny":sv<.65?"Partly cloudy":sv<.88?"Overcast":"Light rain";
+  return {hi,lo,water,wind,dir,press,trend,sky};
+}
+
+// ---------- scoring ----------
+function inWin(h,c,half){let d=Math.abs(h-c);d=Math.min(d,24-d);return d<=half?1-d/half:0}
+function makeCtx(lk,date){
+  const sol=solunar(date,lk.lon);
+  const c={date,sun:sunTimes(date,lk.lat,lk.lon),sol,wx:weather(lk,date),moon:moon(date),season:season(date,lk.lat),salt:!!lk.salt||!!lk.tidal};
+  if(c.salt)c.tide=tides(lk,sol);
+  return c;
+}
+function hourScore(h,c,spot){
+  const {sun,sol,wx,moon}=c;
+  let s=22;
+  s+=32*Math.max(inWin(h,sun.rise,1.8),inWin(h,sun.set,1.8));
+  s+=(c.salt?14:22)*Math.max(...sol.major.map(x=>inWin(h,x,1.2)));
+  s+=(c.salt?7:12)*Math.max(...sol.minor.map(x=>inWin(h,x,.8)));
+  const ph=Math.min(moon.frac,Math.abs(1-moon.frac),Math.abs(.5-moon.frac));
+  s+=ph<.07?8:ph<.14?4:0;
+  s+=wx.trend==="Falling"?8:wx.trend==="Steady"?3:-5;
+  s+=wx.sky==="Overcast"||wx.sky==="Light rain"?6:wx.sky==="Sunny"&&h>10&&h<16?-8:0;
+  s+=wx.wind>=6&&wx.wind<=14?4:wx.wind>18?-6:0;
+  if(c.tide){const a=c.tide.level(h),b=c.tide.level(h+.5);const moving=Math.min(1,Math.abs(b-a)/.25);s+=16*moving-6+(c.tide.spring?4:0);
+    if(spot&&spot.d[1]<=5&&a<-.6)s-=10;}
+  const night=h<sun.rise-1||h>sun.set+1;
+  if(night)s-=spot&&/Catfish|Walleye|Crappie|Snook|Tarpon/.test(spot.best.join())?2:14;
+  if(spot){const deep=(spot.d[0]+spot.d[1])/2;
+    if(wx.water>82&&deep<6&&h>10&&h<17)s-=10;
+    if(wx.water<52&&deep<8)s-=8;
+    s+=spot.bonus||0;}
+  return clamp(Math.round(s),0,100);
+}
+function rating(v){return v>=76?["On fire","--hot"]:v>=60?["Good","--good"]:v>=44?["Fair","--fair"]:["Slow","--slow"]}
+
+// ---------- geometry ----------
+function buildLake(lk){
+  const R=rng(lk.id+"shape");
+  const harm=[];for(let k=2;k<=9;k++)harm.push([k,(R()*.16)/(k*.55),R()*Math.PI*2]);
+  const stretch=1.1+R()*.5, rot=R()*Math.PI;
+  const arms=[];for(let i=0;i<4+Math.floor(R()*3);i++)arms.push([R()*Math.PI*2,.25+R()*.35,.1+R()*.08]);
+  const radius=th=>{let r=1;for(const[k,a,p]of harm)r+=a*Math.sin(k*th+p);for(const[c,len,w]of arms){let d=Math.abs(th-c);d=Math.min(d,Math.PI*2-d);if(d<w)r+=len*Math.cos(d/w*Math.PI/2)**2}return r*.36};
+  const pt=(th,f)=>{const r=radius(th)*f;const x=Math.cos(th)*r*stretch,y=Math.sin(th)*r;return[x*Math.cos(rot)-y*Math.sin(rot),x*Math.sin(rot)+y*Math.cos(rot)]};
+  const ring=f=>{const a=[];for(let i=0;i<240;i++)a.push(pt(i/240*Math.PI*2,f));return a};
+  const salt=!!lk.salt;
+  let avail=STRUCT.filter(s=>(salt?s.salt:s.fresh)&&s.sp.some(x=>lk.species.includes(x)));if(lk.size==="small"){const sm=avail.filter(s=>s.small),rest=avail.filter(s=>!s.small&&s.d[1]<=25&&!/Harbor|Reef|Mud Flat|River Ledge|Dam Riprap/.test(s.t));avail=[...sm,...rest]}else avail=avail.filter(s=>!s.small);
+  const spots=[],used=new Set(),n=lk.size==="small"?7:10;
+  for(let i=0;i<n;i++){
+    const st=avail[i%avail.length];const th=(i/n)*Math.PI*2+R()*.5;
+    const f=clamp(st.edge*(.85+R()*.15),.2,.9);
+    let nm,g=0;do{nm=AREA[Math.floor(R()*AREA.length)]+" "+st.t;g++}while(used.has(nm)&&g<30);used.add(nm);
+    const best=st.sp.filter(x=>lk.species.includes(x));
+    spots.push({id:"s"+i,name:nm,type:st.t,d:st.d,best:best.length?best:[lk.species[0]],pos:pt(th,f),bonus:Math.round((R()-.4)*14)});
+  }
+  const pois=POIKIND.map(([label,kind],i)=>{const th=(i/POIKIND.length)*Math.PI*2+.35+R()*.3;return{id:"p"+i,kind,label,pos:pt(th,1),name:`${AREA[(Math.floor(R()*AREA.length)+i*3)%AREA.length]} ${kind==="shop"?"Marina":kind==="ramp"?"Park Ramp":label}`}});
+  const cover=[];const kinds=salt?["oyster","grass"]:["brush","timber","grass"];
+  for(let i=0;i<70;i++){const th=R()*Math.PI*2,f=.25+R()*.7;cover.push({pos:pt(th,f),k:kinds[Math.floor(R()*kinds.length)]})}
+  const inside=(p)=>{const th=Math.atan2(p[1],p[0]);let best=0;for(let f=1;f>=0;f-=.02){const q=pt(th,f);if(Math.hypot(q[0],q[1])<=Math.hypot(p[0],p[1])){best=f;break}}return best}; // rough
+  return{ring,spots,pois,cover,radius,rot,stretch,pt};
+}
+function toLatLon(lk,p){const m=lk.mpu||6;return[lk.lat-p[1]*m/69,lk.lon+p[0]*m/(69*Math.cos(lk.lat*Math.PI/180))]}
+
+// ---------- topography (bathymetry) ----------
+let topo=null;
+function fracAt(p){const rot=geo.rot,st=geo.stretch;const x=p[0]*Math.cos(-rot)-p[1]*Math.sin(-rot),y=p[0]*Math.sin(-rot)+p[1]*Math.cos(-rot);
+  const th=(Math.atan2(y,x/st)+Math.PI*2)%(Math.PI*2);return Math.hypot(x/st,y)/geo.radius(th)}
+function segDist(p,a,b){const dx=b[0]-a[0],dy=b[1]-a[1];const t=clamp(((p[0]-a[0])*dx+(p[1]-a[1])*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy)}
+function lineDist(p,pts){let m=1e9;for(let i=1;i<pts.length;i++){const d=segDist(p,pts[i-1],pts[i]);if(d<m)m=d}return m}
+function vnoise(seed){const R=rng(seed),G=[];for(let i=0;i<32*32;i++)G.push(R());const h=(i,j)=>G[((i&31)*32+(j&31))];const sm=t=>t*t*(3-2*t);
+  return (x,y)=>{const i=Math.floor(x),j=Math.floor(y),fx=sm(x-i),fy=sm(y-j);const a=h(i,j),b=h(i+1,j),c=h(i,j+1),d=h(i+1,j+1);return (a+(b-a)*fx)+((c+(d-c)*fx)-(a+(b-a)*fx))*fy}}
+function buildTopo(lk){
+  const R=rng(lk.id+"topo"),nz=vnoise(lk.id+"n");
+  const ring=geo.ring(1);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;ring.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});
+  const pad=.02;x0-=pad;y0-=pad;x1+=pad;y1+=pad;
+  const N=150,cell=(x1-x0)/N,M=Math.ceil((y1-y0)/cell);
+  const maxSpot=Math.max(...geo.spots.map(s=>s.d[1]));
+  const flat=lk.salt?4.5:maxSpot*.72, chD=lk.salt?Math.max(10,maxSpot*.8):maxSpot*.42;
+  // main channel from the longest arm to the far (dam) end
+  let best=0,th0=0;for(let i=0;i<240;i++){const th=i/240*Math.PI*2,r=geo.radius(th);if(r>best){best=r;th0=th}}
+  const A=geo.pt(th0,.95),B=geo.pt(th0+Math.PI+(R()-.5)*.6,.9);
+  const off=[(R()-.5)*.12,(R()-.5)*.12];const chan=[];
+  for(let i=0;i<=40;i++){const t=i/40,w=Math.sin(t*Math.PI*3+R()*.2)*.025;const mx=(1-t)*(1-t)*A[0]+2*(1-t)*t*off[0]+t*t*B[0],my=(1-t)*(1-t)*A[1]+2*(1-t)*t*off[1]+t*t*B[1];chan.push([mx+w,my-w])}
+  // creek channels from other arms into the main channel
+  const creeks=[];const cand=[];for(let i=0;i<240;i+=4){const th=i/240*Math.PI*2;const r=geo.radius(th),rl=geo.radius(th-.1),rr=geo.radius(th+.1);if(r>rl&&r>rr&&Math.abs(((th-th0+Math.PI*3)%(Math.PI*2))-Math.PI)<2.6)cand.push([r,th])}
+  cand.sort((a,b)=>b[0]-a[0]).slice(0,4).forEach(([,th])=>{const s=geo.pt(th,.95);let m=1e9,mp=chan[20];chan.forEach(c=>{const d=Math.hypot(c[0]-s[0],c[1]-s[1]);if(d<m){m=d;mp=c}});const pts=[];for(let i=0;i<=12;i++){const t=i/12;pts.push([s[0]+(mp[0]-s[0])*t+Math.sin(t*6)*.01,s[1]+(mp[1]-s[1])*t+Math.cos(t*5)*.01])}creeks.push(pts)});
+  const humps=[];for(let i=0;i<5;i++){const p=geo.pt(R()*Math.PI*2,.25+R()*.4);humps.push([p,.025+R()*.03,flat*(.35+R()*.3)])}
+  const damDir=[B[0]-A[0],B[1]-A[1]];const dl=Math.hypot(...damDir);damDir[0]/=dl;damDir[1]/=dl;
+  const D=new Float32Array(N*M);let maxD=0,sum=0,cnt=0;
+  for(let j=0;j<M;j++)for(let i=0;i<N;i++){const p=[x0+(i+.5)*cell,y0+(j+.5)*cell];const f=fracAt(p);let d=NaN;
+    if(f<1){const shore=Math.pow(clamp(1-f,0,1),lk.salt?.45:.7);
+      let v=flat*shore;
+      const along=clamp((p[0]*damDir[0]+p[1]*damDir[1])/(dl/2)*.5+.5,0,1);
+      v*=lk.salt?1:(.75+.45*along);
+      const dc=lineDist(p,chan);v+=chD*Math.exp(-((dc/(lk.salt?.02:.03))**2))*(lk.salt?1:.6+.6*along)*Math.min(1,(1-f)*6);
+      creeks.forEach(c=>{const d2=lineDist(p,c);v+=chD*.45*Math.exp(-((d2/.018)**2))*Math.min(1,(1-f)*5)});
+      humps.forEach(([hp,r,h])=>{const d2=Math.hypot(p[0]-hp[0],p[1]-hp[1]);v-=h*Math.exp(-((d2/r)**2))});
+      v+=(nz(p[0]*18+5,p[1]*18+5)-.5)*flat*.22+(nz(p[0]*45,p[1]*45)-.5)*flat*.08;
+      d=Math.max(.5,v*Math.min(1,(1-f)*14));maxD=Math.max(maxD,d);sum+=d;cnt++}
+    D[j*N+i]=d}
+  topo={x0,y0,cell,N,M,D,maxD,avg:sum/cnt,chan,img:null,key:"",paths:null,pkey:""};
+  // settle each spot where the bottom matches its structure depth
+  geo.spots.forEach((s,k)=>{const mid=(s.d[0]+s.d[1])/2;let bp=s.pos,bd=1e9;const th0s=Math.atan2(s.pos[1],s.pos[0]);
+    for(let dt=-.35;dt<=.35;dt+=.07)for(let f=.12;f<=.95;f+=.03){const q=geo.pt(th0s+dt+(k*.0),f);const d=depthAt(q);if(d===null)continue;const e=Math.abs(d-mid)+Math.abs(dt)*3;if(e<bd){bd=e;bp=q}}s.pos=bp});
+}
+function depthAt(p){if(!topo)return null;const {x0,y0,cell,N,M,D}=topo;const fx=(p[0]-x0)/cell-.5,fy=(p[1]-y0)/cell-.5;const i=Math.floor(fx),j=Math.floor(fy);
+  if(i<0||j<0||i>=N-1||j>=M-1)return null;const a=D[j*N+i],b=D[j*N+i+1],c=D[(j+1)*N+i],d=D[(j+1)*N+i+1];
+  if([a,b,c,d].some(isNaN)){const v=[a,b,c,d].filter(x=>!isNaN(x));if(v.length<2||fracAt(p)>=1)return null;return Math.round(v.reduce((x,y)=>x+y,0)/v.length*10)/10}
+  const tx=fx-i,ty=fy-j;return Math.round(((a+(b-a)*tx)*(1-ty)+(c+(d-c)*tx)*ty)*10)/10}
+function hexRgb(c){c=(c||"#000").trim();if(c[0]!=="#")return[0,0,0];let h=c.slice(1);if(h.length===3)h=h.split("").map(x=>x+x).join("");const n=parseInt(h,16);return[n>>16&255,n>>8&255,n&255]}
+function topoColor(d,pal){const t=clamp(d/topo.maxD,0,1)*(pal.length-1);const i=Math.min(pal.length-2,Math.floor(t)),f=t-i;return pal[i].map((v,k)=>v+(pal[i+1][k]-v)*f)}
+function topoPalette(){const w=[css("--water"),css("--water2"),css("--water3"),css("--water4")].map(hexRgb);const deep=w[3].map(v=>v*.6);return[w[0].map(v=>Math.min(255,v+18)),...w,deep]}
+function topoImage(){
+  const key=[css("--water"),S.hl.on,S.hl.lo,S.hl.hi,lake.id].join("|");if(topo.img&&topo.key===key)return topo.img;
+  const {N,M,D}=topo;const c=document.createElement("canvas");c.width=N;c.height=M;const cx=c.getContext("2d");const im=cx.createImageData(N,M);const pal=topoPalette();const hl=hexRgb(css("--good"));
+  for(let j=0;j<M;j++)for(let i=0;i<N;i++){const d=D[j*N+i],o=(j*N+i)*4;if(isNaN(d)){im.data[o+3]=0;continue}
+    const dx=(D[j*N+Math.min(N-1,i+1)]||d)-(D[j*N+Math.max(0,i-1)]||d),dy=(D[Math.min(M-1,j+1)*N+i]||d)-(D[Math.max(0,j-1)*N+i]||d);
+    const shade=clamp(1-(dx+dy)*.035,.72,1.18);let col=topoColor(d,pal).map(v=>clamp(v*shade,0,255));
+    if(S.hl.on&&d>=S.hl.lo&&d<=S.hl.hi)col=col.map((v,k)=>v*.35+hl[k]*.65);
+    im.data[o]=col[0];im.data[o+1]=col[1];im.data[o+2]=col[2];im.data[o+3]=255}
+  cx.putImageData(im,0,0);topo.img=c;topo.key=key;return c}
+function topoPaths(){
+  const key=S.interval+"|"+lake.id;if(topo.paths&&topo.pkey===key)return topo.paths;
+  const {x0,y0,cell,N,M,D,maxD}=topo;const minor=new Path2D(),major=new Path2D(),labels=[];const iv=S.interval,majorEvery=iv>=10?20:10;
+  const X=i=>x0+(i+.5)*cell,Y=j=>y0+(j+.5)*cell;
+  for(let L=iv;L<maxD;L+=iv){const path=(L%majorEvery===0)?major:minor;let segs=0;
+    for(let j=0;j<M-1;j++)for(let i=0;i<N-1;i++){const a=D[j*N+i],b=D[j*N+i+1],c=D[(j+1)*N+i+1],d=D[(j+1)*N+i];if(isNaN(a)||isNaN(b)||isNaN(c)||isNaN(d))continue;
+      const idx=(a>L?8:0)|(b>L?4:0)|(c>L?2:0)|(d>L?1:0);if(idx===0||idx===15)continue;
+      const e=[[X(i)+cell*(L-a)/(b-a),Y(j)],[X(i+1),Y(j)+cell*(L-b)/(c-b)],[X(i)+cell*(L-d)/(c-d),Y(j+1)],[X(i),Y(j)+cell*(L-a)/(d-a)]];
+      const T={1:[[2,3]],2:[[1,2]],3:[[1,3]],4:[[0,1]],5:[[0,3],[1,2]],6:[[0,2]],7:[[0,3]],8:[[0,3]],9:[[0,2]],10:[[0,1],[2,3]],11:[[0,1]],12:[[1,3]],13:[[1,2]],14:[[2,3]]}[idx];
+      T.forEach(([p,q])=>{path.moveTo(e[p][0],e[p][1]);path.lineTo(e[q][0],e[q][1]);segs++;if(path===major&&segs%90===45)labels.push([e[p][0],e[p][1],L])})}}
+  topo.paths={minor,major,labels};topo.pkey=key;return topo.paths}
+function drawTopo(C){
+  const k=K(),dpr=window.devicePixelRatio||1;
+  g.save();poly(geo.ring(1));g.clip();
+  g.setTransform(dpr*k,0,0,dpr*k,dpr*(CW/2+S.view.x),dpr*(CH/2+S.view.y+8));
+  if(S.layers.relief){g.imageSmoothingEnabled=true;g.drawImage(topoImage(),topo.x0,topo.y0,topo.N*topo.cell,topo.M*topo.cell)}
+  if(S.layers.contours){const P=topoPaths();g.strokeStyle=C.contour;g.globalAlpha=.55;g.lineWidth=.8/k;g.stroke(P.minor);g.globalAlpha=.9;g.lineWidth=1.5/k;g.stroke(P.major);g.globalAlpha=1}
+  g.restore();
+  if(S.layers.contours){const P=topoPaths();g.font="600 10px IBM Plex Mono, monospace";g.textAlign="center";g.textBaseline="middle";
+    P.labels.forEach(([x,y,L])=>{const q=proj([x,y]);if(q[0]<0||q[1]<0||q[0]>CW||q[1]>CH)return;const t=L+"";const w=g.measureText(t).width+4;g.fillStyle=C.panel;g.globalAlpha=.8;g.fillRect(q[0]-w/2,q[1]-6,w,12);g.globalAlpha=1;g.fillStyle=C.contour;g.fillText(t,q[0],q[1]+.5)});g.textBaseline="alphabetic"}
+  // profile line
+  if(S.prof.a){const a=proj(S.prof.a);const b=S.prof.b?proj(S.prof.b):null;g.fillStyle=C.ink;g.strokeStyle=C.ink;g.lineWidth=2;g.setLineDash([6,4]);if(b){g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke()}g.setLineDash([]);
+    [[a,"A"],[b,"B"]].forEach(([q,t])=>{if(!q)return;g.beginPath();g.arc(q[0],q[1],8,0,Math.PI*2);g.fillStyle=C.ink;g.fill();g.fillStyle=C.panel;g.font="700 10px IBM Plex Sans, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(t,q[0],q[1]+.5);g.textBaseline="alphabetic"})}
+}
+// ---- depth profile chart ----
+function renderProfile(){
+  const el=$("profile");if(!S.prof.a||!S.prof.b){el.innerHTML=`<p class="note" style="margin:0">Turn on <b>Depth profile</b>, then tap two points on the map to see the bottom between them.</p>`;return}
+  const n=140,pts=[];const [a,b]=[S.prof.a,S.prof.b];const miles=Math.hypot(b[0]-a[0],b[1]-a[1])*(lake.mpu||6);
+  for(let i=0;i<=n;i++){const t=i/n;const d=depthAt([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]);pts.push([t*miles,d])}
+  const valid=pts.filter(p=>p[1]!==null);if(!valid.length){el.innerHTML=`<p class="note">That line is on land. Try two points on the water.</p>`;return}
+  const vmax=Math.max(...valid.map(p=>p[1]));const stp=vmax>40?10:vmax>20?5:vmax>8?2:1;const mx=Math.max(stp*2,Math.ceil(vmax/stp)*stp);
+  const W=340,H=150,pl=30,pr=8,pt=10,pb=22,iw=W-pl-pr,ih=H-pt-pb;const x=v=>pl+v/miles*iw,y=d=>pt+d/mx*ih;
+  let path="",started=false;pts.forEach(([m,d])=>{if(d===null){started=false;return}path+=(started?"L":"M")+x(m).toFixed(1)+" "+y(d).toFixed(1);started=true});
+  let area="";let seg=[];const flush=()=>{if(seg.length>1)area+=`M${x(seg[0][0])} ${pt}`+seg.map(([m,d])=>`L${x(m).toFixed(1)} ${y(d).toFixed(1)}`).join("")+`L${x(seg[seg.length-1][0])} ${pt}Z`;seg=[]};pts.forEach(p=>{if(p[1]===null)flush();else seg.push(p)});flush();
+  let ground="";seg=[];const flush2=()=>{if(seg.length>1)ground+=`M${x(seg[0][0])} ${H-pb}`+seg.map(([m,d])=>`L${x(m).toFixed(1)} ${y(d).toFixed(1)}`).join("")+`L${x(seg[seg.length-1][0])} ${H-pb}Z`;seg=[]};pts.forEach(p=>{if(p[1]===null)flush2();else seg.push(p)});flush2();
+  const tv=[];for(let v=0;v<=mx;v+=stp*(mx/stp>6?2:1))tv.push(v);const ticks=tv.map(v=>`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${pl-4}" y="${y(v)+3}" text-anchor="end" font-size="9" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${v}</text>`).join("");
+  let steep=0,si=0;for(let i=1;i<pts.length;i++)if(pts[i][1]!==null&&pts[i-1][1]!==null){const s=Math.abs(pts[i][1]-pts[i-1][1]);if(s>steep){steep=s;si=i}}
+  const drop=steep>0?`<circle cx="${x(pts[si][0])}" cy="${y(pts[si][1])}" r="4" fill="var(--accent)"/><text x="${x(pts[si][0])}" y="${y(pts[si][1])-8}" text-anchor="middle" font-size="9.5" fill="var(--accent)" font-family="IBM Plex Sans,sans-serif" font-weight="600">drop-off</text>`:"";
+  el.innerHTML=`<div class="row" style="justify-content:space-between"><span class="eyebrow">Bottom profile A → B</span><span class="note" style="font-family:var(--mono)">${miles.toFixed(2)} mi · ${Math.min(...valid.map(p=>p[1])).toFixed(0)}–${Math.max(...valid.map(p=>p[1])).toFixed(0)} ft</span></div>
+   <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="Depth profile"><path d="${area}" fill="var(--water2)"/><path d="${ground}" fill="var(--land-edge)" opacity=".55"/>${ticks}<path d="${path}" fill="none" stroke="var(--ink)" stroke-width="1.8"/>${drop}
+   <text x="${pl}" y="${H-6}" font-size="9.5" fill="var(--muted)" font-family="IBM Plex Mono,monospace">A</text><text x="${W-pr}" y="${H-6}" text-anchor="end" font-size="9.5" fill="var(--muted)" font-family="IBM Plex Mono,monospace">B</text></svg>`;
+}
+// ---- 3D bottom view ----
+const V3={yaw:-.7,pitch:.9,ex:1};const c3=$("topo3d"),g3=c3.getContext("2d");let W3=0,H3=0;
+function size3d(){const r=c3.getBoundingClientRect();const dpr=window.devicePixelRatio||1;W3=r.width;H3=r.height;c3.width=W3*dpr;c3.height=H3*dpr;g3.setTransform(dpr,0,0,dpr,0,0);render3d()}
+function render3d(){
+  if(!topo||!W3)return;const {x0,y0,cell,N,M,D,maxD}=topo;const st=2;const pal=topoPalette();
+  g3.fillStyle=css("--panel");g3.fillRect(0,0,W3,H3);
+  const cxw=x0+N*cell/2,cyw=y0+M*cell/2,span=Math.max(N,M)*cell;const Sc=Math.min(W3,H3*1.5)/span*.92;
+  const cy=Math.cos(V3.yaw),sy=Math.sin(V3.yaw),cp=Math.cos(V3.pitch),sp=Math.sin(V3.pitch);const zS=span*.16/maxD*V3.ex;
+  const P=(x,y,d)=>{const X=(x-cxw)*cy-(y-cyw)*sy,Y=(x-cxw)*sy+(y-cyw)*cy,Z=-d*zS;return[W3/2+X*Sc,H3*.42+(Y*cp-Z*sp)*Sc,Y*sp+Z*cp]};
+  const quads=[];
+  for(let j=0;j+st<M;j+=st)for(let i=0;i+st<N;i+=st){const ds=[D[j*N+i],D[j*N+i+st],D[(j+st)*N+i+st],D[(j+st)*N+i]];if(ds.some(isNaN))continue;
+    const xs=[x0+i*cell,x0+(i+st)*cell],ys=[y0+j*cell,y0+(j+st)*cell];
+    const v=[P(xs[0],ys[0],ds[0]),P(xs[1],ys[0],ds[1]),P(xs[1],ys[1],ds[2]),P(xs[0],ys[1],ds[3])];
+    const dm=(ds[0]+ds[1]+ds[2]+ds[3])/4;const sl=(ds[1]-ds[0]+ds[2]-ds[3])*.5*Math.cos(V3.yaw+.8)+(ds[3]-ds[0]+ds[2]-ds[1])*.5*Math.sin(V3.yaw+.8);
+    const shade=clamp(1-sl*.05,.6,1.25);let col=topoColor(dm,pal).map(c=>clamp(c*shade,0,255));
+    if(S.hl.on&&dm>=S.hl.lo&&dm<=S.hl.hi){const h=hexRgb(css("--good"));col=col.map((c,k)=>c*.35+h[k]*.65)}
+    quads.push([v,(v[0][2]+v[2][2])/2,col])}
+  quads.sort((a,b)=>a[1]-b[1]);
+  for(const [v,,c] of quads){g3.beginPath();g3.moveTo(v[0][0],v[0][1]);for(let k=1;k<4;k++)g3.lineTo(v[k][0],v[k][1]);g3.closePath();g3.fillStyle=`rgb(${c[0]|0},${c[1]|0},${c[2]|0})`;g3.fill();g3.strokeStyle=g3.fillStyle;g3.lineWidth=.6;g3.stroke()}
+  // shoreline at surface
+  g3.beginPath();geo.ring(1).forEach((p,i)=>{const q=P(p[0],p[1],0);i?g3.lineTo(q[0],q[1]):g3.moveTo(q[0],q[1])});g3.closePath();g3.strokeStyle=css("--ink");g3.globalAlpha=.5;g3.lineWidth=1.2;g3.stroke();g3.globalAlpha=1;
+  // spots as pins
+  const ink=css("--ink");g3.font="600 10.5px IBM Plex Sans, sans-serif";g3.textAlign="left";
+  for(const s of visibleSpots()){const d=depthAt(s.pos)||0;const a=P(s.pos[0],s.pos[1],0),b=P(s.pos[0],s.pos[1],d);g3.strokeStyle=ink;g3.lineWidth=1;g3.globalAlpha=.7;g3.beginPath();g3.moveTo(a[0],a[1]);g3.lineTo(b[0],b[1]);g3.stroke();g3.globalAlpha=1;
+    g3.beginPath();g3.arc(b[0],b[1],4.5,0,Math.PI*2);g3.fillStyle=css(rating(s.score)[1]);g3.fill();g3.strokeStyle=css("--panel");g3.lineWidth=1.5;g3.stroke();
+    if(S.sel&&S.sel.id===s.id&&!S.selWp){g3.fillStyle=ink;g3.fillText(`${s.name} · ${d.toFixed(0)} ft`,b[0]+7,b[1]+4)}}
+  g3.fillStyle=css("--muted");g3.font="500 10px IBM Plex Mono, monospace";g3.fillText(`${V3.ex.toFixed(1)}× vertical · drag to rotate`,10,H3-10);
+}
+let d3=null;
+c3.addEventListener("pointerdown",e=>{d3={x:e.clientX,y:e.clientY,yaw:V3.yaw,pitch:V3.pitch};c3.setPointerCapture(e.pointerId)});
+c3.addEventListener("pointermove",e=>{if(!d3)return;V3.yaw=d3.yaw+(e.clientX-d3.x)*.008;V3.pitch=clamp(d3.pitch+(e.clientY-d3.y)*.006,.25,1.4);render3d()});
+c3.addEventListener("pointerup",()=>{d3=null});
+$("ex3d").oninput=e=>{V3.ex=+e.target.value;render3d()};
+$("reset3d").onclick=()=>{V3.yaw=-.7;V3.pitch=.9;render3d()};
+new ResizeObserver(size3d).observe(c3);
+function renderTopoStats(){
+  if(!topo)return;const {D,maxD,avg}=topo;let inR=0,n=0;for(const d of D){if(isNaN(d))continue;n++;if(d>=S.hl.lo&&d<=S.hl.hi)inR++}
+  $("topostats").innerHTML=`<div><span class="eyebrow">Max depth</span><span class="v">${maxD.toFixed(0)} ft</span></div><div><span class="eyebrow">Average</span><span class="v">${avg.toFixed(0)} ft</span></div><div><span class="eyebrow">In ${S.hl.lo}–${S.hl.hi} ft</span><span class="v">${Math.round(inR/n*100)}%</span></div>`;
+  $("hlread").textContent=`${S.hl.lo}–${S.hl.hi} ft`;
+}
+function topoUI(){
+  $("hl-lo").max=$("hl-hi").max=Math.ceil(topo.maxD);
+  if(S.hl.hi>topo.maxD){S.hl.hi=Math.ceil(topo.maxD);}
+  $("hl-lo").value=S.hl.lo;$("hl-hi").value=S.hl.hi;renderTopoStats();renderProfile();render3d();
+}
+
+// ---------- state ----------
+const S={home:0,lake:"sardis",date:new Date(),filter:"All",sel:null,selWp:null,view:{s:1,x:0,y:0},layers:{heat:true,structure:true,contours:true,relief:true,pins:true},pin:false,draft:null,interval:5,hl:{on:false,lo:8,hi:14},prof:{on:false,a:null,b:null}};
+(()=>{const h=store.get("wtb2.home");if(h!==null&&HOMES[+h])S.home=+h;const l=store.get("wtb2.lake");if(l&&LAKES.find(x=>x.id===l))S.lake=l;})();
+let geo,ctx,lake;
+
+function compute(){
+  lake=LAKES.find(l=>l.id===S.lake);
+  geo=buildLake(lake);buildTopo(lake);S.prof.a=S.prof.b=null;
+  ctx=makeCtx(lake,S.date);
+  const now=new Date();ctx.same=now.toDateString()===S.date.toDateString();
+  ctx.hour=ctx.same?now.getHours()+now.getMinutes()/60:Math.round(ctx.sun.rise*2)/2+.5;
+  for(const s of geo.spots){s.score=hourScore(ctx.hour,ctx,s);s.peak=bestWindow(s,ctx)}
+  if(!S.sel||!geo.spots.find(s=>s.id===S.sel.id))S.sel=S.selWp?null:[...geo.spots].sort((a,b)=>b.score-a.score)[0];
+  else S.sel=geo.spots.find(s=>s.id===S.sel.id);
+}
+function bestWindow(spot,c){let best=0,bh=0;for(let h=0;h<24;h+=.5){const v=hourScore(h,c,spot);if(v>best){best=v;bh=h}}return{h:bh,v:best}}
+function wpSpot(w){const d=depthAt([w.x,w.y])||4;return{id:w.id,name:w.name,type:"Waypoint",d:[Math.max(1,d-2),d+2],best:lake.species.slice(0,3),bonus:0,pos:[w.x,w.y],wp:true}}
+
+// ---------- header ----------
+function renderSelectors(){
+  $("home").innerHTML=HOMES.map((h,i)=>`<option value="${i}">${h[0]}</option>`).join("");$("home").value=S.home;
+  $("region").innerHTML=`<option value="near">Nearest to me</option>`+REGIONS.map(r=>`<option>${r}</option>`).join("");
+  $("region").value=store.get("wtb2.region")||"near";if(!$("region").value)$("region").value="near";
+  if($("region").value!=="near"&&lake&&lake.region!==$("region").value)$("region").value="near";
+  $("size").value=store.get("wtb2.size")||"all";if(!$("size").value)$("size").value="all";
+  if(lake){const sz=$("size").value;if(!(sz==="all"||(sz==="big"&&lake.size==="big")||(sz==="small"&&lake.size==="small")||(sz==="smallmid"&&lake.size!=="big")))$("size").value="all"}
+  renderLakeOptions();
+  const d=S.date;$("day").value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function renderLakeOptions(){
+  const h=HOMES[S.home],reg=$("region").value,sz=$("size").value;
+  const fit=l=>(reg==="near"||l.region===reg)&&(sz==="all"||(sz==="big"&&l.size==="big")||(sz==="small"&&l.size==="small")||(sz==="smallmid"&&l.size!=="big"));
+  let rows=LAKES.filter(fit).map(l=>({l,mi:haversine(h[1],h[2],l.lat,l.lon)})).sort((a,b)=>a.mi-b.mi);
+  if(!rows.length)rows=LAKES.map(l=>({l,mi:haversine(h[1],h[2],l.lat,l.lon)})).sort((a,b)=>a.mi-b.mi);
+  if(!rows.some(r=>r.l.id===S.lake))S.lake=rows[0].l.id;
+  const tag=l=>l.size==="small"?" · small":l.size==="mid"?" · mid":"";
+  $("lake").innerHTML=rows.map(({l,mi})=>`<option value="${l.id}">${esc(l.name)}, ${l.st}${tag(l)} · ${Math.round(mi)} mi</option>`).join("");$("lake").value=S.lake;
+}
+function renderToday(){
+  const {wx,sun,moon,sol}=ctx;const h=HOMES[S.home];
+  const mi=Math.round(haversine(h[1],h[2],lake.lat,lake.lon));
+  const overall=Math.round(geo.spots.reduce((a,s)=>a+s.score,0)/geo.spots.length);
+  const [rl,rc]=rating(overall);
+  const majors=[...sol.major].sort((a,b)=>a-b).map(fmtH).join(" · ");
+  const tideCell=ctx.tide?`<div><span class="eyebrow">Tide (approx.)</span><span class="v" style="font-size:18px;padding-top:5px">High ${ctx.tide.highs.map(fmtH).join(" · ")}</span><span class="s">Low ${ctx.tide.lows.map(fmtH).join(" · ")}${ctx.tide.spring?" · strong spring tide":""}</span></div>`:
+   lake.fc?`<div><span class="eyebrow">Pool stage</span><span class="v" style="font-size:22px">${poolStage(S.date)[0]}</span><span class="s">Typical Corps schedule</span></div>`:"";
+  $("today").innerHTML=`
+   <div><span class="eyebrow">Bite ${ctx.same?"now":"at "+fmtH(ctx.hour)}</span>${gauge(overall,rc)}<span class="v" style="color:var(${rc});margin-top:-6px">${rl}</span><span class="s">${overall}/100 average across spots</span></div>
+   <div><span class="eyebrow">Air · water</span><span class="v">${wx.hi}° / ${wx.water}°F</span><span class="s">Low ${wx.lo}° · ${wx.sky}</span></div>
+   <div><span class="eyebrow">Wind</span><span class="v">${wx.dir} ${wx.wind} mph</span><span class="s">${wx.wind<6?"Calm, go finesse":wx.wind<=14?"Fish the windy banks":"Rough, seek cover"}</span></div>
+   <div><span class="eyebrow">Barometer</span><span class="v">${wx.press.toFixed(2)} inHg</span><span class="s">${wx.trend}${wx.trend==="Falling"?", fish feeding up":wx.trend==="Rising"?", tougher bite":""}</span></div>
+   <div><span class="eyebrow">Moon</span><span class="v">${moon.name}</span><span class="s">${Math.round(moon.illum*100)}% lit</span></div>
+   <div><span class="eyebrow">Sun</span><span class="v">${fmtH(sun.rise)}</span><span class="s">Sets ${fmtH(sun.set)} · ${mi} mi drive</span></div>
+   <div><span class="eyebrow">Major periods</span><span class="v" style="font-size:18px;padding-top:5px">${majors}</span><span class="s">±1 hr each · solunar feeding</span></div>${tideCell}`;
+  $("maptitle").innerHTML=`${esc(lake.name)}<small>${esc(lake.st)} · ${esc(lake.acres)} · ${esc(lake.clear)}</small>`;
+}
+function renderOutlook(){
+  const base=new Date();base.setHours(12,0,0,0);
+  const days=[];
+  for(let i=0;i<7;i++){const d=new Date(base);d.setDate(base.getDate()+i);const c=makeCtx(lake,d);
+    let best={v:0,h:0,spot:null};for(const s of geo.spots){const w=bestWindow(s,c);if(w.v>best.v)best={...w,spot:s}}
+    const avg=Math.round(geo.spots.reduce((a,s)=>a+bestWindow(s,c).v,0)/geo.spots.length);days.push({d,avg,best,c})}
+  const top=[...days].sort((a,b)=>b.avg-a.avg)[0];
+  $("besttrip").textContent=`Best trip: ${DOW[top.d.getDay()]} ${fmtH(top.best.h)} at ${top.best.spot.name}`;
+  $("outlook").innerHTML=days.map(x=>{const[rl,rc]=rating(x.avg);const on=x.d.toDateString()===S.date.toDateString();
+    return `<button data-day="${x.d.toISOString()}" aria-pressed="${on}" title="${rl}"><span class="d">${x.d.toDateString()===new Date().toDateString()?"Today":DOW[x.d.getDay()]+" "+x.d.getDate()}</span><span class="sc" style="color:var(${rc})">${x.avg}</span><span class="bar"><i style="width:${x.avg}%;background:var(${rc})"></i></span><span class="w">${x.c.wx.hi}° · ${x.c.wx.trend.toLowerCase()}</span></button>`}).join("");
+}
+function renderFilters(){
+  const opts=["All",...lake.species];if(!opts.includes(S.filter))S.filter="All";
+  $("filters").innerHTML=opts.map(o=>`<button class="chipbtn" aria-pressed="${o===S.filter}" data-f="${esc(o)}">${esc(o)}</button>`).join("");
+}
+function visibleSpots(){return geo.spots.filter(s=>S.filter==="All"||s.best.includes(S.filter))}
+
+// ---------- detail ----------
+function renderDetail(){
+  if(S.draft){renderDraft();return}
+  let s=S.sel;
+  if(S.selWp){const w=waypoints.find(x=>x.id===S.selWp);if(w){s=wpSpot(w);s.score=hourScore(ctx.hour,ctx,s);s.peak=bestWindow(s,ctx);s.notes=w.notes}else S.selWp=null}
+  if(!s){$("detail").innerHTML=`<p class="note">Select a spot on the map.</p>`;return}
+  const [rl,rc]=rating(s.score);
+  const seasonN=["winter","spring","summer","fall"][ctx.season];
+  const species=S.filter!=="All"&&s.best.includes(S.filter)?[S.filter,...s.best.filter(x=>x!==S.filter)]:s.best;
+  const baits=[];species.slice(0,2).forEach(sp=>{const list=BAITS[sp]||[];for(let i=0;i<3;i++){const b=list[ctx.season*3+i];if(b)baits.push({sp,b})}});
+  const ll=toLatLon(lake,s.pos),coord=`${ll[0].toFixed(5)}, ${ll[1].toFixed(5)}`;
+  const intel=INTEL[s.type];
+  $("detail").innerHTML=`
+   <div style="display:grid;gap:6px">
+     <span class="eyebrow">${esc(s.type)} · ${s.d[0]}–${s.d[1]} ft</span>
+     <h2>${esc(s.name)}</h2>
+     <div class="row"><span class="pill rate" style="background:var(${rc})">${rl} · ${s.score}</span>
+       ${s.best.map(b=>`<span class="pill"><i style="width:8px;height:8px;border-radius:50%;background:${SPECIES_COLOR[b]||"#888"};display:inline-block"></i>${esc(b)}</span>`).join("")}</div>
+     ${s.notes?`<p class="note" style="margin:0">${esc(s.notes)}</p>`:""}
+   </div>
+   <div class="chart">${biteChart(s)}</div>
+   <dl class="kv">
+     <dt>Peak window</dt><dd>${fmtH(s.peak.h-.75)} – ${fmtH(s.peak.h+.75)} (${s.peak.v}/100)</dd>
+     <dt>Water</dt><dd>${ctx.wx.water}°F, ${esc(lake.clear.split(",")[0].toLowerCase())}</dd>
+     <dt>Wind</dt><dd>${ctx.wx.dir} ${ctx.wx.wind} mph</dd>
+     ${ctx.tide?`<dt>Tide</dt><dd>${tideNow()}</dd>`:""}
+     <dt>Pattern</dt><dd>${pattern(s)}</dd>
+   </dl>
+   ${intel?`<div class="intel"><div class="row" style="justify-content:space-between"><h3>Pro spot intel</h3><span class="probadge">PRO</span></div>
+     <div class="it"><b>Boat position</b><span>${esc(intel[0])}</span></div>
+     <div class="it"><b>Presentation</b><span>${esc(intel[1])}</span></div>
+     <div class="it"><b>Key</b><span>${esc(intel[2])}</span></div>
+     <div class="it"><b>Sonar</b><span>${sonarTip(s)}</span></div></div>`:""}
+   <div style="display:grid;gap:4px"><h3>Top baits for ${seasonN}</h3>
+   <ul class="baits">${baits.map((x,i)=>`<li><span class="n">${String(i+1).padStart(2,"0")}</span><div><b>${esc(x.b[0])}</b> <span class="note">· ${esc(x.sp)}</span><br><span class="note">${esc(x.b[1])}</span></div></li>`).join("")}</ul></div>
+   <div class="row" style="justify-content:space-between">
+     <span class="row"><span class="note" style="font-family:var(--mono)">${coord}</span><button class="chipbtn" id="copyc" data-c="${coord}">Copy</button></span>
+     <a class="dirlink" href="https://www.google.com/maps/search/${encodeURIComponent(lake.name+" "+lake.st+" boat ramp")}" target="_blank" rel="noopener">Directions to ${esc(lake.name)} →</a>
+   </div>`;
+  const cb=$("copyc");if(cb)cb.onclick=async()=>{try{await navigator.clipboard.writeText(cb.dataset.c);cb.textContent="Copied"}catch(e){cb.textContent="Select to copy"}};
+}
+function tideNow(){const t=ctx.tide,h=ctx.hour;const a=t.level(h),b=t.level(h+.25);const dir=b>a?"Rising":"Falling";const next=b>a?t.highs.find(x=>x>h)??t.highs[0]:t.lows.find(x=>x>h)??t.lows[0];return `${dir} · next ${b>a?"high":"low"} ~${fmtH(next)}`}
+function sonarTip(s){
+  const deep=(s.d[0]+s.d[1])/2;
+  if(lake.salt)return deep<6?"Too shallow for sonar to help; read the water for pushes, tails and nervous bait.":"Side-scan the edge for bait balls and big marks before you anchor.";
+  if(s.best.includes("Crappie"))return "Forward-facing sonar: find single fish suspended over cover, then drop the jig a foot above them.";
+  return deep>12?"Mark fish on 2D before casting; if they're tight to bottom slow down, if suspended go with a moving bait.":"Use side imaging to find isolated cover off the bank.";
+}
+function pattern(s){
+  const w=ctx.wx.water,deep=(s.d[0]+s.d[1])/2;
+  if(lake.salt)return w>=84?"Hot water: fish the first and last light and deeper, moving water midday.":w>=70?"Prime: fish roam the flats on moving tide, bait everywhere.":w>=60?"Cooling: fish move to creeks, holes and darker bottom.":"Cold: fish hole up in deep canals and rivers; slow down, fish the afternoon warm-up.";
+  if(lake.fc){const p=poolStage(S.date);return p[1]}
+  if(w>=80)return deep>14?"Summer pattern: fish holding deep off the break; hit it hard at first light.":"Heat pushes fish shallow only at dawn and dusk; shade and current midday.";
+  if(w>=62)return ctx.season===3?"Fall transition: fish chasing shad into creeks; follow the bait.":"Active water temps: fish roaming, cover water with moving baits.";
+  if(w>=50)return ctx.season===1?"Pre-spawn: fish staging on the first break outside spawning flats.":"Cooling water: slow down near channel swings.";
+  return "Cold water: fish schooled deep, slow and vertical presentations.";
+}
+function biteChart(s){
+  const W=340,H=130,pl=26,pr=6,pt=10,pb=22,iw=W-pl-pr,ih=H-pt-pb;
+  const x=h=>pl+h/24*iw,y=v=>pt+ih-(v/100)*ih;
+  const pts=[];for(let h=0;h<=24;h+=.5)pts.push([h,hourScore(h%24,ctx,s)]);
+  const line=pts.map((p,i)=>(i?"L":"M")+x(p[0]).toFixed(1)+" "+y(p[1]).toFixed(1)).join(" ");
+  const area=line+` L${x(24)} ${y(0)} L${x(0)} ${y(0)} Z`;
+  const band=(c,w,cls)=>{const a=clamp(c-w,0,24),b=clamp(c+w,0,24);return `<rect x="${x(a)}" y="${pt}" width="${x(b)-x(a)}" height="${ih}" fill="var(${cls})" opacity=".13"/>`};
+  const bands=ctx.sol.major.map(c=>band(c,1,"--accent")).join("")+ctx.sol.minor.map(c=>band(c,.5,"--contour")).join("");
+  const night=`<rect x="${x(0)}" y="${pt}" width="${x(ctx.sun.rise)-x(0)}" height="${ih}" fill="var(--ink)" opacity=".06"/><rect x="${x(ctx.sun.set)}" y="${pt}" width="${x(24)-x(ctx.sun.set)}" height="${ih}" fill="var(--ink)" opacity=".06"/>`;
+  let tide="";if(ctx.tide){const tp=[];for(let h=0;h<=24;h+=.25)tp.push((h?"L":"M")+x(h).toFixed(1)+" "+(pt+ih*.5-ctx.tide.level(h)*ih*.38).toFixed(1));tide=`<path d="${tp.join(" ")}" fill="none" stroke="var(--contour)" stroke-width="1.3" stroke-dasharray="4 3"/>`}
+  const grid=[25,50,75].map(v=>`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pl-4}" y="${y(v)+3}" text-anchor="end" font-size="9" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${v}</text>`).join("");
+  const ticks=[0,6,12,18,24].map(h=>`<text x="${x(h)}" y="${H-6}" text-anchor="${h===0?"start":h===24?"end":"middle"}" font-size="9.5" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${h===0||h===24?"12a":h===12?"12p":h<12?h+"a":(h-12)+"p"}</text>`).join("");
+  const nv=hourScore(ctx.hour,ctx,s);
+  const now=`<line x1="${x(ctx.hour)}" x2="${x(ctx.hour)}" y1="${pt}" y2="${pt+ih}" stroke="var(--ink)" stroke-dasharray="2 3"/><circle cx="${x(ctx.hour)}" cy="${y(nv)}" r="4" fill="var(--accent)" stroke="var(--panel)" stroke-width="2"/>`;
+  return `<div class="row" style="justify-content:space-between;margin-bottom:2px"><span class="eyebrow">Bite forecast by hour</span><span class="note"><span style="color:var(--accent)">■</span> major <span style="color:var(--contour)">■</span> minor${ctx.tide?' <span style="color:var(--contour)">- -</span> tide':""}</span></div>
+  <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Hourly bite score chart">${night}${bands}${grid}${tide}<path d="${area}" fill="var(--accent)" opacity=".16"/><path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2"/>${now}${ticks}</svg>`;
+}
+
+// ---------- lake info / regs ----------
+function renderLakeInfo(){
+  const r=lake.regs||{crappie:"Check your state wildlife agency for current limits.",src:"State agency"};
+  const mine=reportDocs.filter(x=>x.lake===lake.id);
+  const bc={};mine.forEach(x=>{const k=(x.bait||"").trim().toLowerCase();if(k)bc[k]=(bc[k]||0)+(Number(x.count)||1)});
+  const hot=Object.entries(bc).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const regLink=r.src==="MDWFP"?"https://www.mdwfp.com/fishing-boating/fishing-rules-regs":r.src==="FWC"?(lake.salt?"https://myfwc.com/fishing/saltwater/recreational/":"https://myfwc.com/fishing/freshwater/regulations/"):null;
+  const ps=lake.fc?poolStage(S.date):null;
+  $("lakeinfo").innerHTML=`<div class="row" style="justify-content:space-between"><h3>${esc(lake.name)} intel</h3><span class="eyebrow">${esc(lake.region)}</span></div>
+   ${lake.note?`<p style="margin:0">${esc(lake.note)}</p>`:""}
+   <div class="stat3"><div><span class="eyebrow">Size</span><span class="v" style="font-size:16px">${esc(lake.acres)}</span></div>
+     <div><span class="eyebrow">Type</span><span class="v" style="font-size:16px">${lake.salt?"Saltwater":lake.tidal?"Tidal fresh":lake.fc?"Flood-control reservoir":"Freshwater"}</span></div>
+     <div><span class="eyebrow">Main targets</span><span class="v" style="font-size:16px">${esc(lake.species.slice(0,2).join(", "))}</span></div></div>
+   ${ps?`<div class="intel"><div class="it"><b>Pool stage</b><span><strong>${ps[0]}.</strong> ${esc(ps[1])} Check the Corps of Engineers Vicksburg District lake levels before launching; ramps can close at low pool.</span></div></div>`:""}
+   <div class="intel"><div class="it"><b>Limits</b><span>${esc(r.crappie)}${regLink?` <a class="dirlink" href="${regLink}" target="_blank" rel="noopener">${r.src} rules →</a>`:""}</span></div></div>
+   <div style="display:grid;gap:6px"><span class="eyebrow">Hot baits from angler reports</span>
+   <div class="hotbaits">${hot.length?hot.map(([b,n])=>`<span class="pill">${esc(b)} · ${n}</span>`).join(""):`<span class="note">No reports yet for this water.</span>`}</div></div>`;
+}
+
+// ---------- lists ----------
+function renderLists(){
+  const list=[...visibleSpots()].sort((a,b)=>b.score-a.score);
+  $("rankat").textContent=ctx.same?"Ranked for now":"Ranked for "+fmtH(ctx.hour);
+  $("spotlist").innerHTML=list.map(s=>{const[,rc]=rating(s.score);return `<button data-spot="${s.id}" aria-current="${!!(S.sel&&S.sel.id===s.id&&!S.selWp)}"><span class="dot" style="background:var(${rc})"></span><span><span class="nm">${esc(s.name)}</span><br><span class="sub">${s.d[0]}–${s.d[1]} ft · ${esc(s.best.slice(0,2).join(", "))} · peak ${fmtH(s.peak.h)}</span></span><span class="sc">${s.score}</span></button>`}).join("")||`<p class="note">No spots for ${esc(S.filter)} on this water.</p>`;
+  const h=HOMES[S.home];
+  $("poilist").innerHTML=geo.pois.map(p=>{const ll=toLatLon(lake,p.pos);const mi=haversine(h[1],h[2],ll[0],ll[1]);return `<button data-poi="${p.id}"><span class="dot" style="background:var(--ink);border-radius:2px"></span><span><span class="nm">${esc(p.name)}</span><br><span class="sub">${esc(p.label)}${p.kind==="ramp"?" · launch, parking":p.kind==="shop"?(lake.salt?" · live shrimp, fuel, ice":" · live bait, fuel, ice"):" · walk-in fishing"}</span></span><span class="sc">${Math.round(mi)} mi</span></button>`}).join("");
+  renderWaypoints();
+}
+
+// ---------- map ----------
+const cv=$("map"),g=cv.getContext("2d");let CW=0,CH=0,hover=null;
+function resize(){const r=cv.getBoundingClientRect();const dpr=window.devicePixelRatio||1;CW=r.width;CH=r.height;cv.width=Math.round(CW*dpr);cv.height=Math.round(CH*dpr);g.setTransform(dpr,0,0,dpr,0,0);draw()}
+const K=()=>Math.min(CW,CH)*1.15*S.view.s;
+function proj(p){const k=K();return[CW/2+p[0]*k+S.view.x,CH/2+p[1]*k+S.view.y+8]}
+function unproj(mx,my){const k=K();return[(mx-CW/2-S.view.x)/k,(my-CH/2-S.view.y-8)/k]}
+function poly(pts){g.beginPath();pts.forEach((p,i)=>{const q=proj(p);i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1])});g.closePath()}
+function draw(){
+  if(!geo||!CW)return;
+  const C={land:css("--land"),edge:css("--land-edge"),w:[css("--water"),css("--water2"),css("--water3"),css("--water4")],contour:css("--contour"),ink:css("--ink"),panel:css("--panel"),accent:css("--accent")};
+  g.fillStyle=C.land;g.fillRect(0,0,CW,CH);
+  const R=rng(lake.id+"tex");g.fillStyle=C.edge;g.globalAlpha=.25;for(let i=0;i<260;i++)g.fillRect(R()*CW,R()*CH,1.5,1.5);g.globalAlpha=1;
+  poly(geo.ring(1));g.fillStyle=C.w[1];g.fill();
+  if(topo)drawTopo(C);
+  poly(geo.ring(1));g.strokeStyle=C.edge;g.lineWidth=1.5;g.stroke();
+  // heat map
+  if(S.layers.heat){g.save();poly(geo.ring(1));g.clip();g.globalCompositeOperation="source-over";
+    for(const s of visibleSpots()){const q=proj(s.pos);const rad=70*S.view.s;const col=css(rating(s.score)[1]);const gr=g.createRadialGradient(q[0],q[1],0,q[0],q[1],rad);
+      const a=clamp((s.score-30)/70,.05,.9)*.55;gr.addColorStop(0,hexA(col,a));gr.addColorStop(1,hexA(col,0));g.fillStyle=gr;g.fillRect(q[0]-rad,q[1]-rad,rad*2,rad*2)}
+    g.restore()}
+  // structure
+  if(S.layers.structure){g.strokeStyle=C.ink;g.fillStyle=C.ink;g.globalAlpha=.45;g.lineWidth=1;
+    for(const c of geo.cover){const q=proj(c.pos);const z=3*Math.min(S.view.s,1.6);g.beginPath();
+      if(c.k==="brush"){for(let a=0;a<3;a++){const t=a*Math.PI/3;g.moveTo(q[0]-Math.cos(t)*z,q[1]-Math.sin(t)*z);g.lineTo(q[0]+Math.cos(t)*z,q[1]+Math.sin(t)*z)}g.stroke()}
+      else if(c.k==="timber"){g.moveTo(q[0],q[1]-z);g.lineTo(q[0],q[1]+z);g.moveTo(q[0]-z*.6,q[1]-z*.3);g.lineTo(q[0],q[1]);g.stroke()}
+      else if(c.k==="oyster"){g.arc(q[0],q[1],z*.7,0,Math.PI*2);g.fill()}
+      else {g.moveTo(q[0]-z,q[1]+z*.5);g.quadraticCurveTo(q[0]-z*.3,q[1]-z,q[0],q[1]+z*.5);g.moveTo(q[0],q[1]+z*.5);g.quadraticCurveTo(q[0]+z*.3,q[1]-z,q[0]+z,q[1]+z*.5);g.stroke()}}
+    g.globalAlpha=1}
+  // compass + scale
+  g.save();g.translate(CW-28,CH-40);g.fillStyle=C.ink;g.beginPath();g.moveTo(0,-14);g.lineTo(5,4);g.lineTo(0,0);g.lineTo(-5,4);g.closePath();g.fill();
+  g.font="600 11px Barlow Condensed, sans-serif";g.textAlign="center";g.fillText("N",0,-18);g.restore();
+  const mpu=lake.mpu||6,bd=mpu>=4?1:mpu>=2?0.5:0.1;const mileLen=K()*bd/mpu;g.strokeStyle=C.ink;g.lineWidth=2;g.beginPath();g.moveTo(CW-20-mileLen,CH-14);g.lineTo(CW-20,CH-14);g.stroke();
+  g.font="10px IBM Plex Mono, monospace";g.fillStyle=C.ink;g.textAlign="right";g.fillText(bd>=1?"≈1 mi":bd===.5?"≈½ mi":"≈500 ft",CW-20,CH-18);
+  // POIs
+  for(const p of geo.pois){const q=proj(p.pos);g.fillStyle=C.ink;g.strokeStyle=C.panel;g.lineWidth=2;const sz=p.id===hover?13:11;g.beginPath();g.rect(q[0]-sz/2,q[1]-sz/2,sz,sz);g.fill();g.stroke();
+    g.fillStyle=C.panel;g.font="700 9px IBM Plex Sans, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(p.kind==="ramp"?"R":p.kind==="shop"?"$":"A",q[0],q[1]+.5);g.textBaseline="alphabetic";
+    if(S.view.s>1.3||p.id===hover){g.fillStyle=C.ink;g.font="500 11px IBM Plex Sans, sans-serif";g.textAlign="left";g.fillText(p.name,q[0]+9,q[1]+4)}}
+  // spots
+  const vis=visibleSpots();
+  for(const s of geo.spots){const q=proj(s.pos);const on=vis.includes(s);const[,rc]=rating(s.score);const sel=!S.selWp&&S.sel&&S.sel.id===s.id;g.globalAlpha=on?1:.25;
+    if(sel){g.beginPath();g.arc(q[0],q[1],17,0,Math.PI*2);g.strokeStyle=C.accent;g.lineWidth=2;g.stroke()}
+    g.beginPath();g.arc(q[0],q[1],sel||s.id===hover?10:8,0,Math.PI*2);g.fillStyle=css(rc);g.fill();g.strokeStyle=C.panel;g.lineWidth=2;g.stroke();
+    g.fillStyle="#fff";g.beginPath();g.ellipse(q[0]-1,q[1],3.6,2,0,0,Math.PI*2);g.fill();g.beginPath();g.moveTo(q[0]+2,q[1]);g.lineTo(q[0]+5,q[1]-2.5);g.lineTo(q[0]+5,q[1]+2.5);g.closePath();g.fill();
+    if(on&&(sel||s.id===hover||S.view.s>=1.15))label(s.name,q,C);g.globalAlpha=1}
+  // pulsing hot spots
+  if(!REDUCED){const t=(performance.now()/1400)%1;for(const s of vis){if(s.score<60)continue;const q=proj(s.pos);const col=css(rating(s.score)[1]);
+    for(const o of [0,.5]){const k=(t+o)%1;g.beginPath();g.arc(q[0],q[1],10+k*22,0,Math.PI*2);g.strokeStyle=hexA(col,(1-k)*.7);g.lineWidth=2;g.stroke()}}}
+  // waypoints
+  if(S.layers.pins){for(const w of waypoints.filter(w=>w.lake===lake.id)){const q=proj([w.x,w.y]);const sel=S.selWp===w.id;diamond(q,sel||w.id===hover?9:7,C.accent,C.panel);if(sel||w.id===hover||S.view.s>=1.15)label(w.name,q,C)}}
+  if(S.draft){const q=proj([S.draft.x,S.draft.y]);diamond(q,9,C.accent,C.panel);g.beginPath();g.arc(q[0],q[1],16,0,Math.PI*2);g.strokeStyle=C.accent;g.setLineDash([3,3]);g.stroke();g.setLineDash([])}
+}
+function label(t,q,C){g.font="600 11.5px IBM Plex Sans, sans-serif";g.textAlign="left";const w=g.measureText(t).width;g.fillStyle=C.panel;const ga=g.globalAlpha;g.globalAlpha=ga*.88;g.fillRect(q[0]+13,q[1]-9,w+8,17);g.globalAlpha=ga;g.fillStyle=C.ink;g.fillText(t,q[0]+17,q[1]+4)}
+function diamond(q,r,fill,stroke){g.beginPath();g.moveTo(q[0],q[1]-r);g.lineTo(q[0]+r,q[1]);g.lineTo(q[0],q[1]+r);g.lineTo(q[0]-r,q[1]);g.closePath();g.fillStyle=fill;g.fill();g.strokeStyle=stroke;g.lineWidth=2;g.stroke()}
+function hexA(c,a){c=c.trim();if(c[0]==="#"){let h=c.slice(1);if(h.length===3)h=h.split("").map(x=>x+x).join("");const n=parseInt(h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}return c}
+function hit(mx,my){
+  if(S.layers.pins)for(const w of waypoints.filter(w=>w.lake===lake.id)){const q=proj([w.x,w.y]);if((q[0]-mx)**2+(q[1]-my)**2<12**2)return{type:"wp",o:w}}
+  for(const s of visibleSpots()){const q=proj(s.pos);if((q[0]-mx)**2+(q[1]-my)**2<14**2)return{type:"spot",o:s}}
+  for(const p of geo.pois){const q=proj(p.pos);if(Math.abs(q[0]-mx)<9&&Math.abs(q[1]-my)<9)return{type:"poi",o:p}}
+  return null;
+}
+let drag=null,moved=false;
+cv.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY,vx:S.view.x,vy:S.view.y};moved=false;cv.setPointerCapture(e.pointerId);cv.classList.add("drag")});
+cv.addEventListener("pointermove",e=>{const r=cv.getBoundingClientRect();
+  if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)moved=true;if(moved){S.view.x=drag.vx+dx;S.view.y=drag.vy+dy;draw()}return}
+  const mx=e.clientX-r.left,my=e.clientY-r.top;const dd=depthAt(unproj(mx,my));const hd=$("hoverdepth");if(dd!==null){hd.hidden=false;hd.textContent=`${dd.toFixed(1)} ft`;hd.style.left=Math.min(CW-70,mx+14)+"px";hd.style.top=(my+14)+"px"}else hd.hidden=true;
+  const h=hit(mx,my);const id=h?h.o.id:null;cv.style.cursor=S.pin||S.prof.on?"crosshair":h?"pointer":"grab";if(id!==hover){hover=id;draw()}});
+cv.addEventListener("pointerleave",()=>{$("hoverdepth").hidden=true});
+cv.addEventListener("pointerup",e=>{cv.classList.remove("drag");const r=cv.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;
+  if(drag&&!moved){
+    if(S.prof.on){const p=unproj(mx,my);if(!S.prof.a||S.prof.b){S.prof.a=p;S.prof.b=null}else{S.prof.b=p}renderProfile();draw()}
+    else if(S.pin){const p=unproj(mx,my);if(depthAt(p)!==null){S.draft={x:+p[0].toFixed(4),y:+p[1].toFixed(4)};renderDetail();draw();$("detail").scrollIntoView({behavior:"smooth",block:"nearest"})}}
+    else{const h=hit(mx,my);if(h&&h.type==="spot")selectSpot(h.o.id);else if(h&&h.type==="poi")focusPoi(h.o.id);else if(h&&h.type==="wp")selectWp(h.o.id)}}
+  drag=null});
+cv.addEventListener("wheel",e=>{e.preventDefault();zoom(e.deltaY<0?1.15:1/1.15)},{passive:false});
+function zoom(f){const ns=clamp(S.view.s*f,.7,4);const k=ns/S.view.s;S.view.x*=k;S.view.y*=k;S.view.s=ns;draw()}
+$("zin").onclick=()=>zoom(1.3);$("zout").onclick=()=>zoom(1/1.3);$("zreset").onclick=()=>{S.view={s:1,x:0,y:0};draw()};
+function centerOn(p){const k=K();S.view.x=-p[0]*k;S.view.y=-p[1]*k}
+function focusPoi(id){const p=geo.pois.find(x=>x.id===id);hover=id;if(S.view.s<1.4)S.view.s=1.6;centerOn(p.pos);draw()}
+function selectSpot(id){S.selWp=null;S.draft=null;S.sel=geo.spots.find(s=>s.id===id);renderDetail();renderLists();draw();syncReportSpot();sonarReset();render3d()}
+function selectWp(id){S.selWp=id;S.draft=null;renderDetail();renderLists();draw();sonarReset()}
+
+// ---------- waypoints (private per viewer) ----------
+let waypoints=[],WPCOL=null,wpMode="local";
+function loadLocalWp(){try{waypoints=JSON.parse(store.get("wtb2.wps")||"[]")}catch(e){waypoints=[]}}
+function saveLocalWp(){store.set("wtb2.wps",JSON.stringify(waypoints))}
+loadLocalWp();
+function renderWaypoints(){
+  const mine=waypoints.filter(w=>w.lake===lake.id);
+  $("wpcount").textContent=mine.length?`${mine.length} on ${lake.name}`:"";
+  $("wplist").innerHTML=mine.length?mine.map(w=>{const s=wpSpot(w);const sc=hourScore(ctx.hour,ctx,s);const[,rc]=rating(sc);const ll=toLatLon(lake,[w.x,w.y]);
+    return `<div style="display:grid;grid-template-columns:1fr auto;gap:8px;padding-right:8px;align-items:center;border-bottom:1px solid var(--line)"><button data-wp="${w.id}" aria-current="${S.selWp===w.id}" style="border:0"><span class="dot" style="background:var(${rc});border-radius:2px;transform:rotate(45deg)"></span><span><span class="nm">${esc(w.name)}</span><br><span class="sub">~${depthAt([w.x,w.y])||"?"} ft · ${ll[0].toFixed(4)}, ${ll[1].toFixed(4)}</span></span><span class="sc">${sc}</span></button>
+    <span class="inline-confirm" data-del="${w.id}"><button class="chipbtn" data-delask="${w.id}">Delete</button></span></div>`}).join(""):`<p class="note">No waypoints on this water yet. Turn on <b>Drop waypoint</b> and tap the map to mark your honey holes.</p>`;
+  $("wpnote").textContent=wpMode==="cloud"?"Waypoints are private to you and sync wherever you open this page.":wpMode==="local"?"Waypoints are saved in this browser only.":"";
+}
+$("wplist").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-wp]");if(b){selectWp(b.dataset.wp);return}
+  const a=e.target.closest("[data-delask]");if(a){a.parentElement.innerHTML=`Delete? <button class="chipbtn" data-delyes="${a.dataset.delask}">Yes</button><button class="chipbtn" data-delno>No</button>`;return}
+  if(e.target.closest("[data-delno]")){renderWaypoints();return}
+  const y=e.target.closest("[data-delyes]");if(y){const id=y.dataset.delyes;waypoints=waypoints.filter(w=>w.id!==id);if(S.selWp===id){S.selWp=null;compute()}
+    if(wpMode==="cloud"){try{await WPCOL.doc(id).delete()}catch(err){}}else saveLocalWp();renderDetail();renderLists();draw()}
+});
+function renderDraft(){
+  const d=S.draft;const depth=depthAt([d.x,d.y]);const ll=toLatLon(lake,[d.x,d.y]);
+  $("detail").innerHTML=`<span class="eyebrow">New waypoint · ~${depth} ft</span><h2>Mark this spot</h2>
+   <div class="field"><label for="wp-name">Name</label><input id="wp-name" maxlength="50" placeholder="e.g. Stump row by the channel"></div>
+   <div class="field"><label for="wp-notes">Notes</label><textarea id="wp-notes" rows="3" maxlength="300" placeholder="What you caught, bait, depth, time"></textarea></div>
+   <span class="note" style="font-family:var(--mono)">${ll[0].toFixed(5)}, ${ll[1].toFixed(5)}</span>
+   <div class="row"><button class="primary" id="wp-save">Save waypoint</button><button id="wp-cancel">Cancel</button><span class="note" id="wp-status"></span></div>`;
+  $("wp-name").focus();
+  $("wp-cancel").onclick=()=>{S.draft=null;renderDetail();draw()};
+  $("wp-save").onclick=async()=>{const name=$("wp-name").value.trim()||`Waypoint ${waypoints.length+1}`;
+    const w={id:"wp"+Date.now().toString(36)+Math.floor(Math.random()*1e4),lake:lake.id,name:name.slice(0,50),notes:$("wp-notes").value.trim().slice(0,300),x:d.x,y:d.y,createdAt:Date.now()};
+    $("wp-save").disabled=true;
+    if(wpMode==="cloud"){try{const {id,...rest}=w;await WPCOL.doc(w.id).set(rest)}catch(err){$("wp-status").textContent="Couldn't save to your account; saved in this browser.";wpMode="local"}}
+    waypoints.push(w);if(wpMode==="local")saveLocalWp();
+    S.draft=null;S.selWp=w.id;renderDetail();renderLists();draw()};
+}
+$("pinmode").onclick=()=>{if(S.prof.on){S.prof.on=false;$("profmode").setAttribute("aria-pressed",false);$("profhint").hidden=true}S.pin=!S.pin;$("pinmode").setAttribute("aria-pressed",S.pin);$("pinhint").hidden=!S.pin;if(!S.pin&&S.draft){S.draft=null;renderDetail()};draw()};
+let USERCOL=null;
+(async()=>{
+  let db=null,user=null;
+  try{[db,user]=await Promise.all([window.claude?.use?.("db"),window.claude?.use?.("user")])}catch(e){}
+  if(!db||!user){renderWaypoints();renderCatchLog();return}
+  let uid=null;try{uid=await user.id()}catch(e){}
+  if(!uid){renderWaypoints();renderCatchLog();return}
+  USERCOL=WPCOL=db.collection("data/users/"+uid);wpMode="cloud";logMode="cloud";
+  const localW=waypoints.slice(),localC=catches.slice();
+  USERCOL.onSnapshot(snap=>{
+    const all=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const cw=all.filter(d=>d.id.startsWith("wp")),cc=all.filter(d=>d.id.startsWith("ct"));
+    localW.forEach(w=>{if(!cw.find(c=>c.id===w.id)){const{id,...rest}=w;USERCOL.doc(id).set(rest).catch(()=>{});cw.push(w)}});localW.length=0;
+    localC.forEach(w=>{if(!cc.find(c=>c.id===w.id)){const{id,...rest}=w;USERCOL.doc(id).set(rest).catch(()=>{});cc.push(w)}});localC.length=0;
+    waypoints=cw;catches=cc.sort((a,b)=>b.at-a.at);renderWaypoints();renderCatchLog();draw();if(S.selWp)renderDetail()},
+    ()=>{wpMode="local";logMode="local";renderWaypoints();renderCatchLog()});
+})();
+
+// ---------- official access points (USACE Vicksburg District) ----------
+const ACCESS={
+ sardis:{src:"https://www.mvk.usace.army.mil/Missions/Recreation/Sardis-Lake/Sardis-Lake-Recreation/",st:"MS",list:[
+  ["Engineer Point","Ramp · day use, 46 picnic sites"],["Cole's Point","Ramp"],["Pat's Bluff","Ramp · Class A campground"],["Clear Creek","Ramp · day use, Class A campground"],
+  ["Coontown","Ramp"],["Hurricane Landing","Ramp · Class A campground"],["Wyatt Crossing","Ramp"],["Teckville","Ramp · ADA-accessible dock"],["Beach Point","Ramp · primitive camping"],
+  ["Lespedeza Point","Ramp"],["Frank Walker Landing","Ramp · Tallahatchie River"],["Lower Lake","Ramp · below the dam, day use"]]},
+ arkabutla:{src:"https://www.mvk.usace.army.mil/Missions/Recreation/Arkabutla-Lake/Arkabutla-Lake-Recreation/",st:"MS",list:[
+  ["Bayou Point","Ramp · no launch at lake level 209.0 ft"],["Dub Patton","Ramp · day use · no launch at 211.0 ft"],["Kelley's Crossing","Ramp · no launch at 211.0 ft"],
+  ["Hernando Point","Ramp · day use · no launch at 215.0 ft"],["Pleasant Hill","Ramp · no launch at 215.0 ft"],["Highway 51 Landing","Ramp · no launch at 218.0 ft"],
+  ["Coldwater Point","Ramp · no launch at 220.0 ft"],["Outlet Channel","Coldwater River access below the dam"]]},
+ grenada:{src:"https://www.mvk.usace.army.mil/Missions/Recreation/Grenada-Lake/Grenada-Lake-Recreation/",st:"MS",list:[
+  ["Choctaw","Ramp elevation 191.0 ft · no fee"],["Grenada Landing","Ramp elevation 191.0 ft · $5 · beach, shelters"],["South Graysport","Ramp elevation 191.0 ft · $5"],
+  ["Torrance Landing","Ramp elevation 191.0 ft · no fee"],["Wolf Creek","Ramp elevation 191.0 ft · no fee"],["Young's Landing","Ramp elevation 191.0 ft · $5"],
+  ["Hugh White State Park","Ramp elevation 193.0 ft · $5"],["Piney Woods","Ramp elevation 204.0 ft · $5"],["Skuna-Turkey","Ramp elevation 205.0 ft · no fee"],
+  ["Gums Crossing","Ramp elevation 206.0 ft · $5"],["Bryant","Ramp elevation 207.0 ft · $5"],["North Abutment","Ramp elevation 207.0 ft · $5"],["North Graysport","Ramp elevation 207.0 ft · $5"],
+  ["Upper Yalobusha","Ramp elevation 211.5 ft · no fee"],["South Outlet","Ramp elevation 156.0 ft · $5 · below the dam"],["South Outlet Old River Run","Ramp elevation 159.0 ft · no fee"]]},
+ enid:{src:"https://www.mvk.usace.army.mil/Missions/Recreation/Enid-Lake/Enid-Lake-Recreation/",st:"MS",list:[
+  ["Wallace Creek","Ramp · Class A campground (101 sites)"],["Persimmon Hill","Ramp · beach, Class A campground"],["Chickasaw Hill","Ramp · beach, Class A campground"],
+  ["Water Valley Landing","Ramp · Class A campground"],["Outlet Channel","Ramp · below the dam, shelters"],["Bynum Creek","Free ramp · primitive camping"],
+  ["Prophet Bridge","Free ramp · primitive camping"],["Point Pleasant","Free ramp · primitive camping"]]}
+};
+function renderAccess(){
+  const A=ACCESS[lake.id];const box=$("realaccess");
+  if(!A){box.hidden=true;return}
+  box.hidden=false;
+  box.innerHTML=`<div class="row" style="justify-content:space-between"><span class="eyebrow">Official ramps · US Army Corps of Engineers</span><a class="dirlink" style="font-size:12px" href="${A.src}" target="_blank" rel="noopener">Corps page →</a></div>
+   <div class="spotlist" style="max-height:260px">${A.list.map(([n,d])=>`<a class="acc" href="https://www.google.com/maps/search/${encodeURIComponent(n+" "+lake.name+" "+A.st)}" target="_blank" rel="noopener"><span class="dot" style="background:var(--accent);border-radius:2px"></span><span><span class="nm">${esc(n)}</span><br><span class="sub">${esc(d)}</span></span><span class="sc">Directions →</span></a>`).join("")}</div>
+   <p class="note" style="margin:0">${lake.id==="grenada"?"Ramp elevations are the Corps' listed launch elevations; compare them with the current lake level before you tow.":lake.id==="arkabutla"?"Launch limits are Corps-listed lake levels; check the current level before you tow.":"Check the Corps page for closures and fees before you go."} The chart's R markers are illustrative; use Directions for the real ramp.</p>`;
+}
+
+// ---------- solunar calendar ----------
+const calCache={};
+function dayScore(lk,d){const k=lk.id+d.toDateString();if(calCache[k])return calCache[k];const c=makeCtx(lk,d);let tot=0,best={v:0,h:0};for(const s of geo.spots){const w=bestWindow(s,c);tot+=w.v;if(w.v>best.v)best=w}
+  return calCache[k]={avg:Math.round(tot/geo.spots.length),best,c}}
+function moonSvg(frac){const r=9,cx=10,cy=10;const ill=(1-Math.cos(2*Math.PI*frac))/2;const waxing=frac<.5;const k=Math.cos(2*Math.PI*frac);// terminator ellipse x-radius
+  const rx=Math.abs(k)*r;const lit="var(--ink)";
+  const dPath=waxing?`M${cx} ${cy-r} A${r} ${r} 0 0 1 ${cx} ${cy+r} A${rx} ${r} 0 0 ${k>0?0:1} ${cx} ${cy-r}Z`:`M${cx} ${cy-r} A${r} ${r} 0 0 0 ${cx} ${cy+r} A${rx} ${r} 0 0 ${k>0?1:0} ${cx} ${cy-r}Z`;
+  return `<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--muted)" stroke-width="1"/>${ill>.02?`<path d="${dPath}" fill="${lit}" opacity=".85"/>`:""}</svg>`}
+function renderCalendar(){
+  const start=new Date();start.setHours(12,0,0,0);const cells=[];
+  for(let i=0;i<start.getDay();i++)cells.push(`<div class="cal-pad"></div>`);
+  let best=null;
+  for(let i=0;i<35-start.getDay();i++){const d=new Date(start);d.setDate(start.getDate()+i);const x=dayScore(lake,d);const[rl,rc]=rating(x.avg);if(!best||x.avg>best.avg)best={...x,d};
+    const on=d.toDateString()===S.date.toDateString();const m=moon(d);
+    cells.push(`<button class="cal-day" data-cal="${d.toISOString()}" aria-pressed="${on}" title="${rl}: ${x.avg}/100, peak ${fmtH(x.best.h)}"><span class="cal-top"><span class="cal-n">${d.getDate()===1||i===0?d.toLocaleDateString(undefined,{month:"short"})+" ":""}${d.getDate()}</span>${moonSvg(m.frac)}</span><span class="cal-sc" style="color:var(${rc})">${x.avg}</span><span class="bar"><i style="width:${x.avg}%;background:var(${rc})"></i></span><span class="cal-w">${fmtH(x.best.h).replace(":00","")}</span></button>`)}
+  $("calendar").innerHTML=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<div class="cal-h">${d}</div>`).join("")+cells.join("");
+  $("calbest").textContent=best?`Best day: ${best.d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})} (${best.avg})`:"";
+}
+$("calendar").onclick=e=>{const b=e.target.closest("[data-cal]");if(!b)return;const d=new Date(b.dataset.cal);const t=new Date();S.date=d.toDateString()===t.toDateString()?t:d;full();$("today").scrollIntoView({behavior:"smooth",block:"start"})};
+
+// ---------- trip planner ----------
+const GEAR={
+ base:["Fishing license (Mississippi or Florida, as needed)","Life jackets for everyone, throwable cushion","Kill switch lanyard, horn or whistle","Sunscreen, polarized sunglasses, hat","Water, snacks, ice for the cooler","Phone in a dry bag, charged battery pack","Pliers, line cutters, first-aid kit","Rain gear"],
+ fresh:["Trolling motor battery charged","Landing net","Depth finder / sonar checked"],
+ salt:["Saltwater fishing license","Tide chart for your launch","Dehooker and lip gripper","Livewell pump or aerated bait bucket","Wading boots if you plan to wade flats"],
+ "Crappie":["Ultralight rods, 4–6 lb line","1/32 and 1/16 oz jig heads, tubes and minnow bodies","Live minnows and a minnow bucket","Slip floats"],
+ "Largemouth Bass":["Baitcaster with 15–20 lb fluoro","Casting rod for moving baits","Soft plastics, jigs, crankbaits for the season","Braid for frogs and grass"],
+ "Smallmouth Bass":["Spinning rod with 8 lb fluoro","Ned rigs, tubes, drop shot weights","Jerkbaits"],
+ "Channel Catfish":["Medium-heavy rod, circle hooks","Punch bait, cut shad, chicken liver","Rod holders, sinkers"],
+ "Blue Catfish":["Heavy rods with circle hooks 7/0–8/0","Fresh shad or skipjack, bait knife","Santee rig components"],
+ "Flathead Catfish":["Heavy rods, 50 lb line","Live bluegill and an aerated bucket"],
+ "White Bass":["Light spinning rod","Slab spoons, small inline spinners, grubs"],
+ "Striped Bass":["Medium-heavy spinning rods","Slab spoons, bucktails, live shad"],
+ "Bluegill":["Light rod, small hooks, bobbers","Crickets or red worms"],
+ "Redfish":["Medium spinning rod, 20 lb braid, 20–25 lb leader","Popping corks, gold spoons, paddle tails","Live shrimp"],
+ "Spotted Seatrout":["Medium-light spinning rod","Popping corks, jig heads, twitchbaits","Live shrimp"],
+ "Snook":["30 lb leader, medium-heavy rod","Paddle-tail swimbaits, twitchbaits","Live pilchards or pinfish"],
+ "Tarpon":["Heavy spinning or conventional rod, 60–80 lb leader","Circle hooks, live crabs or mullet","Tarpon release gear (fish stays in the water)"],
+ "Flounder":["Carolina rig components","Mud minnows or finger mullet"],
+ "Sheepshead":["Small strong hooks, short leader","Fiddler crabs, shrimp or sand fleas"],
+ "Bonefish":["Light spinning rod or 8 wt fly rod","Small jigs and shrimp flies, live shrimp"],
+ "Walleye":["Jigs, live minnows, leeches","Crawler harness"],
+ "Redear Sunfish":["Light rod, #6–#8 hooks, split shot","Red worms or grass shrimp"],
+ "Peacock Bass":["Medium spinning rod, 12–15 lb line","Live shiners, small jerkbaits and swimbaits"],
+ "Yellow Perch":["Light rods, small hooks","Minnows, spikes"],
+ "Muskie":["Heavy rod, 80 lb braid, wire or heavy fluoro leader","Big bucktails and glide baits","Large net and long pliers"],
+ "Coho Salmon":["Downriggers or divers","Spoons, flasher-fly rigs"],
+ "Lake Trout":["Heavy spoons, tube jigs"]
+};
+let planChecks={};try{planChecks=JSON.parse(store.get("wtb2.checks")||"{}")}catch(e){}
+function tripData(){
+  const sp=$("tp-species").value||lake.species[0];const d=S.date;const c=ctx;const h=HOMES[S.home];
+  const miles=haversine(h[1],h[2],lake.lat,lake.lon)*1.25;const driveH=miles/52;
+  const spots=geo.spots.filter(s=>s.best.includes(sp));const use=(spots.length?spots:geo.spots).map(s=>({s,w:bestWindow(s,c)})).sort((a,b)=>b.w.v-a.w.v).slice(0,3).sort((a,b)=>a.w.h-b.w.h);
+  const launch=Math.max(c.sun.rise-1,Math.min(c.sun.rise-.5,use[0].w.h-1));
+  const leave=launch-driveH-.33;let tcur=launch+.25;
+  use.forEach((x,i)=>{x.start=Math.max(tcur,i===0?launch+.25:x.w.h-.75);x.end=x.start+1.5;tcur=x.end+.25});
+  const off=Math.min(Math.max(tcur,launch+4),c.sun.set+.5);
+  const season=c.season;const baits=(BAITS[sp]||[]).slice(season*3,season*3+3);
+  const ramp=ACCESS[lake.id]?ACCESS[lake.id].list[0][0]:geo.pois.find(p=>p.kind==="ramp").name;
+  return{sp,d,c,miles,driveH,use,launch,leave,off,baits,ramp}
+}
+function renderTrip(){
+  const t=tripData();const c=t.c;
+  const steps=[[t.leave,"Leave "+HOMES[S.home][0],`About ${Math.round(t.miles)} road miles, ${Math.floor(t.driveH)}h ${Math.round((t.driveH%1)*60)}m`],
+    [t.launch,"Launch at "+t.ramp,c.tide?`Tide: ${tideAt(t.launch)}`:lake.fc?`${poolStage(t.d)[0]}: check the ramp against the lake level`:"Rig up at the dock, idle out quietly"],
+    ...t.use.map(x=>[x.start,`Fish ${x.s.name} until ${fmtH(x.end)}`,`${x.s.d[0]}–${x.s.d[1]} ft ${x.s.type.toLowerCase()} · peak ${fmtH(x.w.h)} (${x.w.v}/100)${INTEL[x.s.type]?" · "+INTEL[x.s.type][0]:""}`]),
+    [t.off,"Off the water",`Sunset ${fmtH(c.sun.set)}`]].sort((a,b)=>a[0]-b[0]);
+  $("tripplan").innerHTML=`<div class="row" style="justify-content:space-between"><b>${t.d.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})} · ${esc(lake.name)}</b><span class="note">${c.wx.hi}° · ${c.wx.sky} · wind ${c.wx.dir} ${c.wx.wind} · ${c.moon.name}</span></div>
+   <ol class="timeline">${steps.map(([h,a,b])=>`<li><span class="tm">${fmtH(h)}</span><span><b>${esc(a)}</b><br><span class="note">${esc(b)}</span></span></li>`).join("")}</ol>
+   <div style="display:grid;gap:4px"><span class="eyebrow">Tie these on for ${esc(t.sp)}</span><div class="hotbaits">${t.baits.map(b=>`<span class="pill">${esc(b[0])}</span>`).join("")}</div></div>`;
+  const list=[...GEAR.base,...(lake.salt?GEAR.salt:GEAR.fresh),...(GEAR[t.sp]||[])];
+  $("gear").innerHTML=list.map((g,i)=>{const k=t.sp+"|"+g;return `<label class="chk"><input type="checkbox" data-gk="${esc(k)}" ${planChecks[k]?"checked":""}> <span>${esc(g)}</span></label>`}).join("");
+  const done=list.filter(g=>planChecks[t.sp+"|"+g]).length;$("gearcount").textContent=`${done} of ${list.length} packed`;
+}
+function tideAt(h){if(!ctx.tide)return"";const a=ctx.tide.level(h),b=ctx.tide.level(h+.25);return b>a?"rising":"falling"}
+function syncTripForm(){const cur=$("tp-species").value;$("tp-species").innerHTML=lake.species.map(s=>`<option>${esc(s)}</option>`).join("");if(lake.species.includes(cur))$("tp-species").value=cur;$("tp-date").textContent=S.date.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}
+$("tp-species").onchange=renderTrip;
+$("gear").onchange=e=>{const k=e.target.dataset.gk;if(!k)return;planChecks[k]=e.target.checked;store.set("wtb2.checks",JSON.stringify(planChecks));renderTrip()};
+$("tp-best").onclick=()=>{const base=new Date();base.setHours(12,0,0,0);let best=null;for(let i=0;i<7;i++){const d=new Date(base);d.setDate(base.getDate()+i);const x=dayScore(lake,d);if(!best||x.avg>best.avg)best={d,avg:x.avg}}
+  const t=new Date();S.date=best.d.toDateString()===t.toDateString()?t:best.d;full();$("trip").scrollIntoView({behavior:"smooth",block:"start"})};
+let DL=null;(async()=>{try{DL=await window.claude?.use?.("downloads")}catch(e){}if(!DL)$("tp-save").hidden=true})();
+$("tp-save").onclick=async()=>{
+  const t=tripData();const c=t.c;const L=[];
+  L.push(`WHERE THEY'RE BITING · TRIP PLAN`,`${t.d.toDateString()} · ${lake.name}, ${lake.st}`,`Target: ${t.sp}`,``,`Conditions (modeled): ${c.wx.hi}/${c.wx.lo}F air, ${c.wx.water}F water, ${c.wx.sky}, wind ${c.wx.dir} ${c.wx.wind} mph, barometer ${c.wx.trend.toLowerCase()}`,`Sunrise ${fmtH(c.sun.rise)} · Sunset ${fmtH(c.sun.set)} · ${c.moon.name}`,`Solunar majors: ${c.sol.major.map(fmtH).join(", ")}`);
+  if(c.tide)L.push(`Tides (approx.): highs ${c.tide.highs.map(fmtH).join(", ")} · lows ${c.tide.lows.map(fmtH).join(", ")}`);
+  L.push(``,`TIMELINE`);[...document.querySelectorAll("#tripplan .timeline li")].forEach(li=>L.push(`- ${li.querySelector(".tm").textContent}  ${li.querySelector("b").textContent} — ${li.querySelector(".note").textContent}`));
+  L.push(``,`BAITS`);t.baits.forEach(b=>L.push(`- ${b[0]}: ${b[1]}`));
+  L.push(``,`CHECKLIST`);[...document.querySelectorAll("#gear label")].forEach(l=>L.push(`[${l.querySelector("input").checked?"x":" "}] ${l.textContent.trim()}`));
+  if(lake.regs)L.push(``,`LIMITS (summary, verify with ${lake.regs.src}): ${lake.regs.crappie}`);
+  L.push(``,`Weather, tides and chart depths are modeled for planning. Check official forecasts, lake levels and regulations before you go.`);
+  try{await DL.save({filename:`trip-${lake.id}-${t.d.toISOString().slice(0,10)}.txt`,data:L.join("\n")});toast("Trip plan saved")}
+  catch(err){if(err&&err.code!=="declined")toast("Couldn't save the file. Try again.")}
+};
+
+// ---------- topo controls ----------
+$("profmode").onclick=()=>{S.prof.on=!S.prof.on;$("profmode").setAttribute("aria-pressed",S.prof.on);$("profhint").hidden=!S.prof.on;if(S.prof.on&&S.pin){S.pin=false;$("pinmode").setAttribute("aria-pressed",false);$("pinhint").hidden=true}draw()};
+$("ivseg").onclick=e=>{const b=e.target.closest("[data-iv]");if(!b)return;S.interval=+b.dataset.iv;document.querySelectorAll("[data-iv]").forEach(x=>x.setAttribute("aria-pressed",x===b));draw()};
+$("hltoggle").onclick=()=>{S.hl.on=!S.hl.on;$("hltoggle").setAttribute("aria-pressed",S.hl.on);draw();render3d()};
+function onHl(){let lo=+$("hl-lo").value,hi=+$("hl-hi").value;if(lo>hi){[lo,hi]=[hi,lo]}S.hl.lo=lo;S.hl.hi=hi;if(!S.hl.on){S.hl.on=true;$("hltoggle").setAttribute("aria-pressed",true)}renderTopoStats();draw();clearTimeout(onHl.t);onHl.t=setTimeout(render3d,120)}
+$("hl-lo").oninput=onHl;$("hl-hi").oninput=onHl;
+
+// ---------- events ----------
+$("home").onchange=e=>{S.home=+e.target.value;store.set("wtb2.home",S.home);const prev=S.lake;renderLakeOptions();if(S.lake!==prev)onLake();else{renderToday();renderLists()}};
+$("size").onchange=e=>{store.set("wtb2.size",e.target.value);const prev=S.lake;renderLakeOptions();if(S.lake!==prev)onLake()};
+$("region").onchange=e=>{store.set("wtb2.region",e.target.value);const prev=S.lake;renderLakeOptions();if(S.lake!==prev)onLake()};
+$("lake").onchange=e=>{S.lake=e.target.value;onLake()};
+function onLake(){store.set("wtb2.lake",S.lake);S.sel=null;S.selWp=null;S.draft=null;S.view={s:1,x:0,y:0};full()}
+$("day").onchange=e=>{const v=e.target.value;if(!v)return;const[y,m,d]=v.split("-").map(Number);S.date=new Date(y,m-1,d,12);full()};
+$("outlook").onclick=e=>{const b=e.target.closest("[data-day]");if(!b)return;const d=new Date(b.dataset.day);const today=new Date();S.date=d.toDateString()===today.toDateString()?today:d;full()};
+$("filters").onclick=e=>{const b=e.target.closest("[data-f]");if(!b)return;S.filter=b.dataset.f;renderFilters();const v=visibleSpots();if(!S.selWp&&S.sel&&!v.includes(S.sel)&&v.length)S.sel=[...v].sort((a,b)=>b.score-a.score)[0];renderDetail();renderLists();draw()};
+document.querySelector(".layers").onclick=e=>{const b=e.target.closest("[data-layer]");if(!b)return;const k=b.dataset.layer;S.layers[k]=!S.layers[k];b.setAttribute("aria-pressed",S.layers[k]);draw()};
+$("spotlist").onclick=e=>{const b=e.target.closest("[data-spot]");if(b)selectSpot(b.dataset.spot)};
+$("poilist").onclick=e=>{const b=e.target.closest("[data-poi]");if(b){focusPoi(b.dataset.poi);$("mapbox").scrollIntoView({behavior:"smooth",block:"center"})}};
+new ResizeObserver(resize).observe($("mapbox"));
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+function full(){compute();renderSelectors();renderToday();renderOutlook();renderFilters();renderDetail();renderLists();renderLakeInfo();draw();renderReports();syncReportForm();renderQuick();syncCatchForm();renderCatchLog();sonarReset();topoUI();renderAccess();renderCalendar();syncTripForm();renderTrip()}
+
+// ---------- reports (shared db) ----------
+let DB=null,reportDocs=[],dbState="loading";
+function syncReportForm(){
+  $("r-species").innerHTML=lake.species.map(s=>`<option>${esc(s)}</option>`).join("");
+  $("r-spot").innerHTML=geo.spots.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}</option>`).join("")+`<option value="Elsewhere on the water">Elsewhere on the water</option>`;
+  syncReportSpot();const saved=store.get("wtb.handle");if(saved&&!$("r-name").value)$("r-name").value=saved;
+}
+function syncReportSpot(){if(S.sel)$("r-spot").value=S.sel.name}
+function ago(t){const m=Math.round((Date.now()-t)/6e4);if(m<60)return m+"m ago";const h=Math.round(m/60);if(h<48)return h+"h ago";return Math.round(h/24)+"d ago"}
+function renderReports(){
+  if(dbState==="off"){$("reports").innerHTML=`<p class="note">Community reports aren't available in this view.</p>`;$("repcount").textContent="";renderBoard();return}
+  if(dbState==="loading")return;
+  const mine=reportDocs.filter(r=>r.lake===lake.id);
+  $("repcount").textContent=mine.length?`${mine.length} for ${lake.name}`:"";
+  $("reports").innerHTML=mine.length?mine.slice(0,40).map(r=>`<div class="rep"><div class="row" style="justify-content:space-between"><b>${esc(r.species)} · ${Number(r.count)||0} caught</b><span class="meta">${ago(r.createdAt)}</span></div>
+     <div>${esc(r.bait)} <span class="note">at ${esc(r.spot)}</span></div>${r.notes?`<div class="note">${esc(r.notes)}</div>`:""}<div class="meta">${esc(r.name)}</div></div>`).join(""):`<p class="note">No reports for ${esc(lake.name)} yet. Be the first to post what's working.</p>`;
+  renderBoard();
+}
+(async()=>{
+  try{DB=await window.claude?.use?.("db")}catch(e){DB=null}
+  if(!DB){dbState="off";renderReports();return}
+  $("repform").hidden=false;
+  DB.collection("reports").orderBy("createdAt","desc").limit(300).onSnapshot(snap=>{reportDocs=snap.docs.map(d=>d.data()).filter(Boolean);dbState="ok";renderReports();renderLakeInfo()},
+    ()=>{dbState="off";renderReports();$("repform").hidden=true});
+})();
+$("repform").addEventListener("submit",async e=>{
+  e.preventDefault();if(!DB)return;
+  const doc={lake:lake.id,name:$("r-name").value.trim().slice(0,40),species:$("r-species").value,spot:$("r-spot").value,
+    count:clamp(parseInt($("r-count").value)||0,0,500),bait:$("r-bait").value.trim().slice(0,80),notes:$("r-notes").value.trim().slice(0,400),createdAt:Date.now()};
+  if(!doc.name||!doc.bait){$("r-status").textContent="Add your handle and the bait you used.";return}
+  store.set("wtb.handle",doc.name);$("r-submit").disabled=true;$("r-status").textContent="Posting…";
+  try{await DB.collection("reports").add(doc);$("r-status").textContent="Posted.";$("r-bait").value="";$("r-notes").value=""}
+  catch(err){$("r-status").textContent=err&&err.code==="not_granted"?"You have view-only access, so you can't post here.":"Couldn't post. Check your connection and try again."}
+  finally{$("r-submit").disabled=false}
+});
+
+// ---------- AI guide ----------
+let SAMPLE=null,abort=null;
+function renderQuick(){
+  const s=S.sel;const qs=[`Game plan for ${s?s.name:"today"}`,`Best ${lake.species[0]} lure right now?`,lake.salt?"How should I fish this tide?":lake.fc?"How does the pool level change things?":"Where do I go if the wind picks up?"];
+  $("quick").innerHTML=qs.map(q=>`<button class="chipbtn" data-q="${esc(q)}">${esc(q)}</button>`).join("");
+}
+$("quick").onclick=e=>{const b=e.target.closest("[data-q]");if(b){$("ask").value=b.dataset.q;ask()}};
+$("askbtn").onclick=ask;$("ask").addEventListener("keydown",e=>{if(e.key==="Enter")ask()});
+(async()=>{try{SAMPLE=await window.claude?.use?.("sample")}catch(e){SAMPLE=null}
+  if(!SAMPLE){$("askbtn").disabled=true;$("ask").disabled=true;$("answer").textContent="The guide isn't available in this view.";$("quick").hidden=true}})();
+function offlineGuide(q,s){
+  const ql=q.toLowerCase();const c=ctx;const wx=c.wx;const sn=["winter","spring","summer","fall"][c.season];
+  const sp=lake.species.find(x=>ql.includes(x.toLowerCase().split(" ").pop().toLowerCase()))||(s&&s.best&&s.best[0])||lake.species[0];
+  const baits=(BAITS[sp]||[]).slice(c.season*3,c.season*3+3);
+  const top=geo.spots.map(x=>({x,w:bestWindow(x,c)})).sort((a,b)=>b.w.v-a.w.v).slice(0,3);
+  const L=[];
+  L.push(`${lake.name} · ${S.date.toDateString()} · ${sn}`);
+  if(s){const pk=s.peak||bestWindow(s,c);L.push(`- ${s.name}: ${s.type}, ${s.d[0]}-${s.d[1]} ft. Bite score right now ${s.score}/100, peaking around ${fmtH(pk.h)}.`)}
+  L.push(`- First light ${fmtH(c.sun.rise)}, last light ${fmtH(c.sun.set)}. Solunar majors near ${c.sol.major.map(fmtH).join(" and ")} (${c.moon.name}).`);
+  L.push(`- Modeled weather: ${wx.sky.toLowerCase()}, ${wx.hi}/${wx.lo}F air, ${wx.water}F water, wind ${wx.dir} ${wx.wind} mph, barometer ${wx.trend.toLowerCase()}.`);
+  if(c.tide)L.push(`- Tides (approx.): highs ${c.tide.highs.map(fmtH).join(", ")}, lows ${c.tide.lows.map(fmtH).join(", ")}. Moving water beats slack.`);
+  if(lake.fc)L.push(`- Pool stage: ${poolStage(S.date)[0]}.`);
+  if(baits.length){L.push(`- ${sp} baits for ${sn}:`);baits.forEach(b=>L.push(`   ${b[0]}: ${b[1]}`))}
+  L.push(`- Best spots today: ${top.map(t=>`${t.x.name} (${Math.round(t.w.v)}, ${fmtH(t.w.h)})`).join("; ")}.`);
+  if(ql.includes("wind"))L.push(`- If the wind picks up, fish the wind-blown banks and points it pushes bait onto, or tuck into a sheltered cove.`);
+  L.push(``,`This is the offline guide: it is built from the same modeled conditions as the rest of the page. The full app adds a live AI guide.`);
+  return L.join("\n");
+}
+async function ask(){
+  const q=$("ask").value.trim();if(!q)return;
+  if(!SAMPLE){$("answer").textContent="The guide isn't available in this view.";return}
+  if(abort)abort.abort();abort=new AbortController();
+  let s=S.sel;if(S.selWp){const w=waypoints.find(x=>x.id===S.selWp);if(w){s=wpSpot(w);s.score=hourScore(ctx.hour,ctx,s);s.peak=bestWindow(s,ctx)}}
+  const wx=ctx.wx;
+  const recent=reportDocs.filter(r=>r.lake===lake.id).slice(0,6).map(r=>`${r.species}, ${r.count} on ${r.bait} at ${r.spot}`).join("; ")||"none";
+  const prompt=`You are a seasoned local fishing guide${lake.salt?" who runs inshore saltwater charters":""}. Answer in under 170 words, plain text, practical and specific. No markdown headings; short lines or a few dashes are fine.
+Water: ${lake.name}, ${lake.st} (${lake.clear}; ${lake.acres}). Species: ${lake.species.join(", ")}.${lake.note?" Note: "+lake.note:""}
+Date: ${S.date.toDateString()}, season ${["winter","spring","summer","fall"][ctx.season]}. Time of interest: ${fmtH(ctx.hour)}.
+Conditions (modeled): air ${wx.hi}/${wx.lo}F, water ${wx.water}F, ${wx.sky}, wind ${wx.dir} ${wx.wind} mph, barometer ${wx.press} inHg ${wx.trend}.
+Sunrise ${fmtH(ctx.sun.rise)}, sunset ${fmtH(ctx.sun.set)}. Moon: ${ctx.moon.name}. Solunar majors around ${ctx.sol.major.map(fmtH).join(" and ")}.
+${ctx.tide?`Approx. tides: highs ${ctx.tide.highs.map(fmtH).join(", ")}, lows ${ctx.tide.lows.map(fmtH).join(", ")}.`:""}${lake.fc?` Pool stage: ${poolStage(S.date)[0]}.`:""}
+Selected spot: ${s?`${s.name} (${s.type}, ${s.d[0]}-${s.d[1]} ft), best for ${s.best.join(", ")}, bite score ${s.score}/100, peak ${fmtH(s.peak.h)}`:"none"}.
+Other spots: ${geo.spots.map(x=>`${x.name} ${x.score}`).join(", ")}.
+Recent angler reports: ${recent}.
+Question: ${q}`;
+  if(SAMPLE&&SAMPLE.offline){$("answer").textContent=offlineGuide(q,s);return}
+  $("answer").textContent="Thinking…";$("askbtn").disabled=true;
+  try{const r=await SAMPLE(prompt,{signal:abort.signal,modelTier:"quick",onText:({text})=>{$("answer").textContent=text}});$("answer").textContent=r.text}
+  catch(err){if(err&&err.code==="cancelled")return;$("answer").textContent=err&&err.code==="not_granted"?"The guide needs your permission to answer. Allow it when prompted and ask again.":err&&err.code==="rate_limited"?"The guide is busy. Wait a minute and ask again.":(err&&err.text)||"The guide couldn't answer right now. Try again shortly."}
+  finally{$("askbtn").disabled=false}
+}
+
+// ---------- epic: motion, gauge ----------
+const REDUCED=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function gauge(v,rc){
+  const a=Math.PI*(1-v/100),cx=60,cy=56,r=46;
+  const arc=(from,to)=>{const x1=cx+r*Math.cos(Math.PI-from*Math.PI),y1=cy-r*Math.sin(Math.PI-from*Math.PI),x2=cx+r*Math.cos(Math.PI-to*Math.PI),y2=cy-r*Math.sin(Math.PI-to*Math.PI);return `M${x1.toFixed(1)} ${y1.toFixed(1)} A${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`};
+  const nx=cx+(r-10)*Math.cos(a),ny=cy-(r-10)*Math.sin(a);
+  return `<svg class="gauge" viewBox="0 0 120 64" role="img" aria-label="Bite meter ${v} of 100">
+   <path d="${arc(0,.44)}" stroke="var(--slow)" stroke-width="9" fill="none"/><path d="${arc(.44,.6)}" stroke="var(--fair)" stroke-width="9" fill="none"/>
+   <path d="${arc(.6,.76)}" stroke="var(--good)" stroke-width="9" fill="none"/><path d="${arc(.76,1)}" stroke="var(--hot)" stroke-width="9" fill="none"/>
+   <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="5" fill="var(--ink)"/></svg>`;
+}
+let lastMapFrame=0;
+function mapLoop(ts){if(!document.hidden&&ts-lastMapFrame>50){lastMapFrame=ts;draw()}requestAnimationFrame(mapLoop)}
+if(!REDUCED)requestAnimationFrame(mapLoop);
+function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+
+// ---------- epic: live sonar ----------
+const SN={mode:"2d",freq:200,fishId:true,paused:REDUCED,spot:null,depth:15,target:15,rng:Math.random,cols:0};
+const sc=$("sonar"),sg=sc.getContext("2d");const buf=document.createElement("canvas"),bg=buf.getContext("2d");let SW=0,SH=0,SDPR=1;
+function sonarSize(){const r=sc.getBoundingClientRect();SDPR=window.devicePixelRatio||1;SW=Math.max(10,Math.round(r.width));SH=Math.max(10,Math.round(r.height));
+  sc.width=SW*SDPR;sc.height=SH*SDPR;sg.setTransform(SDPR,0,0,SDPR,0,0);buf.width=SW;buf.height=SH;sonarFill()}
+function curSpot(){if(S.selWp){const w=waypoints.find(x=>x.id===S.selWp);if(w){const s=wpSpot(w);s.score=hourScore(ctx.hour,ctx,s);return s}}return S.sel||geo.spots[0]}
+function sonarPal(){return SN.mode==="2d"?{bg1:"#03215A",bg2:"#010B24",bottom:["#FFE14A","#FF8A1F","#E3261B","#7A1026"],fish:["#FFE14A","#FF8A1F","#E3261B"],clutter:"#2E7BD8",cover:"#3FD17A",bait:"#6FB6FF",text:"#E8F1FF"}
+  :{bg1:"#0B0A07",bg2:"#050403",bottom:["#FFF3D6","#E8C58A","#9C7440","#3A2A15"],fish:["#FFFFFF","#F1D9A8","#B58B50"],clutter:"#6B5A3E",cover:"#E9D3A3",bait:"#CDB78C",text:"#FFF3D6"}}
+function sonarReset(){SN.spot=curSpot();if(!SN.spot)return;const s=SN.spot;SN.rng=rng(s.name+ctx.date.toDateString());SN.target=SN.depth=(s.d[0]+s.d[1])/2;
+  SN.max=Math.ceil(s.d[1]*1.4/5)*5+(s.d[1]>=12?5:0);$("sonarspot").textContent=`· ${s.name} · ${s.d[0]}–${s.d[1]} ft`;sonarFill()}
+function sonarFill(){if(!SW||!SN.spot)return;const P=sonarPal();const gr=bg.createLinearGradient(0,0,0,SH);gr.addColorStop(0,P.bg1);gr.addColorStop(1,P.bg2);bg.fillStyle=gr;bg.fillRect(0,0,SW,SH);
+  for(let x=0;x<SW;x+=2)sonarColumn(x,true);sonarDraw()}
+const yOf=d=>8+(d/SN.max)*(SH-26);
+function sonarColumn(x,silent){
+  const s=SN.spot,R=SN.rng,P=sonarPal();
+  if(R()<.02)SN.target=s.d[0]+R()*(s.d[1]-s.d[0]);SN.depth+=(SN.target-SN.depth)*.04+(R()-.5)*.08;
+  const yb=yOf(SN.depth);
+  const gr=bg.createLinearGradient(0,0,0,SH);gr.addColorStop(0,P.bg1);gr.addColorStop(1,P.bg2);bg.fillStyle=gr;bg.fillRect(x,0,2,SH);
+  // surface clutter
+  const cl=SN.freq===83?16:9;for(let i=0;i<cl;i++){bg.fillStyle=P.clutter;bg.globalAlpha=.25+R()*.5;bg.fillRect(x,R()*R()*22,2,1.5)}bg.globalAlpha=1;
+  // thermocline in summer
+  if(ctx.season===2&&s.d[1]>15){bg.fillStyle=P.clutter;bg.globalAlpha=.18;bg.fillRect(x,yOf(Math.min(16,SN.max*.55))+R()*3,2,2);bg.globalAlpha=1}
+  // noise
+  const nz=SN.freq===83?5:2;for(let i=0;i<nz;i++){bg.fillStyle=P.clutter;bg.globalAlpha=.2;bg.fillRect(x,R()*yb,2,1)}bg.globalAlpha=1;
+  // bottom return
+  const bands=[3,4,6,40];let y=yb;P.bottom.forEach((c,i)=>{bg.fillStyle=c;bg.globalAlpha=i===3?.55:1;bg.fillRect(x,y,2,bands[i]*(SN.freq===83?1.3:1));y+=bands[i]*(SN.freq===83?1.3:1)});bg.globalAlpha=1;
+  // second echo
+  bg.fillStyle=P.bottom[2];bg.globalAlpha=.25;bg.fillRect(x,Math.min(SH-4,yb*2-8),2,3);bg.globalAlpha=1;
+  // cover
+  const hasCover=/Timber|Brush|Stump|Willow|Cypress|Hydrilla|Grass|Oyster|Bridge|Mangrove/.test(s.type||"");
+  if(hasCover&&R()<.08){const h=10+R()*Math.min(60,yb*.5);bg.fillStyle=P.cover;for(let i=0;i<14;i++){bg.globalAlpha=.3+R()*.5;bg.fillRect(x+R()*4-2,yb-R()*h,1.5,2+R()*4)}bg.globalAlpha=1}
+  if(silent)return;
+  // bait ball
+  if(R()<.006+(s.score||50)/100*.006){const cy=yOf(SN.depth*(.25+R()*.45)),n=30+R()*40;bg.fillStyle=P.bait;for(let i=0;i<n;i++){bg.globalAlpha=.5+R()*.5;bg.fillRect(x-R()*14,cy+(R()-.5)*16,1.6,1.6)}bg.globalAlpha=1}
+  // fish arch
+  const p=(s.score||50)/100*.028;
+  if(R()<p){const bottomish=/Catfish|Flounder|Redfish|Walleye/.test(s.best.join())&&R()<.55;const fd=bottomish?SN.depth*(.82+R()*.12):SN.depth*(.3+R()*.55);
+    const big=R()<.2,span=(SN.freq===83?26:16)*(big?1.5:1),fy=yOf(fd);
+    [[5,0],[3,1],[1.6,2]].forEach(([w,ci])=>{bg.beginPath();bg.moveTo(x-span,fy+span*.32);bg.quadraticCurveTo(x-span/2,fy-span*.18,x,fy+span*.32);bg.strokeStyle=P.fish[ci];bg.lineWidth=w*(big?1.3:1);bg.stroke()});
+    if(SN.fishId){const sp=s.best[Math.floor(R()*s.best.length)];bg.fillStyle=P.text;bg.font="600 10px IBM Plex Mono, monospace";bg.textAlign="center";bg.fillText(`${fd.toFixed(1)}′`,x-span/2,fy-span*.2-4);
+      if(big){bg.font="500 9px IBM Plex Sans, sans-serif";bg.globalAlpha=.8;bg.fillText(sp,x-span/2,fy-span*.2-15);bg.globalAlpha=1}}}
+}
+function sonarDraw(){
+  if(!SW)return;const P=sonarPal();sg.drawImage(buf,0,0,SW,SH);
+  // depth scale
+  sg.fillStyle=P.text;sg.font="500 10.5px IBM Plex Mono, monospace";sg.textAlign="right";
+  for(let d=0;d<=SN.max;d+=SN.max>40?10:5){const y=yOf(d);sg.globalAlpha=.35;sg.fillRect(SW-30,y,26,1);sg.globalAlpha=.9;sg.fillText(d,SW-6,y-2)}sg.globalAlpha=1;
+  // readout
+  sg.fillStyle="rgba(0,0,0,.45)";sg.fillRect(8,8,158,54);sg.fillStyle=P.text;sg.textAlign="left";
+  sg.font="700 26px Barlow Condensed, sans-serif";sg.fillText(`${SN.depth.toFixed(1)} ft`,16,36);
+  sg.font="500 10.5px IBM Plex Mono, monospace";sg.fillText(`${ctx.wx.water}°F · ${SN.freq} kHz · ${SN.mode==="2d"?"2D":"DI"}`,16,53);
+}
+function sonarLoop(){if(!SN.paused&&!document.hidden&&SW&&SN.spot){for(let k=0;k<1;k++){bg.drawImage(buf,-2,0);sonarColumn(SW-2,false)}sonarDraw()}requestAnimationFrame(sonarLoop)}
+requestAnimationFrame(sonarLoop);
+new ResizeObserver(sonarSize).observe(document.querySelector(".sonar-screen"));
+document.querySelector(".sonarwrap").addEventListener("click",e=>{
+  const m=e.target.closest("[data-sm]"),f=e.target.closest("[data-sf]");
+  if(m){SN.mode=m.dataset.sm;document.querySelectorAll("[data-sm]").forEach(b=>b.setAttribute("aria-pressed",b===m));sonarFill()}
+  if(f){SN.freq=+f.dataset.sf;document.querySelectorAll("[data-sf]").forEach(b=>b.setAttribute("aria-pressed",b===f))}
+  if(e.target.id==="fishid"){SN.fishId=!SN.fishId;e.target.setAttribute("aria-pressed",SN.fishId)}
+  if(e.target.id==="sonarplay"){SN.paused=!SN.paused;e.target.textContent=SN.paused?"Play":"Pause";e.target.setAttribute("aria-pressed",SN.paused)}
+});
+if(REDUCED){$("sonarplay").textContent="Play";$("sonarplay").setAttribute("aria-pressed","true")}
+
+// ---------- epic: catch log, rank, badges ----------
+let catches=[],logMode="local";
+try{catches=JSON.parse(store.get("wtb2.catches")||"[]")}catch(e){catches=[]}
+const saveLocalC=()=>store.set("wtb2.catches",JSON.stringify(catches));
+const LEVELS=[[0,"Rookie"],[100,"Weekend Angler"],[300,"Local Legend"],[700,"Pro Staff"],[1500,"Hall of Fame"]];
+const lakeName=id=>(LAKES.find(l=>l.id===id)||{name:id}).name;
+function xpOf(c){return 10+Math.round((+c.wt||0)*6)+Math.round((+c.len||0)*.5)}
+const BADGES=[
+ ["first","First Fish","Log your first catch",c=>c.length>0],
+ ["ten","Ten Down","Log 10 catches",c=>c.length>=10],
+ ["slab","Slab Master","Crappie 1.5 lb or 14 in",c=>c.some(x=>x.species==="Crappie"&&(+x.wt>=1.5||+x.len>=14))],
+ ["dd","Double Digit","Bass 10 lb or bigger",c=>c.some(x=>/Bass/.test(x.species)&&+x.wt>=10)],
+ ["magnolia","Magnolia State","Fish 3 Mississippi waters",c=>new Set(c.filter(x=>(LAKES.find(l=>l.id===x.lake)||{}).region==="Mississippi").map(x=>x.lake)).size>=3],
+ ["bigfour","Big Four","Sardis, Arkabutla, Grenada & Enid",c=>["sardis","arkabutla","grenada","enid"].every(id=>c.some(x=>x.lake===id))],
+ ["slam","Sunshine Slam","Snook, redfish & trout in one day",c=>{const by={};c.forEach(x=>{const d=new Date(x.at).toDateString();(by[d]=by[d]||new Set()).add(x.species)});return Object.values(by).some(s=>s.has("Snook")&&s.has("Redfish")&&s.has("Spotted Seatrout"))}],
+ ["silver","Silver King","Log a tarpon",c=>c.some(x=>x.species==="Tarpon")],
+ ["ghost","Gray Ghost","Log a bonefish",c=>c.some(x=>x.species==="Bonefish")],
+ ["explorer","Explorer","Fish 5 different waters",c=>new Set(c.map(x=>x.lake)).size>=5],
+ ["night","Night Owl","A catch between 9 PM and 4 AM",c=>c.some(x=>{const h=new Date(x.at).getHours();return h>=21||h<4})],
+ ["species","Multi-Species","6 different species",c=>new Set(c.map(x=>x.species)).size>=6]
+];
+function badgeSvg(id,on){const col=on?"var(--accent)":"var(--muted)";const hue={first:"#3D8B4F",ten:"#6F7FB5",slab:"#6F7FB5",dd:"#3D8B4F",magnolia:"#C98B2D",bigfour:"#4E6C8C",slam:"#C4622D",silver:"#9AA7B3",ghost:"#B5C2C9",explorer:"#5A8FA6",night:"#2B3A67",species:"#B39A2F"}[id];
+  return `<svg viewBox="0 0 36 36"><path d="M18 2 31 9v13c0 6-6 10-13 12C11 32 5 28 5 22V9z" fill="${on?hue:"none"}" stroke="${col}" stroke-width="2"/><path d="M11 19c3-4 8-4 12 0-4 4-9 4-12 0zm12 0 4-3v6z" fill="${on?"#fff":col}"/></svg>`}
+let prevUnlocked=null;
+function renderCatchLog(){
+  if(!$("rank"))return;
+  const xp=catches.reduce((a,c)=>a+xpOf(c),0);let li=0;LEVELS.forEach((l,i)=>{if(xp>=l[0])li=i});
+  const next=LEVELS[li+1],pct=next?Math.round((xp-LEVELS[li][0])/(next[0]-LEVELS[li][0])*100):100;
+  $("rank").innerHTML=`<span class="lvl">L${li+1}</span><div style="display:grid;gap:4px"><div class="row" style="justify-content:space-between"><b>${LEVELS[li][1]}</b><span class="note" style="font-family:var(--mono)">${xp} XP${next?` · ${next[0]-xp} to ${next[1]}`:""}</span></div><div class="xpbar"><i style="width:${pct}%"></i></div>
+    <span class="note">${catches.length} fish · ${new Set(catches.map(c=>c.species)).size} species · ${new Set(catches.map(c=>c.lake)).size} waters</span></div>`;
+  $("logsync").textContent=logMode==="cloud"?"Private · synced":"Saved in this browser";
+  const pb={};catches.forEach(c=>{const k=c.species;if(!pb[k]||(+c.wt||0)>(+pb[k].wt||0)||(!(+pb[k].wt)&&(+c.len||0)>(+pb[k].len||0)))pb[k]=c});
+  const pbs=Object.values(pb).sort((a,b)=>(+b.wt||0)-(+a.wt||0));
+  $("pbs").innerHTML=pbs.length?pbs.map(c=>`<div><span><b>${esc(c.species)}</b> <span class="note">· ${esc(lakeName(c.lake))}</span></span><span>${+c.wt?(+c.wt).toFixed(2)+" lb":""}${+c.wt&&+c.len?" · ":""}${+c.len?(+c.len)+" in":""}</span></div>`).join(""):`<p class="note" style="margin:0">Log a catch to start your record book.</p>`;
+  $("loglist").innerHTML=catches.slice(0,30).map(c=>`<div style="display:grid;grid-template-columns:1fr auto;gap:8px;padding:7px 8px 7px 0;border-bottom:1px solid var(--line);align-items:center"><span><span class="nm" style="font-weight:600">${esc(c.species)}</span> <span class="note">${+c.wt?(+c.wt).toFixed(2)+" lb ":""}${+c.len?(+c.len)+" in":""}</span><br><span class="sub note">${esc(c.bait||"")}${c.bait?" · ":""}${esc(c.spot||"")} · ${esc(lakeName(c.lake))} · ${new Date(c.at).toLocaleDateString()}</span></span><span class="inline-confirm"><button class="chipbtn" data-cdel="${c.id}">Delete</button></span></div>`).join("");
+  const unlocked=BADGES.filter(b=>b[3](catches)).map(b=>b[0]);
+  const fresh=prevUnlocked?unlocked.filter(x=>!prevUnlocked.includes(x)):[];
+  $("badges").innerHTML=BADGES.map(b=>{const on=unlocked.includes(b[0]);return `<div class="badge ${on?"":"locked"} ${fresh.includes(b[0])?"new":""}" title="${esc(b[2])}">${badgeSvg(b[0],on)}<b>${esc(b[1])}</b><span class="note">${esc(b[2])}</span></div>`}).join("");
+  $("badgecount").textContent=`${unlocked.length} of ${BADGES.length}`;
+  if(fresh.length)toast(`Badge unlocked: ${BADGES.find(b=>b[0]===fresh[0])[1]}`);
+  prevUnlocked=unlocked;
+}
+function syncCatchForm(){
+  $("c-species").innerHTML=lake.species.map(s=>`<option>${esc(s)}</option>`).join("");
+  $("c-spot").innerHTML=geo.spots.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}</option>`).join("")+waypoints.filter(w=>w.lake===lake.id).map(w=>`<option value="${esc(w.name)}">★ ${esc(w.name)}</option>`).join("")+`<option value="Elsewhere on the water">Elsewhere on the water</option>`;
+  const cur=S.selWp?(waypoints.find(w=>w.id===S.selWp)||{}).name:S.sel&&S.sel.name;if(cur)$("c-spot").value=cur;
+}
+$("catchform").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const c={id:"ct"+Date.now().toString(36)+Math.floor(Math.random()*1e4),kind:"catch",lake:lake.id,species:$("c-species").value,spot:$("c-spot").value,
+    len:clamp(parseFloat($("c-len").value)||0,0,100),wt:clamp(parseFloat($("c-wt").value)||0,0,300),bait:$("c-bait").value.trim().slice(0,80),at:Date.now()};
+  const before=catches.reduce((a,x)=>a+xpOf(x),0);
+  catches.unshift(c);
+  if(logMode==="cloud"&&USERCOL){try{const{id,...rest}=c;await USERCOL.doc(id).set(rest)}catch(err){logMode="local";saveLocalC()}}else saveLocalC();
+  renderCatchLog();toast(`+${xpOf(c)} XP · ${c.species}${c.wt?` ${c.wt} lb`:""} logged`);
+  if($("c-share").checked&&DB){const name=$("r-name").value.trim()||store.get("wtb.handle");if(name){DB.collection("reports").add({lake:lake.id,name:name.slice(0,40),species:c.species,spot:c.spot,count:1,bait:c.bait||"—",notes:[c.wt?c.wt+" lb":"",c.len?c.len+" in":""].filter(Boolean).join(", "),createdAt:Date.now()}).catch(()=>{})}else toast("Add a handle in Local fishing reports to share")}
+  $("c-len").value="";$("c-wt").value="";
+});
+$("loglist").addEventListener("click",async e=>{
+  const a=e.target.closest("[data-cdel]");if(a){a.parentElement.innerHTML=`Delete? <button class="chipbtn" data-cyes="${a.dataset.cdel}">Yes</button><button class="chipbtn" data-cno>No</button>`;return}
+  if(e.target.closest("[data-cno]")){renderCatchLog();return}
+  const y=e.target.closest("[data-cyes]");if(y){const id=y.dataset.cyes;catches=catches.filter(c=>c.id!==id);if(logMode==="cloud"&&USERCOL){try{await USERCOL.doc(id).delete()}catch(err){}}else saveLocalC();renderCatchLog()}
+});
+
+// ---------- epic: leaderboard ----------
+function renderBoard(){
+  if(!$("board"))return;
+  const wk=Date.now()-7*864e5,recent=reportDocs.filter(r=>r.createdAt>=wk);
+  const by={},wat={};recent.forEach(r=>{const n=(r.name||"Angler").trim();by[n]=by[n]||{n,fish:0,sp:new Set()};by[n].fish+=Number(r.count)||0;by[n].sp.add(r.species);wat[r.lake]=(wat[r.lake]||0)+(Number(r.count)||0)});
+  const top=Object.values(by).sort((a,b)=>b.fish-a.fish).slice(0,8);
+  $("board").innerHTML=dbState==="off"?`<p class="note">The leaderboard isn't available in this view.</p>`:top.length?top.map((x,i)=>`<div><span class="pos">${i+1}</span><span><b>${esc(x.n)}</b><br><span class="note">${esc([...x.sp].slice(0,3).join(", "))}</span></span><span style="font-family:var(--mono)">${x.fish} fish</span></div>`).join(""):`<p class="note">No reports this week. Post one and take the top spot.</p>`;
+  const hw=Object.entries(wat).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  $("hotwaters").innerHTML=hw.length?hw.map(([id,n])=>`<button class="chipbtn" data-golake="${id}">${esc(lakeName(id))} · ${n}</button>`).join(""):`<span class="note">Waters light up here as anglers post reports.</span>`;
+}
+$("hotwaters").onclick=e=>{const b=e.target.closest("[data-golake]");if(b){S.lake=b.dataset.golake;$("region").value="near";store.set("wtb2.region","near");onLake();window.scrollTo({top:0,behavior:"smooth"})}};
+
+
+full();
+})();
+</script>
+
+</body></html>

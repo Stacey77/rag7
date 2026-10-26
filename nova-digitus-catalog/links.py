@@ -1,6 +1,7 @@
 # Public "Try it" addresses. Only apps listed here get a Try it button on the site.
 # Add an app's public URL (its exact catalog name as the key), then rebuild.
 PUBLIC_URLS = {
+    "Where They're Biting": "https://stacey77.github.io/rag7/nova-digitus-site/try/where-they-re-biting/",
     "Engineering Orchestrator": "https://nova-digitus-engineering-orchestrator.ai.studio",
     "Wealth in Health: Sound Healing": "https://stacey77.github.io/rag7/nova-digitus-site/try/wealth-in-health-sound-healing/",
     "Singular Companion": "https://stacey77.github.io/rag7/nova-digitus-site/try/singular-companion/",
