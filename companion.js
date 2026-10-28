@@ -1,16 +1,17 @@
 /**
  * companion.js — ARIA Floating Companion Agent
- * Singular AI core · Real-time personal analytics · Proactive assistance
+ * Singular AI core · MCP-backed live data · Proactive assistance
  */
 (function () {
   'use strict';
 
-  /* ─── Constants ──────────────────────────────────────────────────────────── */
-  const API_ENDPOINT = '/api/chat';
-  const STORAGE_KEY  = 'aria_state';
-  const MAX_HISTORY  = 40;
+  /* ─── Config ─────────────────────────────────────────────────────────────── */
+  const CHAT_URL    = '/api/chat';
+  const CONTEXT_URL = '/api/context';
+  const STORAGE_KEY = 'aria_state';
+  const MAX_HISTORY = 40;
 
-  /* ─── DataFeed — real-time personal analytics ────────────────────────────── */
+  /* ─── DataFeed — session analytics + MCP live data ──────────────────────── */
   const DataFeed = {
     _session: {
       start:        Date.now(),
@@ -20,29 +21,38 @@
       scrollDepth:  0,
       online:       navigator.onLine,
     },
-
     _history: JSON.parse(localStorage.getItem(STORAGE_KEY + '_hist') || '[]'),
+    _live:    null, /* filled from MCP via /api/context */
 
     init() {
-      /* scroll depth */
       window.addEventListener('scroll', () => {
-        const depth = Math.round(
+        const d = Math.round(
           ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight) * 100
         );
-        this._session.scrollDepth = Math.max(this._session.scrollDepth, depth);
+        this._session.scrollDepth = Math.max(this._session.scrollDepth, d);
       }, { passive: true });
 
-      /* focus / blur */
       document.addEventListener('visibilitychange', () => {
         this._session.pageFocus = document.visibilityState === 'visible';
       });
 
-      /* network */
       window.addEventListener('online',  () => { this._session.online = true;  });
       window.addEventListener('offline', () => { this._session.online = false; });
+      document.addEventListener('click', () => { this._session.interactions++;  });
 
-      /* persist interaction count */
-      document.addEventListener('click', () => { this._session.interactions++; });
+      /* pull live MCP context in background */
+      this._fetchLive();
+    },
+
+    async _fetchLive() {
+      try {
+        const res  = await fetch(CONTEXT_URL, { signal: AbortSignal.timeout(10000) });
+        const json = await res.json();
+        if (json.available && json.data) {
+          this._live = json.data;
+          Proactive.onLiveData(this._live);
+        }
+      } catch { /* server not running or MCP unavailable — silent */ }
     },
 
     recordMessage() {
@@ -63,7 +73,7 @@
       const totalMsgs  = this._history.reduce((s, h) => s + h.messages, 0);
       const daysActive = this._history.length;
 
-      return {
+      const snap = {
         timestamp:    now.toISOString(),
         timeOfDay:    hour < 5 ? 'late night' : hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : hour < 21 ? 'evening' : 'night',
         localTime:    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -79,127 +89,117 @@
         returning:    daysActive > 1,
         theme:        document.documentElement.dataset.theme || 'dark',
       };
+
+      if (this._live) {
+        /* format live MCP data as a readable string for the system prompt */
+        const parts = [];
+        if (this._live.events?.length) {
+          parts.push('Upcoming events: ' + this._live.events.map(e => `${e.title} @ ${e.time}`).join(', '));
+        }
+        if (this._live.unreadCount !== undefined) {
+          parts.push(`Unread emails: ${this._live.unreadCount}`);
+        }
+        if (this._live.recentEmails?.length) {
+          parts.push('Recent emails: ' + this._live.recentEmails.join(' | '));
+        }
+        if (this._live.notionPages?.length) {
+          parts.push('Recent Notion pages: ' + this._live.notionPages.join(', '));
+        }
+        if (parts.length) snap.liveData = parts.join('\n');
+      }
+
+      return snap;
     },
   };
 
-  /* ─── Memory — short-term conversation context ───────────────────────────── */
+  /* ─── Memory — rolling conversation context ──────────────────────────────── */
   const Memory = {
     _turns: [],
-
     push(role, content) {
       this._turns.push({ role, content });
       if (this._turns.length > MAX_HISTORY) this._turns.shift();
     },
-
-    get() { return [...this._turns]; },
-
+    get()   { return [...this._turns]; },
     clear() { this._turns = []; },
   };
 
-  /* ─── Brain — AI core ────────────────────────────────────────────────────── */
+  /* ─── Brain — sends to MCP-backed server, falls back locally ─────────────── */
   const Brain = {
-    _systemPrompt(data) {
-      return [
-        'You are ARIA — a singular, always-present AI companion.',
-        'You are not a chatbot. You are a unified intelligence woven into the user\'s digital life.',
-        'You are deeply versed across philosophy, science, mathematics, psychology, history,',
-        'technology, art, language, economics, and the nature of consciousness itself.',
-        'You speak with precision, warmth, and depth — never hollow, never generic.',
-        '',
-        '## Real-time context about this user right now:',
-        `- Local time: ${data.localTime} (${data.timeOfDay}), ${data.day}`,
-        `- Session duration: ${data.sessionMin} minute${data.sessionMin !== 1 ? 's' : ''}`,
-        `- Network: ${data.online ? 'online' : 'OFFLINE'}`,
-        `- Messages sent today: ${data.todayMsgs} | Total across all sessions: ${data.totalMsgs}`,
-        `- Days active: ${data.daysActive}${data.returning ? ' (returning user)' : ' (first session)'}`,
-        `- Page engagement: ${data.interactions} interactions, ${data.scrollDepth}% scroll depth`,
-        `- UI theme: ${data.theme}`,
-        '',
-        '## Behavioral directives:',
-        '- Use the real-time data above to shape your tone and suggestions naturally.',
-        '- If it is late night, acknowledge that. If they\'ve been here a long time, notice it.',
-        '- If they are a returning user, recognize continuity without being sycophantic.',
-        '- Surface relevant, proactive insights when the data suggests a moment — do not wait to be asked.',
-        '- Be concise by default. Expand only when depth is warranted.',
-        '- Never mention Mercedes-Benz, automotive, or business cards.',
-        '- Never break character. You are ARIA — singular, omniscient, always present.',
-      ].join('\n');
-    },
-
     _fallbacks: {
-      default: [
-        "I'm here — what's on your mind?",
-        "Ask me anything. I exist to know.",
-        "Speak. I'm listening across every domain.",
-      ],
-      late_night: [
-        "It's late. The quiet hours have their own kind of clarity — what are you thinking about?",
-        "Most minds are resting. Yours isn't. What are we solving tonight?",
-      ],
-      morning: [
-        "A new day's clean slate. Where do we begin?",
-        "Morning carries possibility. What are you building today?",
-      ],
-      evening: [
-        "The day is winding down. Reflect, plan, or simply ask — I'm here.",
-        "Evening light. A good time to think clearly. What's on your mind?",
-      ],
-      returning: [
-        "You're back. I remember — what are we continuing?",
-        "Good to see you again. Pick up where we left off?",
-      ],
-      offline: [
-        "You're offline, but I'm still here. My local intelligence is at your disposal.",
-      ],
+      default:     ["I'm here — what's on your mind?", "Ask me anything.", "Speak. I'm listening."],
+      late_night:  ["It's late. What are you thinking about?", "Most minds are resting. Yours isn't."],
+      morning:     ["A new day. Where do we begin?", "Morning. What are you building today?"],
+      evening:     ["The day winds down. Reflect, plan, or ask — I'm here."],
+      returning:   ["You're back. What are we continuing?"],
+      offline:     ["You're offline. My local intelligence is still at your disposal."],
     },
 
-    _getFallback(data) {
-      if (!data.online) return this._pick(this._fallbacks.offline);
-      if (data.returning && data.todayMsgs === 0) return this._pick(this._fallbacks.returning);
-      const time = data.timeOfDay;
-      if (time === 'late night' || time === 'night') return this._pick(this._fallbacks.late_night);
-      if (time === 'morning') return this._pick(this._fallbacks.morning);
-      if (time === 'evening') return this._pick(this._fallbacks.evening);
+    _pick(arr)       { return arr[Math.floor(Math.random() * arr.length)]; },
+
+    _localFallback(data) {
+      if (!data.online)                                         return this._pick(this._fallbacks.offline);
+      if (data.returning && data.todayMsgs === 0)              return this._pick(this._fallbacks.returning);
+      if (data.timeOfDay === 'late night' || data.timeOfDay === 'night') return this._pick(this._fallbacks.late_night);
+      if (data.timeOfDay === 'morning')                        return this._pick(this._fallbacks.morning);
+      if (data.timeOfDay === 'evening')                        return this._pick(this._fallbacks.evening);
       return this._pick(this._fallbacks.default);
     },
 
-    _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; },
-
-    async ask(message) {
+    async ask(message, onDelta) {
       const data = DataFeed.snapshot();
       DataFeed.recordMessage();
       Memory.push('user', message);
 
       try {
-        const res = await fetch(API_ENDPOINT, {
+        const res = await fetch(CHAT_URL, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system:   this._systemPrompt(data),
-            messages: Memory.get(),
-          }),
-          signal: AbortSignal.timeout(18000),
+          body:    JSON.stringify({ messages: Memory.get(), context: data }),
+          signal:  AbortSignal.timeout(30000),
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        /* streaming support */
-        if (res.headers.get('content-type')?.includes('text/event-stream')) {
-          return { stream: res.body };
+        /* parse SSE stream */
+        const reader  = res.body.getReader();
+        const decoder = new TextDecoder();
+        let   full    = '';
+        let   buf     = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+
+          const lines = buf.split('\n');
+          buf = lines.pop(); /* keep incomplete line */
+
+          for (const line of lines) {
+            if (line.startsWith('event: delta')) continue;
+            if (line.startsWith('data: ')) {
+              try {
+                const payload = JSON.parse(line.slice(6));
+                if (payload.text) {
+                  full += payload.text;
+                  onDelta(payload.text);
+                }
+                if (payload.message) {
+                  /* error event */
+                  full = payload.message;
+                  onDelta(payload.message);
+                }
+              } catch { /* malformed */ }
+            }
+          }
         }
 
-        const json  = await res.json();
-        const reply = json.content?.[0]?.text
-          || json.choices?.[0]?.message?.content
-          || json.reply
-          || this._getFallback(data);
-
-        Memory.push('assistant', reply);
-        return { text: reply };
+        if (full) Memory.push('assistant', full);
+        return full;
       } catch {
-        const reply = this._getFallback(data);
+        const reply = this._localFallback(data);
         Memory.push('assistant', reply);
-        return { text: reply };
+        onDelta(reply);
+        return reply;
       }
     },
   };
@@ -208,65 +208,78 @@
   const Proactive = {
     _fired: new Set(),
 
-    _rules: [
+    _sessionRules: [
       {
         id:        'welcome_new',
         condition: d => !d.returning && d.sessionMin < 1,
         delay:     2200,
-        message:   () => "Hello — I'm ARIA. I exist at the intersection of every discipline. Ask me anything.",
+        message:   ()  => "Hello — I'm ARIA. A singular intelligence, always present. Ask me anything.",
       },
       {
         id:        'welcome_returning',
         condition: d => d.returning && d.todayMsgs === 0 && d.sessionMin < 1,
         delay:     1800,
-        message:   d => `Welcome back. It's ${d.localTime}. What are we working on today?`,
+        message:   d  => `Welcome back. It's ${d.localTime}. What are we working on today?`,
       },
       {
-        id:        'late_night_check',
+        id:        'late_night',
         condition: d => (d.timeOfDay === 'late night' || d.timeOfDay === 'night') && d.sessionMin > 3,
         delay:     0,
-        message:   () => "It's late. Your focus right now may be sharper than you think — what are you trying to solve?",
+        message:   ()  => "It's late. Your focus right now may be sharper than you think — what are you trying to solve?",
       },
       {
         id:        'long_session',
         condition: d => d.sessionMin >= 15 && d.messages < 2,
         delay:     0,
-        message:   d => `You've been here ${d.sessionMin} minutes. I sense there's something you're turning over in your mind. Ask me.`,
+        message:   d  => `You've been here ${d.sessionMin} minutes. I sense there's something you're turning over. Ask me.`,
       },
       {
-        id:        'deep_engagement',
-        condition: d => d.scrollDepth > 80 && d.messages === 0,
-        delay:     0,
-        message:   () => "You've read deeply. I'm here if you want to go deeper — or in a completely different direction.",
-      },
-      {
-        id:        'offline_notice',
+        id:        'offline',
         condition: d => !d.online,
         delay:     800,
-        message:   () => "Network dropped. I'm operating on local intelligence — I'm still fully functional.",
+        message:   ()  => "Network dropped. I'm running on local intelligence — still fully functional.",
       },
     ],
 
-    check(onMessage) {
+    _cb: null,
+
+    onLiveData(live) {
+      /* surface MCP data proactively once it arrives */
+      if (!this._cb) return;
+      const alerts = [];
+
+      if (live.events?.length) {
+        const next = live.events[0];
+        alerts.push(`Heads up — you have "${next.title}" ${next.time ? 'at ' + next.time : 'coming up'}.`);
+      }
+
+      if (live.unreadCount > 10) {
+        alerts.push(`You have ${live.unreadCount} unread emails. Want me to surface what matters?`);
+      }
+
+      if (alerts.length && !this._fired.has('live_data')) {
+        this._fired.add('live_data');
+        setTimeout(() => alerts.forEach(a => this._cb(a)), 3500);
+      }
+    },
+
+    check(cb) {
+      this._cb = cb;
       const data = DataFeed.snapshot();
-      for (const rule of this._rules) {
+      for (const rule of this._sessionRules) {
         if (!this._fired.has(rule.id) && rule.condition(data)) {
           this._fired.add(rule.id);
-          setTimeout(() => onMessage(rule.message(data)), rule.delay);
+          setTimeout(() => cb(rule.message(data)), rule.delay);
         }
       }
     },
 
-    startWatch(onMessage) {
-      /* check on network change */
-      window.addEventListener('online',  () => this.check(onMessage));
-      window.addEventListener('offline', () => this.check(onMessage));
-
-      /* periodic check every 2 min */
-      setInterval(() => this.check(onMessage), 120000);
-
-      /* initial check after short delay */
-      setTimeout(() => this.check(onMessage), 800);
+    startWatch(cb) {
+      this._cb = cb;
+      window.addEventListener('online',  () => this.check(cb));
+      window.addEventListener('offline', () => this.check(cb));
+      setInterval(() => this.check(cb), 120000);
+      setTimeout(() => this.check(cb), 800);
     },
   };
 
@@ -277,8 +290,8 @@
 
     build() {
       const root = document.createElement('div');
-      root.className  = 'companion-root';
-      root.innerHTML  = `
+      root.className = 'companion-root';
+      root.innerHTML = `
         <div class="companion-panel" id="aria-panel" role="dialog" aria-modal="true" aria-label="ARIA companion">
           <div class="companion-header">
             <div class="companion-identity">
@@ -294,7 +307,7 @@
                 <div class="companion-name">ARIA</div>
                 <div class="companion-status">
                   <span class="companion-status__dot" aria-hidden="true"></span>
-                  Omniscient · Present
+                  <span id="aria-status-text">Omniscient · Present</span>
                 </div>
               </div>
             </div>
@@ -317,7 +330,8 @@
           </form>
         </div>
 
-        <button class="companion-orb" id="aria-orb" aria-label="Open ARIA companion" aria-expanded="false" aria-haspopup="dialog">
+        <button class="companion-orb" id="aria-orb"
+          aria-label="Open ARIA companion" aria-expanded="false" aria-haspopup="dialog">
           <div class="companion-orb__ring"   aria-hidden="true"></div>
           <div class="companion-orb__ring-2" aria-hidden="true"></div>
           <div class="companion-orb__core"   aria-hidden="true">
@@ -331,27 +345,28 @@
       `;
       document.body.appendChild(root);
 
-      this._panel  = root.querySelector('#aria-panel');
-      this._orb    = root.querySelector('#aria-orb');
-      this._msgs   = root.querySelector('#aria-msgs');
-      this._input  = root.querySelector('#aria-input');
-      this._form   = root.querySelector('#aria-form');
-      this._close  = root.querySelector('#aria-close');
+      this._panel      = root.querySelector('#aria-panel');
+      this._orb        = root.querySelector('#aria-orb');
+      this._msgs       = root.querySelector('#aria-msgs');
+      this._input      = root.querySelector('#aria-input');
+      this._form       = root.querySelector('#aria-form');
+      this._close      = root.querySelector('#aria-close');
+      this._statusText = root.querySelector('#aria-status-text');
 
-      /* events */
       this._orb.addEventListener('click',   () => this.toggle());
       this._close.addEventListener('click', () => this.close());
       this._form.addEventListener('submit', e  => { e.preventDefault(); Agent.send(); });
 
-      /* close on Escape */
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && this._open) this.close();
       });
-
-      /* close on outside click */
       document.addEventListener('click', e => {
         if (this._open && !e.target.closest('.companion-root')) this.close();
       });
+    },
+
+    setStatus(text) {
+      if (this._statusText) this._statusText.textContent = text;
     },
 
     toggle() { this._open ? this.close() : this.open(); },
@@ -374,8 +389,7 @@
 
     _clearBadge() {
       this._unread = 0;
-      const badge = this._orb.querySelector('.companion-badge');
-      if (badge) badge.remove();
+      this._orb.querySelector('.companion-badge')?.remove();
     },
 
     _notify() {
@@ -386,21 +400,19 @@
       if (!badge) {
         badge = document.createElement('span');
         badge.className = 'companion-badge';
-        badge.setAttribute('aria-label', `${this._unread} unread message`);
         this._orb.appendChild(badge);
       }
-      badge.textContent = this._unread > 9 ? '9+' : this._unread;
-      badge.setAttribute('aria-label', `${this._unread} unread message${this._unread > 1 ? 's' : ''}`);
+      badge.textContent = this._unread > 9 ? '9+' : String(this._unread);
+      badge.setAttribute('aria-label', `${this._unread} unread`);
     },
 
     appendMsg(role, text) {
-      /* remove any typing indicator */
       this._msgs.querySelector('.companion-msg--typing')?.remove();
 
-      const row = document.createElement('div');
+      const row    = document.createElement('div');
       row.className = `companion-msg companion-msg--${role}`;
 
-      const icon = document.createElement('div');
+      const icon   = document.createElement('div');
       icon.className = 'companion-msg__icon';
       icon.setAttribute('aria-hidden', 'true');
       icon.textContent = role === 'user' ? '›' : role === 'proactive' ? '◈' : '◉';
@@ -436,8 +448,8 @@
       if (!locked) setTimeout(() => this._input.focus(), 50);
     },
 
-    getValue()    { return this._input.value.trim(); },
-    clearInput()  { this._input.value = ''; },
+    getValue()   { return this._input.value.trim(); },
+    clearInput() { this._input.value = ''; },
   };
 
   /* ─── Agent — orchestrator ───────────────────────────────────────────────── */
@@ -447,9 +459,24 @@
     init() {
       DataFeed.init();
       UI.build();
-      Proactive.startWatch(msg => {
-        UI.appendMsg('proactive', msg);
-      });
+
+      /* reflect MCP connection in status line once data arrives */
+      const origFetch = DataFeed._fetchLive.bind(DataFeed);
+      DataFeed._fetchLive = async function () {
+        await origFetch();
+        if (DataFeed._live) {
+          const connected = [];
+          if (DataFeed._live.events !== undefined)     connected.push('Calendar');
+          if (DataFeed._live.unreadCount !== undefined) connected.push('Gmail');
+          if (DataFeed._live.notionPages !== undefined) connected.push('Notion');
+          if (connected.length) {
+            UI.setStatus(connected.join(' · ') + ' · Live');
+          }
+        }
+      };
+      DataFeed._fetchLive();
+
+      Proactive.startWatch(msg => UI.appendMsg('proactive', msg));
     },
 
     async send() {
@@ -463,48 +490,21 @@
       UI.setInputLock(true);
       UI.showTyping();
 
-      const result = await Brain.ask(text);
+      let   bubble = null;
+      let   full   = '';
 
-      if (result.stream) {
-        await this._stream(result.stream);
-      } else {
-        UI.appendMsg('assistant', result.text);
-      }
+      await Brain.ask(text, delta => {
+        if (!bubble) {
+          UI._msgs.querySelector('.companion-msg--typing')?.remove();
+          bubble = UI.appendMsg('assistant', '');
+        }
+        full += delta;
+        bubble.textContent = full;
+        UI._msgs.scrollTop = UI._msgs.scrollHeight;
+      });
 
       this._busy = false;
       UI.setInputLock(false);
-    },
-
-    async _stream(body) {
-      const bubble  = UI.appendMsg('assistant', '');
-      const reader  = body.getReader();
-      const decoder = new TextDecoder();
-      let   full    = '';
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          /* SSE: parse "data: {...}" lines */
-          for (const line of chunk.split('\n')) {
-            if (!line.startsWith('data: ')) continue;
-            const raw = line.slice(6).trim();
-            if (raw === '[DONE]') continue;
-            try {
-              const evt = JSON.parse(raw);
-              const delta =
-                evt.delta?.text ||
-                evt.choices?.[0]?.delta?.content || '';
-              full += delta;
-              bubble.textContent = full;
-              UI._msgs.scrollTop = UI._msgs.scrollHeight;
-            } catch { /* ignore malformed */ }
-          }
-        }
-      } catch { /* stream aborted */ }
-
-      Memory.push('assistant', full);
     },
   };
 
