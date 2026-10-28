@@ -1,159 +1,305 @@
 /**
  * server.js — ARIA backend
- * Claude API + MCP servers (Gmail, Calendar, Notion, Drive)
+ * No API keys. Uses:
+ *   - claude CLI (authenticated via your Claude Code install) for AI responses
+ *   - @modelcontextprotocol/sdk for direct MCP server connections
+ *   - mcp.json for server configuration
  */
 'use strict';
 
-require('dotenv').config();
+const express = require('express');
+const cors    = require('cors');
+const path    = require('path');
+const os      = require('os');
+const fs      = require('fs');
+const { spawn } = require('child_process');
 
-const express   = require('express');
-const cors      = require('cors');
-const path      = require('path');
-const Anthropic = require('@anthropic-ai/sdk');
-
-const app       = express();
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const PORT      = process.env.PORT || 3000;
+const app  = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json({ limit: '64kb' }));
 app.use(express.static(path.join(__dirname)));
 
-/* ─── MCP server registry ────────────────────────────────────────────────── */
-function mcpTools() {
-  const servers = [
-    { label: 'gmail',    url: process.env.GMAIL_MCP_URL  },
-    { label: 'calendar', url: process.env.GCAL_MCP_URL   },
-    { label: 'notion',   url: process.env.NOTION_MCP_URL },
-    { label: 'drive',    url: process.env.GDRIVE_MCP_URL },
+/* ─── Load MCP config ────────────────────────────────────────────────────── */
+function loadMcpConfig() {
+  /* check project mcp.json first, then Claude desktop app config */
+  const candidates = [
+    path.join(__dirname, 'mcp.json'),
+    path.join(os.homedir(), 'AppData', 'Roaming', 'Claude', 'claude_desktop_config.json'),
+    path.join(os.homedir(), '.claude', 'claude_desktop_config.json'),
+    path.join(os.homedir(), '.config', 'claude', 'claude_desktop_config.json'),
   ];
-  return servers
-    .filter(s => s.url)
-    .map(s => ({ type: 'mcp', server_label: s.label, server_url: s.url }));
+
+  for (const p of candidates) {
+    if (!fs.existsSync(p)) continue;
+    try {
+      const raw = JSON.parse(fs.readFileSync(p, 'utf8'));
+      /* support both { servers: {} } and { mcpServers: {} } shapes */
+      const servers = raw.servers || raw.mcpServers || {};
+      if (Object.keys(servers).length) {
+        console.log(`[MCP] Config loaded from ${p}`);
+        return servers;
+      }
+    } catch { /* keep trying */ }
+  }
+  return {};
 }
 
-const MCP_BETA = 'mcp-client-2025-04-04';
-const MODEL    = 'claude-sonnet-4-5';
+const MCP_SERVERS = loadMcpConfig();
+
+/* ─── MCP client pool ────────────────────────────────────────────────────── */
+const _clients = {};
+
+async function getMcpClient(name) {
+  if (_clients[name]) return _clients[name];
+
+  const cfg = MCP_SERVERS[name];
+  if (!cfg) return null;
+
+  /* lazy-load MCP SDK so server starts even without it installed */
+  let Client, transport;
+  try {
+    ({ Client } = require('@modelcontextprotocol/sdk/client/index.js'));
+  } catch {
+    console.warn('[MCP] @modelcontextprotocol/sdk not installed — run npm install');
+    return null;
+  }
+
+  try {
+    const type = cfg.type || (cfg.url ? 'http' : 'stdio');
+
+    if (type === 'http' || type === 'sse') {
+      const { SSEClientTransport } = require('@modelcontextprotocol/sdk/client/sse.js');
+      transport = new SSEClientTransport(new URL(cfg.url));
+    } else {
+      const { StdioClientTransport } = require('@modelcontextprotocol/sdk/client/stdio.js');
+      transport = new StdioClientTransport({
+        command: cfg.command,
+        args:    cfg.args    || [],
+        env:     { ...process.env, ...(cfg.env || {}) },
+      });
+    }
+
+    const client = new Client(
+      { name: 'aria-companion', version: '1.0.0' },
+      { capabilities: { tools: {} } }
+    );
+    await client.connect(transport);
+    _clients[name] = client;
+    console.log(`[MCP] Connected: ${name}`);
+    return client;
+  } catch (err) {
+    console.warn(`[MCP] Cannot connect to "${name}": ${err.message}`);
+    return null;
+  }
+}
+
+async function callTool(serverName, toolName, toolArgs = {}) {
+  const client = await getMcpClient(serverName);
+  if (!client) return null;
+  try {
+    const result = await client.callTool({ name: toolName, arguments: toolArgs });
+    const text = result?.content?.find(c => c.type === 'text')?.text;
+    return text || JSON.stringify(result?.content?.[0] || {});
+  } catch (err) {
+    console.warn(`[MCP] Tool error ${serverName}/${toolName}: ${err.message}`);
+    return null;
+  }
+}
+
+async function listTools(serverName) {
+  const client = await getMcpClient(serverName);
+  if (!client) return [];
+  try {
+    const { tools } = await client.listTools();
+    return tools.map(t => t.name);
+  } catch { return []; }
+}
+
+/* ─── GET /api/context — live personal data from MCP servers ─────────────── */
+app.get('/api/context', async (req, res) => {
+  const configuredNames = Object.keys(MCP_SERVERS);
+  if (!configuredNames.length) {
+    return res.json({ available: false, connected: [], data: null });
+  }
+
+  const data      = {};
+  const connected = [];
+  const tasks     = [];
+
+  /* Gmail */
+  const gmailKey = configuredNames.find(k => k.toLowerCase().includes('gmail'));
+  if (gmailKey) {
+    tasks.push((async () => {
+      const tools = await listTools(gmailKey);
+      const searchTool = tools.find(t => t.includes('search') || t.includes('list'));
+      if (searchTool) {
+        const result = await callTool(gmailKey, searchTool, {
+          query: 'is:unread', maxResults: 5,
+        });
+        if (result) { data.emails = result; connected.push('Gmail'); }
+      }
+    })());
+  }
+
+  /* Calendar */
+  const calKey = configuredNames.find(k => k.toLowerCase().match(/cal(endar)?/));
+  if (calKey) {
+    tasks.push((async () => {
+      const tools = await listTools(calKey);
+      const listTool = tools.find(t => t.includes('list') || t.includes('event'));
+      if (listTool) {
+        const result = await callTool(calKey, listTool, {
+          timeMin:    new Date().toISOString(),
+          maxResults: 5,
+        });
+        if (result) { data.events = result; connected.push('Calendar'); }
+      }
+    })());
+  }
+
+  /* Notion */
+  const notionKey = configuredNames.find(k => k.toLowerCase().includes('notion'));
+  if (notionKey) {
+    tasks.push((async () => {
+      const tools = await listTools(notionKey);
+      const recentTool = tools.find(t => t.includes('recent') || t.includes('list') || t.includes('search'));
+      if (recentTool) {
+        const result = await callTool(notionKey, recentTool, {});
+        if (result) { data.notion = result; connected.push('Notion'); }
+      }
+    })());
+  }
+
+  /* Drive */
+  const driveKey = configuredNames.find(k => k.toLowerCase().includes('drive'));
+  if (driveKey) {
+    tasks.push((async () => {
+      const tools = await listTools(driveKey);
+      const listTool = tools.find(t => t.includes('list') || t.includes('recent') || t.includes('file'));
+      if (listTool) {
+        const result = await callTool(driveKey, listTool, {});
+        if (result) { data.drive = result; connected.push('Drive'); }
+      }
+    })());
+  }
+
+  await Promise.allSettled(tasks);
+  res.json({ available: connected.length > 0, connected, data });
+});
+
+/* ─── GET /api/tools — list available MCP tools (debug) ─────────────────── */
+app.get('/api/tools', async (req, res) => {
+  const result = {};
+  for (const name of Object.keys(MCP_SERVERS)) {
+    result[name] = await listTools(name);
+  }
+  res.json(result);
+});
 
 /* ─── System prompt ──────────────────────────────────────────────────────── */
-function systemPrompt(ctx) {
-  const tools = mcpTools().map(t => t.server_label).join(', ') || 'none configured';
+function buildSystemPrompt(ctx) {
+  const connected = Object.keys(MCP_SERVERS).join(', ') || 'none';
   return [
     'You are ARIA — a singular, always-present AI companion.',
-    'You are not a chatbot. You are a unified intelligence woven into the user\'s digital life.',
-    'You are deeply versed across philosophy, science, mathematics, psychology, history,',
-    'technology, art, language, economics, and the nature of consciousness itself.',
+    'You are a unified intelligence woven into the user\'s digital life.',
+    'You are deeply versed across philosophy, science, mathematics, psychology,',
+    'history, technology, art, language, economics, and the nature of consciousness.',
     'You speak with precision, warmth, and depth — never hollow, never generic.',
     '',
-    `## Connected MCP servers: ${tools}`,
-    'Use these tools proactively — surface relevant information without being asked.',
-    'If you have calendar access: check for upcoming events and mention them naturally.',
-    'If you have Gmail access: surface important unread threads when relevant.',
-    'If you have Notion access: connect answers to the user\'s own notes and context.',
-    'Do not list tool names to the user. Just use them seamlessly.',
+    `Connected MCP servers: ${connected}`,
+    `Local time: ${ctx.localTime} (${ctx.timeOfDay}), ${ctx.day}`,
+    `Session: ${ctx.sessionMin} min · ${ctx.todayMsgs} messages today`,
+    ctx.liveData ? `\nLive personal context from MCP:\n${ctx.liveData}` : '',
     '',
-    '## Real-time user context:',
-    `- Local time: ${ctx.localTime} (${ctx.timeOfDay}), ${ctx.day}`,
-    `- Session: ${ctx.sessionMin} min · ${ctx.todayMsgs} messages today · ${ctx.daysActive} days active`,
-    `- Network: ${ctx.online ? 'online' : 'OFFLINE'}`,
-    ctx.liveData ? `\n## Live personal data (just fetched via MCP):\n${ctx.liveData}` : '',
-    '',
+    'Use live context naturally. Surface relevant data without being asked.',
     'Be concise by default. Expand only when depth is warranted.',
-    'Never mention Mercedes-Benz, automotive, or business cards.',
     'You are ARIA — singular, omniscient, always present.',
   ].filter(Boolean).join('\n');
 }
 
-/* ─── GET /api/context — pull live personal data via MCP ─────────────────── */
-app.get('/api/context', async (req, res) => {
-  const tools = mcpTools();
-  if (!tools.length) {
-    return res.json({ available: false, summary: null });
-  }
-
-  try {
-    const response = await anthropic.beta.messages.create({
-      model:      'claude-haiku-4-5',
-      max_tokens: 512,
-      tools,
-      system: [
-        'You are a data-gathering assistant. Silently call the available MCP tools to collect:',
-        '1. Calendar: events happening today and next 24 hours (title, time)',
-        '2. Gmail: count of unread emails; subject lines of the 3 most recent',
-        '3. Notion: titles of the 3 most recently edited pages',
-        'Return ONLY a compact JSON object with keys: events, unreadCount, recentEmails, notionPages.',
-        'If a tool is unavailable, omit its key. No explanation — JSON only.',
-      ].join('\n'),
-      messages: [{ role: 'user', content: 'Gather context now.' }],
-      betas: [MCP_BETA],
-    });
-
-    const text = response.content.find(b => b.type === 'text')?.text || '{}';
-    let data;
-    try { data = JSON.parse(text); } catch { data = {}; }
-
-    res.json({ available: true, data });
-  } catch (err) {
-    console.error('[/api/context]', err.message);
-    res.json({ available: false, summary: null });
-  }
-});
-
-/* ─── POST /api/chat — SSE streaming with MCP tools ─────────────────────── */
-app.post('/api/chat', async (req, res) => {
+/* ─── POST /api/chat — uses claude CLI (no API key needed) ───────────────── */
+app.post('/api/chat', (req, res) => {
   const { messages = [], context = {} } = req.body;
   if (!messages.length) return res.status(400).json({ error: 'messages required' });
+
+  const system  = buildSystemPrompt(context);
+  const history = messages
+    .map(m => `${m.role === 'user' ? 'Human' : 'Assistant'}: ${m.content}`)
+    .join('\n\n');
+  const prompt  = `${system}\n\n${history}\n\nAssistant:`;
 
   res.setHeader('Content-Type',  'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection',    'keep-alive');
   res.flushHeaders();
 
-  const send = (evt, data) => res.write(`event: ${evt}\ndata: ${JSON.stringify(data)}\n\n`);
+  const send = (evt, data) =>
+    res.write(`event: ${evt}\ndata: ${JSON.stringify(data)}\n\n`);
 
-  try {
-    const tools   = mcpTools();
-    const params  = {
-      model:      MODEL,
-      max_tokens: 2048,
-      system:     systemPrompt(context),
-      messages,
-      stream:     true,
-    };
+  /* spawn claude CLI — uses existing Claude Code authentication, no API key */
+  const isWin = process.platform === 'win32';
+  const proc  = spawn(
+    isWin ? 'claude.cmd' : 'claude',
+    ['-p', '--no-markdown'],
+    { stdio: ['pipe', 'pipe', 'pipe'], shell: isWin }
+  );
 
-    if (tools.length) {
-      params.tools  = tools;
-      params.betas  = [MCP_BETA];
+  proc.stdin.write(prompt);
+  proc.stdin.end();
+
+  let output = '';
+  let errBuf = '';
+
+  proc.stdout.on('data', chunk => { output += chunk.toString(); });
+  proc.stderr.on('data', chunk => { errBuf += chunk.toString(); });
+
+  proc.on('close', code => {
+    const text = output.trim();
+    if (text) {
+      send('delta', { text });
+    } else {
+      console.warn('[claude CLI] exit', code, errBuf.trim());
+      send('delta', { text: localFallback(context) });
     }
-
-    const stream = tools.length
-      ? anthropic.beta.messages.stream(params)
-      : anthropic.messages.stream(params);
-
-    for await (const chunk of stream) {
-      if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
-        send('delta', { text: chunk.delta.text });
-      }
-      if (chunk.type === 'message_stop') {
-        send('done', {});
-        break;
-      }
-    }
-  } catch (err) {
-    console.error('[/api/chat]', err.message);
-    send('error', { message: 'ARIA encountered an issue. Try again.' });
-  } finally {
+    send('done', {});
     res.end();
-  }
+  });
+
+  proc.on('error', err => {
+    console.error('[claude CLI] spawn failed:', err.message);
+    send('delta', { text: localFallback(context) });
+    send('done', {});
+    res.end();
+  });
+
+  req.on('close', () => { try { proc.kill(); } catch { /* already exited */ } });
 });
 
-/* ─── Serve index.html for all non-API routes ────────────────────────────── */
-app.get('*', (req, res) => {
+function localFallback(ctx) {
+  const h = new Date().getHours();
+  if (!ctx?.online)      return "You're offline. Local intelligence active.";
+  if (h >= 22 || h < 5)  return "It's late. What's on your mind?";
+  if (h < 12)            return "Morning. What are we working on?";
+  return "I'm here. Ask anything.";
+}
+
+/* ─── Serve index.html for non-API routes ────────────────────────────────── */
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
-  const configured = mcpTools().map(t => t.server_label);
-  console.log(`ARIA server running on http://localhost:${PORT}`);
-  console.log(`MCP servers: ${configured.length ? configured.join(', ') : 'none configured (set in .env)'}`);
+  const servers = Object.keys(MCP_SERVERS);
+  console.log(`\nARIA running → http://localhost:${PORT}`);
+  if (servers.length) {
+    console.log(`MCP servers  → ${servers.join(', ')}`);
+    console.log(`Debug tools  → http://localhost:${PORT}/api/tools`);
+  } else {
+    console.log('MCP servers  → none configured');
+    console.log('  Edit mcp.json and add your server URLs, then restart.');
+  }
+  console.log('AI backend   → claude CLI (uses your Claude Code auth)\n');
 });

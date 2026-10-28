@@ -1,0 +1,26 @@
+{
+  "servers": {
+    "gmail": {
+      "comment": "Choose ONE type. For HTTP/SSE transport:",
+      "type": "http",
+      "url": "http://localhost:3101/mcp",
+
+      "comment2": "OR for stdio transport (uncomment and remove http block):",
+      "_type": "stdio",
+      "_command": "npx",
+      "_args": ["-y", "@notionhq/notion-mcp-server"]
+    },
+    "calendar": {
+      "type": "http",
+      "url": "http://localhost:3102/mcp"
+    },
+    "notion": {
+      "type": "http",
+      "url": "http://localhost:3103/mcp"
+    },
+    "drive": {
+      "type": "http",
+      "url": "http://localhost:3104/mcp"
+    }
+  }
+}
