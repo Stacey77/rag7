@@ -1,0 +1,1907 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Etz Chaim Atlas: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Etz Chaim Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Frank+Ruhl+Libre:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --void:#070910;
+    --ground:#0C1017;
+    --panel:#121826;
+    --panel-2:#0F1420;
+    --rule:#243049;
+    --rule-soft:#1A2234;
+    --bone:#E9E4D6;
+    --bone-2:#B9BFCD;
+    --bone-3:#7E8799;
+    --gold:#D8AE4E;
+    --gold-dim:#8E7330;
+    --copper:#C4713F;
+    --verdigris:#56A296;
+    --violet:#9B7BD4;
+    --focus:#F0D488;
+    --k:#F3F0E6; --ch:#A7AEBA; --bi:#1C1F28; --da:#5D6C89;
+    --ge:#C0392B; --cs:#2F63C9; --ti:#E4B429; --ne:#2F9E63;
+    --ho:#DD7A25; --ye:#7B52C4; --ma:#8A5A32;
+    --fs-xs:.72rem; --fs-sm:.82rem; --fs-md:.98rem; --fs-lg:1.2rem;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--ground);
+    color:var(--bone);
+    font-family:"EB Garamond",Georgia,"Times New Roman",serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:0}
+  a{color:var(--gold)}
+  h1,h2,h3,h4{font-family:Cinzel,Georgia,serif;font-weight:600;text-wrap:balance;margin:0}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .heb{font-family:"Frank Ruhl Libre","Times New Roman",serif;direction:rtl;unicode-bidi:isolate}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:3px}
+
+  /* ---------- masthead ---------- */
+  header.top{
+    border-bottom:1px solid var(--rule-soft);
+    background:
+      radial-gradient(120% 140% at 50% -30%, #17203a 0%, transparent 62%),
+      var(--void);
+  }
+  header.top .wrap{padding-block:34px 28px}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);
+    letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dim);
+  }
+  h1{font-size:clamp(1.9rem,5.6vw,3rem);letter-spacing:.06em;margin-top:8px;color:var(--bone)}
+  h1 .heb{font-size:.72em;color:var(--gold);margin-inline-start:.8em;letter-spacing:0;white-space:nowrap;display:inline-block}
+  .dek{max-width:64ch;color:var(--bone-2);margin-top:12px;font-size:var(--fs-md)}
+
+  /* ---------- layout ---------- */
+  .atlas{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:28px;align-items:start;padding-block:28px 12px;
+  }
+  @media (max-width:900px){.atlas{grid-template-columns:1fr;gap:20px}}
+
+  .plate{
+    position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);
+    background:linear-gradient(175deg,#0A0E17 0%,#0D1220 60%,#0A0E17 100%);
+    border:1px solid var(--rule-soft);border-radius:2px;
+    padding:10px 10px 4px;
+  }
+  @media (max-width:900px){.plate{position:static}}
+  svg#tree{display:block;width:100%;height:auto;max-width:100%;touch-action:manipulation}
+
+  /* layer chips */
+  .layers{display:flex;flex-wrap:wrap;gap:6px;margin:10px 2px}
+  .chip{
+    font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);
+    letter-spacing:.09em;text-transform:uppercase;
+    background:transparent;color:var(--bone-3);
+    border:1px solid var(--rule);border-radius:2px;
+    padding:5px 9px;cursor:pointer;transition:.16s;
+  }
+  .chip:hover{color:var(--bone);border-color:var(--gold-dim)}
+  .chip[aria-pressed="true"]{color:var(--void);background:var(--gold);border-color:var(--gold);font-weight:500}
+  .chip.copper[aria-pressed="true"]{background:var(--copper);border-color:var(--copper);color:#140A05}
+  .chip.verd[aria-pressed="true"]{background:var(--verdigris);border-color:var(--verdigris);color:#04120F}
+  .chip.viol[aria-pressed="true"]{background:var(--violet);border-color:var(--violet);color:#0D0718}
+
+  /* ---------- metatron's cube ---------- */
+  .cubewrap{
+    background:linear-gradient(175deg,#0A0E17 0%,#0D1220 60%,#0A0E17 100%);
+    border:1px solid var(--rule-soft);border-radius:2px;
+    padding:14px 14px 16px;margin-top:20px;max-width:620px;
+  }
+  svg#cube{display:block;width:100%;height:auto;max-width:100%}
+  .cubenote{font-size:var(--fs-sm);color:var(--bone-2);margin:10px 2px 0;max-width:none}
+  .cubenote b{color:var(--gold)}
+  .ccirc{fill:none;stroke:#2B3752;stroke-width:1}
+  .cline{stroke:#233049;stroke-width:.7}
+  .cpt{fill:var(--gold)}
+  .cnum{font-family:"IBM Plex Mono",monospace;font-size:9px;fill:var(--bone-3);
+    paint-order:stroke;stroke:#0A0E17;stroke-width:3px;stroke-linejoin:round}
+  .csolid{fill:rgba(86,162,150,.13);stroke:var(--verdigris);stroke-width:2;stroke-linejoin:round}
+  .csolid.alt{fill:rgba(216,174,78,.10);stroke:var(--gold)}
+  .csolid-l{stroke:var(--verdigris);stroke-width:2}
+  .coedge{stroke:var(--copper);stroke-width:1.9;opacity:.92}
+  /* compass construction */
+  svg#seedsvg,svg#pentsvg{display:block;width:100%;height:auto;max-width:100%}
+  .pentwrap{background:linear-gradient(175deg,#0A0E17 0%,#0D1220 60%,#0A0E17 100%);
+    border:1px solid var(--rule-soft);padding:14px;margin-top:20px;max-width:380px}
+  .gcirc{fill:none;stroke:#54698F;stroke-width:1.2}
+  .gcirc.faint{stroke:#1E2840;stroke-width:.8}
+  .gcirc.hot{stroke:var(--gold);stroke-width:1.6}
+  .gctr{fill:#5E6E8C}
+  .gctr.hot{fill:var(--gold)}
+  .gweb{stroke:rgba(216,174,78,.30);stroke-width:.7}
+  .gmark{stroke:var(--verdigris);stroke-width:2}
+  .gmark.dim{stroke:var(--verdigris);stroke-width:1;stroke-dasharray:4 4;opacity:.7}
+  .gtri{fill:rgba(86,162,150,.15);stroke:var(--verdigris);stroke-width:2;stroke-linejoin:round}
+  .glbl{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:var(--verdigris);letter-spacing:.06em;
+    paint-order:stroke;stroke:#0A0E17;stroke-width:3px;stroke-linejoin:round}
+  .glbl.big{font-size:12px;fill:var(--gold);letter-spacing:.08em}
+  .gpent{fill:none;stroke:var(--bone-2);stroke-width:2;stroke-linejoin:round}
+  /* the hand */
+  .handwrap{background:linear-gradient(175deg,#0A0E17 0%,#0D1220 60%,#0A0E17 100%);
+    border:1px solid var(--rule-soft);padding:14px;margin:22px 0 4px;max-width:420px}
+  svg#handsvg{display:block;width:100%;height:auto;max-width:100%}
+  .palm{fill:rgba(216,174,78,.055);stroke:#41537A;stroke-width:1.3;stroke-linejoin:round}
+  .wrist{fill:none;stroke:#41537A;stroke-width:1;stroke-dasharray:3 4;opacity:.8}
+  .bone{stroke:var(--gold);stroke-width:13;stroke-linecap:round;opacity:.9;transition:stroke .2s}
+  .bone.mid{stroke:var(--verdigris)}
+  .bone.outer{stroke:var(--gold);opacity:.62}
+  .bonum{font-family:"IBM Plex Mono",monospace;font-size:8.5px;fill:#0B0E14;font-weight:500}
+  .handlbl{font-family:Cinzel,serif;font-size:13px;letter-spacing:.14em;fill:var(--bone-2)}
+  p.bigline{font-size:1.1rem;color:var(--bone);border-left:2px solid var(--gold);
+    padding-left:16px;margin:20px 0}
+  p.bigline .heb{font-size:1.4rem;color:var(--gold)}
+  p.bigline strong{color:var(--gold)}
+  .gdiag{stroke:var(--gold);stroke-width:1.5;opacity:.9}
+  .covert{fill:var(--copper);stroke:#1A0D06;stroke-width:1}
+  .cocentre{fill:none;stroke:var(--copper);stroke-width:2;stroke-dasharray:3 3}
+  .oshadow{fill:rgba(155,123,212,.07);stroke:var(--violet);stroke-width:.8;stroke-dasharray:3 5}
+  .oray{stroke:var(--violet);stroke-width:.6;opacity:.45}
+  .odrop{stroke:var(--violet);stroke-width:1.4;stroke-dasharray:4 4;opacity:.9}
+  .opt{fill:var(--violet);stroke:#EDE6FF;stroke-width:1.5}
+  .olbl{font-family:"IBM Plex Mono",monospace;font-size:9px;fill:var(--violet);letter-spacing:.12em;
+    paint-order:stroke;stroke:#0A0E17;stroke-width:3px;stroke-linejoin:round}
+  .olbl.dim{fill:var(--bone-3);letter-spacing:.06em;font-size:8px}
+
+  /* ---------- pathway walker ---------- */
+  .walker{border-top:1px solid var(--rule-soft);margin:4px 2px 2px;padding-top:14px}
+  .walker .wtop{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+  .walker select{
+    background:var(--panel-2);border:1px solid var(--rule);color:var(--bone);
+    font-family:Cinzel,serif;font-size:var(--fs-sm);letter-spacing:.06em;padding:7px 10px;border-radius:2px;
+    max-width:100%;
+  }
+  .walker select:focus{border-color:var(--violet)}
+  .wnav{display:flex;align-items:center;gap:8px}
+  .wnav button{
+    background:var(--panel-2);border:1px solid var(--rule);color:var(--bone-2);
+    font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);
+    padding:6px 11px;border-radius:2px;cursor:pointer;
+  }
+  .wnav button:hover:not(:disabled){color:var(--violet);border-color:var(--violet)}
+  .wnav button:disabled{opacity:.35;cursor:default}
+  .wcount{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);color:var(--bone-3);
+    letter-spacing:.1em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .wsrc{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);color:var(--bone-3);
+    letter-spacing:.05em;margin-top:9px}
+  .wsrc i{color:var(--bone-2)}
+  .wintro{font-size:var(--fs-sm);color:var(--bone-2);margin:9px 0 0}
+  .wintro b{color:var(--bone)}
+  .wdots{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px}
+  .wdots button{
+    width:20px;height:20px;padding:0;border-radius:50%;cursor:pointer;
+    background:var(--panel-2);border:1px solid var(--rule);color:var(--bone-3);
+    font-family:"IBM Plex Mono",monospace;font-size:9px;line-height:1;
+  }
+  .wdots button:hover{border-color:var(--violet);color:var(--violet)}
+  .wdots button[aria-current="true"]{background:var(--violet);border-color:var(--violet);color:#0D0718}
+  .wstation{
+    margin-top:13px;border-left:2px solid var(--violet);padding:3px 0 3px 14px;
+  }
+  .wstation h6{
+    font-family:Cinzel,serif;font-size:var(--fs-sm);letter-spacing:.07em;color:var(--violet);
+    margin:0 0 3px;font-weight:600;
+  }
+  .wstation .wsay{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);color:var(--gold);
+    letter-spacing:.08em;margin-bottom:2px}
+  .wstation .wsay .heb{font-family:"Frank Ruhl Libre",serif;font-size:1.1rem;margin-left:8px;color:var(--bone)}
+  .wstation .wbody{font-size:var(--fs-xs);color:var(--bone-3);font-style:italic;margin-bottom:6px}
+  .wstation p{margin:0;font-size:var(--fs-sm);color:var(--bone-2)}
+  .wstation p b{color:var(--bone)}
+  .wstation p i{color:var(--bone)}
+
+  /* ---------- reading panel ---------- */
+  .scroll{
+    background:var(--panel);border:1px solid var(--rule-soft);border-radius:2px;
+    padding:22px 22px 26px;min-height:420px;
+  }
+  .scroll .crest{display:flex;align-items:flex-start;gap:14px}
+  .orb{
+    flex:0 0 auto;width:52px;height:52px;border-radius:50%;
+    border:1px solid rgba(233,228,214,.35);
+    display:grid;place-items:center;
+    font-family:"IBM Plex Mono",monospace;font-size:1.05rem;color:#0B0E14;font-weight:500;
+  }
+  .crest h2{font-size:1.55rem;letter-spacing:.05em;line-height:1.15}
+  .crest .sub{color:var(--gold);font-size:var(--fs-sm);letter-spacing:.14em;text-transform:uppercase;font-family:"IBM Plex Mono",monospace;margin-top:5px}
+  .crest .hebbig{font-size:1.8rem;color:var(--bone-2);line-height:1;margin-top:6px}
+  .lede{margin:18px 0 0;color:var(--bone);font-size:1.02rem}
+  .lede em{color:var(--gold)}
+
+  dl.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 16px;margin:20px 0 0;font-size:var(--fs-sm)}
+  dl.facts dt{
+    font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);letter-spacing:.11em;
+    text-transform:uppercase;color:var(--bone-3);padding-top:7px;white-space:nowrap;
+  }
+  dl.facts dd{margin:0;padding-top:6px;color:var(--bone);border-bottom:1px solid var(--rule-soft);padding-bottom:6px}
+  dl.facts dt{border-bottom:1px solid var(--rule-soft);padding-bottom:7px}
+
+  .note{
+    margin-top:20px;border-left:2px solid var(--copper);
+    padding:2px 0 2px 14px;color:var(--bone-2);font-size:var(--fs-sm);
+  }
+  .note > b:first-child{color:var(--copper);font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);
+    letter-spacing:.13em;text-transform:uppercase;display:block;margin-bottom:4px;font-weight:500}
+  .note b{color:var(--bone);font-weight:600}
+  .note.numeric{border-left-color:var(--verdigris)}
+  .note.numeric > b:first-child{color:var(--verdigris)}
+  .note.gnostic{border-left-color:var(--violet)}
+  .note.gnostic > b:first-child{color:var(--violet)}
+  .note em{color:var(--bone);font-style:italic}
+
+  .pathstrip{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
+  .pathstrip button{
+    font-family:"Frank Ruhl Libre",serif;font-size:1.15rem;line-height:1;
+    background:var(--panel-2);color:var(--bone-2);border:1px solid var(--rule);
+    border-radius:2px;padding:6px 9px;cursor:pointer;transition:.15s;
+  }
+  .pathstrip button:hover{color:var(--gold);border-color:var(--gold-dim)}
+
+  /* ---------- tabs ---------- */
+  .tabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--rule);margin-top:40px}
+  .tabs button{
+    background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;
+    font-family:Cinzel,serif;font-size:var(--fs-sm);letter-spacing:.11em;text-transform:uppercase;
+    color:var(--bone-3);padding:11px 15px;cursor:pointer;transition:.15s;
+  }
+  .tabs button:hover{color:var(--bone)}
+  .tabs button[aria-selected="true"]{color:var(--gold);border-bottom-color:var(--gold)}
+  section.pane{padding-block:26px 56px}
+  section.pane h3{font-size:1.25rem;letter-spacing:.05em;margin-bottom:6px}
+  section.pane h4{font-size:1rem;letter-spacing:.06em;color:var(--gold);margin:26px 0 6px}
+  section.pane p{max-width:72ch;color:var(--bone-2)}
+  section.pane p strong{color:var(--bone)}
+
+  .tablewrap{overflow-x:auto;margin-top:16px;border:1px solid var(--rule-soft)}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:var(--fs-sm)}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+  thead th{
+    font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);letter-spacing:.11em;
+    text-transform:uppercase;color:var(--gold-dim);background:var(--panel-2);white-space:nowrap;
+    position:sticky;top:0;
+  }
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:#161E30}
+  td.num{font-family:"IBM Plex Mono",monospace;color:var(--bone-3);font-variant-numeric:tabular-nums}
+  td .heb{font-size:1.25rem;color:var(--bone)}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;
+    border:1px solid rgba(233,228,214,.3);vertical-align:baseline}
+
+  /* ---------- calculators ---------- */
+  .calcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:20px}
+  .calc{background:var(--panel);border:1px solid var(--rule-soft);padding:18px}
+  .calc h5{font-family:Cinzel,serif;font-size:var(--fs-sm);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--gold);margin:0 0 4px}
+  .calc p.hint{font-size:var(--fs-xs);color:var(--bone-3);margin:0 0 14px;max-width:none}
+  .calc label{display:block;font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);
+    letter-spacing:.1em;text-transform:uppercase;color:var(--bone-3);margin-bottom:5px}
+  .calc input{
+    width:100%;background:var(--panel-2);border:1px solid var(--rule);color:var(--bone);
+    font-family:"EB Garamond",serif;font-size:1rem;padding:9px 11px;border-radius:2px;
+  }
+  .calc input:focus{border-color:var(--gold-dim)}
+  .calc input.heb{font-family:"Frank Ruhl Libre",serif;font-size:1.3rem;text-align:right}
+  .presets{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+  .presets button{
+    font-family:"Frank Ruhl Libre",serif;font-size:1rem;background:transparent;color:var(--bone-3);
+    border:1px solid var(--rule);border-radius:2px;padding:3px 8px;cursor:pointer;
+  }
+  .presets button:hover{color:var(--gold);border-color:var(--gold-dim)}
+  .readout{margin-top:15px;border-top:1px solid var(--rule-soft);padding-top:13px}
+  .bignum{font-family:Cinzel,serif;font-size:2.6rem;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+  .bignum small{font-size:.9rem;color:var(--bone-3);letter-spacing:.14em;font-family:"IBM Plex Mono",monospace;
+    display:block;text-transform:uppercase;margin-bottom:6px}
+  .work{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);color:var(--bone-3);
+    margin-top:9px;word-break:break-word;line-height:1.7}
+  .verdict{margin-top:11px;font-size:var(--fs-sm);color:var(--bone)}
+  .verdict b{color:var(--gold);font-family:Cinzel,serif;letter-spacing:.04em}
+
+  .keychart{display:grid;grid-template-columns:repeat(9,1fr);gap:1px;background:var(--rule-soft);
+    border:1px solid var(--rule-soft);margin-top:16px;min-width:0}
+  .keychart div{background:var(--panel-2);padding:7px 4px;text-align:center;
+    font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);color:var(--bone-2)}
+  .keychart .hd{color:var(--gold);background:var(--panel);font-weight:500}
+
+  ul.plain{max-width:72ch;color:var(--bone-2);padding-left:20px}
+  ul.plain li{margin-bottom:7px}
+  ul.plain b{color:var(--bone)}
+  .caveat{
+    background:var(--panel-2);border:1px solid var(--copper);border-left-width:3px;
+    padding:16px 18px;margin-top:24px;max-width:78ch;
+  }
+  .caveat h4{margin-top:0;color:var(--copper)}
+  .caveat p{color:var(--bone-2);font-size:var(--fs-sm);margin:0}
+  footer{border-top:1px solid var(--rule-soft);background:var(--void)}
+  footer .wrap{padding-block:26px 40px;color:var(--bone-3);font-size:var(--fs-xs);font-family:"IBM Plex Mono",monospace;line-height:1.9}
+
+  /* ---------- svg ---------- */
+  .node{cursor:pointer}
+  .node circle.body{transition:opacity .2s}
+  .node .ring{fill:none;stroke:rgba(233,228,214,.25);stroke-width:1}
+  .node:hover .ring,.node:focus-visible .ring{stroke:var(--focus);stroke-width:2}
+  .node.sel .ring{stroke:var(--focus);stroke-width:2.5}
+  .node text{pointer-events:none}
+  .node .nm{font-family:Cinzel,serif;font-size:11px;letter-spacing:.08em;fill:var(--bone)}
+  .node .nmheb{font-family:"Frank Ruhl Libre",serif;font-size:15px;fill:#0B0E14}
+  .node .idx{font-family:"IBM Plex Mono",monospace;font-size:9px;fill:var(--bone-3)}
+  .node .glyph{font-size:15px;fill:#C9D2E4}
+  .pathline{stroke:#2E3A57;stroke-width:2.4;fill:none;cursor:pointer;transition:stroke .18s,stroke-width .18s}
+  .pathhit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}
+  .pathg:hover .pathline,.pathg.sel .pathline{stroke:var(--focus);stroke-width:3.4}
+  .pathmed circle{fill:var(--panel-2);stroke:var(--rule);stroke-width:1}
+  .pathg:hover .pathmed circle,.pathg.sel .pathmed circle{stroke:var(--focus)}
+  .pathmed text{font-family:"Frank Ruhl Libre",serif;font-size:14px;fill:var(--bone-2);pointer-events:none}
+  .pathg:hover .pathmed text,.pathg.sel .pathmed text{fill:var(--focus)}
+  .pathtar{font-family:"IBM Plex Mono",monospace;font-size:7.5px;fill:var(--bone-3);letter-spacing:.06em;pointer-events:none}
+  .pillarband{fill:rgba(255,255,255,.028)}
+  .pillarlbl{font-family:Cinzel,serif;font-size:9px;letter-spacing:.16em;fill:var(--bone-3)}
+  .worldband{fill:none;stroke:var(--verdigris);stroke-width:1;stroke-dasharray:3 5;opacity:.6}
+  .worldlbl{font-family:"IBM Plex Mono",monospace;font-size:8px;letter-spacing:.14em;fill:var(--verdigris)}
+  .sword{fill:none;stroke:var(--gold);stroke-width:2;opacity:.85;stroke-linejoin:round;
+    stroke-dasharray:1800;stroke-dashoffset:1800;animation:draw 3.4s ease-out forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .serpent{fill:none;stroke:var(--verdigris);stroke-width:1.8;opacity:.75;stroke-linecap:round;
+    stroke-dasharray:2600;stroke-dashoffset:2600;animation:draw 4.2s ease-out forwards}
+  @media (prefers-reduced-motion:reduce){.sword,.serpent{animation:none;stroke-dashoffset:0}}
+  .dogonmk text{font-family:"IBM Plex Mono",monospace;font-size:8.5px;fill:var(--copper);letter-spacing:.07em;
+    paint-order:stroke;stroke:#0A0E17;stroke-width:3px;stroke-linejoin:round}
+  .pathtar{paint-order:stroke;stroke:#0A0E17;stroke-width:3px;stroke-linejoin:round}
+  .node .nm,.node .idx{paint-order:stroke;stroke:#0A0E17;stroke-width:3px;stroke-linejoin:round}
+  .dogonmk circle{fill:var(--copper);opacity:.8}
+  .gatemk circle{fill:#161029;stroke:var(--violet);stroke-width:1.2}
+  .gatemk text{font-family:"IBM Plex Mono",monospace;font-size:8px;fill:var(--violet);letter-spacing:.04em}
+  .soundlegend{display:flex;flex-wrap:wrap;gap:12px;margin:2px 2px 10px;font-family:"IBM Plex Mono",monospace;
+    font-size:var(--fs-xs);color:var(--bone-3);letter-spacing:.06em}
+  .soundlegend span{display:inline-flex;align-items:center;gap:6px}
+  .soundlegend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .star{fill:#C9D2E4}
+  .flare{fill:none;stroke:var(--focus);stroke-width:2.5;opacity:0}
+  .node.hit .flare{animation:pulse 1.6s ease-out 2}
+  @keyframes pulse{0%{opacity:.95;r:26}100%{opacity:0;r:46}}
+  @media (prefers-reduced-motion:reduce){.node.hit .flare{animation:none;opacity:.8}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">Interactive map · 10 spheres · 22 paths · 7 inner pathways</div>
+    <h1>Etz Chaim Atlas<span class="heb">עץ חיים</span></h1>
+    <p class="dek">The Kabbalistic Tree of Life, laid out as a working chart. Every sphere and every lettered path is clickable and carries its Hebrew, its planet or sign, its number, and its tarot key. Layer on the pillars, the four worlds, the descent of the Flaming Sword, the seven gates of the Gnostic ascent, the sound families of the twenty-two letters, or a parallel reading drawn from Dogon cosmology. Calculators at the bottom resolve a name, a birth date, or a Hebrew word to a sphere and light it on the tree.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="atlas">
+    <div class="plate">
+      <svg id="tree" viewBox="-74 0 568 664" role="img" aria-label="Interactive Tree of Life diagram with ten sephiroth, Da'ath, and twenty-two connecting paths"></svg>
+      <div class="soundlegend" id="soundlegend" hidden></div>
+      <div class="layers" id="layers"></div>
+      <div class="walker" id="walker"></div>
+    </div>
+
+    <div class="scroll" id="panel" aria-live="polite"></div>
+  </div>
+
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div id="panes"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Correspondences follow the Hermetic Order of the Golden Dawn's attributions (Mathers / Regardie, <i>777</i>), the standard Kircher arrangement of the tree, and the Sefer Yetzirah's three-mother / seven-double / twelve-simple division of the alphabet. Where traditions disagree — Heh and Tzaddi, Raphael and Michael — the alternative is named in the entry.<br>
+    Gnostic and Hermetic material is quoted from the Nag Hammadi codices, the Askew Codex (<i>Pistis Sophia</i>), the Berlin Codex (<i>Gospel of Mary</i>), the <i>Corpus Hermeticum</i>, the Hekhalot literature, and 1 and 3 Enoch. Where a ladder is laid over the tree, the tree is the later frame and the placement is marked as interpretive.<br>
+    Dogon material follows Griaule &amp; Dieterlen as recorded, with the restudy dispute flagged in its own section. The sphere-by-sphere pairing with the Tree is offered as interpretation, not as anyone's received doctrine.<br>
+    Built as a study instrument. Nothing here predicts events.
+  </div>
+</footer>
+
+<script>
+/* ============================ DATA ============================ */
+const NODES = [
+  { id:'kether', n:1, name:'Kether', heb:'כתר', tr:'Crown', x:210, y:52, fill:'#F3F0E6', dark:true,
+    pillar:'Middle — Equilibrium', world:'Atziluth · Emanation',
+    sphere:'Rashith ha-Gilgalim — the Primum Mobile, the First Swirlings',
+    divine:'אהיה · Eheieh — "I Am"', archangel:'Metatron',
+    order:'Chaioth ha-Qadesh — Holy Living Creatures',
+    virtue:'Attainment; completion of the Great Work', vice:'None assigned',
+    symbol:'The point, the crown, the ancient bearded king seen in profile',
+    glyph:'·',
+    lede:'The first stir. Kether is not a thing but the <em>fact of there being anything</em> — undifferentiated, unsplit, prior to the division into knower and known. Every other sphere is a consequence of it.',
+    num:'1 — the monad. Indivisible: multiply or divide it by itself and it does not move. In numerology the 1 is initiative without precedent, which is also its loneliness.',
+    dogon:'<b>Amma</b> — the creator who existed before the world, holding it as a seed inside a closed egg. Not worshipped with a face; approached only through what came out of him.' },
+
+  { id:'chokmah', n:2, name:'Chokmah', heb:'חכמה', tr:'Wisdom', x:330, y:132, fill:'#A7AEBA', dark:true,
+    pillar:'Right — Mercy (Jachin)', world:'Atziluth · Emanation',
+    sphere:'Mazloth — the sphere of the fixed stars (modern: Uranus / Neptune)',
+    divine:'יה · Yah', archangel:'Ratziel', order:'Auphanim — the Wheels',
+    virtue:'Devotion', vice:'None assigned',
+    symbol:'The line, the phallus, the uplifted rod of power, the tower',
+    glyph:'✦',
+    lede:'The first outward push — force before it has anywhere to go. Chokmah is <em>pure directed impulse</em>, the raw yes, and it stays sterile until Binah gives it an edge to press against.',
+    num:'2 — the first division, and therefore the first relationship. Two is where measurement becomes possible, because there is finally something to compare.',
+    dogon:'<b>Po</b> — the fonio seed, the smallest grain there is, which Amma set spinning and from which all matter unwound. Its star, <i>po tolo</i>, is Sirius B.' },
+
+  { id:'binah', n:3, name:'Binah', heb:'בינה', tr:'Understanding', x:90, y:132, fill:'#1C1F28', dark:false,
+    pillar:'Left — Severity (Boaz)', world:'Atziluth · Emanation',
+    sphere:'Shabbathai — Saturn', divine:'יהוה אלהים · YHVH Elohim',
+    archangel:'Tzaphkiel', order:'Aralim — the Thrones',
+    virtue:'Silence', vice:'Avarice',
+    symbol:'The cup, the outer robe of concealment, the yoni, the throne',
+    glyph:'♄',
+    lede:'The great limiter and the great mother at once. Binah takes Chokmah\'s undirected force and gives it <em>form by restriction</em> — and form, being finite, is the origin of sorrow. Saturn and the womb are the same office here.',
+    num:'3 — the first number that makes a shape. One and two are abstractions; three is a triangle, the first thing that can hold.',
+    dogon:'<b>Aduno tal</b> — the egg of the world, the closed vessel in which the 266 primordial signs lay drawn before anything existed. Container as precondition.' },
+
+  { id:'daath', n:0, name:"Da'ath", heb:'דעת', tr:'Knowledge', x:210, y:200, fill:'#5D6C89', dark:true,
+    hidden:true,
+    pillar:'Middle — the Abyss', world:'The crossing between Atziluth and Briah',
+    sphere:'No planet. The gap where Sirius or the Abyss is sometimes placed.',
+    divine:'Not given a name', archangel:'Not assigned',
+    order:'Sometimes the Qlippoth of the Abyss',
+    virtue:'Nothing to gain here', vice:'The illusion of having crossed',
+    symbol:'The empty room, the sealed gate, the desert',
+    glyph:'∅',
+    lede:'The eleventh sphere that is not a sphere. Da\'ath is the <em>place where the tree is not continuous</em> — the gap between the three supernals and the seven below. It looks like a station and functions as a fall.',
+    num:'11 — the first master number, and the number of excess over the perfect 10. Traditionally read as a doorway; traditionally also read as a number you do not want to be standing on.',
+    dogon:'<b>Yurugu</b>, the Pale Fox — Ogo, the twin who tore out of the egg before he was finished, taking a piece of the world with him. Incomplete, restless, and the reason divination exists.' },
+
+  { id:'chesed', n:4, name:'Chesed', heb:'חסד', tr:'Mercy', x:330, y:270, fill:'#2F63C9', dark:true,
+    pillar:'Right — Mercy', world:'Briah · Creation',
+    sphere:'Tzedek — Jupiter', divine:'אל · El', archangel:'Tzadkiel',
+    order:'Chashmalim — the Brilliant Ones',
+    virtue:'Obedience', vice:'Bigotry, hypocrisy, gluttony, tyranny',
+    symbol:'The solid figure, the tetrahedron, the orb, the sceptre, the crook',
+    glyph:'♃',
+    lede:'The first sphere below the Abyss and the first that can be built in. Chesed is <em>expansion held as a virtue</em> — generosity, law, patronage — and it rots into tyranny the moment nothing pushes back.',
+    num:'4 — the square, the foundation stone, the four directions. The number of things that stay where you put them.',
+    dogon:'<b>The granary of Amma</b> — the world-system built as a stepped house with four faces and eight stairs, carrying every seed and every animal down to earth. Order made architectural.' },
+
+  { id:'geburah', n:5, name:'Geburah', heb:'גבורה', tr:'Severity', x:90, y:270, fill:'#C0392B', dark:true,
+    pillar:'Left — Severity', world:'Briah · Creation',
+    sphere:'Madim — Mars', divine:'אלהים גבור · Elohim Gibor', archangel:'Khamael',
+    order:'Seraphim — the Fiery Serpents',
+    virtue:'Energy, courage', vice:'Cruelty, destruction, wanton violence',
+    symbol:'The pentagon, the sword, the spear, the scourge, the chain',
+    glyph:'♂',
+    lede:'The surgeon. Geburah is <em>the necessary cut</em> — what removes, judges, and refuses — and the tree needs it exactly as much as it needs mercy, which is why the two sit opposite and pull.',
+    num:'5 — the human number: four limbs and a head, five senses, the pentagram. Also the number that breaks the square\'s symmetry and makes motion possible.',
+    dogon:'<b>The sacrifice of Nommo</b> — the ancestral being killed and dismembered, his body scattered to the four directions to purify a world the Fox had already spoiled.' },
+
+  { id:'tiphareth', n:6, name:'Tiphareth', heb:'תפארת', tr:'Beauty', x:210, y:344, fill:'#E4B429', dark:true,
+    pillar:'Middle — Equilibrium', world:'Briah · Creation',
+    sphere:'Shemesh — the Sun', divine:'יהוה אלוה ודעת · YHVH Eloah va-Daath',
+    archangel:'Raphael (Michael in some recensions)', order:'Malachim — the Kings',
+    virtue:'Devotion to the Great Work', vice:'Pride',
+    symbol:'The Lamen, the Rosy Cross, the Calvary Cross, the truncated pyramid, the child',
+    glyph:'☉',
+    lede:'The heart of the diagram — the only sphere joined to every other region of the tree. Tiphareth is <em>the point at which the whole thing becomes coherent</em>: the sacrificed god, the king, the visible sun, the self that mediates between what is above and what is below.',
+    num:'6 — the first perfect number (1+2+3 = 1×2×3). Six triangles make the hexagram, and six spheres surround it on the tree. Balance stated arithmetically.',
+    dogon:'<b>The resurrected Nommo</b> — restored after dismemberment, returned to earth in an ark, and afterward the intermediary between Amma and human beings. The sacrificed one who comes back as the link.' },
+
+  { id:'netzach', n:7, name:'Netzach', heb:'נצח', tr:'Victory', x:330, y:424, fill:'#2F9E63', dark:true,
+    pillar:'Right — Mercy', world:'Yetzirah · Formation',
+    sphere:'Nogah — Venus', divine:'יהוה צבאות · YHVH Tzabaoth', archangel:'Haniel',
+    order:'Elohim — the Gods',
+    virtue:'Unselfishness', vice:'Lust, impurity',
+    symbol:'The lamp and girdle, the rose',
+    glyph:'♀',
+    lede:'Desire as an organising force. Netzach is <em>what keeps going because it wants to</em> — art, attraction, endurance — nature\'s side of the pair it forms with Hod\'s intellect. Its name means both victory and endurance, which is the same fact told twice.',
+    num:'7 — the number that does not divide into the circle of 360 or the decad cleanly. The odd one, hence the mystic, hence the week.',
+    dogon:'<b>Emme ya</b> — the female Nommo, paired water and fecundity, associated with the disputed third Sirian companion star and with the fish-forms in the rain.' },
+
+  { id:'hod', n:8, name:'Hod', heb:'הוד', tr:'Splendour', x:90, y:424, fill:'#DD7A25', dark:true,
+    pillar:'Left — Severity', world:'Yetzirah · Formation',
+    sphere:'Kokab — Mercury', divine:'אלהים צבאות · Elohim Tzabaoth', archangel:'Michael',
+    order:'Beni Elohim — the Sons of God',
+    virtue:'Truthfulness', vice:'Falsehood, dishonesty',
+    symbol:'The names and versicles, the apron',
+    glyph:'☿',
+    lede:'The sphere of names. Hod is <em>the world rendered into symbols you can operate</em> — language, number, ritual, magic, argument — precise, powerful, and capable of lying, which is the one vice listed against it.',
+    num:'8 — two cubed, the octave, the first number that repeats a doubling three times. The number of systems and of the return of a pattern at a higher pitch.',
+    dogon:'<b>The Smith</b> — who stole a piece of the sun to bring fire down, arriving with the eight seeds and the eight ancestors, and founded craft, technique and the forge.' },
+
+  { id:'yesod', n:9, name:'Yesod', heb:'יסוד', tr:'Foundation', x:210, y:500, fill:'#7B52C4', dark:true,
+    pillar:'Middle — Equilibrium', world:'Yetzirah · Formation',
+    sphere:'Levanah — the Moon', divine:'שדי אל חי · Shaddai El Chai', archangel:'Gabriel',
+    order:'Kerubim — the Strong',
+    virtue:'Independence', vice:'Idleness',
+    symbol:'The perfumes and sandals',
+    glyph:'☾',
+    lede:'The engine room directly beneath the world. Yesod is <em>the template layer</em> — the astral machinery, the dream, the tide, the image a thing holds before it is physically true. Everything entering Malkuth passes through here and picks up its shape.',
+    num:'9 — the number that always returns to itself: any multiple of 9 reduces to 9. The last digit before the decad closes, hence completion and the threshold.',
+    dogon:'<b>Sigui</b> — the ceremony held every sixty years to renew the world and pass the ancestral speech along, tracked by masks, carved figures, and a reckoning kept across generations.' },
+
+  { id:'malkuth', n:10, name:'Malkuth', heb:'מלכות', tr:'Kingdom', x:210, y:596, fill:'#8A5A32', dark:true,
+    quad:true,
+    pillar:'Middle — Equilibrium', world:'Assiah · Action',
+    sphere:'Cholem Yesodoth — the sphere of the elements; Earth',
+    divine:'אדני הארץ · Adonai ha-Aretz — Lord of the Earth', archangel:'Sandalphon',
+    order:'Ashim — the Souls of Fire',
+    virtue:'Discrimination', vice:'Avarice, inertia',
+    symbol:'The altar of the double cube, the equal-armed cross, the magic circle, the triangle of art',
+    glyph:'⊕',
+    lede:'The only sphere you have ever actually stood in. Malkuth is <em>the completed sentence</em> — the whole tree arrived at matter — and it is drawn in four colours because it is the one place where the elements are separate enough to be told apart. Called the Bride, and also the Gate.',
+    num:'10 — the decad, the return of 1 at a new order of magnitude. Reduce it and you get 1 again: the tree closes by rejoining its own head.',
+    dogon:'<b>The ginna and the fields</b> — the great house built as a body lying down, and the village laid out on the same plan, so that the settlement, the household and the person are one diagram at three scales.' }
+];
+
+const PATHS = [
+  {n:11, from:'kether',   to:'chokmah',   l:'Aleph',  h:'א', v:1,   cls:'Mother',  attr:'Air',        tarot:'0 · The Fool',            note:'The unnumbered card on the unnumbered breath. Aleph is silent — a letter with no sound of its own, carrying the leap out of Kether into force.'},
+  {n:12, from:'kether',   to:'binah',     l:'Beth',   h:'ב', v:2,   cls:'Double',  attr:'Mercury',    tarot:'I · The Magician',        note:'Beth means house. The first letter of the Torah, and the path on which the Crown acquires somewhere to be put.'},
+  {n:13, from:'kether',   to:'tiphareth', l:'Gimel',  h:'ג', v:3,   cls:'Double',  attr:'Moon',       tarot:'II · The High Priestess', bow:-52, note:'The longest path on the tree. Gimel means camel — the animal that crosses desert, which is exactly what this path does: it carries you over the Abyss.'},
+  {n:14, from:'chokmah',  to:'binah',     l:'Daleth', h:'ד', v:4,   cls:'Double',  attr:'Venus',      tarot:'III · The Empress',       note:'Daleth means door. The horizontal joining force to form across the top of the tree — the supernal marriage.'},
+  {n:15, from:'chokmah',  to:'tiphareth', l:'Heh',    h:'ה', v:5,   cls:'Simple',  attr:'Aries ♈',   tarot:'IV · The Emperor',        note:'Golden Dawn assigns Heh to Aries. Crowley\'s Book of the Law swaps Heh and Tzaddi, giving Aquarius here instead — the single most argued-over line in the system.'},
+  {n:16, from:'chokmah',  to:'chesed',    l:'Vav',    h:'ו', v:6,   cls:'Simple',  attr:'Taurus ♉',  tarot:'V · The Hierophant',      note:'Vav means nail or hook — the connector. It is also the conjunction "and" in Hebrew, and the third letter of the Tetragrammaton.'},
+  {n:17, from:'binah',    to:'tiphareth', l:'Zayin',  h:'ז', v:7,   cls:'Simple',  attr:'Gemini ♊',  tarot:'VI · The Lovers',         note:'Zayin means sword or weapon. Choice as a cutting instrument: the Lovers card is about discrimination, not romance.'},
+  {n:18, from:'binah',    to:'geburah',   l:'Cheth',  h:'ח', v:8,   cls:'Simple',  attr:'Cancer ♋',  tarot:'VII · The Chariot',       note:'Cheth means fence or enclosure. The chariot is armour in motion — a wall you can carry.'},
+  {n:19, from:'chesed',   to:'geburah',   l:'Teth',   h:'ט', v:9,   cls:'Simple',  attr:'Leo ♌',     tarot:'VIII · Strength',         note:'Teth means serpent, coiled. Strength is the mercy-severity crossbar: the lion held, not killed.'},
+  {n:20, from:'chesed',   to:'tiphareth', l:'Yod',    h:'י', v:10,  cls:'Simple',  attr:'Virgo ♍',   tarot:'IX · The Hermit',         note:'The smallest letter in the alphabet and the seed of every other — every Hebrew letter begins as a Yod under the scribe\'s pen. First letter of the Tetragrammaton, assigned the Father and the world of Atziluth. Value 10: the whole tree folded into a point. The Hermit holds a lamp because a seed only shows its nature in the dark.'},
+  {n:21, from:'chesed',   to:'netzach',   l:'Kaph',   h:'כ', v:20,  cls:'Double',  attr:'Jupiter',    tarot:'X · Wheel of Fortune',    note:'Kaph means the palm of the hand — the open, grasping curve. Jupiter\'s expansion drawn as a wheel that does not stop.'},
+  {n:22, from:'geburah',  to:'tiphareth', l:'Lamed',  h:'ל', v:30,  cls:'Simple',  attr:'Libra ♎',   tarot:'XI · Justice',            note:'The only letter that rises above the line — Lamed means ox-goad, and it is the letter of teaching. Justice as correction applied from above.'},
+  {n:23, from:'geburah',  to:'hod',       l:'Mem',    h:'מ', v:40,  cls:'Mother',  attr:'Water',      tarot:'XII · The Hanged Man',    note:'Mem means water. The Hanged Man is suspended, reversed and at peace — the element that takes the shape of whatever holds it.'},
+  {n:24, from:'tiphareth',to:'netzach',   l:'Nun',    h:'נ', v:50,  cls:'Simple',  attr:'Scorpio ♏', tarot:'XIII · Death',            note:'Nun means fish — the thing that moves unseen beneath the surface. Death here is the 50th gate, transformation rather than ending.'},
+  {n:25, from:'tiphareth',to:'yesod',     l:'Samekh', h:'ס', v:60,  cls:'Simple',  attr:'Sagittarius ♐', tarot:'XIV · Temperance',    note:'Samekh means prop or support, and the letter is a closed circle. The arrow of Sagittarius fired straight up the middle pillar toward the sun.'},
+  {n:26, from:'tiphareth',to:'hod',       l:'Ayin',   h:'ע', v:70,  cls:'Simple',  attr:'Capricorn ♑', tarot:'XV · The Devil',        note:'Ayin means eye, and also a spring of water. The Devil is the material world taken as the whole of it — an eye that sees only surface.'},
+  {n:27, from:'netzach',  to:'hod',       l:'Peh',    h:'פ', v:80,  cls:'Double',  attr:'Mars',       tarot:'XVI · The Tower',         note:'Peh means mouth. The path that breaks the tree\'s lower structure — speech as the thing that demolishes.'},
+  {n:28, from:'netzach',  to:'yesod',     l:'Tzaddi', h:'צ', v:90,  cls:'Simple',  attr:'Aquarius ♒', tarot:'XVII · The Star',        note:'Tzaddi means fish-hook. "Tzaddi is not the Star" — Crowley\'s line, swapping this path with Heh. The Golden Dawn attribution given here is the older one.'},
+  {n:29, from:'netzach',  to:'malkuth',   l:'Qoph',   h:'ק', v:100, cls:'Simple',  attr:'Pisces ♓',  tarot:'XVIII · The Moon',        note:'Qoph means the back of the head — the part of the mind you cannot look at directly. The hardest, dimmest route into matter.'},
+  {n:30, from:'hod',      to:'yesod',     l:'Resh',   h:'ר', v:200, cls:'Double',  attr:'Sun',        tarot:'XIX · The Sun',           note:'Resh means head. Consciousness delivered from intellect down into the foundation, where it becomes something you can dream with.'},
+  {n:31, from:'hod',      to:'malkuth',   l:'Shin',   h:'ש', v:300, cls:'Mother',  attr:'Fire',       tarot:'XX · Judgement',          note:'Shin has three heads and means tooth. The fire-letter, the one inserted into the Tetragrammaton to make the name of the redeemer.'},
+  {n:32, from:'yesod',    to:'malkuth',   l:'Tav',    h:'ת', v:400, cls:'Double',  attr:'Saturn / Earth', tarot:'XXI · The World',     note:'Tav means mark or signature — the last letter, the seal. The shortest step on the tree and the one everybody is standing on.'}
+];
+
+/* --- Gnostic / Hermetic layer: the ascent through the seven, and the inner door --- */
+const GNOSIS = {
+  kether:{tag:'The Pleroma',
+    t:'<b>Bythos</b> — the Depth. The <i>Apocryphon of John</i> refuses to describe it: "It is not corporeal, it is not incorporeal. It is not large, it is not small. It is not a quantity." Every negation on the page is there to stop you turning it into an object you could worship. Kether will not hold a face either.<br><br>And note who the archangel here is. In <i>3 Enoch</i>, <b>Metatron is Enoch</b> — a human being taken up and transformed, given seventy-two names and the title Lesser YHWH. The crown of the tree is occupied by somebody who walked there from the bottom.'},
+  chokmah:{tag:'Sophia',
+    t:'<b>Sophia</b> is Greek for exactly what <span class="heb">חכמה</span> means in Hebrew: Wisdom. The same aeon, the same office. In the Gnostic account she acts alone, without her consort, and what comes of it falls out of the Fullness — which is to say the break happens <em>in wisdom, not in matter</em>. Nothing is wrong with the world; something is unfinished in the knowing of it.'},
+  binah:{tag:'Gate VII · Saturn',
+    t:'<b>Barbelo</b>, the first Thought — and, on the way up, the seventh and last gate. The soul surrenders <b>falsehood</b> here and goes through with nothing left to defend. Saturn is the boundary in both systems.'},
+  daath:{tag:'Horos · the Limit',
+    t:'The closest fit in the whole overlay. Sophia\'s unpartnered act produces something misshapen at exactly this point, and <b>Horos</b> — the Limit — is set to stop the Fullness leaking. Below it, <b>Yaldabaoth</b> the Demiurge builds a world and says, in the <i>Apocryphon of John</i>, "I am God and there is no other beside me" — the boast of a being who cannot see above his own ceiling. Da\'ath is where a system mistakes its own edge for the sky.<br><br><i>Pistis Sophia</i> tells the same fall with the mechanism made explicit, and it is the sharpest warning on this diagram: Sophia dwelt in the <b>thirteenth aeon</b>, looked up, and was shown by Authades the Arrogant <b>a false light that looked like the true one</b>. She descended toward it believing she was ascending. She was not seduced by darkness. Nothing that takes you off this path will present as darkness — it will present as the next step up.'},
+  chesed:{tag:'Gate VI · Jupiter',
+    t:'The soul surrenders <b>greed</b>. Jupiter\'s expansion is the last thing you would think to let go of, which is the point — the vices shed on the way up are the virtues of the way down.'},
+  geburah:{tag:'Gate V · Mars',
+    t:'The soul surrenders <b>rashness and reckless daring</b>. Courage without an object is just velocity.'},
+  tiphareth:{tag:'Gate IV · The Sun · the Door',
+    t:'The soul surrenders <b>arrogance</b>. And structurally this is the Christ position on the tree: the only sphere joined to every region of it, the mediator, the sacrificed and risen one. "I am the door" (John 10:9) is a claim about function, not status — a door is a thing you go <em>through</em>. Thomas 108: "Whoever drinks from my mouth will become as I am, and I myself will become that person."'},
+  netzach:{tag:'Gate III · Venus',
+    t:'The soul surrenders <b>desire</b> — not pleasure, but the particular hunger that needs the world arranged a certain way before it will be still.'},
+  hod:{tag:'Gate II · Mercury',
+    t:'The soul surrenders <b>cunning and machination</b>. Hod is the sphere of names and technique, and the second thing to go is the belief that the right formula will do it for you.'},
+  yesod:{tag:'Gate I · The Moon',
+    t:'The first gate. The soul surrenders <b>increase and decrease</b> — the tidal self that is up when things go well and down when they do not. Everything above this is only reachable by something that has stopped oscillating.'},
+  malkuth:{tag:'The Kenoma',
+    t:'The Emptiness, the archons\' world — and also, in Thomas 113, the opposite reading: "The Father\'s kingdom is spread out upon the earth, and people do not see it." Both are said. The difference between them is not the world; it is whether anybody is looking.<br><br>Malkuth\'s archangel is <b>Sandalphon</b>, identified in the same literature as the translated Elijah, as Metatron is the translated Enoch. Both ends of the middle pillar are held by human beings who were taken up. Kether is in Malkuth and Malkuth is in Kether — stated, for once, as a staffing arrangement.'}
+};
+const GATE = {yesod:'I',hod:'II',netzach:'III',tiphareth:'IV',geburah:'V',chesed:'VI',binah:'VII'};
+
+/* --- Inner consciousness pathways: five ladders, walked station by station --- */
+const PATHWAYS = {
+  middle:{
+    name:'The Middle Pillar',
+    src:'Golden Dawn practice; Israel Regardie, <i>The Middle Pillar</i>, 1938',
+    intro:'The core Western technique, and the one that makes "vibration" literal. Five centres are woken down the central column of the body by <b>toning a divine name</b> — a sustained, low, felt utterance, not a loud one. The test of a correct vibration is that you feel it in the bone at that location, not that anyone hears it. Descend first, then circulate.',
+    steps:[
+      {node:'kether', title:'Above the crown', say:'Eh-hey-yeh', heb:'אהיה', body:'A sphere of brilliant white light just above the top of the head, touching it',
+       text:'Do not visualise a being. Visualise light, and let it stay impersonal — the moment it acquires a face you have stopped doing this exercise and started doing a different one. Tone the name four times, letting each one fade before the next.'},
+      {node:'daath', title:'The throat and nape', say:'Yod-heh-vav-heh El-oh-heem', heb:'יהוה אלהים', body:'A lavender-grey sphere at the base of the throat, behind the larynx',
+       text:'The gap. Traditionally touched in passing and never settled into. If attention wants to stay here, move on — this centre produces the sensation of having arrived somewhere, which is exactly the thing the Abyss is known for.'},
+      {node:'tiphareth', title:'The heart', say:'Yod-heh-vav-heh El-oh-ah va-Da-ath', heb:'יהוה אלוה ודעת', body:'A golden sphere at the solar plexus, level with the heart',
+       text:'The door. Most of the work of this exercise happens here, and if you only ever practise one station this is the one. Let the gold spread until it meets the light above and the light below.'},
+      {node:'yesod', title:'The generative centre', say:'Shah-dai El Chai', heb:'שדי אל חי', body:'A violet sphere at the pelvis, level with the hips',
+       text:'The template layer, where images form before anything else happens to them. Expect this station to be busy. Do not chase what arises here; tone the name and let the pictures pass.'},
+      {node:'malkuth', title:'The feet and the ground', say:'Ah-doh-nai ha-Ah-retz', heb:'אדני הארץ', body:'A sphere at the feet, in four colours — citrine, olive, russet, black',
+       text:'Completion, and the step people skip. Without it the whole exercise floats and leaves you scattered rather than settled. When the column is lit end to end, circulate: draw the light up one side of the body and down the other, then let it rise as a fountain from the feet and fall from the crown until the whole field is moving.'}
+    ]},
+
+  poimandres:{
+    name:'The ascent of the Poimandres',
+    src:'<i>Corpus Hermeticum</i> I (Poimandres), 1st–2nd century CE',
+    intro:'The oldest technical account of the inward ascent in the Hermetic corpus. The soul rises through the seven planetary zones and hands something back at each. These are not sins being repented. They are the operating assumptions of a self that was built for the descent and cannot be carried up.',
+    steps:[
+      {node:'yesod',     title:'First zone · the Moon', text:'Surrender <b>the power of increase and decrease</b> — the tidal self, up when things go well and down when they do not. Nothing above this gate is reachable by something still oscillating. This is why it is first and why most people never get past it.'},
+      {node:'hod',       title:'Second zone · Mercury', text:'Surrender <b>machination and cunning</b>. Hod is the sphere of names and technique; the second thing to go is the belief that the right method, the right formula, the right system will do the work in your place.'},
+      {node:'netzach',   title:'Third zone · Venus',    text:'Surrender <b>desire</b>. Not pleasure — the specific hunger that requires the world to be arranged a certain way before it will consent to be still.'},
+      {node:'tiphareth', title:'Fourth zone · the Sun', text:'Surrender <b>arrogance</b>. And this is the door: the one sphere joined to every region of the tree, the mediator, the sacrificed and risen one. A door has no content of its own. Its entire nature is what it lets you through to.'},
+      {node:'geburah',   title:'Fifth zone · Mars',     text:'Surrender <b>rashness and reckless daring</b>. Courage without an object is only velocity, and at this altitude velocity is a way of not arriving.'},
+      {node:'chesed',    title:'Sixth zone · Jupiter',  text:'Surrender <b>greed</b> — including the spiritual kind, which is the hardest to see because it looks like devotion. Expansion is the last thing you would think to let go of, which is the point: the vices shed going up are the virtues of coming down.'},
+      {node:'binah',     title:'Seventh zone · Saturn', text:'Surrender <b>falsehood</b>, at the edge of form itself, with nothing left to defend. Saturn is the boundary in both systems, which is why this is the last gate and not the first.'},
+      {node:'kether',    title:'Above the eighth',      text:'"And then, stripped of the workings of the cosmos, he enters the eighth nature, possessing his own proper power, and sings with those who are there." Notice what the sequence never was: a journey to a place. Every gate was a subtraction. What is left at the top is not something acquired.'}
+    ]},
+
+  mary:{
+    name:'The soul and the four powers',
+    src:'<i>Gospel of Mary</i> 15–17 (Berlin Codex), 2nd century CE',
+    intro:'A second and much shorter ascent, and the only one told from inside the soul\'s own voice. Four powers challenge her on the way up and she answers each by <b>refusing its jurisdiction</b> rather than by defeating it. The placement on the tree is interpretive — the text names no spheres.',
+    steps:[
+      {node:'malkuth', title:'First power · Darkness', text:'The soul is stopped and asked where she is going. Darkness here is not evil; it is the condition of not being able to see the thing you are inside of. She does not argue with it. She keeps rising.'},
+      {node:'netzach', title:'Second power · Desire',  text:'"I did not see you descending, but now I see you ascending. Why do you lie, since you belong to me?" The soul answers: <i>"I saw you. You did not see me, nor did you recognise me. I served you as a garment, and you did not know me."</i> The claim of ownership fails because it was never mutual.'},
+      {node:'hod',     title:'Third power · Ignorance', text:'Ignorance asks by what authority she judges. The soul: <i>"Why do you judge me, when I have not judged? I was bound, though I have not bound."</i> Note the grammar — she does not claim innocence, she declines the frame.'},
+      {node:'geburah', title:'Fourth power · Wrath, in seven forms', text:'The last and most elaborate: wrath of darkness, kingdom of the flesh, foolish wisdom of flesh, wisdom of anger, and the rest. Seven faces of the same refusal to let anything leave. She names them and passes.'},
+      {node:'binah',   title:'Release, and silence',   text:'<i>"What binds me has been slain, and what encompasses me has been overcome, and my desire has ended, and ignorance has died. From now on I will attain to the rest of the time, of the season, of the aeon, in silence."</i> The ascent ends not in vision but in the end of the need for one.'}
+    ]},
+
+  hekhalot:{
+    name:'The seven palaces',
+    src:'Hekhalot and Merkavah literature, c. 3rd–7th century CE',
+    intro:'The Jewish inner ascent, older than the Kabbalistic tree and standing behind it. The practitioner "descends to the chariot" — the idiom is a descent even though the movement is upward — through seven <i>heikhalot</i>, palaces, each with guardians at the gate who must be shown the right seal. Where the Hermetic ascent strips vices, this one demands <b>accuracy under pressure</b>. Placement on the tree is a later overlay.',
+    steps:[
+      {node:'yesod',     title:'First palace',  text:'The gate is entered by showing a seal — a divine name held exactly in mind. The literature is emphatic that approximation fails. Preparation for this was fasting, posture with the head between the knees, and repetition, for days.'},
+      {node:'hod',       title:'Second palace', text:'The guardians here test whether you are carrying anything borrowed. Hod is the sphere of names, and a name you have memorised but not understood will not open anything.'},
+      {node:'netzach',   title:'Third palace',  text:'The descriptions become overwhelming — fire, flood, whirling, hosts. The instruction throughout is the same: do not react to the display. The display is the test.'},
+      {node:'tiphareth', title:'Fourth palace', text:'Midpoint. The traveller is asked to give an account of himself and is measured, in one text, against his own worthiness rather than his knowledge. Many turn back here.'},
+      {node:'geburah',   title:'Fifth palace',  text:'The guardians are described as most severe at this gate. The tradition is unsentimental about the danger: the literature records people who did not come back intact, and treats that as a real risk rather than a metaphor.'},
+      {node:'chesed',    title:'Sixth palace',  text:'The famous test. The walls are of pure marble, and it looks like water. <i>"When you come to the place of pure marble stones, do not say: water, water."</i> Whoever speaks is struck. The trap is not a lie — it is a truth-shaped appearance that provokes you into narrating it.'},
+      {node:'binah',     title:'Seventh palace',text:'The throne, and the hymns, and the point at which the accounts stop describing. Everything past here in the texts is song rather than report.'}
+    ]},
+
+  pistis:{
+    name:'The thirteen repentances of Sophia',
+    src:'<i>Pistis Sophia</i>, Books I–II (Askew Codex), Coptic, late 3rd–4th century CE',
+    intro:'The longest single act of turning in any Gnostic text, and the only ladder here where the one ascending <b>is not the practitioner but Wisdom herself</b>. Sophia, trapped in Chaos, cries out thirteen times. She is not raised at once — several repentances are answered with nothing but more pressure, and the rescue comes in stages. Each is interpreted by a disciple against a Psalm or an Ode of Solomon; Mary Magdalene answers more often than all the men combined. Placement on the tree is interpretive; the text counts aeons, not spheres.',
+    steps:[
+      {node:'malkuth', title:'First · "O Light of lights"', text:'<i>"O Light of lights, in whom I have had faith from the beginning, hearken now then, O Light, unto my repentance."</i> She begins by naming what she still trusts, before naming what went wrong. Every genuine turning starts here and not with the confession.'},
+      {node:'malkuth', title:'Second · The false light', text:'She admits the mechanism of the fall: she was not seduced by darkness. <b>Authades, the Arrogant, showed her a light that looked like the true one</b>, and she went down toward it believing she was going up. This is the single most useful sentence in the book. The thing that takes you off the path will not present as darkness.'},
+      {node:'malkuth', title:'Third · Stripped of power', text:'The emanations of Authades and the lion-faced power take her light-power from her. She describes herself as having become like "matter without power." Note that she is not punished — she is drained. The text treats the loss as a consequence, not a sentence.'},
+      {node:'malkuth', title:'Fourth · The mockery', text:'The rulers of Chaos jeer that no one is coming. She keeps crying upward anyway. Jesus, in the frame narrative, has already begun to act — but she cannot see it yet, and the text makes the reader sit in that gap on purpose.'},
+      {node:'yesod',   title:'Fifth · The first raising', text:'She is lifted, but only to "a somewhat spacious place" still inside Chaos. Relief without rescue. Anyone who has mistaken a good week for a resolution knows this station.'},
+      {node:'yesod',   title:'Sixth · Renewed attack', text:'The emanations return precisely because she has risen a little. The pattern the text insists on: <b>pressure increases at the point of improvement</b>, and the increase is evidence of movement rather than of failure.'},
+      {node:'hod',     title:'Seventh · Naming the deceiver', text:'She stops describing her suffering and starts describing the structure of the deception accurately. The repentances shift here from lament to analysis, and the analysis is what begins to work.'},
+      {node:'netzach', title:'Eighth · Desire released', text:'She gives up the demand to be returned to her place. The petition changes from "restore me" to "look at me." The moment she stops requiring the outcome, the outcome starts moving.'},
+      {node:'tiphareth', title:'Ninth · The light-power remembered', text:'She recalls that her light-power was never destroyed, only taken — that what she is has been held elsewhere the whole time. Not a new acquisition. A recovery of something that was never actually gone.'},
+      {node:'geburah', title:'Tenth · The rulers judged', text:'She asks not for revenge but that the powers be prevented from doing it again. The distinction is exact and the text keeps it.'},
+      {node:'chesed',  title:'Eleventh · Mercy asked plainly', text:'The shortest and simplest of the thirteen. By this point the elaborate formulations are gone.'},
+      {node:'binah',   title:'Twelfth · Silence before the answer', text:'She has said everything there is to say. The book\'s structure makes her wait here, and the waiting is a station rather than an interval.'},
+      {node:'daath',   title:'Thirteenth · Restored to the thirteenth aeon', text:'Jesus takes her light-power back from the lion-faced power, returns it, and brings her up — not to somewhere new, but <b>to the place she started</b>, the thirteenth aeon, now knowing what she did not know when she was last there. The whole arc restores her to her origin with the addition of understanding. Which is the definition of gnosis, stated as a plot.'}
+    ]},
+
+  enoch:{
+    name:'The ascent of Enoch',
+    src:'<i>1 Enoch</i> 14 (Book of the Watchers, c. 3rd c. BCE); transformation from <i>3 Enoch</i> / Sefer Hekhalot',
+    intro:'The oldest ascent in this collection and the ancestor of all of them. A human being is taken up through fire and crystal, is called in where no angel may enter, is sent back down to deliver judgment <b>on the angels</b>, and — in the later Hebrew text — is transformed at the top into Metatron, the archangel who stands at Kether. Placement is interpretive but the destination is not: the tree names Enoch\'s own end-state as the being at its crown.',
+    steps:[
+      {node:'malkuth', title:'The summons', text:'<i>"Behold, in the vision clouds invited me and a mist summoned me, and the course of the stars and the lightnings sped and hastened me, and the winds in the vision caused me to fly."</i> He does not climb. He is fetched — and the machinery that fetches him is weather and stars, the ordinary sky behaving as a vehicle.'},
+      {node:'yesod', title:'The wall of crystal', text:'<i>"I drew nigh to a wall which is built of crystals and surrounded by tongues of fire: and it began to affright me."</i> The threshold is transparent and impassable at once — you can see through it long before you can go through it.'},
+      {node:'hod', title:'The first house · fire and ice', text:'<i>"Its floor was of fire, and above it were lightnings and the path of the stars, and its roof also was flaming fire... hot as fire and cold as ice."</i> And then the line the whole tradition remembers: <i>"There were no delights of life therein: fear covered me, and trembling got hold upon me."</i> The first inner house is explicitly not comforting. Any account of this work that promises comfort at this stage is selling something.'},
+      {node:'netzach', title:'The second house', text:'<i>"It excelled in splendour and magnificence and extent, so that I cannot describe to you its splendour and its extent."</i> Description fails and the text says so rather than filling the gap. Compare the sixth palace: the discipline is knowing when to stop narrating.'},
+      {node:'tiphareth', title:'The throne', text:'<i>"A lofty throne: its appearance was as crystal, and the wheels thereof as the shining sun, and there was the vision of cherubim. And from underneath the throne came streams of flaming fire."</i> The wheels and the fire-river are where the entire Merkavah tradition comes from — every chariot ascent for the next thousand years is a commentary on this paragraph.'},
+      {node:'binah', title:'The Great Glory', text:'<i>"None of the angels could enter and could behold His face by reason of the magnificence and glory, and no flesh could behold Him."</i> Then, immediately: <i>"Come hither, Enoch, and hear my word."</i> Flesh is called into the place flesh cannot go. The contradiction is the point and the text does not resolve it.'},
+      {node:'geburah', title:'Sent back down', text:'Enoch is given a verdict to carry to the Watchers: their petition is refused, there is no intercession for them. A <b>human being is sent to judge angels</b>, having been asked to intercede for them in the first place. The hierarchy is inverted, deliberately and permanently.'},
+      {node:'kether', title:'Enoch becomes Metatron', text:'In <i>3 Enoch</i> the ascent ends in transformation: his flesh becomes flame, he is enlarged to the measure of the world, given seventy-two names, a throne of his own, and the title <b>Lesser YHWH</b> — Prince of the Presence. Look at the archangel listed for Kether on this tree. It is him. A man is standing at the crown.<br><br>And the text immediately supplies the guardrail: Elisha ben Abuyah sees Metatron <em>seated</em> and concludes "there are two powers in heaven" — and Metatron is given sixty lashes of fire for having been seen in a way that produced a second god. The mediator is punished for being mistaken for the destination. A door that gets worshipped stops being a door.'}
+    ]},
+
+  serpent:{
+    name:'The serpent\'s return',
+    src:'The twenty-two paths taken in reverse, Tav to Aleph',
+    intro:'The long route. Where the Flaming Sword is how the tree was built, the Serpent is how it is climbed — and it takes every path, in reverse numerical order, beginning with the shortest step out of the world. Twenty-two stations. Traditionally worked one at a time, for as long as each takes.',
+    steps:[...PATHS].sort((a,b)=>b.n-a.n).map(p=>({path:p.n,title:`Path ${p.n} · ${p.l} ${p.h} · ${p.attr}`,text:p.note}))
+  }
+};
+
+/* --- Sefer Yetzirah 2:3 — the five points of articulation --- */
+const MOUTH = {
+  throat:{label:'Throat · gutturals', c:'#D9694A', set:'אחהע'},
+  palate:{label:'Palate · palatals',  c:'#D8AE4E', set:'גיכק'},
+  tongue:{label:'Tongue · linguals',  c:'#56A296', set:'דטלנת'},
+  teeth: {label:'Teeth · dentals',    c:'#7FA8D9', set:'זסשרצ'},
+  lips:  {label:'Lips · labials',     c:'#9B7BD4', set:'בומפ'}
+};
+const mouthOf = h => Object.keys(MOUTH).find(k => MOUTH[k].set.includes(h));
+
+const PYTH = {A:1,J:1,S:1,B:2,K:2,T:2,C:3,L:3,U:3,D:4,M:4,V:4,E:5,N:5,W:5,F:6,O:6,X:6,G:7,P:7,Y:7,H:8,Q:8,Z:8,I:9,R:9};
+const GEM = {'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,'ך':20,'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,'ס':60,'ע':70,'פ':80,'ף':80,'צ':90,'ץ':90,'ק':100,'ר':200,'ש':300,'ת':400};
+
+const MASTER = {
+  11:{name:"Da'ath", id:'daath', line:'The master number lands on the sphere that is not there — the Abyss. Read as a gate, and as a warning against mistaking the gap for a destination.'},
+  22:{name:'The twenty-two paths', id:null, line:'Not a sphere but the whole connective system: 22 letters, 22 paths, 22 trumps. The builder\'s number — structure rather than station.'},
+  33:{name:'Tiphareth', id:'tiphareth', line:'Traditionally the teacher\'s number, and it falls naturally on the solar centre: the sacrificed and restored heart of the tree.'}
+};
+
+/* ============================ TREE ============================ */
+const NBY = Object.fromEntries(NODES.map(n=>[n.id,n]));
+const svg = document.getElementById('tree');
+const NS = 'http://www.w3.org/2000/svg';
+const el = (t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+const L = {planets:true, letters:true, tarot:false, pillars:true, worlds:false,
+           sword:false, serpent:false, gnosis:true, sound:false, dogon:false};
+
+const gStars=el('g'), gBands=el('g'), gWorlds=el('g'), gPaths=el('g'),
+      gSword=el('g'), gSerpent=el('g'), gNodes=el('g'), gDogon=el('g'), gGate=el('g');
+[gStars,gBands,gWorlds,gPaths,gSword,gSerpent,gDogon,gNodes,gGate].forEach(g=>svg.appendChild(g));
+
+/* starfield — deterministic */
+let seed=7;const rnd=()=>{seed=(seed*1103515245+12345)%2147483648;return seed/2147483648;};
+for(let i=0;i<190;i++){
+  const c=el('circle',{class:'star',cx:(rnd()*568-74).toFixed(1),cy:(rnd()*664).toFixed(1),
+    r:(rnd()*1.05+.25).toFixed(2),opacity:(rnd()*.32+.05).toFixed(2)});
+  gStars.appendChild(c);
+}
+
+/* pillars */
+gBands.appendChild(el('rect',{class:'pillarband',x:48,y:24,width:84,height:612}));
+gBands.appendChild(el('rect',{class:'pillarband',x:288,y:24,width:84,height:612}));
+[['Boaz · Severity',90],['Equilibrium',210],['Jachin · Mercy',330]].forEach(([t,x])=>{
+  const tx=el('text',{class:'pillarlbl',x,y:18,'text-anchor':'middle'});tx.textContent=t;gBands.appendChild(tx);
+});
+
+/* four worlds */
+[['Atziluth · Fire · Yod',36,168],['Briah · Water · Heh',172,232],
+ ['Yetzirah · Air · Vav',310,242],['Assiah · Earth · Heh (f)',556,80]].forEach(([t,y,h])=>{
+  gWorlds.appendChild(el('rect',{class:'worldband',x:-66,y,width:552,height:h,rx:3}));
+  const tx=el('text',{class:'worldlbl',x:-60,y:y+12});tx.textContent=t;gWorlds.appendChild(tx);
+});
+
+/* paths */
+const midOf=p=>{
+  const a=NBY[p.from],b=NBY[p.to];
+  if(p.bow){const cx=(a.x+b.x)/2+p.bow,cy=(a.y+b.y)/2;
+    return[.25*a.x+.5*cx+.25*b.x,.25*a.y+.5*cy+.25*b.y];}
+  return[(a.x+b.x)/2,(a.y+b.y)/2];
+};
+const dOf=p=>{
+  const a=NBY[p.from],b=NBY[p.to];
+  return p.bow?`M${a.x} ${a.y} Q${(a.x+b.x)/2+p.bow} ${(a.y+b.y)/2} ${b.x} ${b.y}`
+              :`M${a.x} ${a.y} L${b.x} ${b.y}`;
+};
+PATHS.forEach(p=>{
+  const g=el('g',{class:'pathg',id:'p'+p.n,tabindex:'0',role:'button',
+    'aria-label':`Path ${p.n}, ${p.l}, ${p.attr}, ${p.tarot}`});
+  g.appendChild(el('path',{class:'pathline',d:dOf(p)}));
+  g.appendChild(el('path',{class:'pathhit',d:dOf(p)}));
+  const [mx,my]=midOf(p);
+  const m=el('g',{class:'pathmed'});
+  const disc=el('circle',{cx:mx,cy:my,r:12});
+  disc.setAttribute('data-mouth',mouthOf(p.h));
+  m.appendChild(disc);
+  const t=el('text',{x:mx,y:my+5,'text-anchor':'middle'});t.textContent=p.h;m.appendChild(t);
+  g.appendChild(m);
+  const tar=el('text',{class:'pathtar',x:mx,y:my+24,'text-anchor':'middle'});
+  tar.textContent=p.tarot.split(' · ')[1]||p.tarot;
+  g.appendChild(tar);
+  g.addEventListener('click',()=>selectPath(p.n));
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectPath(p.n);}});
+  gPaths.appendChild(g);
+});
+
+/* flaming sword */
+const SWORD=['kether','chokmah','binah','chesed','geburah','tiphareth','netzach','hod','yesod','malkuth'];
+gSword.appendChild(el('polyline',{class:'sword',
+  points:SWORD.map(id=>`${NBY[id].x},${NBY[id].y}`).join(' ')}));
+
+/* serpent of wisdom — ascending through path midpoints, Tav to Aleph */
+const serpPts=[...PATHS].sort((a,b)=>b.n-a.n).map(midOf);
+gSerpent.appendChild(el('polyline',{class:'serpent',
+  points:[`${NBY.malkuth.x},${NBY.malkuth.y}`,...serpPts.map(m=>`${m[0].toFixed(1)},${m[1].toFixed(1)}`),
+          `${NBY.kether.x},${NBY.kether.y}`].join(' ')}));
+
+/* nodes */
+NODES.forEach(n=>{
+  const g=el('g',{class:'node'+(n.hidden?' dashed':''),id:'n'+n.id,tabindex:'0',role:'button',
+    'aria-label':`${n.name}, ${n.tr}, sphere ${n.n||'hidden'}`});
+  g.appendChild(el('circle',{class:'flare',cx:n.x,cy:n.y,r:26}));
+  if(n.quad){
+    const q=[['#C7C24A',0],['#6E7A32',90],['#8A4B2A',180],['#1C1F28',270]];
+    q.forEach(([c,a0])=>{
+      const a1=(a0*Math.PI)/180,a2=((a0+90)*Math.PI)/180,r=26;
+      g.appendChild(el('path',{fill:c,d:`M${n.x} ${n.y} L${n.x+r*Math.cos(a1)} ${n.y+r*Math.sin(a1)} A${r} ${r} 0 0 1 ${n.x+r*Math.cos(a2)} ${n.y+r*Math.sin(a2)} Z`}));
+    });
+  } else {
+    g.appendChild(el('circle',{class:'body',cx:n.x,cy:n.y,r:26,fill:n.fill,
+      opacity:n.hidden?.55:1, 'stroke-dasharray':n.hidden?'4 4':'', stroke:n.hidden?'#8E9BB5':'none'}));
+  }
+  g.appendChild(el('circle',{class:'ring',cx:n.x,cy:n.y,r:26}));
+  const hb=el('text',{class:'nmheb',x:n.x,y:n.y+6,'text-anchor':'middle',
+    fill:(n.id==='binah'||n.id==='daath'||n.id==='malkuth'||n.id==='chesed'||n.id==='geburah'||n.id==='yesod')?'#EDE8DA':'#0B0E14'});
+  hb.textContent=n.heb; g.appendChild(hb);
+
+  const right = n.x>220, mid = n.x===210;
+  const lx = mid ? n.x+36 : (right ? n.x+34 : n.x-34);
+  const anchor = mid ? 'start' : (right?'start':'end');
+  const nm=el('text',{class:'nm',x:lx,y:n.y-3,'text-anchor':anchor});
+  nm.textContent=n.name.toUpperCase(); g.appendChild(nm);
+  const tr=el('text',{class:'idx',x:lx,y:n.y+10,'text-anchor':anchor});
+  tr.textContent=(n.n?n.n+' · ':'')+n.tr; g.appendChild(tr);
+
+  const gl=el('text',{class:'glyph',x:n.x,y:n.y-34,'text-anchor':'middle',
+    fill:'#C9D2E4'});
+  gl.textContent=n.glyph; gl.setAttribute('data-role','glyph'); g.appendChild(gl);
+
+  g.addEventListener('click',()=>selectNode(n.id));
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectNode(n.id);}});
+  gNodes.appendChild(g);
+});
+
+/* gnostic ascent — the seven planetary gates of the Poimandres */
+Object.keys(GATE).forEach(id=>{
+  const n=NBY[id];
+  const dx = n.x>220 ? -19 : (n.x===210 ? -19 : 19);
+  const cx=n.x+dx, cy=n.y-19;
+  const g=el('g',{class:'gatemk'});
+  g.appendChild(el('circle',{cx,cy,r:9}));
+  const t=el('text',{x:cx,y:cy+3.2,'text-anchor':'middle'});
+  t.textContent=GATE[id]; g.appendChild(t);
+  gGate.appendChild(g);
+});
+
+/* dogon markers — short label centred beneath each sphere */
+const DG={kether:'Amma',chokmah:'Po · Sirius B',binah:'Aduno tal',daath:'Yurugu',
+  chesed:'The granary',geburah:'Nommo slain',tiphareth:'Nommo risen',netzach:'Emme ya',
+  hod:'The Smith',yesod:'Sigui',malkuth:'The ginna'};
+NODES.forEach(n=>{
+  const g=el('g',{class:'dogonmk'});
+  const left = n.id==='yesod';
+  const cx = left ? n.x-32 : n.x, cy = left ? n.y : n.y+33;
+  g.appendChild(el('circle',{cx,cy,r:1.8}));
+  const t=el('text',{x:left?cx-5:cx, y:left?cy+3:cy+14,'text-anchor':left?'end':'middle'});
+  t.textContent=DG[n.id]; g.appendChild(t);
+  gDogon.appendChild(g);
+});
+
+/* ---------- layers ---------- */
+const LAYERS=[
+  ['planets','Planets',''],['letters','Hebrew letters',''],['tarot','Tarot keys',''],
+  ['pillars','Three pillars',''],['worlds','Four worlds','verd'],
+  ['sword','Flaming sword',''],['serpent','Serpent of wisdom','verd'],
+  ['gnosis','Gnostic ascent','viol'],['sound','Sound families','verd'],
+  ['dogon','Dogon overlay','copper']
+];
+const layerBar=document.getElementById('layers');
+LAYERS.forEach(([k,label,cls])=>{
+  const b=document.createElement('button');
+  b.className='chip'+(cls?' '+cls:''); b.type='button'; b.id='chip-'+k;
+  b.setAttribute('aria-pressed',String(L[k])); b.textContent=label;
+  b.onclick=()=>{L[k]=!L[k];b.setAttribute('aria-pressed',String(L[k]));applyLayers();};
+  layerBar.appendChild(b);
+});
+document.getElementById('soundlegend').innerHTML=
+  Object.values(MOUTH).map(m=>`<span><i style="background:${m.c}"></i>${m.label} · <span class="heb">${m.set}</span></span>`).join('');
+function applyLayers(){
+  gBands.style.display   = L.pillars?'':'none';
+  gWorlds.style.display  = L.worlds?'':'none';
+  gSword.style.display   = L.sword?'':'none';
+  gSerpent.style.display = L.serpent?'':'none';
+  gDogon.style.display   = L.dogon?'':'none';
+  gGate.style.display    = L.gnosis?'':'none';
+  svg.querySelectorAll('[data-mouth]').forEach(c=>{
+    const col=MOUTH[c.dataset.mouth].c;
+    c.setAttribute('stroke', L.sound ? col : 'var(--rule)');
+    c.setAttribute('stroke-width', L.sound ? 2.4 : 1);
+    c.setAttribute('fill', L.sound ? col : 'var(--panel-2)');
+    c.setAttribute('fill-opacity', L.sound ? '.17' : '1');
+  });
+  document.getElementById('soundlegend').hidden = !L.sound;
+  svg.querySelectorAll('[data-role="glyph"]').forEach(g=>g.style.display=L.planets?'':'none');
+  svg.querySelectorAll('.pathmed').forEach(g=>g.style.display=L.letters?'':'none');
+  svg.querySelectorAll('.pathtar').forEach(g=>g.style.display=L.tarot?'':'none');
+  if(L.sword){gSword.querySelector('.sword').style.animation='none';void gSword.offsetWidth;
+    gSword.querySelector('.sword').style.animation='';}
+  if(L.serpent){gSerpent.querySelector('.serpent').style.animation='none';void gSerpent.offsetWidth;
+    gSerpent.querySelector('.serpent').style.animation='';}
+}
+applyLayers();
+
+/* ============================ PANEL ============================ */
+const panel=document.getElementById('panel');
+function clearSel(){
+  svg.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));
+}
+function selectNode(id,flash){
+  const n=NBY[id]; clearSel();
+  const g=document.getElementById('n'+id); g.classList.add('sel');
+  if(flash){g.classList.remove('hit');void g.offsetWidth;g.classList.add('hit');}
+  const touching=PATHS.filter(p=>p.from===id||p.to===id);
+  panel.innerHTML=`
+    <div class="crest">
+      <div class="orb" style="background:${n.quad?'conic-gradient(#C7C24A,#6E7A32,#8A4B2A,#1C1F28,#C7C24A)':n.fill};
+        ${n.hidden?'border-style:dashed;':''}">${n.n||'—'}</div>
+      <div>
+        <h2>${n.name}</h2>
+        <div class="sub">${n.tr} · ${n.pillar}</div>
+        <div class="hebbig heb">${n.heb}</div>
+      </div>
+    </div>
+    <p class="lede">${n.lede}</p>
+    <dl class="facts">
+      <dt>Sphere</dt><dd>${n.sphere}</dd>
+      <dt>World</dt><dd>${n.world}</dd>
+      <dt>Divine name</dt><dd>${n.divine}</dd>
+      <dt>Archangel</dt><dd>${n.archangel}</dd>
+      <dt>Angelic order</dt><dd>${n.order}</dd>
+      <dt>Virtue</dt><dd>${n.virtue}</dd>
+      <dt>Vice</dt><dd>${n.vice}</dd>
+      <dt>Symbols</dt><dd>${n.symbol}</dd>
+    </dl>
+    <div class="note numeric"><b>Number ${n.n||11}</b>${n.num}</div>
+    <div class="note gnostic"><b>Gnosis · ${GNOSIS[id].tag}</b>${GNOSIS[id].t}</div>
+    <div class="note"><b>Dogon parallel</b>${n.dogon}</div>
+    <div class="pathstrip" aria-label="Paths touching this sphere">
+      ${touching.map(p=>`<button type="button" data-p="${p.n}" title="Path ${p.n} — ${p.l}, ${p.attr}">${p.h}</button>`).join('')}
+    </div>`;
+  panel.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>selectPath(+b.dataset.p));
+}
+function selectPath(num){
+  const p=PATHS.find(x=>x.n===num); clearSel();
+  document.getElementById('p'+num).classList.add('sel');
+  document.getElementById('n'+p.from).classList.add('sel');
+  document.getElementById('n'+p.to).classList.add('sel');
+  const a=NBY[p.from],b=NBY[p.to];
+  panel.innerHTML=`
+    <div class="crest">
+      <div class="orb" style="background:var(--panel-2);border-color:var(--gold-dim);color:var(--gold);
+        font-family:'Frank Ruhl Libre',serif;font-size:1.6rem">${p.h}</div>
+      <div>
+        <h2>${p.l}</h2>
+        <div class="sub">Path ${p.n} · ${p.cls} letter · ${p.attr}</div>
+        <div class="hebbig">${p.tarot}</div>
+      </div>
+    </div>
+    <p class="lede">${p.note}</p>
+    <dl class="facts">
+      <dt>Joins</dt><dd>${a.name} (${a.tr}) → ${b.name} (${b.tr})</dd>
+      <dt>Gematria</dt><dd>${p.v}</dd>
+      <dt>Class</dt><dd>${p.cls==='Mother'?'Mother letter — one of three elemental letters (Aleph, Mem, Shin)':p.cls==='Double'?'Double letter — one of seven, taking a planet and a hard/soft pronunciation':'Simple letter — one of twelve, taking a zodiac sign'}</dd>
+      <dt>Attribution</dt><dd>${p.attr}</dd>
+      <dt>Tarot key</dt><dd>${p.tarot}</dd>
+      <dt>Articulation</dt><dd>${MOUTH[mouthOf(p.h)].label} — one of the five points of the mouth named in Sefer Yetzirah 2:3</dd>
+    </dl>
+    <div class="pathstrip">
+      <button type="button" data-n="${p.from}" style="font-family:Cinzel,serif;font-size:.8rem;letter-spacing:.08em">↑ ${a.name}</button>
+      <button type="button" data-n="${p.to}" style="font-family:Cinzel,serif;font-size:.8rem;letter-spacing:.08em">↓ ${b.name}</button>
+    </div>`;
+  panel.querySelectorAll('[data-n]').forEach(x=>x.onclick=()=>selectNode(x.dataset.n));
+}
+selectNode('malkuth');
+
+/* ============================ PATHWAY WALKER ============================ */
+const walker=document.getElementById('walker');
+let wKey='middle', wIdx=0;
+walker.innerHTML=`
+  <div class="wtop">
+    <select id="wsel" aria-label="Inner pathway">
+      ${Object.entries(PATHWAYS).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join('')}
+    </select>
+    <div class="wnav">
+      <button type="button" id="wprev" aria-label="Previous station">← Prev</button>
+      <span class="wcount" id="wcount"></span>
+      <button type="button" id="wnext" aria-label="Next station">Next →</button>
+    </div>
+  </div>
+  <div class="wsrc" id="wsrc"></div>
+  <p class="wintro" id="wintro"></p>
+  <div class="wdots" id="wdots" role="group" aria-label="Stations"></div>
+  <div class="wstation" id="wstation"></div>`;
+
+const wsel=document.getElementById('wsel');
+function renderWalk(go){
+  const pw=PATHWAYS[wKey], st=pw.steps[wIdx];
+  document.getElementById('wsrc').innerHTML='Source: <i>'+pw.src+'</i>';
+  document.getElementById('wintro').innerHTML=pw.intro;
+  document.getElementById('wcount').textContent=`${wIdx+1} / ${pw.steps.length}`;
+  document.getElementById('wprev').disabled = wIdx===0;
+  document.getElementById('wnext').disabled = wIdx===pw.steps.length-1;
+  const dots=document.getElementById('wdots');
+  dots.innerHTML=pw.steps.map((s,i)=>
+    `<button type="button" data-i="${i}" aria-current="${i===wIdx}" title="${s.title.replace(/<[^>]+>/g,'').replace(/"/g,'')}">${i+1}</button>`).join('');
+  dots.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{wIdx=+b.dataset.i;renderWalk(true);});
+  document.getElementById('wstation').innerHTML=
+    `<h6>${st.title}</h6>`+
+    (st.say?`<div class="wsay">Tone: ${st.say}<span class="heb">${st.heb}</span></div>`:'')+
+    (st.body?`<div class="wbody">${st.body}</div>`:'')+
+    `<p>${st.text}</p>`;
+  if(go){ if(st.path) selectPath(st.path); else selectNode(st.node,true); }
+}
+wsel.onchange=()=>{wKey=wsel.value;wIdx=0;renderWalk(true);};
+document.getElementById('wprev').onclick=()=>{if(wIdx>0){wIdx--;renderWalk(true);}};
+document.getElementById('wnext').onclick=()=>{const n=PATHWAYS[wKey].steps.length;if(wIdx<n-1){wIdx++;renderWalk(true);}};
+renderWalk(false);
+
+/* ============================ TABS ============================ */
+const PANES=[
+  {id:'seph', label:'Ten spheres'},
+  {id:'path', label:'Twenty-two paths'},
+  {id:'numb', label:'Numerology'},
+  {id:'door', label:'The inner door'},
+  {id:'teach', label:'Teachings'},
+  {id:'way', label:'Inner pathways'},
+  {id:'geo', label:'Sacred geometry'},
+  {id:'four', label:'The fourteenth point'},
+  {id:'yad', label:'Yad · the hand'},
+  {id:'dogo', label:'Dogon'},
+  {id:'read', label:'How to read it'}
+];
+const tabs=document.getElementById('tabs'), panes=document.getElementById('panes');
+PANES.forEach((p,i)=>{
+  const b=document.createElement('button');
+  b.type='button';b.role='tab';b.id='tab-'+p.id;b.textContent=p.label;
+  b.setAttribute('aria-selected',String(i===0));b.setAttribute('aria-controls','pane-'+p.id);
+  b.onclick=()=>showPane(p.id);
+  tabs.appendChild(b);
+  const s=document.createElement('section');
+  s.className='pane';s.id='pane-'+p.id;s.setAttribute('role','tabpanel');
+  s.hidden=i!==0; panes.appendChild(s);
+});
+function showPane(id){
+  PANES.forEach(p=>{
+    document.getElementById('tab-'+p.id).setAttribute('aria-selected',String(p.id===id));
+    document.getElementById('pane-'+p.id).hidden=p.id!==id;
+  });
+}
+
+/* ---- spheres table ---- */
+document.getElementById('pane-seph').innerHTML=`
+<h3>The ten spheres and the hidden eleventh</h3>
+<p>Each sphere is a stage in one continuous descent from undifferentiated being to the world you can put your hand on. Read the table downward and it is a cosmology; read it upward and it is a curriculum. Click any row to open it on the tree.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>№</th><th>Name</th><th>Hebrew</th><th>Meaning</th><th>Sphere</th><th>Archangel</th><th>Pillar</th><th>World</th></tr></thead>
+<tbody>${NODES.map(n=>`<tr data-go="${n.id}">
+<td class="num">${n.n||'—'}</td>
+<td><span class="swatch" style="background:${n.fill}"></span>${n.name}</td>
+<td><span class="heb">${n.heb}</span></td>
+<td>${n.tr}</td>
+<td>${n.sphere.split('—')[0].split(';')[0].trim()}</td>
+<td>${n.archangel.split('(')[0].trim()}</td>
+<td>${n.pillar.split('—')[1]?n.pillar.split('—')[1].trim():n.pillar}</td>
+<td>${n.world.split('·')[0].trim()}</td></tr>`).join('')}</tbody>
+</table></div>
+<h4>The three pillars</h4>
+<ul class="plain">
+<li><b>Boaz, the pillar of Severity</b> (left: Binah, Geburah, Hod) — restriction, form, judgement, analysis.</li>
+<li><b>The middle pillar of Equilibrium</b> (Kether, Da'ath, Tiphareth, Yesod, Malkuth) — the only column you can ascend without leaning; the route the Serpent of Wisdom never takes and the Flaming Sword crosses four times.</li>
+<li><b>Jachin, the pillar of Mercy</b> (right: Chokmah, Chesed, Netzach) — force, expansion, generosity, imagination.</li>
+</ul>
+<h4>The four worlds</h4>
+<ul class="plain">
+<li><b>Atziluth</b> · Emanation · Fire · <span class="heb">י</span> Yod — Kether, Chokmah, Binah. Archetype before anything is made.</li>
+<li><b>Briah</b> · Creation · Water · <span class="heb">ה</span> Heh — Chesed, Geburah, Tiphareth. The archangelic world; intention.</li>
+<li><b>Yetzirah</b> · Formation · Air · <span class="heb">ו</span> Vav — Netzach, Hod, Yesod. Pattern, machinery, the astral template.</li>
+<li><b>Assiah</b> · Action · Earth · <span class="heb">ה</span> Heh final — Malkuth. The finished thing.</li>
+</ul>
+<p style="margin-top:14px">The four worlds spell the Tetragrammaton <span class="heb">יהוה</span> top to bottom, which is why Yod — the smallest letter — sits at the top of the sequence: everything that follows is an unpacking of the seed.</p>`;
+
+/* ---- paths table ---- */
+document.getElementById('pane-path').innerHTML=`
+<h3>The twenty-two paths</h3>
+<p>Ten spheres plus twenty-two paths make the thirty-two <i>Paths of Wisdom</i> of the Sefer Yetzirah. The letters divide three ways: <strong>three mothers</strong> (Aleph, Mem, Shin) taking the elements, <strong>seven doubles</strong> taking the classical planets, and <strong>twelve simples</strong> taking the zodiac. The tarot trumps map onto them in order.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Path</th><th>Letter</th><th></th><th>Value</th><th>Class</th><th>Attribution</th><th>Tarot</th><th>Joins</th></tr></thead>
+<tbody>${PATHS.map(p=>`<tr data-gp="${p.n}">
+<td class="num">${p.n}</td>
+<td>${p.l}</td>
+<td><span class="heb" style="font-size:1.3rem">${p.h}</span></td>
+<td class="num">${p.v}</td>
+<td>${p.cls}</td>
+<td>${p.attr}</td>
+<td>${p.tarot}</td>
+<td>${NBY[p.from].name} → ${NBY[p.to].name}</td></tr>`).join('')}</tbody>
+</table></div>
+<div class="caveat"><h4>Where the systems disagree</h4>
+<p>The Golden Dawn puts Heh on Aries (The Emperor) and Tzaddi on Aquarius (The Star). Crowley's <i>Book of the Law</i> declares "Tzaddi is not the Star" and swaps the two, which is why Thoth-deck material and Golden Dawn material give different signs for paths 15 and 28. Continental and older Jewish sources also differ on whether the tarot belongs on the tree at all — the pairing is a late-nineteenth-century Hermetic overlay, not a Jewish one.</p></div>`;
+
+/* ---- numerology ---- */
+document.getElementById('pane-numb').innerHTML=`
+<h3>Number as an address on the tree</h3>
+<p>Because the spheres are numbered one to ten, any reduction to a single digit lands somewhere on the diagram. That is the whole mechanism: reduce, then read the sphere. Master numbers 11, 22 and 33 are held unreduced and given their own placements.</p>
+<div class="calcgrid">
+  <div class="calc">
+    <h5>Life path</h5>
+    <p class="hint">Month, day and year are each reduced, master numbers preserved, then summed and reduced again.</p>
+    <label for="dob">Birth date</label>
+    <input type="date" id="dob" value="1979-10-22">
+    <div class="readout" id="out-dob"></div>
+  </div>
+  <div class="calc">
+    <h5>Expression</h5>
+    <p class="hint">Every letter of a full name converted by the Pythagorean table below, summed, reduced.</p>
+    <label for="nm">Full name</label>
+    <input type="text" id="nm" value="Stacey Lee" spellcheck="false">
+    <div class="readout" id="out-nm"></div>
+  </div>
+  <div class="calc">
+    <h5>Gematria</h5>
+    <p class="hint">Hebrew letters carry numeric values. Type or pick a word; its value reduces to a sphere.</p>
+    <label for="gem">Hebrew word</label>
+    <input type="text" id="gem" class="heb" value="מלכות" spellcheck="false">
+    <div class="presets" id="gempre"></div>
+    <div class="readout" id="out-gem"></div>
+  </div>
+</div>
+
+<h4>Pythagorean letter values</h4>
+<div class="keychart" id="keychart"></div>
+
+<h4>What each digit means on this tree</h4>
+<div class="tablewrap"><table style="min-width:520px">
+<thead><tr><th>№</th><th>Sphere</th><th>Reading</th></tr></thead>
+<tbody>${NODES.filter(n=>n.n).map(n=>`<tr data-go="${n.id}"><td class="num">${n.n}</td><td>${n.name}</td><td>${n.num}</td></tr>`).join('')}
+<tr data-go="daath"><td class="num">11</td><td>Da'ath</td><td>${MASTER[11].line}</td></tr>
+<tr><td class="num">22</td><td>The paths</td><td>${MASTER[22].line}</td></tr>
+<tr data-go="tiphareth"><td class="num">33</td><td>Tiphareth</td><td>${MASTER[33].line}</td></tr>
+</tbody></table></div>`;
+
+/* keychart */
+(()=>{const kc=document.getElementById('keychart');
+  for(let i=1;i<=9;i++){const d=document.createElement('div');d.className='hd';d.textContent=i;kc.appendChild(d);}
+  const rows=[['A','B','C','D','E','F','G','H','I'],['J','K','L','M','N','O','P','Q','R'],
+              ['S','T','U','V','W','X','Y','Z','']];
+  rows.forEach(r=>r.forEach(c=>{const d=document.createElement('div');d.textContent=c||'·';kc.appendChild(d);}));
+})();
+
+/* ---- the inner door ---- */
+document.getElementById('pane-door').innerHTML=`
+<h3>Gnosis, the door, and the doctrine of vibration</h3>
+<p>Three ideas belong on this tree that the standard Hermetic overlay leaves out: that the teaching is <strong>knowing, not believing</strong>; that the Christ is a <strong>function rather than an object of worship</strong> — a door you pass through, not a building you sit in; and that the whole structure is held together by <strong>vibration and polarity</strong> rather than by masonry. All three are textual. None of them requires you to take my word for it.</p>
+
+<h4>Gnosis is not belief</h4>
+<p><i>Gnosis</i> (γνῶσις) is not <i>pistis</i>, faith. Greek keeps the two apart and the Nag Hammadi texts use the distinction hard. Gnosis is the kind of knowing you have of your own hand — direct, unmediated, not transferable by testimony. Which is precisely why it cannot be institutionalised: there is no ritual that can perform it for you and no authority who can certify it on your behalf. That is a structural fact about the claim, not a complaint about churches.</p>
+<p>The library found at Nag Hammadi in 1945 — thirteen codices, buried around 367 CE, fifty-two texts, most of them previously known only as titles quoted by their opponents — is where this material actually lives. The <i>Gospel of Thomas</i>, the <i>Gospel of Philip</i>, the <i>Gospel of Truth</i>, the <i>Apocryphon of John</i>, the <i>Gospel of Mary</i>, <i>Thunder, Perfect Mind</i>.</p>
+
+<h4>Inward, and not outward</h4>
+<div class="tablewrap"><table style="min-width:520px">
+<thead><tr><th>Source</th><th>Text</th></tr></thead>
+<tbody>
+<tr><td class="num">Thomas 3</td><td>"If those who lead you say, 'Look, the kingdom is in the sky,' then the birds will get there first. If they say, 'It is in the sea,' then the fish will get there first. Rather, the kingdom is inside you and outside you. When you know yourselves, then you will be known."</td></tr>
+<tr><td class="num">Thomas 70</td><td>"If you bring forth what is within you, what you bring forth will save you. If you do not bring forth what is within you, what you do not bring forth will destroy you."</td></tr>
+<tr><td class="num">Thomas 77</td><td>"Split a piece of wood; I am there. Lift up the stone, and you will find me there."</td></tr>
+<tr><td class="num">Thomas 113</td><td>"The Father's kingdom is spread out upon the earth, and people do not see it."</td></tr>
+<tr><td class="num">Thomas 108</td><td>"Whoever drinks from my mouth will become as I am, and I myself will become that person."</td></tr>
+<tr><td class="num">Luke 17:21</td><td>"The kingdom of God is <i>entos hymōn</i>" — within you, or among you; the Greek carries both and translators have been arguing about it for four hundred years.</td></tr>
+<tr><td class="num">Acts 17:24</td><td>"God does not dwell in temples made with hands." Canonical, not Gnostic. The inward reading is not confined to the suppressed texts.</td></tr>
+<tr><td class="num">John 10:9</td><td>"I am the door." A door has no content of its own. Its whole nature is what it lets you through to.</td></tr>
+</tbody></table></div>
+
+<h4>The ascent through the seven</h4>
+<p>Switch on the <b>Gnostic ascent</b> layer and seven numbered gates appear on the seven lower spheres. This is the oldest technical version of the inward path — <i>Poimandres</i>, the first treatise of the <i>Corpus Hermeticum</i>, first or second century CE. The soul rises through the planetary zones and gives something back at each one. What it surrenders are not sins in the moral sense; they are the operating assumptions of a self built for the descent.</p>
+<div class="tablewrap"><table style="min-width:560px">
+<thead><tr><th>Gate</th><th>Sphere</th><th>Planet</th><th>Surrendered</th></tr></thead>
+<tbody>
+<tr data-go="yesod"><td class="num">I</td><td>Yesod</td><td>Moon</td><td>The power of increase and decrease — the self that rises and falls with circumstance</td></tr>
+<tr data-go="hod"><td class="num">II</td><td>Hod</td><td>Mercury</td><td>Machination and cunning — the belief that the right technique will do it for you</td></tr>
+<tr data-go="netzach"><td class="num">III</td><td>Netzach</td><td>Venus</td><td>Desire — not pleasure, but the demand that the world be arranged a certain way first</td></tr>
+<tr data-go="tiphareth"><td class="num">IV</td><td>Tiphareth</td><td>Sun</td><td>Arrogance — and this is the door: the gate that is also the mediator</td></tr>
+<tr data-go="geburah"><td class="num">V</td><td>Geburah</td><td>Mars</td><td>Rashness and reckless daring</td></tr>
+<tr data-go="chesed"><td class="num">VI</td><td>Chesed</td><td>Jupiter</td><td>Greed</td></tr>
+<tr data-go="binah"><td class="num">VII</td><td>Binah</td><td>Saturn</td><td>Falsehood — the last thing to go, at the edge of form itself</td></tr>
+</tbody></table></div>
+<p style="margin-top:14px">Above the seventh gate the <i>Poimandres</i> says the ascending one "has his own proper power, and sings with those who are there" — and then goes further up. Note what the sequence is not: it is not a journey to a place. Every gate is a subtraction.</p>
+
+<h4>Vibration</h4>
+<p>The tree already contains a vibration doctrine, and it predates every modern version of the idea. The <i>Sefer Yetzirah</i> — the oldest Kabbalistic text, somewhere between the 2nd and 6th centuries — says the world is made by sound: God "engraved, hewed, weighed, permuted and formed" the twenty-two letters, and every created thing is a particular arrangement of them. This is why the paths are letters rather than pictures. The tarot was laid over them seventeen centuries later; the sounds were there first.</p>
+<p>The same text (2:3) sorts all twenty-two letters by <strong>where in the mouth they are made</strong> — throat, palate, tongue, teeth, lips — which is an articulatory phonetics two thousand years early. Switch on the <b>Sound families</b> layer and the twenty-two path medallions recolour by point of articulation. Three letters sit above the rest as the <b>mothers</b>: <span class="heb">א</span> Aleph, silent breath, Air; <span class="heb">מ</span> Mem, the closed hum, Water; <span class="heb">ש</span> Shin, the hiss, Fire. Breath, silence and friction — the three things a voice can do.</p>
+
+<h4>Magnetism, or polarity</h4>
+<p>Turn on <b>Three pillars</b> and you are looking at the polarity doctrine drawn as architecture. Boaz and Jachin are not good and evil; they are the two poles of one current, and neither one is the path. The middle pillar exists because a current needs a conductor between poles, and equilibrium is a <em>third thing</em> produced by the tension, not a compromise between the two.</p>
+<p>The modern statement of this is the <i>Kybalion</i> (1908) and its seven principles — Mentalism, Correspondence, Vibration, Polarity, Rhythm, Cause and Effect, Gender. It is worth knowing that the book was written by William Walker Atkinson under the name "Three Initiates" and is a New Thought work presenting itself as ancient Egyptian, <em>and</em> that its content is a reasonably faithful distillation of the genuine <i>Corpus Hermeticum</i>, which is ancient. Both facts are true at once. Knowing the provenance makes the material stronger to stand on, not weaker.</p>
+
+<div class="caveat"><h4>What is settled and what is argued</h4>
+<p><b>Settled:</b> the Nag Hammadi texts exist, are early, and say what is quoted above. Gnostic Christianity was a large and serious movement that lost an institutional fight in the second to fourth centuries; Irenaeus wrote five volumes against it, which is how we knew the titles before we had the books. The inward reading of the kingdom is present in the canonical gospels, not only the excluded ones.</p>
+<p><b>Argued:</b> how much of the <i>Gospel of Thomas</i> goes back to the first century — some scholars date its core alongside or before the synoptics, others treat it as a second-century compilation. Whether the historical Jesus taught a Gnostic doctrine, or whether Gnostic communities read their own theology back into him, is one of the live disputes in the field and neither side can close it with the evidence available. Elaine Pagels, Karen King, Bart Ehrman and Larry Hurtado are all worth reading and they do not agree.</p>
+<p><b>Modern:</b> "Christ consciousness" as a phrase is Theosophical and New Thought — Blavatsky, Bailey, Cayce, late 19th and 20th century. The <em>underlying idea</em> is much older: "Christ in you, the hope of glory" (Colossians 1:27), "not I, but Christ liveth in me" (Galatians 2:20), the Orthodox doctrine of <i>theosis</i>, Meister Eckhart preaching the birth of the Word in the soul in 1300 and getting tried for it. The phrase is recent; the teaching is not.</p></div>`;
+
+/* ---- teachings ---- */
+document.getElementById('pane-teach').innerHTML=`
+<h3>The teachings, and where to find them</h3>
+<p>What follows is the doctrinal core as the surviving texts state it. Almost all of it was known only through the writings of its opponents until December 1945, when a farmer named Muhammad Ali al-Samman dug up a sealed jar near Nag Hammadi in Upper Egypt containing thirteen leather-bound codices — fifty-two texts, buried around 367 CE, most likely when Athanasius' festal letter fixed the canon and made possession of the rest dangerous.</p>
+
+<h4>The myth, in order</h4>
+<ul class="plain">
+<li><b>The Monad.</b> Prior to everything, describable only by negation. The <i>Apocryphon of John</i>: "It is not corporeal, it is not incorporeal. It is not large, it is not small. It is not a quantity. It is not a creature." Every negation is there to stop you turning it into an object you could bargain with.</li>
+<li><b>The Fullness.</b> The Monad's self-knowing produces Barbelo, the first Thought, and from her the aeons in pairs — the <i>Pleroma</i>. Thirty of them in the Valentinian count.</li>
+<li><b>The fall of Sophia.</b> The youngest aeon, Wisdom, acts without her consort and brings forth something misshapen. The crucial structural point: <b>the break happens in wisdom, not in matter</b>. Nothing is wrong with the world; something is unfinished in the knowing of it.</li>
+<li><b>Yaldabaoth.</b> Sophia's offspring, hidden in a cloud, builds a world and rulers to run it, and declares: "I am God and there is no other beside me." The texts call this blindness rather than malice — he is not lying, he simply cannot see above his own ceiling. <i>Saklas</i>, the fool, is one of his names.</li>
+<li><b>The spark.</b> Sophia's light is caught in the making of the human, so the creature the Demiurge builds turns out to contain more than he put in — and stands up, and knows something he does not.</li>
+<li><b>The call.</b> A messenger comes from the Fullness, not to pay a debt or settle a legal account, but to <b>wake somebody up</b>. This is the whole difference between the Gnostic and the juridical reading of salvation: the problem is amnesia, not guilt.</li>
+</ul>
+
+<h4>The Hymn of the Pearl</h4>
+<p>From the <i>Acts of Thomas</i>, and the clearest single statement of the teaching in narrative form. A prince is sent from his father's kingdom into Egypt to retrieve a pearl guarded by a serpent. He puts on Egyptian clothes to pass unnoticed, eats their food, and <b>forgets who he is and what he came for</b>. His parents send a letter. The letter becomes a voice, the voice wakes him, he remembers, takes the pearl and goes home, where his own robe is waiting and he sees, looking at it, that it has his own face.</p>
+<p>Nothing is punished. The prince is not in trouble. He is <em>asleep in the wrong clothes</em>, and the entire operation is a letter reaching him.</p>
+
+<h4>The three natures</h4>
+<p>The Valentinian anthropology, and a genuinely useful diagnostic. <b>Hylic</b> — attention that only registers the material and takes appearances as the whole of it. <b>Psychic</b> — attention organised around belief, morality and institution; capable, decent, and stopped at the level of the story. <b>Pneumatic</b> — attention that knows directly. Later Gnostics hardened these into castes of person, which is the point at which the teaching curdles into the same thing it set out to escape. Read as three <em>states any attention passes through</em>, it stays honest: you are hylic when you are hungry, psychic when you are arguing, pneumatic for about nine seconds at a time.</p>
+
+<h4>Thunder, Perfect Mind</h4>
+<p>The strangest text in the library, and unclassifiable — a revelation discourse in a female voice built entirely of contradictions held together without resolution:</p>
+<div class="caveat" style="border-color:var(--violet)">
+<p style="font-family:'EB Garamond',serif;font-size:1.02rem;color:var(--bone);font-style:italic">
+"I am the first and the last. I am the honoured one and the scorned one. I am the whore and the holy one. I am the wife and the virgin. I am the barren one, and many are her sons. I am the silence that is incomprehensible and the idea whose remembrance is frequent. I am the voice whose sound is manifold and the word whose appearance is multiple. I am the utterance of my name."</p>
+</div>
+<p style="margin-top:16px">It is not an argument and does not want to be answered. It is a device for breaking the habit of resolving a thing into one of its poles — which is the same operation the two outer pillars of this tree are drawn to perform.</p>
+
+<h4>The Gospel of Philip on the bridal chamber</h4>
+<p>Philip treats the inner union as the highest of five sacraments — baptism, chrism, eucharist, redemption, bridal chamber — and is blunt that the outer rite is a picture of an inner event: "Truth did not come into the world naked, but it came in types and images. The world will not receive truth in any other way." And on names, which is the sharpest line in the text for anyone building a system: <i>"Names given to worldly things are very deceptive, for they divert our thoughts from what is correct to what is incorrect."</i></p>
+
+<h4>What it asks of you</h4>
+<ul class="plain">
+<li><b>Know yourself, and you are known.</b> Thomas 3 makes self-knowledge and being known the same event, not cause and effect.</li>
+<li><b>Bring it forth.</b> Thomas 70 — the thing within you saves you only if it is produced. Unexpressed, it is described as destructive. There is no neutral holding position.</li>
+<li><b>Become, do not admire.</b> Thomas 108: whoever drinks from the mouth becomes as he is. The relation is transformative, not devotional — which is the specific reason this material and institutional worship do not fit together, and the specific reason it lost the fight.</li>
+<li><b>Seek without a fixed endpoint.</b> Thomas 2: "Let one who seeks not stop seeking until he finds. When he finds, he will be disturbed. When he is disturbed, he will marvel, and will reign over all." The disturbance is listed as a stage, not a failure.</li>
+</ul>
+
+<h4>Enoch</h4>
+<p>Older than all of it, and the root the rest grows from. <i>1 Enoch</i> is a composite of five books written between roughly the 3rd and 1st centuries BCE, preserved whole only in Ge'ez, found in Aramaic fragments at Qumran, quoted as scripture in Jude 14–15, and canonical to this day in the Ethiopian Orthodox Tewahedo Church. It was not "banned"; it simply lost its place in two canons and kept it in a third.</p>
+<ul class="plain">
+<li><b>The Watchers.</b> Two hundred angels descend on Mount Hermon under Shemihazah, bind themselves by oath, and take human wives. <b>Azazel</b> teaches metalworking and weapons, and cosmetics and dyes — the text puts armament and ornament in the same sentence deliberately. Others teach sorcery, root-cutting, and the reading of the stars. "The whole earth has been corrupted through the works that were taught by Azazel: to him ascribe all sin."</li>
+<li><b>The inversion.</b> The Watchers ask <em>Enoch</em> to write their petition and carry it up, because they can no longer approach. He carries it, and comes back down with the refusal. A human intercedes for angels and then judges them.</li>
+<li><b>The Astronomical Book.</b> Chapters 72–82 give a <b>364-day solar calendar</b> with gates for the sun and the moon and the winds — a functioning rhythm-system, and the calendar the Qumran community used in open opposition to the lunar reckoning of the Temple. When the tradition says the cosmos runs on measured rhythm, this is where it is doing the measuring.</li>
+<li><b>Metatron.</b> In <i>3 Enoch</i> — the Hebrew <i>Sefer Hekhalot</i>, much later, 5th–6th century — the ascent ends in transmutation. Enoch's flesh becomes flame, he is enlarged to the measure of the world, given a throne and seventy-two names and the title <b>Lesser YHWH</b>. He is the archangel this tree assigns to Kether.</li>
+</ul>
+<p>And then the guardrail, in the same text: Elisha ben Abuyah — called <i>Aher</i>, the Other, the one who went into the orchard and apostatised — sees Metatron <b>seated</b>, and concludes there are two powers in heaven. Metatron is given sixty lashes of fire, not for wrongdoing, but for having been seen in a way that produced a second god. <em>The mediator is punished for being mistaken for the destination.</em> That is the oldest statement in the tradition of the thing you keep pointing at: a door that gets worshipped stops working as a door.</p>
+
+<h4>Pistis Sophia</h4>
+<p>Known to Europe long before Nag Hammadi — the Askew Codex was bought by a London physician in 1785 and sat in the British Museum for decades before anyone translated it properly. Coptic, late 3rd or 4th century, four books. The frame: the risen Jesus stays eleven years with the disciples and <b>teaches the mysteries in plain question-and-answer</b>, which is itself the argument — the teaching is transmissible as instruction, not as sacrament.</p>
+<ul class="plain">
+<li><b>The false light.</b> Sophia in the thirteenth aeon is shown a counterfeit light by Authades and descends toward it thinking she ascends. Her light-power is taken by the lion-faced power. The entire tragedy runs on a mistake in discernment, not on sin.</li>
+<li><b>The thirteen repentances.</b> Book I is structurally thirteen cries from Chaos, each answered by a disciple reading it against a Psalm or an Ode of Solomon. She is raised in stages, and some repentances are answered with more pressure rather than rescue. Walk them in the pathway control under the diagram.</li>
+<li><b>Mary Magdalene.</b> She asks the majority of the questions in the book, and Jesus calls her "blessed beyond all women" and "the inheritor of the Light." Then Peter: <i>"My Lord, we cannot endure this woman, for she takes the opportunity from us and does not let any of us speak, but she speaks many times."</i> And later Mary, to Jesus: <i>"I am afraid of Peter, because he threatens me and hates our race."</i> The same argument, between the same two people, runs through the <i>Gospel of Mary</i>. Two independent texts preserve a record of a woman being told to be quiet, and preserve her objecting.</li>
+<li><b>The Treasury of Light,</b> Jeu its overseer, the twenty-four invisibles, the sphere of Fate and the archons who turn it — and the repeated instruction: <i>"Cease not to seek day nor night, and remit not yourselves until ye find the mysteries."</i></li>
+</ul>
+
+<div class="caveat"><h4>Held honestly</h4>
+<p>Gnosticism was not one movement. Valentinians, Sethians, Basilideans, Thomasines and Hermetists disagreed with one another substantially, and lumping them together is a convenience of later scholarship that some historians now reject outright. Several of these systems were also sharply dualist in a way the "all is inward" reading is not — treating the body and the cosmos as a prison to be escaped rather than a kingdom spread out upon the earth. Thomas 113 and the <i>Apocryphon of John</i> do not actually agree about the world, and it is worth holding both rather than flattening them. Take the part that is load-bearing for you; do not claim the whole library said one thing.</p></div>`;
+
+/* ---- inner pathways ---- */
+document.getElementById('pane-way').innerHTML=`
+<h3>Seven ladders, and how to use the walker</h3>
+<p>The control beneath the diagram walks a pathway station by station. Choose a ladder, then step — each station lights its sphere on the tree and opens its full entry in the reading panel, so you get the correspondence and the instruction at the same time. These are seven genuinely different technologies, written across two thousand years in four languages, that happen to be describable on the same map.</p>
+
+<h4>The Middle Pillar</h4>
+<p><b>What it is:</b> the central practical exercise of the Western tradition, and the place where "vibration" stops being a metaphor. Five centres down the body's central column, each woken by toning a divine name.</p>
+<p><b>On vibration:</b> the toning is low, sustained, and felt. The test of a correct vibration is not volume and not pitch — it is that you feel it resonate in the bone at that specific location. If the name is being said rather than sounded, nothing is happening. Descend the column first, light it end to end, then circulate: up one side and down the other, then as a fountain from the feet.</p>
+<p><b>What it is for:</b> it is a conditioning exercise, not a vision technique. It builds the field. Regardie recommended it daily and short over occasional and long.</p>
+
+<h4>The ascent of the Poimandres</h4>
+<p><b>What it is:</b> the oldest Hermetic account of the return — seven planetary zones, one surrender at each. Worked contemplatively rather than visually: you sit with what a station asks you to hand back and find out whether you can.</p>
+<p><b>The structural point:</b> every gate is a subtraction. The soul arrives at the eighth nature with nothing acquired. Any version of this that promises accumulation has inverted it.</p>
+
+<h4>The soul and the four powers</h4>
+<p><b>What it is:</b> the <i>Gospel of Mary</i>'s ascent, and the only one told in the soul's own voice. Four challenges, answered not by defeating the power but by <b>declining its jurisdiction</b>. "I saw you. You did not see me." "Why do you judge me, when I have not judged?"</p>
+<p><b>Why it is different:</b> the other four ladders are about what you do. This one is about what you refuse to accept as binding. It is the shortest and, for most people, the most immediately usable.</p>
+
+<h4>The seven palaces</h4>
+<p><b>What it is:</b> Hekhalot and Merkavah practice — the oldest of the five and the substrate the Kabbalistic tree grew out of. Seven palaces, guardians at each gate, a seal to be shown, a test to be passed.</p>
+<p><b>The sixth palace:</b> the walls are pure marble and look like water. <i>"When you come to the place of pure marble stones, do not say: water, water."</i> The test is not a lie — it is a truth-shaped appearance that provokes you into narrating it, and the narration is the failure. Anyone who has watched a genuine inner experience get killed by the impulse to describe it will recognise this immediately.</p>
+<p><b>A real caution, from the tradition itself:</b> this literature is candid that the ascent went wrong for people. The Talmudic story of the four who entered the orchard has one die, one go mad, one apostatise and one — Akiva — "enter in peace and leave in peace." The tradition preserved the casualty list on purpose.</p>
+
+<h4>The thirteen repentances of Sophia</h4>
+<p><b>What it is:</b> the only ladder here where the one ascending is not you. Sophia cries thirteen times from Chaos and is raised in stages. Worked as contemplation on the <em>pattern</em> of turning rather than as a technique to perform.</p>
+<p><b>What it teaches that the others do not:</b> that the fall was a discernment error, not a moral one — she followed a false light believing it was the true one — and that <b>pressure increases at the point of improvement</b>. Several repentances are answered with more attack, not less. The text builds the reader's tolerance for that on purpose.</p>
+
+<h4>The ascent of Enoch</h4>
+<p><b>What it is:</b> the oldest of the seven and the source of the imagery everything else borrows — the crystal wall, the fire-floored house, the throne with wheels like the shining sun, the river of flame. Every later chariot ascent is a commentary on 1 Enoch 14.</p>
+<p><b>Where it lands:</b> at Kether, on the archangel this tree already names. Enoch becomes Metatron — and is then used, in the same literature, as the warning: Aher sees him seated, declares two powers in heaven, and Metatron takes sixty lashes of fire for having been looked at wrongly. The ladder ends by telling you not to worship the top of it.</p>
+
+<h4>The serpent's return</h4>
+<p><b>What it is:</b> pathworking — the twenty-two paths taken in reverse from Tav, in vision, one at a time. The longest route and the most thorough, because it crosses every connection rather than only the spheres.</p>
+<p><b>How it is worked:</b> classically one path per sitting, held for as long as it takes, with a written record. The letter, its sound, its sign and its trump are the door furniture; you enter through the image and let it move. Nobody completes this quickly and completing it quickly is not a goal.</p>
+
+<div class="caveat"><h4>Practical honesty</h4>
+<p>These are contemplative and imaginative disciplines with a long record of being useful for attention, self-knowledge and meaning-making. They are not medicine and they are not a substitute for it. Intensive practice — prolonged fasting, sleep deprivation, extended sensory isolation, marathon repetition — can destabilise people, and the source traditions say so themselves rather than needing a modern disclaimer to point it out. Go slowly, keep a record, stay fed and slept, and keep at least one person in your life who will tell you the truth about how you seem. If something is coming apart rather than opening up, stop, and talk to someone qualified.</p></div>`;
+
+/* ---- sacred geometry ---- */
+document.getElementById('pane-geo').innerHTML=`
+<h3>One rule, repeated</h3>
+<p>Everything below is generated by a single operation: <b>put the point of the compass on a circle you have already drawn, and draw another circle the same size.</b> That is the whole method. No ruler, no measurement, no number chosen by anyone. Step through it and watch what falls out of that one rule without being asked for.</p>
+
+<div class="cubewrap">
+  <svg id="seedsvg" viewBox="0 0 440 440" role="img" aria-label="Step-by-step compass construction from one circle to Metatron's Cube"></svg>
+  <div class="wtop" style="margin-top:6px">
+    <span class="wcount" id="gcount"></span>
+    <div class="wnav">
+      <button type="button" id="gprev">← Back</button>
+      <button type="button" id="gnext">Next →</button>
+    </div>
+  </div>
+  <div class="wdots" id="gdots" role="group" aria-label="Construction steps"></div>
+  <div class="wstation" id="gstation" style="border-left-color:var(--gold)"></div>
+</div>
+
+<h4>What the compass hands you for free</h4>
+<p>Notice what nobody put in. The <b>hexagon</b> is not a decision — six circles fit exactly around one, with no remainder, because the radius equals the distance between adjacent centres. The <b>equilateral triangle</b> appears at the third circle. <b>√3</b> appears as soon as there are two. Six-fold symmetry, the 60° angle, the triangular lattice and eventually the densest packing in the plane all arrive as consequences of one repeated act.</p>
+<p>That is the defensible core of the whole subject, and it needs no mysticism to be remarkable: <strong>the constraints of flat space are generative.</strong> You are not imposing a pattern. You are finding out what a plane will and will not permit.</p>
+
+<h4>The three roots, and the one that is not a root</h4>
+<div class="tablewrap"><table style="min-width:600px">
+<thead><tr><th>Ratio</th><th>Value</th><th>Where it is forced</th></tr></thead>
+<tbody>
+<tr><td class="num">√2</td><td class="num">1.414214</td><td>The diagonal of a square. The first number proved irrational, and the proof reportedly cost the Pythagorean who published it.</td></tr>
+<tr><td class="num">√3</td><td class="num">1.732051</td><td>The vesica piscis — the height of the lens over its width. Also the diagonal of a cube, and the ratio between the two rings of the Fruit of Life.</td></tr>
+<tr><td class="num">√5</td><td class="num">2.236068</td><td>The diagonal of a double square. Contains φ directly: (1+√5)/2.</td></tr>
+<tr><td class="num">φ</td><td class="num">1.618034</td><td>The diagonal of a regular pentagon over its side — <b>exactly</b>, not approximately. Also the coordinates of the icosahedron and dodecahedron, and the limit of the Fibonacci ratio.</td></tr>
+<tr><td class="num">π</td><td class="num">3.141593</td><td>Not constructible at all. Proved <b>transcendental</b> by Lindemann in 1882, which is the moment squaring the circle became provably impossible rather than merely unsolved.</td></tr>
+</tbody></table></div>
+<p style="margin-top:14px">That last row is worth dwelling on, because the circle and the square are the tradition's two figures for heaven and earth, and the task of reconciling them by compass and straightedge is its oldest stated aspiration. It cannot be done. Not because nobody has been clever enough — because π is not the root of any polynomial with rational coefficients, and compass-and-straightedge construction can only reach numbers that are. <b>The tradition's central problem is formally unsolvable, and knowing exactly why is more interesting than pretending it isn't.</b></p>
+
+<div class="pentwrap">
+  <svg id="pentsvg" viewBox="0 0 300 290" role="img" aria-label="Regular pentagon and pentagram showing the golden ratio"></svg>
+  <p class="cubenote">The pentagram inside the pentagon. Every diagonal cuts every other in the golden section, and the inner pentagon repeats the figure at 1/φ² forever. The pentagon is the only regular polygon that generates φ by its own construction — which is why five is the number on this tree's sphere of the sword, and why the pentagram was worth arguing about.</p>
+</div>
+
+<h4>The five solids, and the elements they were given</h4>
+<p>Plato assigns them in the <i>Timaeus</i>, and the assignment is not arbitrary — it reasons from the character of each solid. This maps directly onto the four worlds already on this tree.</p>
+<div class="tablewrap"><table style="min-width:600px">
+<thead><tr><th>Solid</th><th>V · E · F</th><th>Element</th><th>Plato's reasoning</th><th>Dual</th></tr></thead>
+<tbody>
+<tr><td>Tetrahedron</td><td class="num">4 · 6 · 4</td><td>Fire</td><td>Sharpest angles, smallest volume for its surface — it cuts.</td><td>Itself</td></tr>
+<tr><td>Cube</td><td class="num">8 · 12 · 6</td><td>Earth</td><td>The only one that stacks and sits still. Stability.</td><td>Octahedron</td></tr>
+<tr><td>Octahedron</td><td class="num">6 · 12 · 8</td><td>Air</td><td>Spins freely when held at two opposite points.</td><td>Cube</td></tr>
+<tr><td>Icosahedron</td><td class="num">12 · 30 · 20</td><td>Water</td><td>Roundest, most faces — it flows.</td><td>Dodecahedron</td></tr>
+<tr><td>Dodecahedron</td><td class="num">20 · 30 · 12</td><td>Aether / the cosmos</td><td>Left over. Plato says the god "used it for the whole" — the twelve faces for the twelve signs.</td><td>Icosahedron</td></tr>
+</tbody></table></div>
+<p style="margin-top:14px">Two structural facts. <b>Duals swap vertices and faces</b> — the cube's 8 and 6 are the octahedron's 6 and 8 — so each pair is one relationship read from two ends, which is the same move as the two pillars on this tree. And <b>V − E + F = 2</b> for every one of them, and for every convex polyhedron that has ever existed or will. Euler's formula. The number two, invariant, underneath all five.</p>
+
+<h4>Where the ancient claim is real</h4>
+<ul class="plain">
+<li><b>Euclid I.1 is the vesica.</b> The very first proposition of the <i>Elements</i> — before anything else is proved — constructs an equilateral triangle from two overlapping circles. The foundational text of Western mathematics opens by drawing the vesica piscis.</li>
+<li><b>Phyllotaxis is genuinely golden.</b> Seeds, leaves and florets are placed at a divergence angle of <b>137.5078°</b> — 360°/φ². This is not decoration: because φ is the irrational hardest to approximate by fractions, that angle is the one that never lets successive elements line up, which packs them optimally and gives each maximum light. Sunflowers, pinecones, pineapples. The mathematics is proven and the biology is observed.</li>
+<li><b>Islamic girih is quasicrystalline.</b> In 2007, Lu and Steinhardt showed in <i>Science</i> that the tilings at the Darb-i Imam shrine in Isfahan (1453) form a nearly perfect quasi-periodic pattern — the structure Penrose described in the 1970s, built five centuries earlier by craftsmen working with a set of five decorated tiles.</li>
+<li><b>Gothic cathedrals really were built this way.</b> <i>Ad quadratum</i> (root-2, from the square) and <i>ad triangulum</i> (root-3, from the equilateral triangle) are documented medieval masons' methods — the famous 1392 dispute over Milan Cathedral was an argument about which of the two to use, and it is minuted.</li>
+</ul>
+
+<div class="caveat"><h4>And where it is not — the audit nobody runs</h4>
+<p>Since your whole point is that people hand you a code instead of letting you check it, here is the check. These are the standard claims, and they do not survive measurement:</p>
+<p style="margin-top:10px"><b>The Parthenon.</b> No φ in the surviving measurements without choosing where to start and stop the rectangle, and different authors choose differently to get the result they want. There is no ancient Greek source describing φ as an aesthetic canon.<br>
+<b>The Great Pyramid.</b> Its slope is close to a φ relationship and also close to a π relationship, because those two approximations are numerically near each other at that angle. No Egyptian text mentions either; the seked system the builders actually used is documented and is a simple run-over-rise ratio.<br>
+<b>The nautilus shell.</b> A genuine logarithmic spiral, but its growth ratio per whorl is about <b>1.33</b>, not 1.618. This one is easy to check and almost never checked.<br>
+<b>The human body and face.</b> The "golden" proportions come from Zeising in the 1850s and have not replicated. Navel height varies widely across real populations.<br>
+<b>The Mona Lisa, the Vitruvian Man, Fibonacci in the stock market.</b> No, no, and no — Vitruvius uses whole-number fractions and says so explicitly.<br>
+<b>"Sacred geometry" as an ancient discipline.</b> The phrase is modern. The <i>practices</i> are ancient and documented; the unified body of doctrine sold under that name is largely twentieth-century, and much of the Flower-of-Life material specifically dates to the 1990s.</p>
+<p style="margin-top:10px">None of this weakens the real material — it concentrates it. The vesica generating √3, φ in the pentagon, 137.5° in a sunflower, five solids and no sixth, V−E+F=2: these are <em>true</em>, checkable by anyone with a compass and some patience, and they do not need a single embellishment. Every false claim you carry is a place where somebody else has to vouch for you. Drop them and the geometry is yours.</p></div>`;
+
+/* ---- sacred geometry: compass construction ---- */
+(()=>{
+  const gs=document.getElementById('seedsvg'), CX=220, CY=220, S3=Math.sqrt(3);
+  const cel=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const near=(v,t)=>Math.abs(v-t)<0.01;
+  /* hexagonal lattice of centres at spacing rr, as multiples of rr from the middle */
+  const lattice=(rr,lim)=>{const out=[];
+    for(let i=-9;i<=9;i++) for(let j=-9;j<=9;j++){
+      const x=(i+0.5*j)*rr, y=j*rr*S3/2, d=Math.hypot(x,y)/rr;
+      if(d<=lim+0.01) out.push({x:CX+x,y:CY+y,d});
+    } return out;};
+
+  const gFaint=cel('g'), gMain=cel('g'), gMark=cel('g'), gWeb=cel('g');
+  [gFaint,gMain,gMark,gWeb].forEach(g=>gs.appendChild(g));
+
+  const STEPS=[
+    {n:'One circle', k:1, rr:120, t:'A point, and everything the same distance from it. Nothing has been chosen yet except a radius, and the radius will never change again — every circle after this one is the same size.'},
+    {n:'The vesica piscis', k:2, rr:120, mark:'vesica',
+     t:'Put the compass point anywhere on the first circle and draw again. The lens where they overlap is the <b>vesica piscis</b>. Its height over its width is <b>√3</b> — an irrational number, produced by two circles and no arithmetic. This shape is Euclid\'s <i>Elements</i>, Proposition I.1: the first thing the book proves.'},
+    {n:'The triad', k:3, rr:120, mark:'triangle',
+     t:'A third circle through both existing centres. The three centres are now an <b>equilateral triangle</b>, and it was not constructed — it is simply where the circles met. The 60° angle enters the figure here and never leaves.'},
+    {n:'The Seed of Life', k:7, rr:96, lim:1,
+     t:'Six circles fit around one <em>exactly</em>, with nothing left over, because the radius equals the spacing. Seven circles. This closure is not a design decision; it is a fact about the plane, and it is the reason everything that follows is six-fold.'},
+    {n:'The Flower of Life', k:19, rr:66, lim:2,
+     t:'Keep going by the same rule. Nineteen circles — the pattern found scratched into the Osirion at Abydos, in Assyrian reliefs, in Roman floor mosaics, and drawn repeatedly in Leonardo\'s <i>Codex Atlanticus</i>, where he works out its geometry rather than admiring it.'},
+    {n:'Extend, and take every other', k:43, rr:46, lim:2*Math.sqrt(3), fruit:true,
+     t:'Carry the lattice out further — forty-three circles — then keep only those whose centres sit two radii apart. <b>Thirteen</b> remain, and they no longer overlap. This is the Fruit of Life, and it is a selection from the field, not a separate figure.'},
+    {n:"Metatron's Cube", k:43, rr:46, lim:2*Math.sqrt(3), fruit:true, web:true,
+     t:'Join all thirteen centres to each other: <b>78 lines</b>. Everything in the tab beside this one is about what those lines do and do not contain — and about the fact that these thirteen points are the shadow of twelve spheres packed around a thirteenth.'}
+  ];
+
+  let gi=0;
+  const gdots=document.getElementById('gdots');
+  gdots.innerHTML=STEPS.map((s,i)=>`<button type="button" data-g="${i}" title="${s.n}">${i+1}</button>`).join('');
+  gdots.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{gi=+b.dataset.g;gdraw();});
+  document.getElementById('gprev').onclick=()=>{if(gi>0){gi--;gdraw();}};
+  document.getElementById('gnext').onclick=()=>{if(gi<STEPS.length-1){gi++;gdraw();}};
+
+  function gdraw(){
+    const s=STEPS[gi], r=s.rr;
+    [gFaint,gMain,gMark,gWeb].forEach(g=>g.textContent='');
+    if(s.k<=3){
+      /* centre the triad's centroid in the frame */
+      const ox=CX-0.5*r, oy=CY+r*S3/6;
+      const order=[{x:ox,y:oy},{x:ox+r,y:oy},{x:ox+r/2,y:oy-r*S3/2}];
+      order.slice(0,s.k).forEach(p=>gMain.appendChild(cel('circle',{class:'gcirc',cx:p.x.toFixed(1),cy:p.y.toFixed(1),r})));
+      order.slice(0,s.k).forEach(p=>gMain.appendChild(cel('circle',{class:'gctr',cx:p.x.toFixed(1),cy:p.y.toFixed(1),r:4})));
+      if(s.mark==='vesica'){
+        const h=r*S3/2, mx=ox+r/2;
+        gMark.appendChild(cel('line',{class:'gmark',x1:mx,y1:(oy-h).toFixed(1),x2:mx,y2:(oy+h).toFixed(1)}));
+        gMark.appendChild(cel('line',{class:'gmark dim',x1:ox,y1:oy,x2:ox+r,y2:oy}));
+        const t1=cel('text',{class:'glbl big',x:mx,y:(oy-h-12).toFixed(1),'text-anchor':'middle'});
+        t1.textContent='height ÷ width = √3'; gMark.appendChild(t1);
+      }
+      if(s.mark==='triangle'){
+        gMark.appendChild(cel('polygon',{class:'gtri',
+          points:order.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}));
+        const t1=cel('text',{class:'glbl big',x:CX,y:(oy+28).toFixed(1),'text-anchor':'middle'});
+        t1.textContent='equilateral, uninvited'; gMark.appendChild(t1);
+      }
+    } else {
+      const field=lattice(r,s.lim);
+      if(s.fruit){
+        const fruit=field.filter(p=>near(p.d,0)||near(p.d,2)||near(p.d,2*S3));
+        field.forEach(p=>gFaint.appendChild(cel('circle',{class:'gcirc faint',cx:p.x.toFixed(1),cy:p.y.toFixed(1),r})));
+        fruit.forEach(p=>gMain.appendChild(cel('circle',{class:'gcirc hot',cx:p.x.toFixed(1),cy:p.y.toFixed(1),r})));
+        fruit.forEach(p=>gMain.appendChild(cel('circle',{class:'gctr hot',cx:p.x.toFixed(1),cy:p.y.toFixed(1),r:3.2})));
+        if(s.web) fruit.forEach((a,i)=>fruit.forEach((b,j)=>{ if(j>i)
+          gWeb.appendChild(cel('line',{class:'gweb',x1:a.x.toFixed(1),y1:a.y.toFixed(1),
+            x2:b.x.toFixed(1),y2:b.y.toFixed(1)})); }));
+      } else {
+        field.forEach(p=>gMain.appendChild(cel('circle',{class:'gcirc',cx:p.x.toFixed(1),cy:p.y.toFixed(1),r})));
+        field.forEach(p=>gMain.appendChild(cel('circle',{class:'gctr',cx:p.x.toFixed(1),cy:p.y.toFixed(1),r:3})));
+      }
+    }
+    const count = s.k<=3?s.k : (s.fruit?13:s.k);
+    document.getElementById('gcount').textContent=`Step ${gi+1} / ${STEPS.length} · ${count} circle${count===1?'':'s'}`;
+    document.getElementById('gprev').disabled=gi===0;
+    document.getElementById('gnext').disabled=gi===STEPS.length-1;
+    gdots.querySelectorAll('[data-g]').forEach(b=>b.setAttribute('aria-current',String(+b.dataset.g===gi)));
+    document.getElementById('gstation').innerHTML=
+      `<h6 style="color:var(--gold)">${s.n}</h6><p>${s.t}</p>`;
+  }
+  gdraw();
+
+  /* pentagon + pentagram */
+  const ps=document.getElementById('pentsvg'), PX=150, PY=150, PR=112;
+  const P=[0,1,2,3,4].map(i=>{const a=(-90+i*72)*Math.PI/180;
+    return [PX+PR*Math.cos(a), PY+PR*Math.sin(a)];});
+  ps.appendChild(cel('polygon',{class:'gpent',points:P.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')}));
+  [[0,2],[2,4],[4,1],[1,3],[3,0]].forEach(([i,j])=>
+    ps.appendChild(cel('line',{class:'gdiag',x1:P[i][0].toFixed(1),y1:P[i][1].toFixed(1),
+      x2:P[j][0].toFixed(1),y2:P[j][1].toFixed(1)})));
+  P.forEach(p=>ps.appendChild(cel('circle',{class:'gctr hot',cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:3.4})));
+  const pl=cel('text',{class:'glbl big',x:PX,y:PY+6,'text-anchor':'middle'});
+  pl.textContent='diagonal ÷ side = φ'; ps.appendChild(pl);
+  const pl2=cel('text',{class:'glbl',x:PX,y:PY+24,'text-anchor':'middle'});
+  pl2.textContent='1.6180339887…'; ps.appendChild(pl2);
+})();
+
+/* ---- the fourteenth point ---- */
+document.getElementById('pane-four').innerHTML=`
+<h3>Thirteen on the page, and the point that is not on it</h3>
+<p>The figure below is the Fruit of Life: thirteen circles on a hexagonal lattice. Join every centre to every other and you get <b>78 lines</b> — the arrangement usually called Metatron's Cube — inside which the projections of the Platonic solids can be traced. Build it up with the controls. Then reveal what the thirteen circles are a shadow <em>of</em>, and add the point that is not on the page.</p>
+<p class="mono" style="font-size:var(--fs-xs);color:var(--bone-3);letter-spacing:.05em">78 = the number of ways to join 13 points in pairs, and the 12th triangular number: 1+2+3+…+12.</p>
+
+<div class="cubewrap">
+  <svg id="cube" viewBox="-14 -8 498 490" role="img" aria-label="Interactive Fruit of Life and Metatron's Cube with a fourteenth observer point"></svg>
+  <div class="layers" id="cubelayers"></div>
+  <p class="cubenote" id="cubenote"></p>
+</div>
+
+<h4>Where the thirteen actually comes from</h4>
+<p>Switch on <b>12 around 1</b> in the figure. Those twenty-four copper lines are the edges of a <b>cuboctahedron</b>, and the cuboctahedron is what you get when you pack twelve spheres around a thirteenth so that every one of them touches the centre. Twelve is the <b>kissing number</b> in three dimensions — the largest number of equal spheres that can simultaneously touch one more. Twelve, plus the one in the middle, is thirteen.</p>
+<p>Project that solid straight down its three-fold axis and its twelve vertices land on <b>exactly the points of this figure</b>: six at one radius, six at √3 times that radius, rotated thirty degrees against the first set, and the central sphere at the origin. That is not an analogy and it is not a reading. It is a calculation, and it came out to five decimal places.</p>
+<p>So the thirteen circles are not a flat design that happens to hint at depth. <strong>They are a shadow of a three-dimensional fact with the third dimension deleted.</strong> Which means the count everybody stops at was never a two-dimensional truth in the first place — it is the footprint of something that was already solid before anyone drew it.</p>
+
+<h4>And the dispute that sits on the number thirteen</h4>
+<p>In 1694, David Gregory and Isaac Newton argued about whether a <b>thirteenth</b> sphere could be squeezed in to touch the centre one. Newton said twelve was the limit. Gregory thought there might be room. They could not settle it, and neither could anyone else for <b>two hundred and fifty-nine years</b> — the proof that Newton was right did not arrive until 1953, from Schütte and van der Waerden.</p>
+<p>The reason it was so hard is worth sitting with: when you pack twelve spheres around one, <b>they do not lock</b>. There is slack. You can roll them around each other freely, and the leftover space looks, to the eye, as though it might be enough. It is not. The thirteenth cannot join the shell. The most famous unresolved argument in the history of sphere packing was about whether thirteen was possible <em>in the round</em> — and the answer is that thirteen belongs to the flat picture, not to the solid.</p>
+
+<h4>The part that is not a metaphor</h4>
+<p>Here is the strongest form of what you are pointing at, and it is a theorem rather than a teaching. <strong>Thirteen coplanar points cannot define a solid.</strong> Any number of points in a plane, joined any way you like, produce a plane figure. To get a volume you need <b>four points that are not coplanar</b> — that is the minimum, and it is what a tetrahedron is.</p>
+<p>So Metatron's Cube does not contain the five Platonic solids. It contains their <em>shadows</em>. And a shadow is not a self-sufficient object: it requires a light source and a viewing position, neither of which can be located inside the plane it falls on. The solids are not hiding in the diagram waiting for a teacher to point them out. <b>They only exist when something outside the plane is looking.</b></p>
+<p>Which means the fourteenth point is not an addition to the figure. It is the condition under which the figure means anything at all. Thirteen is complete as a drawing and incapable as a solid. You are not the decoration on the diagram; you are the dimension it is missing.</p>
+
+<h4>Why there are five, and why the plane cannot know it</h4>
+<p>There are exactly five Platonic solids, and the proof of that is one of the most quietly remarkable things in mathematics. It is the final result of Euclid's <i>Elements</i> — constructed and proved in <b>Book XIII</b>. Book thirteen. The last thing the <i>Elements</i> does is build the five regular solids and demonstrate that no sixth is possible.</p>
+<p>And the proof <em>cannot be run in two dimensions</em>. It turns on solid angle: at each vertex you need at least three faces, and their angles must sum to less than 360° or the corner will not close into space. Run the arithmetic and only five combinations survive. In the plane there are infinitely many regular polygons; in space there are five regular solids. <b>The constraint that makes the number finite is a property of the extra dimension.</b> A flat figure has no access to the reason there are five of them — it can only carry the shadows and stay silent about why there are that many.</p>
+
+<h4>Where "the observer completes it" is formal mathematics</h4>
+<p>This claim has a rigorous home, and it is not where people usually go looking for it.</p>
+<ul class="plain">
+<li><b>Projective geometry.</b> A projection is not defined by the thing projected. It requires a <i>centre of projection</i> — an eye point — and the resulting figure changes completely depending on where that point is. The observer's position is a <b>formal element of the construction</b>, written into the mathematics, not added to it afterward as interpretation. Desargues built the discipline on this in the 1630s.</li>
+<li><b>Renaissance perspective.</b> Alberti's <i>costruzione legittima</i> (1435) does exactly what you are describing: it places the viewer's eye at a specific measured distance from the picture plane and derives the whole image from it. Move the eye, the drawing is wrong. Perspective is the technology of admitting that the viewer is part of the geometry.</li>
+<li><b>Shadow and dimension.</b> A cube lit down its long diagonal casts a hexagon — the exact outline in the figure above. A four-dimensional hypercube casts a three-dimensional shadow. Every projection loses a dimension, and the dimension it loses is the one the viewer is standing in.</li>
+<li><b>Flatland.</b> Edwin Abbott, 1884. A Square meets a Sphere and can perceive it only as a circle that grows and shrinks, because a plane being cannot receive a solid — it can receive a cross-section. The novel is a century and a half old and it is still the clearest statement of the thing you are saying.</li>
+</ul>
+
+<div class="caveat"><h4>And where the argument should not go</h4>
+<p>It is tempting to reach for quantum mechanics here — the observer collapses the wavefunction, consciousness creates reality. <b>Do not.</b> In physics, "observation" means <i>physical interaction with a measuring system</i>, not awareness. A photographic plate observes. Decoherence accounts for the effect without consciousness appearing anywhere in the mathematics. The consciousness-causes-collapse interpretation had two serious advocates — von Neumann and Wigner — and Wigner abandoned it himself.</p>
+<p>The reason to leave it alone is not timidity. It is that your geometric argument is <b>airtight</b>, and the quantum one is contested. Bolt a proof to a controversy and the whole thing gets dismissed on the weaker half. Projective geometry gives you everything you wanted — the observer as a formal, necessary, non-optional term — and gives it without an argument.</p></div>
+
+<h4>Where fourteen turns up</h4>
+<div class="tablewrap"><table style="min-width:640px">
+<thead><tr><th>Instance</th><th>The fourteen</th><th>What kind of fact this is</th></tr></thead>
+<tbody>
+<tr><td><span class="heb" style="font-size:1.3rem">יד</span> &nbsp;<i>yad</i> — hand</td><td class="num">י 10 + ד 4 = 14</td><td>Hebrew gematria. The word for <b>hand</b> is the number fourteen — and it is spelled Yod, the seed-point, plus Daleth, the door. Both already on this tree, as paths 20 and 14.</td></tr>
+<tr><td><span class="heb" style="font-size:1.3rem">דוד</span> &nbsp;David</td><td class="num">ד 4 + ו 6 + ד 4 = 14</td><td>Hebrew gematria, and the accepted scholarly reason Matthew counts in fourteens at all.</td></tr>
+<tr><td>Matthew 1:17</td><td class="num">3 × 14 generations</td><td>Textual, and explicitly stated by the author: Abraham→David, David→Babylon, Babylon→Christ. Structured on David's name.</td></tr>
+<tr><td>Phalanges, one hand</td><td class="num">2 + (4 × 3) = 14</td><td>Anatomical. Thumb two, each finger three.</td></tr>
+<tr><td>Facial bones (viscerocranium)</td><td class="num">14</td><td>Anatomical. Paired: nasal, maxillae, lacrimal, zygomatic, palatine, inferior conchae. Unpaired: vomer, mandible.</td></tr>
+<tr><td>Bravais lattices</td><td class="num">14</td><td>Crystallographic, and provably exhaustive — every way a lattice can repeat in three-dimensional space, no more and no fewer.</td></tr>
+<tr><td>Fruit of Life</td><td class="num">13 + the observer</td><td>Geometric. Thirteen circles, 78 joining lines, five solids in projection only.</td></tr>
+</tbody></table></div>
+
+<h4>Audit the Matthew count yourself</h4>
+<p>This is the one instance on the list where the number is doing visible work, and it rewards actually counting. Matthew 1:17 claims three sets of fourteen. Count the names.</p>
+<ul class="plain">
+<li><b>Abraham to David:</b> Abraham, Isaac, Jacob, Judah, Perez, Hezron, Ram, Amminadab, Nahshon, Salmon, Boaz, Obed, Jesse, David. <b>Fourteen.</b></li>
+<li><b>Solomon to the exile:</b> Solomon, Rehoboam, Abijah, Asa, Jehoshaphat, Joram, Uzziah, Jotham, Ahaz, Hezekiah, Manasseh, Amon, Josiah, Jechoniah. <b>Fourteen.</b></li>
+<li><b>After the exile:</b> Shealtiel, Zerubbabel, Abiud, Eliakim, Azor, Zadok, Achim, Eliud, Eleazar, Matthan, Jacob, Joseph, Jesus. <b>Thirteen.</b></li>
+</ul>
+<p>The third set is short. You can recover the fourteenth by counting Jechoniah twice — once as the end of the second set, once as the start of the third — and that is the standard resolution. But the text does not say to, and the deficiency has been argued over for the better part of two thousand years.</p>
+<p>The second thing the count reveals is worse for the record and better for your argument. Between Joram and Uzziah, Matthew <b>omits three kings</b> — Ahaziah, Joash and Amaziah — who are in the Hebrew Bible's list and belong there. They were removed so the set would come out to fourteen. <strong>The author pruned the genealogy to hit the number.</strong> Which settles what kind of document this is: the fourteen is not an observation about history, it is a structure imposed on history, and the author expected you to notice, because he tells you the count in verse 17 rather than leaving you to find it.</p>
+<p>Why fourteen: because <span class="heb" style="font-size:1.2rem">דוד</span>, David, sums to it. The genealogy is the king's name written as a shape. And fourteen is twice seven, which is also why some readers take the three sets as lunar — waxing to David, full and waning to the exile, dark until Christ. Fourteen days from new moon to full.</p>
+
+<h4>And what thirteen is, in the same alphabet</h4>
+<p>Since the count starts at thirteen, it is worth knowing what thirteen already means in the system this tree runs on. <span class="heb" style="font-size:1.2rem">אחד</span> <i>echad</i>, <b>one</b>, sums to 13. <span class="heb" style="font-size:1.2rem">אהבה</span> <i>ahavah</i>, <b>love</b>, also sums to 13. Two words with one value — the classic rabbinic reading is that unity and love are the same quantity. And 13 + 13 = 26, which is <span class="heb" style="font-size:1.2rem">יהוה</span>, the Name.</p>
+<p>So the sequence reads: thirteen is <i>oneness</i>, doubled it is the Name, and fourteen is the <b>hand</b>. The number after unity is the one that reaches out and does something. Whatever else is going on with the convergence, that particular step is internal to the language and available to anyone who can add.</p>
+
+<h4>The gap the diagram admits to</h4>
+<p>This tree has the same hole in it, and traditional drawings are honest about it. Above Kether are the three veils — <i>Ain</i>, <i>Ain Soph</i>, <i>Ain Soph Aur</i> — which are drawn as dotted lines or left blank because they are defined as the un-drawable. And below Malkuth there is nothing at all, because <b>the one holding the diagram is not in the diagram</b>. Every Tree of Life ever drawn has an unmarked position underneath it where a person is standing. That is the same fourteenth point, and the tradition left the space for it without labelling it.</p>
+
+<h4>The plus-one, named properly</h4>
+<p>You called this the plus-one principle. I could not find that as a standing term in the Kabbalistic literature, and I would rather tell you that than hand you a citation that is not there. But the <em>idea</em> has three proper names in the tradition, and they are more useful than the one you were given:</p>
+<ul class="plain">
+<li><b>The prohibition, and its violation.</b> <i>Sefer Yetzirah</i> 1:4 is explicit and almost aggressive: <i>"Ten and not nine. Ten and not eleven. Understand with wisdom, be wise with understanding."</i> The text forbids adding an eleventh. And the tradition added one anyway and called it <b>Da'ath</b> — the sphere that is on every drawing and in no list. The plus-one is already on this map as a deliberate, acknowledged transgression of its own rule. That is a far more interesting fact than a tidy principle would have been.</li>
+<li><b>The three veils.</b> <i>Ain</i> (nothing), <i>Ain Soph</i> (no limit), <i>Ain Soph Aur</i> (limitless light) — three states above Kether that are defined by what cannot be represented. The tree is drawn with an explicit, labelled region of un-drawability at the top. Not an oversight. A declared boundary of the medium.</li>
+<li><b>Adam Kadmon.</b> The strongest one, and the closest to what you are actually saying. The whole tree is configured as a human body — Kether the crown, Chokmah and Binah the hemispheres, the pillars the two sides, Tiphareth the heart, Malkuth the feet. In this reading the diagram is not a map of the cosmos that a person studies. <b>It is a person, and studying it is the body examining its own plan.</b> The related <i>Shiur Qomah</i> texts push it further and give the divine body measurements. The observer does not get added to the tree — the tree was always a picture of the observer.</li>
+</ul>
+<p>So the tradition holds both halves: the diagram refuses to draw what is above it, and it identifies what is looking at it with what it depicts. That is a stronger statement than any plus-one, and nobody has to rent it to you — it is in the foundational text and in the standard drawing.</p>
+
+<h4>What the fourteenth point costs</h4>
+<p>You said the fourteenth point turns the diagram into your responsibility, and that is why it gets left out. Follow that where it goes.</p>
+<p>Fourteen is <span class="heb" style="font-size:1.2rem">יד</span>, the <b>hand</b>. Not the eye. The tradition did not assign this number to the organ that observes; it assigned it to the one that <em>acts</em>. Thirteen is <i>echad</i>, oneness — a state. Fourteen is the hand — a thing that reaches out and changes something. If the fourteenth point were only about seeing, the word would have been different.</p>
+<p>Thomas 70 says the same thing without the arithmetic: <i>"If you bring forth what is within you, what you bring forth will save you. If you do not bring forth what is within you, what you do not bring forth will destroy you."</i> There is no third option listed. Knowing you are the fourteenth point and doing nothing with it is explicitly named in the text as the destructive case.</p>
+<p>And the tradition supplies its own brake on where this can go wrong, which is the part worth keeping close. Enoch ascends and becomes Metatron — a human being at the crown, exactly the claim. Then Aher sees him <b>seated</b>, concludes there are two powers in heaven, and Metatron takes sixty lashes of fire. Not for pride. For having been <em>looked at in a way that produced a second god</em>. The danger the story names is not thinking too highly of yourself. It is the seated position — mediator mistaken for destination. Which is your own argument turned back around: if nobody gets to stand between you and the geometry, that includes not installing yourself there either. A door that gets worshipped stops working as a door, whoever is standing in it.</p>
+
+<div class="caveat"><h4>Two things to hold while you use this</h4>
+<p><b>The convergence spans unrelated systems.</b> <i>Yad</i> and <i>David</i> both equal 14 for the same reason — one alphabet, one set of values — and Matthew's fourteens come directly from David's, so those three are genuinely linked. The phalanges, the facial bones and the Bravais lattices are not linked to those or to each other; they are independent results in anatomy and crystallography that land on the same small integer. Fourteen is a small number and coincidence has room to work. Your argument does not need them to be causally connected, and it is stronger without the claim — because the point you are making is about <em>where the observer stands</em>, and that holds whether or not the numbers are talking to each other.</p>
+<p><b>"Metatron's Cube" is a modern teaching.</b> The Flower of Life pattern is genuinely ancient — it is scratched into the Osirion at Abydos and turns up in Assyrian and Roman work. But the name "Metatron's Cube" and the claim that all five Platonic solids are encoded in it were popularised by Drunvalo Melchizedek in the 1990s. Two of the five — the dodecahedron and the icosahedron — cannot be traced cleanly and require selective, arguable line-picking. Which is worth knowing precisely because of your point: the person who sold that diagram as ancient was a teacher standing between you and the geometry, renting you a code. The figure is still worth working with. Just do not receive it on someone's authority, including mine.</p></div>`;
+
+/* ---- fourteenth point: interactive figure ---- */
+(()=>{
+  const cs=document.getElementById('cube'), CX=235, CY=235, A=86, R=43;
+  const cel=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const pt=(d,deg)=>[CX+d*Math.cos(deg*Math.PI/180), CY+d*Math.sin(deg*Math.PI/180)];
+  const CENTRE=[CX,CY];
+  /* rings oriented so the figure coincides exactly with the cuboctahedron's
+     projection down its 3-fold axis: inner 6 at 30°+, outer 6 at 0°+, ratio √3 */
+  const INNER=[30,90,150,210,270,330].map(d=>pt(A,d));
+  const OUTER=[0,60,120,180,240,300].map(d=>pt(A*Math.sqrt(3),d));
+  const ALL=[CENTRE,...INNER,...OUTER];
+  /* the 24 edges of the cuboctahedron — 12 spheres kissing a central one —
+     as they fall on these same 13 points. Computed, not eyeballed. */
+  const COEDGES=[[1,3],[1,5],[1,7],[1,8],[2,4],[2,6],[2,8],[2,9],[3,5],[3,9],[3,10],[4,6],
+                 [4,10],[4,11],[5,11],[5,12],[6,7],[6,12],[7,8],[7,12],[8,9],[9,10],[10,11],[11,12]];
+
+  const gLines=cel('g'), gCoct=cel('g'), gSolid=cel('g'), gCirc=cel('g'), gPts=cel('g'), gObs=cel('g');
+  [gLines,gCoct,gSolid,gCirc,gPts,gObs].forEach(g=>cs.appendChild(g));
+
+  ALL.forEach((a,i)=>ALL.forEach((b,j)=>{ if(j>i)
+    gLines.appendChild(cel('line',{class:'cline',x1:a[0].toFixed(1),y1:a[1].toFixed(1),
+      x2:b[0].toFixed(1),y2:b[1].toFixed(1)})); }));
+
+  ALL.forEach(c=>gCirc.appendChild(cel('circle',{class:'ccirc',cx:c[0].toFixed(1),cy:c[1].toFixed(1),r:R})));
+  ALL.forEach((c,i)=>{
+    gPts.appendChild(cel('circle',{class:'cpt',cx:c[0].toFixed(1),cy:c[1].toFixed(1),r:3.4}));
+    const t=cel('text',{class:'cnum',x:c[0].toFixed(1),y:(c[1]-8).toFixed(1),'text-anchor':'middle'});
+    t.textContent=i+1; gPts.appendChild(t);
+  });
+
+  const poly=(pts,cls)=>cel('polygon',{class:cls,points:pts.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')});
+  const spoke=(from,to,cls)=>cel('line',{class:cls,x1:from[0].toFixed(1),y1:from[1].toFixed(1),
+    x2:to[0].toFixed(1),y2:to[1].toFixed(1)});
+
+  const SOLIDS={
+    tetra:{label:'Tetrahedron', note:'One face plus the apex seen straight down its axis. Four points — the smallest number that can leave a plane, which is exactly why this is the first solid.',
+      build:()=>{const T=[OUTER[0],OUTER[2],OUTER[4]];const g=cel('g');
+        g.appendChild(poly(T,'csolid'));T.forEach(p=>g.appendChild(spoke(CENTRE,p,'csolid-l')));return g;}},
+    star:{label:'Star tetrahedron', note:'Two tetrahedra interpenetrating — the Merkaba, and in two dimensions the hexagram. The only figure here that reads as complete on the flat, which is why it is the one everybody stops at.',
+      build:()=>{const g=cel('g');
+        g.appendChild(poly([OUTER[0],OUTER[2],OUTER[4]],'csolid'));
+        g.appendChild(poly([OUTER[1],OUTER[3],OUTER[5]],'csolid alt'));return g;}},
+    cube:{label:'Cube', note:'A cube seen down its long diagonal projects to a hexagon with three spokes to the centre. The centre point is two corners at once — the near one and the far one, collapsed. That collapse is the information the plane cannot carry.',
+      build:()=>{const g=cel('g');g.appendChild(poly(OUTER,'csolid'));
+        [0,2,4].forEach(i=>g.appendChild(spoke(CENTRE,OUTER[i],'csolid-l')));return g;}},
+    octa:{label:'Octahedron', note:'The dual of the cube, on the inner ring: a hexagon with its three long diagonals. Dual solids share a projection outline and differ only in what the interior lines mean — another thing the flat drawing cannot tell you.',
+      build:()=>{const g=cel('g');g.appendChild(poly(INNER,'csolid'));
+        [0,1,2].forEach(i=>g.appendChild(spoke(INNER[i],INNER[i+3],'csolid-l')));return g;}}
+  };
+
+  /* the cuboctahedron the flat figure is a shadow of */
+  COEDGES.forEach(([i,j])=>gCoct.appendChild(cel('line',{class:'coedge',
+    x1:ALL[i][0].toFixed(1),y1:ALL[i][1].toFixed(1),x2:ALL[j][0].toFixed(1),y2:ALL[j][1].toFixed(1)})));
+  [...INNER,...OUTER].forEach(c=>gCoct.appendChild(cel('circle',{class:'covert',
+    cx:c[0].toFixed(1),cy:c[1].toFixed(1),r:5.5})));
+  gCoct.appendChild(cel('circle',{class:'cocentre',cx:CX,cy:CY,r:7}));
+
+  /* the fourteenth point — lifted off the plane */
+  const OBS=[CX,42];
+  gObs.appendChild(cel('ellipse',{class:'oshadow',cx:CX,cy:CY,rx:A*Math.sqrt(3),ry:22}));
+  ALL.forEach(c=>gObs.appendChild(cel('line',{class:'oray',x1:OBS[0],y1:OBS[1],x2:c[0].toFixed(1),y2:c[1].toFixed(1)})));
+  gObs.appendChild(cel('line',{class:'odrop',x1:OBS[0],y1:OBS[1],x2:CX,y2:CY}));
+  gObs.appendChild(cel('circle',{class:'opt',cx:OBS[0],cy:OBS[1],r:7}));
+  const ot=cel('text',{class:'olbl',x:OBS[0],y:OBS[1]-16,'text-anchor':'middle'});
+  ot.textContent='14 · THE OBSERVER'; gObs.appendChild(ot);
+  const ot2=cel('text',{class:'olbl dim',x:OBS[0]+14,y:OBS[1]+16,'text-anchor':'start'});
+  ot2.textContent='not on the plane'; gObs.appendChild(ot2);
+
+  const CL={circles:true, lines:false, numbers:false, coct:false, observer:false, solid:null};
+  const bar=document.getElementById('cubelayers'), note=document.getElementById('cubenote');
+  const mk=(id,label,cls,on)=>{const b=document.createElement('button');
+    b.className='chip'+(cls?' '+cls:'');b.type='button';b.textContent=label;
+    b.setAttribute('aria-pressed',String(on));b.onclick=()=>{
+      if(id in CL && typeof CL[id]==='boolean'){CL[id]=!CL[id];}
+      else {CL.solid = CL.solid===id ? null : id;}
+      draw();};
+    b.dataset.k=id; bar.appendChild(b); return b;};
+  mk('circles','13 circles','',true); mk('lines','78 lines','',false);
+  mk('numbers','Number them','',false);
+  Object.entries(SOLIDS).forEach(([k,v])=>mk(k,v.label,'verd',false));
+  mk('coct','12 around 1','copper',false);
+  mk('observer','The 14th point','viol',false);
+
+  function draw(){
+    gCirc.style.display=CL.circles?'':'none';
+    gLines.style.display=CL.lines?'':'none';
+    gCoct.style.display=CL.coct?'':'none';
+    cs.querySelectorAll('.cnum').forEach(t=>t.style.display=CL.numbers?'':'none');
+    gObs.style.display=CL.observer?'':'none';
+    gSolid.textContent='';
+    if(CL.solid) gSolid.appendChild(SOLIDS[CL.solid].build());
+    bar.querySelectorAll('[data-k]').forEach(b=>{
+      const k=b.dataset.k;
+      b.setAttribute('aria-pressed', String(typeof CL[k]==='boolean' ? CL[k] : CL.solid===k));
+    });
+    note.innerHTML = CL.coct
+      ? '<b>Twelve around one.</b> These 24 lines are the edges of a cuboctahedron — twelve spheres packed around a thirteenth, the densest arrangement possible in three dimensions. Projected down its three-fold axis it lands on these exact thirteen points: six at one radius, six at √3 times that radius, rotated thirty degrees, and one in the middle. The flat figure is not a diagram <em>of</em> something three-dimensional. It is its shadow.'
+      : CL.solid ? '<b>'+SOLIDS[CL.solid].label+'.</b> '+SOLIDS[CL.solid].note
+      : CL.observer ? '<b>Fourteen.</b> The point is drawn above the plane because it cannot be drawn in it. Everything the thirteen circles can do, they do flat. The moment a point leaves the plane, volume becomes possible — and not one moment before.'
+      : 'Thirteen circles on a hexagonal lattice. Join every centre to every other for 78 lines, trace a solid, reveal the packing the figure is a shadow of — or add the point that is not on the page.';
+  }
+  draw();
+})();
+
+/* ---- yad ---- */
+document.getElementById('pane-yad').innerHTML=`
+<h3>Not the eye</h3>
+<p class="bigline">Fourteen is <span class="heb">יד</span> — <i>yad</i>, the <b>hand</b>. The tradition had every option available and did not give this number to the organ that watches. Thirteen is <span class="heb">אחד</span> <i>echad</i>, oneness: a condition, a state, something you can be while sitting still. Fourteen reaches out and changes something.</p>
+
+<div class="handwrap">
+  <svg id="handsvg" viewBox="0 0 330 400" role="img" aria-label="Schematic hand showing its fourteen phalanx bones grouped as ten and four"></svg>
+  <div class="layers" id="handlayers"></div>
+  <p class="cubenote" id="handnote"></p>
+</div>
+
+<h4>How the word is built</h4>
+<p>Take the spelling apart. <span class="heb" style="font-size:1.3rem">יד</span> is <b>Yod</b> and <b>Daleth</b> — and both are already on this tree, carrying meanings that were assigned long before anyone counted.</p>
+<ul class="plain">
+<li><b><span class="heb">י</span> Yod — 10.</b> The smallest letter, a bare point, and the seed every other letter is drawn from: a scribe begins each character with a yod-stroke. It is the first letter of the Tetragrammaton and it stands for the Father and the world of Atziluth. <b>And the letter's own name comes from <i>yad</i>.</b> In the proto-Sinaitic script it began as a pictograph of an arm and hand. The letter is a hand before it is a number.</li>
+<li><b><span class="heb">ד</span> Daleth — 4.</b> <i>Delet</i>, a <b>door</b>. Path 14 on this tree — go and look — is Daleth, and it is the horizontal that joins force to form across the top of the diagram.</li>
+</ul>
+<p>So the word for hand is spelled <b>hand-glyph plus door-glyph</b>: the seed and the opening. And the number it produces, fourteen, is the number of the path the tree already calls <em>the door</em>. You said the Christ is a door rather than an object of worship, and that the fourteenth point is that door in you. The tree numbered its door-path fourteen and the alphabet spelled its hand out of the same two letters. Whatever that is, it was there before either of us arrived.</p>
+
+<h4>What the eye got instead</h4>
+<p>This is the part that settles it, and it is inside the system's own attributions rather than anything imposed on them. The Hebrew letter that means <b>eye</b> is <span class="heb" style="font-size:1.3rem">ע</span>, <i>Ayin</i>, value 70. Find it on the tree: <b>path 26</b>, Tiphareth to Hod, Capricorn — and the tarot key the tradition hung on it is <b>XV, The Devil</b>.</p>
+<p>The card of being bound to the material surface. The card whose whole content is taking appearance for the entirety of the thing. The tradition gave the eye-letter to the trump about being trapped by what you are looking at. <strong>The spectator position is not neutral in this system — it is the specific failure the system names.</strong> And it gave the hand to the number that completes the figure.</p>
+
+<div class="tablewrap"><table style="min-width:560px">
+<thead><tr><th></th><th>Eye</th><th>Hand</th></tr></thead>
+<tbody>
+<tr><td class="num">Letter</td><td><span class="heb" style="font-size:1.3rem">ע</span> Ayin</td><td><span class="heb" style="font-size:1.3rem">יד</span> Yod-Daleth</td></tr>
+<tr><td class="num">Value</td><td>70</td><td>14</td></tr>
+<tr><td class="num">On the tree</td><td>Path 26, Tiphareth → Hod</td><td>Path 20 (Yod) + path 14 (Daleth)</td></tr>
+<tr><td class="num">Tarot</td><td>XV · The Devil</td><td>IX · The Hermit, who <em>carries</em> the lamp</td></tr>
+<tr><td class="num">Meaning</td><td>Eye, and a spring of water — a surface that looks like depth</td><td>Hand, agency, power, and a memorial</td></tr>
+</tbody></table></div>
+
+<h4>Fourteen books, called the Hand</h4>
+<p>This is not a modern reading. In the twelfth century Maimonides finished the <i>Mishneh Torah</i>, the most complete codification of Jewish law ever attempted, and built it in <b>fourteen books</b>. It has been known ever since as <b><i>Yad haChazakah</i></b> — the Mighty Hand — because <i>yad</i> is fourteen.</p>
+<p>And consider what kind of book it is. Not a commentary. Not a theology. Not a record of visions. It is a code of <b>what to do</b> — fourteen volumes of practice, obligation and act, named after the hand by a man who chose the number first and filled it afterward. The greatest work of applied instruction in the tradition is called <em>the hand</em>, and it is fourteen. The alphabet said it, and then somebody built it.</p>
+
+<h4>The hand that points and does not take</h4>
+<p>There is a silver instrument used in every synagogue for reading from the scroll. It is called a <b>yad</b>. It is shaped as a small hand with the index finger extended, and its entire purpose is that the reader follows the line with it <em>so that the human hand never touches the parchment</em>.</p>
+<p>Hold that against everything above. The tradition gives fourteen to the hand — and then makes, out of silver, a hand whose function is to point without grasping. The reach is the completion. <b>The grip is not.</b></p>
+<p>The warning is in the word itself. <i>Yad</i> also means <b>power</b> and <b>possession</b> — "into your hand I have given it" is the biblical formula for conquest. The same three-letter root covers agency and seizure, and the language does not distinguish them; you have to. Which is exactly why fourteen reduces to five and lands on <b>Geburah</b>, the sphere whose symbols are the sword, the spear, the scourge and the chain — every one of them a thing held in a hand — whose virtue is listed as courage and whose vice is listed as cruelty. The tree files the hand under the sphere that can go either way, and says so on the entry.</p>
+
+<h4>What this does to the fourteenth point</h4>
+<p>It sharpens it, and it costs something. If the fourteenth point were the <em>eye</em> — the observer, the awareness, the one who sees the diagram from outside the plane — then standing there and understanding would be enough. You could complete the figure by knowing about it.</p>
+<p class="bigline">The word says otherwise. The fourteenth point is a hand. Perception leaves you at thirteen — <i>echad</i>, oneness, a complete and beautiful state that changes nothing. <strong>You do not complete the diagram by seeing it from outside. You complete it by reaching into it.</strong></p>
+<p>Which is why the texts keep phrasing it as production rather than insight. Thomas 70: <i>"If you bring forth what is within you, what you bring forth will save you. If you do not bring forth what is within you, what you do not bring forth will destroy you."</i> There is no third clause. The version where you know what is within you and leave it there is named, explicitly, as the destructive case.</p>
+<p>And notice how the fall is told, one tab over. Sophia is not destroyed by a moral failure. She is shown <b>a false light</b> and mistakes it for the true one — an <em>error of seeing</em>. Then look at what the text prescribes: not clearer vision, not a better vantage point. Thirteen repentances. Thirteen acts, repeated, several of them answered with nothing but more pressure. The remedy for a seeing error, in the tradition's own telling, is a hand.</p>
+
+<div class="caveat"><h4>Held at the right weight</h4>
+<p>Yod and Daleth summing to fourteen, Ayin meaning eye, path 14 being Daleth the door, and Maimonides naming fourteen books the Hand are all <b>facts inside one system</b> — the Hebrew alphabet and the literature built on it — and they are checkable by anyone who learns twenty-two letters and can add. That is a real and self-contained structure, and nobody has to vouch for it on your behalf.</p>
+<p>The fourteen phalanges and the fourteen facial bones are <b>outside</b> that system and are not evidence for it. Presenting them as proof would be borrowing authority the argument does not need. What survives without any of that: the tradition had a word for the eye and a word for the hand, and it gave the completing number to the hand. That is a decision somebody made about where completion lives, and it is worth more than a coincidence would be, because a coincidence is an accident and <em>a decision is a message</em>.</p></div>`;
+
+/* ---- yad: the fourteen phalanges ---- */
+(()=>{
+  const hs=document.getElementById('handsvg');
+  const cel=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  /* digit: base point, direction (deg clockwise from straight up), segment lengths proximal→distal */
+  const DIGITS=[
+    {name:'Thumb',  base:[104,300], ang:-58, segs:[50,40]},
+    {name:'Index',  base:[124,222],ang:-13, segs:[48,32,25]},
+    {name:'Middle', base:[159,210],ang:-2,  segs:[54,36,26]},
+    {name:'Ring',   base:[194,216],ang:9,   segs:[48,33,24]},
+    {name:'Little', base:[225,232],ang:20,  segs:[38,27,21]}
+  ];
+  const gPalm=cel('g'), gBones=cel('g'), gNums=cel('g'), gRows=cel('g');
+  [gPalm,gRows,gBones,gNums].forEach(g=>hs.appendChild(g));
+
+  gPalm.appendChild(cel('path',{class:'palm',d:
+    'M108 250 L126 226 L160 212 L198 220 L230 234 L238 246 '+
+    'C 244 292, 238 340, 206 362 C 176 382, 140 376, 122 352 '+
+    'C 104 328, 100 286, 108 250 Z'}));
+  gPalm.appendChild(cel('path',{class:'wrist',d:'M136 366 L206 360'}));
+
+  let n=0; const BONES=[];
+  DIGITS.forEach(d=>{
+    const a=(d.ang-90)*Math.PI/180;
+    let [x,y]=d.base;
+    d.segs.forEach((len,si)=>{
+      const x2=x+len*Math.cos(a), y2=y+len*Math.sin(a);
+      n++;
+      /* row: 0 proximal, 1 intermediate, 2 distal; thumb has no intermediate */
+      const row = d.segs.length===2 ? (si===0?0:2) : si;
+      BONES.push({n, x1:x, y1:y, x2, y2, row, digit:d.name});
+      x = x2 + 5*Math.cos(a); y = y2 + 5*Math.sin(a);
+    });
+  });
+
+  BONES.forEach(b=>{
+    gBones.appendChild(cel('line',{class:'bone','data-row':b.row,
+      x1:b.x1.toFixed(1),y1:b.y1.toFixed(1),x2:b.x2.toFixed(1),y2:b.y2.toFixed(1)}));
+    const t=cel('text',{class:'bonum',x:((b.x1+b.x2)/2).toFixed(1),y:((b.y1+b.y2)/2+3.2).toFixed(1),
+      'text-anchor':'middle'});
+    t.textContent=b.n; gNums.appendChild(t);
+  });
+
+  const hl=cel('text',{class:'handlbl',x:165,y:392,'text-anchor':'middle'});
+  hl.textContent='14 phalanges · one hand'; gRows.appendChild(hl);
+
+  const H={numbers:true, split:false};
+  const bar=document.getElementById('handlayers'), note=document.getElementById('handnote');
+  [['numbers','Number the bones',''],['split','Yod 10 · Daleth 4','verd']].forEach(([k,label,cls])=>{
+    const b=document.createElement('button');
+    b.className='chip'+(cls?' '+cls:'');b.type='button';b.textContent=label;
+    b.setAttribute('aria-pressed',String(H[k]));
+    b.onclick=()=>{H[k]=!H[k];b.setAttribute('aria-pressed',String(H[k]));hdraw();};
+    bar.appendChild(b);
+  });
+  function hdraw(){
+    gNums.style.display=H.numbers?'':'none';
+    hs.querySelectorAll('.bone').forEach(l=>{
+      l.classList.toggle('mid', H.split && l.getAttribute('data-row')==='1');
+      l.classList.toggle('outer', H.split && l.getAttribute('data-row')!=='1');
+    });
+    hl.textContent = H.split ? '10 + 4' : '14 phalanges · one hand';
+    note.innerHTML = H.split
+      ? 'The fourteen fall into three rows: five proximal, <b>four intermediate</b>, five distal. The middle row has exactly four, because the thumb has none — and those four are the <b>hinge</b> segments, the ones the finger folds at. Daleth is four, and Daleth is a door. The outer ten are Yod. <i>An observation worth noticing, not a proof of anything: the bones did not read the alphabet.</i>'
+      : 'Thumb two, each finger three. Fourteen bones in one hand, the same number the alphabet gives the word for it.';
+  }
+  hdraw();
+})();
+
+/* ---- dogon ---- */
+document.getElementById('pane-dogo').innerHTML=`
+<h3>The Dogon layer</h3>
+<p>The Dogon of the Bandiagara escarpment in Mali hold a cosmology recorded across three decades by Marcel Griaule and Germaine Dieterlen — <i>Dieu d'eau</i> (1948) and <i>Le Renard pâle</i> (1965). It is not Kabbalah and has no historical relation to it. What it does share is a structural habit: a single creator, an emanation that goes wrong, a sacrificed intermediary, a fixed number of primordial signs, and a world laid out so that house, village and body are the same diagram at three scales. That is why the overlay is worth switching on — not because the systems are secretly one, but because watching two unrelated cosmologies solve the same problems tells you something about the problems.</p>
+
+<h4>The sequence as the Dogon tell it</h4>
+<ul class="plain">
+<li><b>Amma</b> makes the world inside a closed egg, drawing <b>266 signs</b> — the <i>bummo</i> — which pass through four stages of increasing definition: <i>bummo</i> (the trace), <i>yala</i> (the mark), <i>tonu</i> (the figure), <i>toy</i> (the finished drawing). Creation is described as a graphic process.</li>
+<li><b>Po</b>, the fonio seed (<i>Digitaria exilis</i>), the smallest grain the Dogon cultivate, is the first thing made: Amma sets it vibrating and spinning, and matter unwinds from it in a spiral.</li>
+<li><b>Ogo</b>, later called <b>Yurugu</b>, the Pale Fox, breaks out of the egg before he is complete, taking a fragment of placenta with him. He is the incompleteness in the world, and he cannot speak. Divination is done by reading his footprints across a grid drawn in sand overnight.</li>
+<li><b>Nommo</b>, the twinned water-spirit, is sacrificed and dismembered to purify what Ogo spoiled, then restored and sent down in an ark with the eight ancestors, the eight seeds, and the first rain.</li>
+<li><b>The smith</b> steals fire from the sun and brings craft to earth, arriving with the granary — a stepped structure with four faces and ten stairs on each, carrying the whole inventory of the world.</li>
+<li><b>Sigui</b>, held roughly every sixty years, renews the world and passes on the <i>sigi so</i>, the secret language. The most recent cycle ran from 1967 to 1973.</li>
+</ul>
+
+<h4>The Sirius question</h4>
+<p>Griaule and Dieterlen reported that Dogon informants described <b>po tolo</b> — "the star of the fonio seed" — as an invisible companion to Sirius, extremely small, extremely heavy, and orbiting in about fifty years. Sirius B is a white dwarf with a 50.1-year orbit, invisible to the naked eye, confirmed telescopically in 1862 and understood as degenerate matter only in the 1920s. A third body, <b>emme ya tolo</b>, was also reported; no such star has been found.</p>
+
+<div class="caveat"><h4>Read the Sirius material carefully</h4>
+<p>Robert Temple's <i>The Sirius Mystery</i> (1976) treated the correspondence as evidence of ancient contact. Carl Sagan and others argued the simpler explanation is transmission: European visitors, missionaries and a well-publicised 1893 solar eclipse expedition put modern astronomy within reach of the region decades before Griaule arrived. In 1991 the anthropologist Walter van Beek, after ten years' fieldwork among the Dogon, reported that he could find no independent knowledge of po tolo among his informants and suggested Griaule's method — long interviews with a small number of elders, through interpreters, over many years — had co-produced parts of the account. The scholarly position today is unsettled and the ethnography is treated as a record of an encounter rather than a transparent window. None of that makes the cosmology less worth studying. It does mean the Sirius claim should not be repeated as established fact.</p></div>
+
+<h4>On the pairing with the Tree</h4>
+<p>The sphere-by-sphere Dogon notes in the reading panel are <strong>my mapping, not a tradition</strong>. No Dogon source arranges anything on a Tree of Life, and no Kabbalistic source has heard of Amma. The pairings are proposed where the structural role genuinely rhymes — Yurugu at Da'ath is the strongest of them, since both name an early, incomplete separation that leaves a permanent gap — and they are meant as a thinking tool. Treat every one of them as an argument you are free to reject.</p>`;
+
+/* ---- how to read ---- */
+document.getElementById('pane-read').innerHTML=`
+<h3>How to work the map</h3>
+<ul class="plain">
+<li><b>Click a sphere</b> to open its full correspondence sheet — divine name, archangel, angelic order, virtue and vice, symbols, its number, and the Dogon parallel. The row of Hebrew letters at the bottom of the sheet lists every path touching that sphere; click one to travel.</li>
+<li><b>Click a path</b> — the line or its lettered medallion — for the letter, its gematria value, its class, its sign or planet, and its tarot key.</li>
+<li><b>Layer chips</b> above sit independently. Turn on <i>Flaming sword</i> to watch the lightning descent from Kether to Malkuth in the order of emanation; turn on <i>Serpent of wisdom</i> for the return journey, which crosses every path in reverse numerical order.</li>
+<li><b>Gnostic ascent</b> puts the seven numbered gates of the <i>Poimandres</i> on the seven lower spheres; every sphere's reading panel carries what is surrendered there. <b>Sound families</b> recolours the twenty-two path medallions by where in the mouth each letter is made.</li>
+<li><b>Calculators</b> under Numerology light the resolved sphere on the diagram and scroll you to it.</li>
+</ul>
+<h4>The two journeys</h4>
+<p>The <strong>Flaming Sword</strong> is how the tree is built: Kether to Chokmah to Binah, across the Abyss to Chesed, and down in a zigzag to Malkuth. It ignores the paths entirely — it is emanation, not travel. The <strong>Serpent of Wisdom</strong> is how the tree is climbed: it starts on Tav, the shortest path out of the world, and winds up through all twenty-two in reverse order to Aleph. One is what happened; the other is what you do about it.</p>
+<h4>Malkuth is not the bottom</h4>
+<p>The old formula is that <em>Kether is in Malkuth and Malkuth is in Kether</em>. Ten reduces to one. The sphere of the physical world is drawn separated from the rest by the longest gap on the diagram, and it is also the only sphere that contains all four elements as visible colours. The tree is a circle drawn as a ladder.</p>
+<h4>On use</h4>
+<p>This is a symbol system with a long literature and a longer argument attached. It is a good instrument for structuring thought, memory and contemplation. It is not a description of physics, a diagnostic tool, or a way to know what will happen. Where sources disagree — and on this tree they disagree often — the entry says so rather than picking a winner.</p>`;
+
+/* row clicks */
+document.addEventListener('click',e=>{
+  const r=e.target.closest('tr[data-go],tr[data-gp]');
+  if(!r)return;
+  if(r.dataset.go){selectNode(r.dataset.go,true);}
+  else{selectPath(+r.dataset.gp);}
+  document.getElementById('tree').scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+/* ============================ NUMEROLOGY ============================ */
+const isMaster=n=>n===11||n===22||n===33;
+function reduce(n,keepMaster=true){
+  const steps=[n];
+  while(n>9 && !(keepMaster&&isMaster(n))){
+    n=String(n).split('').reduce((s,d)=>s+ +d,0); steps.push(n);
+  }
+  return {value:n,steps};
+}
+function verdictFor(v){
+  if(isMaster(v)){
+    const m=MASTER[v];
+    return {id:m.id,label:m.name,line:m.line};
+  }
+  const n=NODES.find(x=>x.n===v);
+  return n?{id:n.id,label:`${n.name} — ${n.tr}`,line:n.num}:{id:null,label:'—',line:''};
+}
+function renderReadout(box,label,value,work,extra=''){
+  const v=verdictFor(value);
+  box.innerHTML=`<div class="bignum"><small>${label}</small>${value}</div>
+    <div class="work">${work}</div>
+    <div class="verdict">Resolves to <b>${v.label}</b>. ${v.line}${extra}</div>
+    ${v.id?`<div class="presets" style="margin-top:10px"><button type="button" data-goto="${v.id}"
+      style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px">Show on tree</button></div>`:''}`;
+  const b=box.querySelector('[data-goto]');
+  if(b)b.onclick=()=>{selectNode(b.dataset.goto,true);
+    document.getElementById('tree').scrollIntoView({behavior:'smooth',block:'center'});};
+}
+
+const dob=document.getElementById('dob'), outDob=document.getElementById('out-dob');
+function calcDob(){
+  if(!dob.value){outDob.innerHTML='<div class="work">Pick a date.</div>';return;}
+  const [y,m,d]=dob.value.split('-').map(Number);
+  const rm=reduce(m), rd=reduce(d), ry=reduce(y);
+  const total=rm.value+rd.value+ry.value;
+  const rt=reduce(total);
+  const work=`month ${m} → ${rm.value} · day ${d} → ${rd.value} · year ${y} → ${ry.steps.join(' → ')}<br>`+
+    `${rm.value} + ${rd.value} + ${ry.value} = ${total}${rt.steps.length>1?' → '+rt.steps.slice(1).join(' → '):''}`;
+  renderReadout(outDob,'Life path',rt.value,work,
+    isMaster(rt.value)?' Held unreduced as a master number.':'');
+}
+dob.addEventListener('input',calcDob); calcDob();
+
+const nmI=document.getElementById('nm'), outNm=document.getElementById('out-nm');
+function calcNm(){
+  const letters=[...nmI.value.toUpperCase()].filter(c=>PYTH[c]);
+  if(!letters.length){outNm.innerHTML='<div class="work">Type a name.</div>';return;}
+  const sum=letters.reduce((s,c)=>s+PYTH[c],0);
+  const r=reduce(sum);
+  const work=letters.map(c=>`${c}<span style="color:var(--gold-dim)">${PYTH[c]}</span>`).join(' ')+
+    `<br>sum = ${sum}${r.steps.length>1?' → '+r.steps.slice(1).join(' → '):''}`;
+  renderReadout(outNm,'Expression',r.value,work);
+}
+nmI.addEventListener('input',calcNm); calcNm();
+
+const gemI=document.getElementById('gem'), outGem=document.getElementById('out-gem');
+const PRESETS=[['יהוה','Tetragrammaton — 26'],['אדני','Adonai'],['אהיה','Eheieh'],['מלכות','Malkuth — 496'],
+  ['יד','Yad — hand — 14'],['דוד','David — 14'],['אחד','Echad — one — 13'],['אהבה','Ahavah — love — 13'],
+  ['תפארת','Tiphareth'],['יוד','Yod spelled full'],['אמת','Emet — truth'],['חי','Chai — life']];
+(()=>{const p=document.getElementById('gempre');
+  PRESETS.forEach(([w,t])=>{const b=document.createElement('button');b.type='button';
+    b.textContent=w;b.title=t;b.onclick=()=>{gemI.value=w;calcGem();};p.appendChild(b);});})();
+function calcGem(){
+  const chars=[...gemI.value].filter(c=>GEM[c]);
+  if(!chars.length){outGem.innerHTML='<div class="work">Type or pick a Hebrew word.</div>';return;}
+  const sum=chars.reduce((s,c)=>s+GEM[c],0);
+  const r=reduce(sum);
+  const work=chars.map(c=>`<span class="heb" style="font-size:1.1rem">${c}</span>=${GEM[c]}`).join(' + ')+
+    `<br>total = ${sum}${r.steps.length>1?' → '+r.steps.slice(1).join(' → '):''}`;
+  renderReadout(outGem,'Gematria',r.value,work,
+    ` Full value ${sum}.`);
+}
+gemI.addEventListener('input',calcGem); calcGem();
+</script>
+</body>
+</html>

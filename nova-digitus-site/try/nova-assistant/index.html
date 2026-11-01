@@ -1,0 +1,1258 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="NOVA Assistant: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>NOVA</title>
+<meta name="description" content="NOVA: a cognitive AI brain for science, engineering, mathematics, physics, space and ancient wisdom, with a team of subagents.">
+<meta name="theme-color" content="#EEF1F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1626" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #EEF1F6; --surface: #FFFFFF; --sunk: #E2E7EF; --ink: #15203A; --muted: #56627A;
+  --line: #CDD4E0; --gold: #B97A12; --gold-glow: #E3A33B; --teal: #1F8A84; --teal-soft: #DCEFEE;
+  --act: #C2410C; --act-soft: #FBE7DC; --user: #15203A; --user-ink: #F4F6FA; --danger: #B42318;
+  --sans: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Bricolage Grotesque", var(--sans);
+  --r-lg: 18px; --r-md: 12px; --r-sm: 8px;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1626; --surface: #172238; --sunk: #0B1120; --ink: #E6EAF2; --muted: #9AA6BD;
+    --line: #26324B; --gold: #E3A33B; --teal: #3DB5AE; --teal-soft: #13302F;
+    --act: #F08A4B; --act-soft: #3A2216; --user: #E6EAF2; --user-ink: #0F1626; --danger: #F97066;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1626; --surface: #172238; --sunk: #0B1120; --ink: #E6EAF2; --muted: #9AA6BD;
+  --line: #26324B; --gold: #E3A33B; --teal: #3DB5AE; --teal-soft: #13302F;
+  --act: #F08A4B; --act-soft: #3A2216; --user: #E6EAF2; --user-ink: #0F1626; --danger: #F97066;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg); color: var(--ink); font: 17px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--gold-glow); outline-offset: 2px; border-radius: 6px; }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- frame ---------- */
+.app {
+  height: 100dvh; display: grid; grid-template-rows: auto 1fr auto;
+  max-width: 760px; margin: 0 auto;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+header.top {
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px 8px;
+}
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; background: none; border: 0; padding: 0; text-align: left; }
+.brand h1 { font: 800 26px/1 var(--display); letter-spacing: 0.04em; margin: 0; }
+.brand .state { font-size: 13px; color: var(--muted); display: block; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.icon-btn {
+  width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--surface); display: grid; place-items: center; flex: none;
+}
+.icon-btn svg { width: 20px; height: 20px; }
+
+/* ---------- the star: NOVA and its satellites ---------- */
+.star { width: 52px; height: 52px; flex: none; overflow: visible; }
+.star .core { fill: var(--gold); transform-origin: 50% 50%; transition: transform .4s ease; }
+.star .halo { fill: var(--gold-glow); opacity: .18; transform-origin: 50% 50%; }
+.star .sat { fill: var(--line); transition: fill .3s ease, r .3s ease; }
+.star .sat.on { fill: var(--teal); }
+.star .orbit { fill: none; stroke: var(--line); stroke-width: .6; stroke-dasharray: 1.5 2.5; }
+.thinking .star .sats { animation: orbit 3.2s linear infinite; transform-origin: 50% 50%; }
+.thinking .star .halo { animation: breathe 1.6s ease-in-out infinite; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+@keyframes breathe { 50% { opacity: .42; transform: scale(1.18); } }
+@media (prefers-reduced-motion: reduce) {
+  .thinking .star .sats, .thinking .star .halo { animation: none; }
+  .thinking .star .halo { opacity: .4; }
+}
+
+/* ---------- conversation ---------- */
+main.chat { overflow-y: auto; padding: 8px 16px 16px; scroll-behavior: smooth; }
+.msg { margin: 14px 0; max-width: 92%; }
+.msg.user { margin-left: auto; background: var(--user); color: var(--user-ink); padding: 10px 14px; border-radius: var(--r-lg) var(--r-lg) 6px var(--r-lg); width: fit-content; }
+.msg.user .queued { display: block; font-size: 12px; opacity: .75; margin-top: 4px; }
+.msg.nova { display: grid; grid-template-columns: 22px 1fr; gap: 10px; }
+.msg.nova .glyph { width: 22px; height: 22px; margin-top: 3px; }
+.msg.nova .glyph path { fill: var(--gold); }
+.body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.body pre { white-space: pre; overflow-x: auto; background: var(--sunk); padding: 10px 12px; border-radius: var(--r-sm); font-size: 14px; margin: 8px 0; }
+.body code { background: var(--sunk); padding: 1px 5px; border-radius: 5px; font-size: .92em; }
+.body pre code { background: none; padding: 0; }
+.body a { color: var(--teal); }
+.err .body { color: var(--danger); }
+
+.team-used { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.learned { margin-top: 8px; font-size: 14px; color: var(--gold); }
+.learned b { font-weight: 700; }
+.msg.user .mode-tag { display: block; font-size: 12px; opacity: .7; margin-bottom: 2px; }
+
+/* how NOVA helps: teach / solve / run */
+.modes { display: flex; gap: 6px; margin: 0 2px 8px; overflow-x: auto; scrollbar-width: none; }
+.modes::-webkit-scrollbar { display: none; }
+.mode {
+  flex: 1 1 auto; min-height: 36px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--muted); font-size: 14px; white-space: nowrap;
+}
+.mode[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); font-weight: 700; }
+
+/* how NOVA worked: recent runs */
+.run-sum { color: var(--muted); font-size: 15px; margin: 0 0 8px; }
+.run { padding: 10px 0; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.run-head { display: flex; justify-content: space-between; gap: 10px; font-size: 15px; }
+.run-head b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run-head span { flex: none; color: var(--muted); font-variant-numeric: tabular-nums; }
+.run-q { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
+.run-flags { display: flex; flex-wrap: wrap; gap: 6px; }
+.flag { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--sunk); color: var(--muted); }
+.flag.warn { background: var(--act-soft); color: var(--act); }
+.flag.good { background: var(--teal-soft); color: var(--teal); }
+
+/* what NOVA knows about you */
+.bond-group { padding: 10px 0; border-top: 1px solid var(--line); }
+.bond-group h3 { margin: 0 0 6px; font: 700 16px/1.3 var(--sans); }
+.bond-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.bond-group li { display: flex; align-items: flex-start; gap: 8px; font-size: 15px; }
+.bond-group li span { flex: 1; min-width: 0; overflow-wrap: anywhere; padding-top: 6px; }
+.bond-group li small { display: block; color: var(--muted); font-size: 12px; }
+.bond-group .empty { color: var(--muted); font-size: 14px; }
+.x-btn {
+  width: 32px; height: 32px; flex: none; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--surface); display: grid; place-items: center; font-size: 18px; line-height: 1;
+}
+.bond-add { display: grid; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.bond-add .row { display: flex; gap: 8px; }
+.bond-add input, .bond-add select {
+  min-height: 44px; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--bg); padding: 0 10px; min-width: 0;
+}
+.bond-add input { flex: 1; }
+.chip {
+  font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--teal-soft);
+  color: var(--teal); border: 1px solid transparent; line-height: 1.3;
+}
+.chip.declined { background: transparent; border-color: var(--line); color: var(--muted); text-decoration: line-through; }
+.chip small { opacity: .8; }
+
+.working { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 15px; margin: 14px 0 0 32px; }
+
+/* ---------- approval ---------- */
+.approval {
+  margin: 14px 0 14px 32px; background: var(--act-soft); border-radius: var(--r-md);
+  border-left: 4px solid var(--act); padding: 12px 14px;
+}
+.approval h3 { margin: 0 0 6px; font: 700 16px/1.35 var(--sans); }
+.approval .who { color: var(--act); }
+.args { margin: 6px 0 12px; font-size: 14px; display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; }
+.args dt { color: var(--muted); }
+.args dd { margin: 0; overflow-wrap: anywhere; }
+.approval .row { display: flex; gap: 10px; }
+.btn {
+  min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); font-weight: 700;
+}
+.btn.go { background: var(--act); border-color: var(--act); color: #fff; }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn:disabled { opacity: .5; cursor: default; }
+.approval.done { background: transparent; border-left-color: var(--line); padding: 6px 12px; }
+.approval.done h3 { font-weight: 400; color: var(--muted); font-size: 14px; margin: 0; }
+
+/* ---------- empty state ---------- */
+.welcome { padding: 5vh 4px 0; }
+.welcome h2 { font: 800 clamp(30px, 8vw, 44px)/1.05 var(--display); margin: 0 0 12px; max-width: 14ch; }
+.welcome p { color: var(--muted); margin: 0 0 20px; max-width: 38ch; }
+.suggest { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.suggest button {
+  border: 1px solid var(--line); background: var(--surface); border-radius: var(--r-md);
+  padding: 10px 14px; text-align: left; max-width: 100%;
+}
+.suggest button span { display: block; font-size: 13px; color: var(--teal); }
+
+/* ---------- composer ---------- */
+footer.composer {
+  padding: 8px 12px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--bg) 70%, transparent);
+}
+.offline { font-size: 14px; color: var(--act); margin: 0 6px 6px; }
+.box {
+  display: flex; align-items: flex-end; gap: 8px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 26px; padding: 6px;
+}
+.box textarea {
+  flex: 1; border: 0; background: transparent; resize: none; padding: 9px 6px 9px 10px;
+  max-height: 40vh; min-height: 40px; line-height: 1.4; outline: none;
+}
+.box .icon-btn { border: 0; }
+.talk.live { background: var(--act); color: #fff; }
+
+/* conversation mode: whose turn it is */
+.convo {
+  display: flex; align-items: center; gap: 12px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 18px; padding: 10px 10px 10px 14px; margin: 0 0 8px;
+}
+.convo[hidden], .toast[hidden] { display: none; }
+.pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--muted); flex: none; }
+.c-listening .pulse { background: var(--teal); animation: ping 1.3s ease-out infinite; }
+.c-thinking .pulse { background: var(--gold); }
+.c-speaking .pulse { background: var(--gold); animation: ping-gold .9s ease-out infinite; }
+@keyframes ping { from { box-shadow: 0 0 0 0 var(--teal); } to { box-shadow: 0 0 0 12px transparent; } }
+@keyframes ping-gold { from { box-shadow: 0 0 0 0 var(--gold); } to { box-shadow: 0 0 0 12px transparent; } }
+@media (prefers-reduced-motion: reduce) { .c-listening .pulse, .c-speaking .pulse { animation: none; } }
+.convo-text { flex: 1; min-width: 0; }
+.convo-text b { display: block; font-size: 16px; }
+.convo-text span {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: 14px; color: var(--muted);
+}
+.btn.small { min-height: 38px; padding: 0 14px; font-size: 15px; }
+.toast { font-size: 14px; color: var(--muted); margin: 0 6px 6px; }
+.field select {
+  width: 100%; min-height: 46px; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--bg); padding: 0 10px;
+}
+.send { background: var(--ink); color: var(--bg); }
+.send:disabled { opacity: .35; }
+
+/* ---------- sheets ---------- */
+dialog.sheet {
+  border: 0; padding: 0; margin: auto auto 0; width: 100%; max-width: 760px;
+  max-height: 88dvh; border-radius: 22px 22px 0 0; background: var(--surface); color: var(--ink);
+}
+dialog.sheet::backdrop { background: rgb(8 12 22 / .5); }
+dialog.sheet[open] { animation: rise .22s ease-out; }
+@keyframes rise { from { transform: translateY(24px); opacity: .6; } }
+@media (prefers-reduced-motion: reduce) { dialog.sheet[open] { animation: none; } }
+.sheet-in { padding: 8px 20px calc(24px + env(safe-area-inset-bottom)); overflow-y: auto; max-height: 88dvh; }
+.grab { width: 40px; height: 5px; border-radius: 3px; background: var(--line); margin: 6px auto 12px; }
+.sheet h2 { font: 800 24px/1.1 var(--display); margin: 0 0 4px; }
+.sheet .lede { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+.agent { padding: 12px 0; border-top: 1px solid var(--line); }
+.agent-head { display: flex; align-items: center; gap: 10px; }
+.agent-head .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); flex: none; }
+.agent-head b { font-size: 17px; }
+.agent p { margin: 4px 0 0 20px; color: var(--muted); font-size: 15px; }
+.agent details { margin: 6px 0 0 20px; font-size: 14px; }
+.agent summary { color: var(--teal); cursor: pointer; }
+.agent ul { margin: 6px 0 0; padding-left: 18px; }
+.agent li small { color: var(--act); }
+.field { display: block; margin: 0 0 14px; }
+.field span { display: block; font-size: 14px; color: var(--muted); margin-bottom: 4px; }
+.field input {
+  width: 100%; min-height: 46px; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--bg); padding: 0 12px;
+}
+.toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.toggle input { width: 22px; height: 22px; accent-color: var(--teal); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.note { font-size: 14px; color: var(--muted); margin: 10px 0 0; }
+.error-text { color: var(--danger); font-size: 15px; margin: 0 0 12px; min-height: 1.2em; }
+
+/* ---------- connect screen ---------- */
+.connect { position: fixed; inset: 0; background: var(--bg); display: grid; place-items: center; padding: 24px; z-index: 5; }
+.connect[hidden] { display: none; }
+.connect-card { width: 100%; max-width: 420px; }
+.connect-card .star { width: 84px; height: 84px; margin-bottom: 16px; }
+.connect-card h2 { font: 800 34px/1.05 var(--display); margin: 0 0 8px; }
+.connect-card p { color: var(--muted); margin: 0 0 20px; }
+
+.preview-note { font-size: 14px; color: var(--muted); margin: 0 6px 8px; line-height: 1.4; }
+.preview-note b { color: var(--ink); font-weight: 700; }
+</style>
+<div class="app" id="app">
+  <header class="top">
+    <button class="brand" id="brandBtn" aria-label="Show NOVA's team">
+      <svg class="star" id="star" viewBox="0 0 52 52" aria-hidden="true"></svg>
+      <span>
+        <h1>NOVA</h1>
+        <span class="state" id="state">Connecting…</span>
+      </span>
+    </button>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </header>
+
+  <main class="chat" id="chat" aria-live="polite" aria-label="Conversation"></main>
+
+  <footer class="composer">
+    <p class="preview-note" id="previewNote"><b>Preview.</b> Scripted answers stand in for NOVA's brain and nothing is sent. Run NOVA on your laptop for the real one.</p>
+    <p class="offline" id="offline" hidden>You're offline. Messages will send when you're back online.</p>
+    <p class="toast" id="toast" role="status" hidden></p>
+    <div class="convo" id="convo" role="status" aria-live="polite" hidden>
+      <span class="pulse" aria-hidden="true"></span>
+      <div class="convo-text"><b id="convoState">Listening…</b><span id="convoHeard"></span></div>
+      <button type="button" class="btn small" id="convoSkip" hidden>Skip</button>
+      <button type="button" class="btn small" id="convoEnd">End</button>
+    </div>
+    <div class="modes" id="modes" role="group" aria-label="How NOVA helps">
+      <button type="button" class="mode" data-mode="teach" aria-pressed="false">Teach me</button>
+      <button type="button" class="mode" data-mode="solve" aria-pressed="true">Solve with me</button>
+      <button type="button" class="mode" data-mode="run" aria-pressed="false">Take care of it</button>
+    </div>
+    <form class="box" id="form" autocomplete="off">
+      <button type="button" class="icon-btn talk" id="talk" aria-label="Start a conversation with NOVA" aria-pressed="false" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+      <label class="sr" for="input">Message NOVA</label>
+      <textarea id="input" rows="1" placeholder="Message NOVA" enterkeyhint="send"></textarea>
+      <button type="submit" class="icon-btn send" id="send" aria-label="Send" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </form>
+  </footer>
+</div>
+
+<!-- connect -->
+<section class="connect" id="connect" hidden>
+  <form class="connect-card" id="connectForm">
+    <svg class="star" id="star2" viewBox="0 0 52 52" aria-hidden="true"></svg>
+    <h2>Connect to NOVA</h2>
+    <p>Enter the access token set on your NOVA server (NOVA_ACCESS_TOKEN). It stays on this device.</p>
+    <label class="field"><span>Server address</span><input id="cServer" inputmode="url" autocapitalize="off" spellcheck="false"></label>
+    <label class="field"><span>Access token</span><input id="cToken" type="password" autocapitalize="off" spellcheck="false" autocomplete="current-password"></label>
+    <p class="error-text" id="cError" role="alert"></p>
+    <button class="btn primary" type="submit">Connect</button>
+  </form>
+</section>
+
+<!-- how NOVA worked -->
+<dialog class="sheet" id="runsSheet" aria-labelledby="runsTitle">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <h2 id="runsTitle">How NOVA worked</h2>
+    <p class="lede">Every time NOVA or a subagent thinks and acts, the run is recorded: model calls, tools, retries, limits reached, and whether her self-check changed the answer.</p>
+    <p class="run-sum" id="runSum"></p>
+    <div id="runList"></div>
+    <div class="actions"><button class="btn" data-close>Done</button></div>
+  </div>
+</dialog>
+
+<!-- what NOVA knows about you -->
+<dialog class="sheet" id="bondSheet" aria-labelledby="bondTitle">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <h2 id="bondTitle">What NOVA knows about you</h2>
+    <p class="lede">NOVA keeps what you tell her, what you ask her to remember, and the main idea each time she teaches you. She reads this every time you talk. It's stored on your own NOVA server, and you can delete anything.</p>
+    <div id="bondList"></div>
+    <form class="bond-add" id="bondForm">
+      <label class="sr" for="bondText">Something NOVA should know</label>
+      <input id="bondText" placeholder="Something NOVA should know about you" autocomplete="off">
+      <div class="row">
+        <label class="sr" for="bondSection">Where it belongs</label>
+        <select id="bondSection"></select>
+        <button class="btn primary" type="submit">Add</button>
+      </div>
+    </form>
+    <p class="error-text" id="bondError" role="alert"></p>
+    <div class="actions"><button class="btn" data-close>Done</button></div>
+  </div>
+</dialog>
+
+<!-- team -->
+<dialog class="sheet" id="teamSheet" aria-labelledby="teamTitle">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <h2 id="teamTitle">NOVA's team</h2>
+    <p class="lede" id="teamLede">NOVA briefs these subagents when a task needs their tools.</p>
+    <div id="teamList"></div>
+    <div class="actions"><button class="btn" data-close>Done</button></div>
+  </div>
+</dialog>
+
+<!-- settings -->
+<dialog class="sheet" id="settingsSheet" aria-labelledby="setTitle">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <h2 id="setTitle">Settings</h2>
+    <p class="lede" id="setLede"></p>
+    <label class="field" id="voiceField" hidden><span>NOVA's voice</span><select id="optVoice"></select></label>
+    <p class="note" id="voiceHint" hidden></p>
+    <label class="toggle"><span>Read replies aloud when I type</span><input type="checkbox" id="optSpeak"></label>
+    <p class="note" id="convoNote">Conversation mode: tap the mic once and just talk. NOVA answers out loud, then listens again. Tap End, say "goodbye", or stay quiet for 30 seconds to finish. If your NOVA server has a natural voice switched on, she uses it; otherwise she uses the phone's built-in voice.</p>
+    <div class="actions">
+      <button class="btn" id="bondBtn">What NOVA knows about you</button>
+      <button class="btn" id="runsBtn">How NOVA worked</button>
+      <button class="btn" id="newChat">New conversation</button>
+      <button class="btn" id="installBtn" hidden>Install app</button>
+      <button class="btn" id="changeServer">Change server or token</button>
+    </div>
+    <p class="note" id="iosHint" hidden>To install on iPhone or iPad: tap Share, then Add to Home Screen.</p>
+    <div class="actions"><button class="btn primary" data-close>Done</button></div>
+  </div>
+</dialog>
+
+<script>
+// ---------------------------------------------------------------- preview backend
+// This page can't reach your NOVA server, so scripted answers stand in for her brain.
+// Everything below only runs in the preview; the real app talks to nova_ai.py.
+(function () {
+  "use strict";
+  // The preview frame can't use the microphone, so conversation mode is hidden here.
+  try { window.SpeechRecognition = undefined; window.webkitSpeechRecognition = undefined; } catch (e) {}
+  try { localStorage.setItem("nova.token", JSON.stringify("preview")); } catch (e) {}
+
+  const AGENTS = [
+    { id: "sub.nova-tools", name: "Operations Agent", server: "nova-tools", delegate_tool: "ask_nova-tools",
+      role: "Hands real-world tasks to the Lindy agent: emails, texts, calendar, CRM and follow-ups.",
+      tools: ["nova-tools__lindy_run"], asks_first: ["nova-tools__lindy_run"] },
+    { id: "sub.filesystem", name: "Files Agent", server: "filesystem", delegate_tool: "ask_filesystem",
+      role: "Reads, writes and organizes files in the workspace folder.",
+      tools: ["filesystem__list_directory", "filesystem__read_text_file", "filesystem__search_files", "filesystem__write_file", "filesystem__move_file"],
+      asks_first: ["filesystem__write_file", "filesystem__move_file"] },
+    { id: "sub.fetch", name: "Web Agent", server: "fetch", delegate_tool: "ask_fetch",
+      role: "Reads web pages and pulls the facts out of them.", tools: ["fetch__fetch"], asks_first: [] },
+    { id: "sub.memory", name: "Memory Agent", server: "memory", delegate_tool: "ask_memory",
+      role: "Keeper of NOVA's long-term knowledge graph: stores and recalls people, projects, decisions and facts.",
+      tools: ["memory__search_nodes", "memory__open_nodes", "memory__read_graph", "memory__create_entities", "memory__add_observations"],
+      asks_first: ["memory__create_entities", "memory__add_observations"] },
+  ];
+  const SECTIONS = { you: "Who you are", thinking: "How you think and work", goals: "What you're building toward", learned: "What you've learned together" };
+  const bond = [];
+  const today = new Date().toISOString().slice(0, 10);
+  const remember = (section, text, source) => {
+    text = String(text).trim().replace(/\.$/, "");
+    if (!text || bond.some((e) => e.text.toLowerCase() === text.toLowerCase())) return null;
+    const e = { id: "b" + Math.random().toString(36).slice(2, 9), section, text, added: today, source };
+    bond.push(e); return e;
+  };
+  const pending = {};
+  let n = 0;
+  const runs = [];
+  const logRun = (agent, input, events) => {
+    runs.unshift({ id: "r" + (runs.length + 1), agent, input, outcome: "done", reply: "",
+      active_seconds: 0.9 + Math.random() * 2.5, model_calls: events.filter((e) => e.kind === "model").length,
+      tool_calls: events.filter((e) => e.kind === "tool").length, events });
+  };
+  const used = (agent, tools, declined) => [{ tool: "ask_" + agent.server, agent: agent.name, subagent_tools: tools, declined: !!declined, args: {}, result: "" }];
+  const byServer = (s) => AGENTS.find((a) => a.server === s);
+  const NOTE = "\n\n(Preview: a scripted answer. On your laptop NOVA reasons this out live.)";
+
+  const ANSWERS = [
+    [/gps/, "teach", () => ({
+      reply: "They run fast, by about 38 microseconds a day, so GPS has to correct for it.\n\nTwo effects from relativity pull in opposite directions:\n\n1. **Speed slows them down** (special relativity). At about 3.9 km/s, a satellite clock loses roughly 7 µs a day.\n2. **Weaker gravity speeds them up** (general relativity). Twenty thousand kilometres up, gravity is weaker than on the ground, so the clock gains roughly 46 µs a day.\n\nNet: about 46 − 7 = 38 µs fast per day. Light travels about 11 km in 38 µs, so without the fix your position would drift by kilometres a day. Engineers set the satellite clocks slightly slow before launch.\n\nThis is established science, confirmed by the system working every day.\n\nCheck: which effect wins for a clock on the ISS, at 400 km and 7.7 km/s?",
+      learned: "GPS clocks run about 38 µs a day fast: gravity's speed-up beats the speed slow-down" })],
+    [/orbit|400 ?km|satellite/, "solve", () => ({
+      reply: "About 92.4 minutes per orbit.\n\nAssumptions: a circular orbit, altitude 400 km, Earth's radius 6,371 km, μ = 398,600 km³/s².\n\n1. Orbit radius: r = 6,371 + 400 = 6,771 km\n2. Period: T = 2π √(r³ / μ) = 2π √(6,771³ / 398,600) ≈ 5,545 s\n3. 5,545 s ÷ 60 ≈ **92.4 min**, so about 15.6 orbits a day\n\nOrbital speed: v = √(μ / r) ≈ 7.67 km/s.\n\nSanity check: the ISS flies at about 400–420 km and laps Earth in about 92–93 minutes, which matches.\n\nYour call next: if this is for a real mission, atmospheric drag at 400 km lowers the orbit over months, so we'd size a reboost budget." })],
+    [/egypt|ancient|heal/, "teach", () => ({
+      reply: "Their main wound treatments were honey, grease and linen bandages, and honey is the one modern evidence backs.\n\n- **Honey** (traditional knowledge, now supported by evidence): the Ebers and Edwin Smith papyri, from around 1500 BCE, prescribe it on wounds. Today we know honey draws water out of bacteria and releases small amounts of hydrogen peroxide. Medical-grade honey dressings are used in clinics now, and reviews find it helps some burns heal faster.\n- **Moldy bread** (speculation): sometimes cited as early penicillin. Some moulds do make antibiotics, but there's no good evidence the Egyptians used them that way.\n- **Copper** (traditional, partly supported): Egyptians sterilised water and wounds with copper. Copper surfaces do kill many microbes, which is why some hospitals use them.\n\nFor a real wound today: medical-grade honey, not kitchen honey, and see a clinician for anything deep or infected.\n\nWant the same lens on Ayurveda or Chinese medicine next?",
+      learned: "Ancient Egyptians treated wounds with honey, which modern evidence supports" })],
+    [/drone|telemetry/, "solve", () => ({
+      reply: "Start with a 1 Hz heartbeat per drone over LTE, with a burst mode for events.\n\nAssumptions: 50 drones, urban delivery, LTE coverage, one control centre.\n\n1. **What each drone sends**: GPS position, altitude, speed, heading, battery %, motor temperatures, link quality, payload status. About 200 bytes per message.\n2. **How often**: 1 Hz normally, 10 Hz during takeoff, landing or any alarm. 50 drones × 200 B × 1 Hz ≈ 10 KB/s for the fleet.\n3. **Transport**: MQTT over LTE, with a 900 MHz radio fallback for return-to-home if LTE drops.\n4. **Alarms on the drone itself**, not the ground: low battery, geofence breach, lost link. Decisions that can't wait for the network stay on board.\n\nSanity check: 10 KB/s is tiny for LTE, so bandwidth isn't the constraint. Latency and dead zones are.\n\nYour decision: do you need live video too? That changes the link budget by about a thousand times." })],
+  ];
+
+  function chat(text, mode) {
+    const t = text.toLowerCase();
+    const m = text.match(/^\s*(?:nova[,:]?\s+)?(?:please\s+)?remember(?:\s+that)?[,:]?\s+(.+)$/i);
+    if (m) {
+      const e = remember("you", m[1], "you");
+      return { status: "done", reply: "Got it. I'll keep that in mind every time we talk.", learned: e ? [e.text] : [] };
+    }
+    if (mode === "run" || /\b(email|e-mail|send|text|book|meeting|schedule|remind|follow[ -]?up|invite)\b/.test(t)) {
+      if (/\b(email|e-mail|send|text|book|meeting|schedule|remind|follow[ -]?up|invite|lead|tracker|organize)\b/.test(t)) {
+        const id = "demo" + (++n);
+        pending[id] = text;
+        return { status: "needs_approval", approval_id: id, tool: "nova-tools__lindy_run", args: { task: text },
+                 agent: "sub.nova-tools", agent_name: "Operations Agent" };
+      }
+    }
+    for (const [re, , make] of ANSWERS) {
+      if (re.test(t)) {
+        const a = make();
+        const out = { status: "done", reply: a.reply + NOTE, tools_used: [] };
+        if (mode === "teach" && a.learned) { const e = remember("learned", a.learned, "learned"); if (e) out.learned = [e.text]; }
+        return out;
+      }
+    }
+    if (/\b(file|files|folder|workspace)\b/.test(t)) {
+      return { status: "done", reply: "Your workspace has 3 example files: clients/water-exchange.md, invoices/2026-10-invoice-014.pdf and notes/fortis-auto-ideas.txt. Want me to open one?" + NOTE,
+               tools_used: used(byServer("filesystem"), ["filesystem__list_directory"]) };
+    }
+    if (/\b(who are you|what can you|what are you)\b/.test(t)) {
+      return { status: "done", reply: "I'm NOVA, a cognitive AI brain. I reason across science, engineering, mathematics, physics, space, and ancient wisdom and healing, and I tell you which claims are established, which are theory, and which are speculation or tradition. Pick how I help: I can teach you, solve problems with you, or have my team take care of things. The more we work together, the better I know you." + NOTE, tools_used: [] };
+    }
+    return { status: "done", reply: "In this preview I answer from a script, so try one of the suggestions on the welcome screen, or say \"remember that…\" to see me learn about you. On your laptop I reason through anything you ask." , tools_used: [] };
+  }
+
+  function approve(id, yes) {
+    const task = pending[id];
+    delete pending[id];
+    if (!task) return { status: "error", reply: "That approval was already answered." };
+    const op = byServer("nova-tools");
+    return yes
+      ? { status: "done", reply: "Done: my Operations Agent handed \"" + task + "\" to Lindy." + NOTE.replace("reasons this out live", "actually sends it"), tools_used: used(op, ["nova-tools__lindy_run"]) }
+      : { status: "done", reply: "Okay, I won't do that.", tools_used: used(op, ["nova-tools__lindy_run"], true) };
+  }
+
+  const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json" } });
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const realFetch = window.fetch.bind(window);
+  window.fetch = async function (input, opts = {}) {
+    const url = new URL(typeof input === "string" ? input : input.url, location.href);
+    const path = url.pathname.replace(/^.*?(\/api\/)/, "/api/");
+    if (!path.startsWith("/api/")) return realFetch(input, opts);
+    const method = (opts.method || "GET").toUpperCase();
+    const body = opts.body ? JSON.parse(opts.body) : {};
+    if (path === "/api/health") return json({ ok: true, brain: "a preview script", status: "preview" });
+    if (path === "/api/agents") return json({ brain: "NOVA", subagents: AGENTS });
+    if (path === "/api/voice") return json({ enabled: false, ready: false, voices: [], detail: "Preview" });
+    if (path.startsWith("/api/sessions/")) return json({ messages: [] });
+    if (path === "/api/bond" && method === "GET") return json({ sections: SECTIONS, entries: bond, learning: true });
+    if (path === "/api/bond" && method === "POST") { const e = remember(body.section, body.text, "you"); return json({ added: e, entries: bond }); }
+    if (path.startsWith("/api/bond/") && method === "DELETE") {
+      const id = decodeURIComponent(path.split("/").pop()); const i = bond.findIndex((e) => e.id === id);
+      if (i >= 0) bond.splice(i, 1); return json({ removed: i >= 0, entries: bond });
+    }
+    if (path === "/api/runs") {
+      const sum = { runs: runs.length, done: runs.length, errors: 0, retries: 0, budget_stops: 0,
+        revised_by_self_check: runs.filter((r) => r.events.some((e) => e.kind === "verify" && e.revised)).length };
+      return json({ summary: sum, runs });
+    }
+    if (path === "/api/chat") {
+      await wait(900);
+      const mode = body.mode || "solve";
+      const out = chat(body.message || "", mode);
+      const ev = [{ kind: "model" }];
+      for (const u of out.tools_used || []) ev.push({ kind: "tool", name: u.tool }, { kind: "model" });
+      if (out.status === "needs_approval") ev.push({ kind: "tool", name: "ask_nova-tools" }, { kind: "pause" });
+      else if (mode !== "run") ev.push({ kind: "model" }, { kind: "verify", revised: /orbit|400 ?km/i.test(body.message || "") });
+      logRun("nova.brain", body.message || "", ev);
+      return json({ session_id: body.session_id, route: "brain", mode, ...out });
+    }
+    if (path.startsWith("/api/approve/")) { await wait(900); return json({ route: "brain", ...approve(decodeURIComponent(path.split("/").pop()), !!body.approve) }); }
+    if (path === "/api/speak") return json({ detail: "Natural voice is off in the preview." }, 503);
+    return json({ detail: "Not in the preview." }, 404);
+  };
+})();
+
+</script>
+<script>
+"use strict";
+// ---------------------------------------------------------------- storage
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("nova." + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("nova." + k, JSON.stringify(v)); } catch {} },
+  del(k) { try { localStorage.removeItem("nova." + k); } catch {} },
+};
+const $ = (id) => document.getElementById(id);
+const newId = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()).replace(/-/g, "").slice(0, 12);
+
+const S = {
+  server: store.get("server", location.origin),
+  token: store.get("token", ""),
+  session: store.get("session", null) || newId(),
+  speak: store.get("speak", false),
+  voice: store.get("voice", ""),
+  mode: store.get("mode", "solve"),
+  log: [],           // rendered items for this session
+  agents: [],
+  busy: false,
+  outbox: store.get("outbox", []),
+};
+store.set("session", S.session);
+
+// ---------------------------------------------------------------- the star
+const STAR_PATH = "M26 4 L29.2 22.8 L48 26 L29.2 29.2 L26 48 L22.8 29.2 L4 26 L22.8 22.8 Z";
+function drawStar(svg, agents, lit = []) {
+  const n = Math.max(agents.length, 0);
+  let sats = "";
+  agents.forEach((a, i) => {
+    const ang = (i / Math.max(n, 1)) * Math.PI * 2 - Math.PI / 4;
+    const x = 26 + 22 * Math.cos(ang), y = 26 + 22 * Math.sin(ang);
+    const on = lit.includes(a.name) ? " on" : "";
+    sats += `<circle class="sat${on}" cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${on ? 3.4 : 2.6}"><title>${esc(a.name)}</title></circle>`;
+  });
+  svg.innerHTML = `<circle class="halo" cx="26" cy="26" r="13"/>` +
+    (n ? `<circle class="orbit" cx="26" cy="26" r="22"/>` : "") +
+    `<g class="sats">${sats}</g><path class="core" d="${STAR_PATH}"/>`;
+}
+const GLYPH = `<svg class="glyph" viewBox="0 0 52 52" aria-hidden="true"><path d="${STAR_PATH}"/></svg>`;
+
+// ---------------------------------------------------------------- text
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function rich(text) {
+  // escape first, then a small, safe subset of markdown
+  const parts = String(text ?? "").split(/```/);
+  return parts.map((p, i) => {
+    if (i % 2) return `<pre><code>${esc(p.replace(/^[a-z0-9]*\n/i, ""))}</code></pre>`;
+    return esc(p)
+      .replace(/`([^`\n]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)\]])/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+  }).join("");
+}
+const toolLabel = (name) => String(name || "").split("__").pop().replace(/_/g, " ");
+
+// ---------------------------------------------------------------- rendering
+const chat = $("chat");
+function save() { store.set("log." + S.session, S.log.slice(-200)); }
+function push(item) { S.log.push(item); save(); render(); }
+
+function render() {
+  if (!S.log.length && !S.busy) { chat.innerHTML = welcome(); bindSuggestions(); return; }
+  chat.innerHTML = S.log.map(view).join("") +
+    (S.busy ? `<div class="working" role="status">${GLYPH}<span id="workText">NOVA is thinking…</span></div>` : "");
+  chat.querySelectorAll("[data-approve]").forEach((b) =>
+    b.addEventListener("click", async () => {
+      if (C.on) { quiet(); C.awaiting = null; setConvo("thinking"); }
+      const out = await decide(b.dataset.id, b.dataset.approve === "1");
+      if (C.on) afterOutcome(out);
+    }));
+  requestAnimationFrame(() => (chat.scrollTop = chat.scrollHeight));
+}
+
+function view(m) {
+  if (m.kind === "user") {
+    const tag = m.mode && m.mode !== "solve" ? `<span class="mode-tag">${esc(MODE_LABELS[m.mode] || "")}</span>` : "";
+    return `<div class="msg user">${tag}<div class="body">${esc(m.text)}</div>${m.queued ? '<span class="queued">Waiting for connection</span>' : ""}</div>`;
+  }
+  if (m.kind === "approval") {
+    const who = esc(m.agent_name || "NOVA");
+    if (m.decided) {
+      return `<div class="approval done"><h3>${m.decided === "yes" ? "Approved" : "Declined"}: ${who} – ${esc(toolLabel(m.tool))}</h3></div>`;
+    }
+    const args = Object.entries(m.args || {}).map(([k, v]) => {
+      const val = typeof v === "string" ? v : JSON.stringify(v);
+      return `<dt>${esc(k)}</dt><dd>${esc(val.length > 400 ? val.slice(0, 400) + "…" : val)}</dd>`;
+    }).join("");
+    return `<div class="approval" role="group" aria-label="Approval needed">
+      <h3><span class="who">${who}</span> wants to ${esc(toolLabel(m.tool))}</h3>
+      ${args ? `<dl class="args">${args}</dl>` : ""}
+      <div class="row">
+        <button class="btn" data-approve="0" data-id="${esc(m.approval_id)}">Decline</button>
+        <button class="btn go" data-approve="1" data-id="${esc(m.approval_id)}">Approve</button>
+      </div></div>`;
+  }
+  const used = (m.tools_used || []).map((u) => {
+    const inner = (u.subagent_tools || []).map(toolLabel).join(", ");
+    return `<span class="chip${u.declined ? " declined" : ""}">${esc(u.agent || toolLabel(u.tool))}${inner ? ` <small>${esc(inner)}</small>` : ""}</span>`;
+  }).join("");
+  const learned = (m.learned || []).length ? `<div class="learned"><b>NOVA will remember:</b> ${m.learned.map(esc).join("; ")}</div>` : "";
+  return `<div class="msg nova${m.error ? " err" : ""}">${GLYPH}<div><div class="body">${rich(m.text)}</div>${used ? `<div class="team-used" aria-label="Team members used">${used}</div>` : ""}${learned}</div></div>`;
+}
+
+const MODE_LABELS = { teach: "Teach me", solve: "Solve with me", run: "Take care of it" };
+const THINK = [
+  ["Why do the clocks on GPS satellites run fast?", "teach", "Physics"],
+  ["Work out the orbital period of a satellite 400 km up", "solve", "Space and orbital mechanics"],
+  ["What did ancient Egyptian healers use on wounds, and what holds up today?", "teach", "Ancient healing"],
+  ["Design the telemetry for a fleet of delivery drones", "solve", "Engineering and telemetry"],
+];
+const ACT = {
+  "nova-tools": "Email my client a follow-up about Friday",
+  filesystem: "Organize my workspace folder by project",
+  github: "Open an issue for the bug we just found",
+  zapier: "Add this lead to my sales tracker",
+};
+function welcome() {
+  const act = S.agents.map((a) => ACT[a.server] ? [ACT[a.server], "run", a.name] : null).find(Boolean);
+  const list = act ? [...THINK, act] : THINK;
+  return `<section class="welcome">
+    <h2>What are we figuring out?</h2>
+    <p>NOVA thinks across science, engineering, mathematics, physics, space and ancient wisdom, and her team acts on what you decide. The longer you work together, the better she knows you.</p>
+    <div class="suggest">${list.map(([t, mode, field]) => `<button data-idea="${esc(t)}" data-mode="${mode}">${esc(t)}<span>${esc(field)} · ${esc(MODE_LABELS[mode])}</span></button>`).join("")}</div>
+  </section>`;
+}
+function bindSuggestions() {
+  chat.querySelectorAll("[data-idea]").forEach((b) => b.addEventListener("click", () => {
+    if (b.dataset.mode) setMode(b.dataset.mode);
+    input.value = b.dataset.idea; autosize(); input.focus(); syncSend();
+  }));
+}
+
+function setBusy(on, lit = []) {
+  S.busy = on;
+  document.body.classList.toggle("thinking", on);
+  drawStar($("star"), S.agents, lit);
+  render();
+}
+
+// ---------------------------------------------------------------- network
+class AuthError extends Error {}
+async function api(path, opts = {}) {
+  const res = await fetch(S.server.replace(/\/$/, "") + path, {
+    ...opts,
+    headers: { "Content-Type": "application/json", ...(S.token ? { Authorization: "Bearer " + S.token } : {}), ...(opts.headers || {}) },
+  });
+  if (res.status === 401) throw new AuthError("unauthorized");
+  if (!res.ok) throw new Error(`NOVA returned HTTP ${res.status}`);
+  return res.json();
+}
+
+async function refreshStatus() {
+  try {
+    const [h, a] = await Promise.all([api("/api/health"), api("/api/agents")]);
+    S.agents = a.subagents || [];
+    const n = S.agents.length;
+    $("state").textContent = `Ready on ${h.brain || "your model"}, ${n} ${n === 1 ? "subagent" : "subagents"}`;
+    $("setLede").textContent = `Connected to ${S.server}. NOVA thinks with ${h.brain || "your model"}.`;
+    drawStar($("star"), S.agents);
+    renderTeam();
+    loadNaturalVoice();
+    if (!S.log.length) render();
+    flushOutbox();
+    return true;
+  } catch (e) {
+    if (e instanceof AuthError) { showConnect("This server needs an access token."); return false; }
+    $("state").textContent = navigator.onLine ? "Can't reach NOVA right now" : "Offline";
+    return false;
+  }
+}
+
+function renderTeam() {
+  $("teamLede").textContent = S.agents.length
+    ? "NOVA briefs these subagents when a task needs their tools. Actions marked “asks first” wait for your approval."
+    : "No subagents are connected. Add servers in mcp_servers.json on your NOVA server.";
+  $("teamList").innerHTML = S.agents.map((a) => `<div class="agent">
+      <div class="agent-head"><span class="dot"></span><b>${esc(a.name)}</b></div>
+      <p>${esc(a.role)}</p>
+      <details><summary>${a.tools.length} ${a.tools.length === 1 ? "tool" : "tools"}</summary>
+        <ul>${a.tools.map((t) => `<li>${esc(toolLabel(t))}${(a.asks_first || []).includes(t) ? " <small>asks first</small>" : ""}</li>`).join("")}</ul></details>
+    </div>`).join("");
+}
+
+// ---------------------------------------------------------------- conversation
+async function send(text) {
+  text = text.trim();
+  if (!text) return;
+  const mode = S.mode;
+  if (!navigator.onLine) {
+    S.outbox.push({ session: S.session, text, mode }); store.set("outbox", S.outbox);
+    push({ kind: "user", text, mode, queued: true });
+    return { type: "error", text: "You're offline. I'll send that when you're back online." };
+  }
+  push({ kind: "user", text, mode });
+  return turn(() => api("/api/chat", { method: "POST", body: JSON.stringify({ session_id: S.session, message: text, mode }) }));
+}
+
+async function decide(id, approve) {
+  const card = S.log.find((m) => m.kind === "approval" && m.approval_id === id);
+  if (!card || card.decided) return null;
+  card.decided = approve ? "yes" : "no"; save();
+  return turn(() => api(`/api/approve/${encodeURIComponent(id)}`, { method: "POST", body: JSON.stringify({ approve }) }));
+}
+
+async function turn(call) {
+  setBusy(true);
+  const slow = setTimeout(() => { const w = $("workText"); if (w) w.textContent = "NOVA is working with its team…"; }, 4000);
+  let lit = [];
+  try {
+    const r = await call();
+    lit = (r.tools_used || []).map((u) => u.agent).filter(Boolean);
+    if (r.status === "needs_approval") {
+      const card = { kind: "approval", approval_id: r.approval_id, tool: r.tool, args: r.args, agent_name: r.agent_name };
+      push(card);
+      if (r.agent_name) lit.push(r.agent_name);
+      notify(`${r.agent_name || "NOVA"} needs your approval`, `Wants to ${toolLabel(r.tool)}`);
+      return { type: "approval", card };
+    }
+    push({ kind: "nova", text: r.reply, tools_used: r.tools_used, learned: r.learned, error: r.status === "error" });
+    if (!C.on) speak(r.reply);
+    if (document.hidden) notify("NOVA replied", r.reply.slice(0, 120));
+    return { type: "reply", text: r.reply };
+  } catch (e) {
+    if (e instanceof AuthError) { showConnect("Your access token was refused. Enter it again."); return { type: "auth" }; }
+    const text = navigator.onLine ? `Couldn't reach NOVA: ${e.message}. Check the server is running, then try again.` : "You're offline. Try again when you're connected.";
+    push({ kind: "nova", text, error: true });
+    return { type: "error", text };
+  } finally {
+    clearTimeout(slow);
+    setBusy(false, lit);
+  }
+}
+
+async function flushOutbox() {
+  if (!navigator.onLine || !S.outbox.length || S.busy) return;
+  const queue = S.outbox; S.outbox = []; store.set("outbox", []);
+  for (const item of queue) {
+    if (item.session !== S.session) continue;
+    const m = S.log.find((x) => x.kind === "user" && x.queued && x.text === item.text);
+    if (m) { delete m.queued; save(); }
+    await turn(() => api("/api/chat", { method: "POST", body: JSON.stringify({ session_id: item.session, message: item.text, mode: item.mode }) }));
+  }
+}
+
+async function loadSession() {
+  S.log = store.get("log." + S.session, []);
+  if (!S.log.length) {
+    try {
+      const h = await api(`/api/sessions/${S.session}`);
+      S.log = (h.messages || []).map((m) => m.role === "human" ? { kind: "user", text: m.content } : { kind: "nova", text: m.content });
+    } catch {}
+  }
+  render();
+}
+
+function newConversation() {
+  S.session = newId(); store.set("session", S.session); S.log = []; save(); render();
+}
+
+// ---------------------------------------------------------------- voice
+// Two voices, one contract. Natural voice: audio from NOVA's server (/api/speak, e.g.
+// Piper running on your laptop or Pi) when the server has it switched on. Phone voice:
+// the browser's built-in speech. If the natural voice is off or fails, NOVA falls back
+// to the phone voice, so she always talks. speakText(text, onDone) → stop().
+const hasTTS = "speechSynthesis" in window;
+const player = new Audio();
+player.preload = "auto";
+function phoneVoices() { return hasTTS ? speechSynthesis.getVoices() : []; }
+function naturalReady() { return !!(S.natural && S.natural.ready && !S.naturalFailed); }
+
+// "" = automatic (natural when available), "natural:<id>", "phone:<voiceURI>"
+function voiceChoice() {
+  const v = S.voice || "";
+  if (v.startsWith("natural:")) return naturalReady() ? { kind: "natural", id: v.slice(8) } : { kind: "phone", uri: "" };
+  if (v === "" && naturalReady()) return { kind: "natural", id: S.natural.default };
+  return { kind: "phone", uri: v.startsWith("phone:") ? v.slice(6) : v };
+}
+
+function fillVoices() {
+  const lang = (navigator.language || "en").slice(0, 2);
+  const list = phoneVoices();
+  const mine = list.filter((v) => v.lang.toLowerCase().startsWith(lang));
+  const opt = (value, label) => `<option value="${esc(value)}"${value === (S.voice || "") ? " selected" : ""}>${esc(label)}</option>`;
+  let html = "";
+  const nat = S.natural && S.natural.ready ? S.natural.voices || [] : [];
+  if (nat.length) {
+    html += opt("", "Automatic (natural voice when available)");
+    html += `<optgroup label="Natural voices from your NOVA server">${nat.map((v) => opt("natural:" + v.id, v.name)).join("")}</optgroup>`;
+  }
+  if (hasTTS) {
+    html += `<optgroup label="This phone's voices">${opt(nat.length ? "phone:" : "", "Phone default")}` +
+      (mine.length ? mine : list).map((v) => opt("phone:" + v.voiceURI, v.name)).join("") + "</optgroup>";
+  }
+  $("optVoice").innerHTML = html;
+  $("voiceField").hidden = !html;
+  const hint = $("voiceHint");
+  if (S.natural && S.natural.enabled && !S.natural.ready) { hint.textContent = "Natural voice: " + S.natural.detail; hint.hidden = false; }
+  else if (S.naturalFailed) { hint.textContent = "Natural voice isn't reachable right now, so NOVA is using the phone's voice."; hint.hidden = false; }
+  else hint.hidden = true;
+}
+if (hasTTS) speechSynthesis.onvoiceschanged = fillVoices;
+fillVoices();
+$("optVoice").addEventListener("change", (e) => { S.voice = e.target.value; store.set("voice", S.voice); });
+
+async function loadNaturalVoice() {
+  try { S.natural = await api("/api/voice"); S.naturalFailed = false; }
+  catch { S.natural = null; }
+  fillVoices();
+}
+function naturalFailed() {
+  if (S.naturalFailed) return;
+  S.naturalFailed = true;
+  toast("NOVA's natural voice isn't reachable, so she's using the phone's voice for now.");
+  fillVoices();
+}
+
+function speechText(t) {
+  return String(t || "")
+    .replace(/```[\s\S]*?```/g, " I've put the code on your screen. ")
+    .replace(/https?:\/\/\S+/g, " a link on your screen ")
+    .replace(/[*_`#>|]/g, "").replace(/\s+/g, " ").trim();
+}
+function pieces(clean) {
+  const out = [];
+  for (const sentence of clean.match(/[^.!?]+[.!?]*/g) || [clean]) {
+    const last = out[out.length - 1];
+    if (last && (last + " " + sentence).length < 220) out[out.length - 1] = last + " " + sentence.trim();
+    else out.push(sentence.trim());
+  }
+  return out.filter(Boolean);
+}
+
+// Speak text; calls onDone(stopped) once; returns a function that stops early.
+function speakText(text, onDone) {
+  const ctl = { finished: false, aborts: [], watchdog: null };
+  const done = (stopped = false) => {
+    if (ctl.finished) return; ctl.finished = true;
+    clearTimeout(ctl.watchdog);
+    ctl.aborts.forEach((a) => a.abort());
+    player.pause(); player.removeAttribute("src");
+    if (hasTTS) speechSynthesis.cancel();
+    onDone && onDone(stopped);
+  };
+  const parts = pieces(speechText(text));
+  if (!parts.length) { setTimeout(() => done(false), 0); return () => done(true); }
+  const choice = voiceChoice();
+  if (choice.kind === "natural") speakNatural(parts, choice.id, ctl, done);
+  else speakPhone(parts, choice.uri, ctl, done);
+  return () => done(true);
+}
+
+function speakPhone(parts, uri, ctl, done) {
+  if (!hasTTS) { setTimeout(() => done(false), 0); return; }
+  const v = phoneVoices().find((x) => x.voiceURI === uri) || null;
+  let i = 0;
+  const next = () => {
+    if (ctl.finished) return;
+    if (i >= parts.length) { done(false); return; }
+    const u = new SpeechSynthesisUtterance(parts[i++]);
+    if (v) { u.voice = v; u.lang = v.lang; }
+    u.onend = next; u.onerror = next;
+    speechSynthesis.speak(u);
+  };
+  // Safety net: some phones never fire onend; don't leave the conversation stuck.
+  const words = parts.join(" ").split(" ").length;
+  clearTimeout(ctl.watchdog);
+  ctl.watchdog = setTimeout(() => done(false), (words / 2.2) * 1600 + 6000);
+  speechSynthesis.cancel();
+  next();
+}
+
+function speakNatural(parts, id, ctl, done) {
+  const fetchPiece = (n) => {
+    const ac = new AbortController(); ctl.aborts.push(ac);
+    const timer = setTimeout(() => ac.abort(), 30000);
+    return fetch(S.server.replace(/\/$/, "") + "/api/speak", {
+      method: "POST", signal: ac.signal,
+      headers: { "Content-Type": "application/json", ...(S.token ? { Authorization: "Bearer " + S.token } : {}) },
+      body: JSON.stringify({ text: parts[n], voice: id }),
+    }).then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.blob(); })
+      .then((blob) => URL.createObjectURL(blob))
+      .finally(() => clearTimeout(timer));
+  };
+  let i = 0;
+  let upcoming = fetchPiece(0);
+  // carry on in the phone's voice from the first piece that wasn't heard
+  const fallBack = (from) => { if (ctl.finished) return; naturalFailed(); speakPhone(parts.slice(from), "", ctl, done); };
+  const playNext = async () => {
+    if (ctl.finished) return;
+    if (i >= parts.length) { done(false); return; }
+    let url;
+    try { url = await upcoming; } catch { fallBack(i); return; }
+    if (ctl.finished) { URL.revokeObjectURL(url); return; }
+    i++;
+    if (i < parts.length) upcoming = fetchPiece(i);   // fetch the next piece while this one plays
+    player.onended = () => { URL.revokeObjectURL(url); playNext(); };
+    player.onerror = () => { URL.revokeObjectURL(url); fallBack(i - 1); };
+    player.src = url;
+    try { await player.play(); } catch { fallBack(i - 1); }
+  };
+  playNext();
+}
+
+function unlockAudio() {
+  // Called inside a tap so later playback is allowed on phones.
+  if (hasTTS) { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); }
+  const ctx = window.AudioContext || window.webkitAudioContext;
+  try { if (ctx && !unlockAudio.done) { const c = new ctx(); c.resume(); unlockAudio.done = true; } } catch {}
+  player.muted = true;
+  player.play().catch(() => {}).finally(() => { player.pause(); player.muted = false; });
+}
+
+function speak(text) { if (S.speak) speakText(text); }
+
+// ---------------------------------------------------------------- conversation mode
+// One button: tap to start, tap (or say "goodbye") to end. In between it's hands-free:
+// listen → send when you pause → NOVA speaks → listen again. Ends after 30 s of quiet.
+const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const SILENCE_MS = window.NOVA_SILENCE_MS || 30000;   // override only for automated tests
+const C = { on: false, rec: null, lastSound: 0, awaiting: null, stop: null };
+const talk = $("talk");
+const YES = /\b(yes|yeah|yep|yup|sure|approve[ds]?|go ahead|do it|okay|ok|confirm(ed)?)\b/i;
+const NO = /\b(no|nope|nah|decline|cancel|don'?t|stop|wait|hold on)\b/i;
+const BYE = /\b(goodbye|bye|end (the )?conversation|stop listening|that'?s all)\b/i;
+
+function setConvo(state, heard = "") {
+  for (const s of ["listening", "thinking", "speaking"]) document.body.classList.toggle("c-" + s, C.on && state === s);
+  document.body.classList.toggle("thinking", C.on && state === "thinking");
+  $("convo").hidden = !C.on;
+  $("convoState").textContent = { listening: "Listening…", thinking: "NOVA is thinking…", speaking: "NOVA is speaking…" }[state] || "";
+  $("convoHeard").textContent = heard;
+  $("convoSkip").hidden = state !== "speaking";
+  talk.classList.toggle("live", C.on);
+  talk.setAttribute("aria-pressed", String(C.on));
+  talk.setAttribute("aria-label", C.on ? "End the conversation" : "Start a conversation with NOVA");
+}
+
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => (t.hidden = true), 6000);
+}
+
+// stop listening and speaking without moving the conversation on
+function quiet() {
+  if (C.rec) { C.rec.onend = null; C.rec.onresult = null; try { C.rec.abort(); } catch {} C.rec = null; }
+  if (C.stop) { const s = C.stop; C.stop = null; C.halted = true; s(); C.halted = false; }
+}
+
+function startConvo() {
+  if (C.on || !Rec) return;
+  C.on = true; C.awaiting = null; C.lastSound = Date.now();
+  unlockAudio();
+  input.blur();
+  const open = [...S.log].reverse().find((m) => m.kind === "approval" && !m.decided);
+  // give the silent unlock a moment, so the mic never opens while audio is playing
+  setTimeout(() => { if (!C.on) return; if (open) askApproval(open); else listen(); }, 300);
+}
+
+function endConvo(note) {
+  if (!C.on) return;
+  C.on = false; C.awaiting = null;
+  quiet();
+  setConvo("idle");
+  if (note) toast(note);
+}
+
+function listen() {
+  if (!C.on) return;
+  if (Date.now() - C.lastSound > SILENCE_MS) { endConvo("Conversation ended after 30 seconds of quiet."); return; }
+  setConvo("listening", C.awaiting ? "Say yes or no" : "");
+  const rec = new Rec();
+  C.rec = rec;
+  rec.lang = navigator.language || "en-US"; rec.interimResults = true; rec.continuous = false;
+  let finalText = "", heard = "";
+  rec.onresult = (ev) => {
+    heard = ""; finalText = "";
+    for (const r of ev.results) { heard += r[0].transcript; if (r.isFinal) finalText += r[0].transcript; }
+    C.lastSound = Date.now();
+    setConvo("listening", heard);
+  };
+  rec.onerror = (ev) => {
+    if (ev.error === "not-allowed" || ev.error === "service-not-allowed" || ev.error === "audio-capture") {
+      rec.onend = null; C.rec = null;
+      endConvo("NOVA needs the microphone. Allow it for this site in Chrome's settings, then try again.");
+    }
+  };
+  rec.onend = () => {
+    C.rec = null;
+    if (!C.on) return;
+    const said = (finalText || heard).trim();
+    if (said) handleSaid(said); else setTimeout(listen, 200); // nothing heard yet: keep listening
+  };
+  try { rec.start(); } catch { setTimeout(listen, 500); }
+}
+
+async function handleSaid(text) {
+  if (C.awaiting) {
+    const card = C.awaiting;
+    const no = NO.test(text), yes = YES.test(text) && !no;
+    if (!yes && !no) { say("Sorry, I need a yes or a no.", listen); return; }
+    C.awaiting = null;
+    setConvo("thinking", yes ? "Approved" : "Declined");
+    afterOutcome(await decide(card.approval_id, yes));
+    return;
+  }
+  if (BYE.test(text) && text.split(/\s+/).length <= 5) { say("Okay. Talk soon.", () => endConvo()); return; }
+  setConvo("thinking", text);
+  afterOutcome(await send(text));
+}
+
+function afterOutcome(out) {
+  if (!C.on) return;
+  if (!out) { listen(); return; }
+  if (out.type === "approval") { askApproval(out.card); return; }
+  if (out.type === "auth") { endConvo(); return; }
+  say(out.text, listen);
+}
+
+function askApproval(card) {
+  C.awaiting = card;
+  const detail = Object.entries(card.args || {}).find(([, v]) => typeof v === "string" && v.length <= 80);
+  const what = toolLabel(card.tool) + (detail ? `, ${detail[0]} ${detail[1]}` : "");
+  say(`${card.agent_name || "NOVA"} wants to ${what}. Should I go ahead? Say yes or no.`, listen);
+}
+
+// NOVA's turn: the mic is off while she talks, so she never hears herself
+function say(text, then) {
+  if (!C.on) return;
+  if (C.rec) { C.rec.onend = null; try { C.rec.abort(); } catch {} C.rec = null; }
+  setConvo("speaking");
+  C.stop = speakText(text, () => {
+    C.stop = null;
+    C.lastSound = Date.now();       // the silence clock restarts after she finishes
+    if (C.on && !C.halted) setTimeout(then, 250);
+  });
+}
+
+if (Rec) {
+  talk.hidden = false;
+  talk.addEventListener("click", () => (C.on ? endConvo() : startConvo()));
+  $("convoEnd").addEventListener("click", () => endConvo());
+  $("convoSkip").addEventListener("click", () => { if (C.stop) C.stop(); });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) endConvo(); });
+} else {
+  $("convoNote").textContent = "Conversation mode (tap the mic and just talk) works in the NOVA app on your phone. This preview can't use the microphone, so type here.";
+}
+
+// ---------------------------------------------------------------- notifications (local only)
+function notify(title, body) {
+  if (!document.hidden || !("Notification" in window) || Notification.permission !== "granted") return;
+  navigator.serviceWorker?.ready.then((reg) => reg.showNotification(title, { body, icon: "/icons/icon-192.png", tag: "nova" }));
+}
+
+// ---------------------------------------------------------------- composer
+const form = $("form"), input = $("input"), sendBtn = $("send");
+function autosize() { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, innerHeight * 0.4) + "px"; }
+function syncSend() { sendBtn.disabled = !input.value.trim() || S.busy; }
+input.addEventListener("input", () => { autosize(); syncSend(); });
+input.addEventListener("keydown", (e) => {
+  const touch = matchMedia("(pointer: coarse)").matches;
+  if (e.key === "Enter" && !e.shiftKey && !touch) { e.preventDefault(); form.requestSubmit(); }
+});
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (S.busy) return;
+  const t = input.value; input.value = ""; autosize(); syncSend();
+  if (window.Notification?.permission === "default") Notification.requestPermission().catch(() => {});
+  if (S.speak) unlockAudio();
+  if (C.on) { quiet(); if (t.trim()) handleSaid(t.trim()); return; }
+  send(t);
+});
+
+// ---------------------------------------------------------------- how NOVA helps
+function setMode(mode) {
+  if (!MODE_LABELS[mode]) mode = "solve";
+  S.mode = mode; store.set("mode", mode);
+  document.querySelectorAll("#modes .mode").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+}
+document.querySelectorAll("#modes .mode").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
+setMode(S.mode);
+
+// ---------------------------------------------------------------- what NOVA knows about you
+let BOND = { sections: {}, entries: [] };
+function renderBond() {
+  const groups = Object.entries(BOND.sections || {});
+  $("bondSection").innerHTML = groups.map(([k, t]) => `<option value="${esc(k)}">${esc(t)}</option>`).join("");
+  $("bondList").innerHTML = groups.map(([key, title]) => {
+    const items = BOND.entries.filter((e) => e.section === key);
+    const body = items.length
+      ? `<ul>${items.map((e) => `<li><span>${esc(e.text)}<small>${e.source === "you" ? "You told NOVA" : "NOVA learned"}, ${esc(e.added)}</small></span>
+          <button class="x-btn" data-forget="${esc(e.id)}" aria-label="Delete: ${esc(e.text)}">×</button></li>`).join("")}</ul>`
+      : `<p class="empty">Nothing yet.</p>`;
+    return `<section class="bond-group"><h3>${esc(title)}</h3>${body}</section>`;
+  }).join("");
+  $("bondList").querySelectorAll("[data-forget]").forEach((b) => b.addEventListener("click", async () => {
+    try { BOND = { ...BOND, ...(await api(`/api/bond/${encodeURIComponent(b.dataset.forget)}`, { method: "DELETE" })) }; renderBond(); }
+    catch { $("bondError").textContent = "Couldn't delete that. Check that NOVA is running, then try again."; }
+  }));
+}
+async function openBond() {
+  $("bondError").textContent = "";
+  try { BOND = await api("/api/bond"); renderBond(); $("bondSheet").showModal(); }
+  catch (e) {
+    if (e instanceof AuthError) showConnect("Your access token was refused. Enter it again.");
+    else { $("settingsSheet").showModal(); toast("Couldn't load what NOVA knows. Check that NOVA is running."); }
+  }
+}
+$("bondBtn").addEventListener("click", () => { $("settingsSheet").close(); openBond(); });
+
+// ---------------------------------------------------------------- how NOVA worked
+function agentLabel(id) {
+  if (id === "nova.brain") return "NOVA";
+  const a = S.agents.find((x) => x.id === id);
+  return a ? a.name : id.replace(/^sub\./, "");
+}
+async function openRuns() {
+  let data;
+  try { data = await api("/api/runs?limit=20"); }
+  catch (e) {
+    if (e instanceof AuthError) showConnect("Your access token was refused. Enter it again.");
+    else toast("Couldn't load NOVA's runs. Check that NOVA is running.");
+    return;
+  }
+  const sm = data.summary || {};
+  $("runSum").textContent = sm.runs
+    ? `${sm.runs} recent runs: ${sm.done} finished, ${sm.errors} failed, ${sm.retries} retries, ${sm.budget_stops} stopped at a limit, ${sm.revised_by_self_check} answers improved by her self-check.`
+    : "No runs yet. Ask NOVA something and come back.";
+  $("runList").innerHTML = (data.runs || []).map((r) => {
+    const ev = r.events || [];
+    const flags = [];
+    const tools = ev.filter((e) => e.kind === "tool").map((e) => toolLabel(e.name).replace(/^ask /, "→ "));
+    if (tools.length) flags.push(["", tools.slice(0, 4).join(", ") + (tools.length > 4 ? "…" : "")]);
+    if (ev.some((e) => e.kind === "verify" && e.revised)) flags.push(["good", "self-check improved it"]);
+    else if (ev.some((e) => e.kind === "verify")) flags.push(["good", "self-checked"]);
+    const retries = ev.filter((e) => e.kind === "retry").length;
+    if (retries) flags.push(["warn", `${retries} ${retries === 1 ? "retry" : "retries"}`]);
+    const b = ev.find((e) => e.kind === "budget");
+    if (b) flags.push(["warn", `stopped at ${b.limit} limit`]);
+    if (ev.some((e) => e.kind === "loop")) flags.push(["warn", "repeat blocked"]);
+    if (ev.some((e) => e.kind === "pause")) flags.push(["", "waited for approval"]);
+    if (r.outcome === "error") flags.push(["warn", "failed"]);
+    return `<div class="run">
+      <div class="run-head"><b>${esc(agentLabel(r.agent))}</b><span>${r.active_seconds.toFixed(1)} s · ${r.model_calls} model ${r.model_calls === 1 ? "call" : "calls"}</span></div>
+      <div class="run-q">${esc(r.input.slice(0, 140))}</div>
+      ${flags.length ? `<div class="run-flags">${flags.map(([c, t]) => `<span class="flag ${c}">${esc(t)}</span>`).join("")}</div>` : ""}
+    </div>`;
+  }).join("");
+  $("runsSheet").showModal();
+}
+$("runsBtn").addEventListener("click", () => { $("settingsSheet").close(); openRuns(); });
+$("bondForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const text = $("bondText").value.trim();
+  if (!text) return;
+  try {
+    const r = await api("/api/bond", { method: "POST", body: JSON.stringify({ section: $("bondSection").value, text }) });
+    BOND.entries = r.entries; $("bondText").value = ""; $("bondError").textContent = ""; renderBond();
+  } catch { $("bondError").textContent = "Couldn't add that. Check that NOVA is running, then try again."; }
+});
+
+// ---------------------------------------------------------------- sheets & settings
+document.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => b.closest("dialog").close()));
+document.querySelectorAll("dialog.sheet").forEach((d) => d.addEventListener("click", (e) => { if (e.target === d) d.close(); }));
+$("brandBtn").addEventListener("click", () => $("teamSheet").showModal());
+$("settingsBtn").addEventListener("click", () => $("settingsSheet").showModal());
+$("optSpeak").checked = S.speak;
+$("optSpeak").addEventListener("change", (e) => { S.speak = e.target.checked; store.set("speak", S.speak); });
+$("newChat").addEventListener("click", () => { newConversation(); $("settingsSheet").close(); input.focus(); });
+$("changeServer").addEventListener("click", () => { $("settingsSheet").close(); showConnect(""); });
+
+function showConnect(msg) {
+  $("cServer").value = S.server; $("cToken").value = S.token; $("cError").textContent = msg || "";
+  drawStar($("star2"), S.agents);
+  $("connect").hidden = false; $("cToken").focus();
+}
+$("connectForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  S.server = ($("cServer").value.trim() || location.origin).replace(/\/$/, "");
+  S.token = $("cToken").value.trim();
+  $("cError").textContent = "Connecting…";
+  try {
+    await api("/api/health");
+    store.set("server", S.server); store.set("token", S.token);
+    $("connect").hidden = true; await refreshStatus(); await loadSession();
+  } catch (err) {
+    $("cError").textContent = err instanceof AuthError
+      ? "That token was refused. Check NOVA_ACCESS_TOKEN on the server."
+      : `Can't reach ${S.server}. Check the address and that NOVA is running.`;
+  }
+});
+
+// install
+let installEvt = null;
+addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installEvt = e; $("installBtn").hidden = false; });
+$("installBtn").addEventListener("click", async () => { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice; installEvt = null; $("installBtn").hidden = true; });
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !navigator.standalone;
+$("iosHint").hidden = !isIOS;
+
+// online / offline
+function syncOnline() { $("offline").hidden = navigator.onLine; if (navigator.onLine) refreshStatus(); }
+addEventListener("online", syncOnline); addEventListener("offline", syncOnline);
+
+// ---------------------------------------------------------------- start
+(async function start() {
+  const q = new URLSearchParams(location.search);
+  if (q.get("new")) newConversation();
+  const shared = [q.get("title"), q.get("text"), q.get("url")].filter(Boolean).join("\n");
+  if (q.toString()) history.replaceState(null, "", "/");
+  drawStar($("star"), []);
+  $("offline").hidden = navigator.onLine;
+  await loadSession();
+  await refreshStatus();
+  if (shared) { input.value = shared; autosize(); syncSend(); input.focus(); }
+})();
+</script>
+</body>
+</html>

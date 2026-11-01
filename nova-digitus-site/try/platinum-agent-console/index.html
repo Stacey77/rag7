@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Platinum Agent Console: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Platinum Agent Console</title>
+<!--RELAY-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#EEF1F2; --surface:#FFFFFF; --sunk:#E4E9EB; --line:#D3DADD;
+  --ink:#151C20; --muted:#5B6870; --accent:#2B5C7C; --accent-ink:#FFFFFF; --accent-soft:#DCE8F0;
+  --ok:#23804F; --ok-bg:#DDF1E5; --warn:#9A6412; --warn-bg:#F7EBD3; --err:#B3342A; --err-bg:#F8DEDA;
+  --idle:#6D7880; --idle-bg:#E6EAEC;
+  --term:#12191D; --term-ink:#CFDAE0; --term-dim:#7C8C95;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0E1316; --surface:#161D21; --sunk:#1D262B; --line:#2A353B;
+    --ink:#E2E9EC; --muted:#93A1A9; --accent:#80B4D6; --accent-ink:#0E1316; --accent-soft:#1F3342;
+    --ok:#5CC98C; --ok-bg:#16301F; --warn:#E0A94A; --warn-bg:#352A14; --err:#EE7B70; --err-bg:#3A1C19;
+    --idle:#93A1A9; --idle-bg:#222C31;
+    --term:#0A0E10; --term-ink:#C9D5DB; --term-dim:#6B7B84;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E1316; --surface:#161D21; --sunk:#1D262B; --line:#2A353B;
+  --ink:#E2E9EC; --muted:#93A1A9; --accent:#80B4D6; --accent-ink:#0E1316; --accent-soft:#1F3342;
+  --ok:#5CC98C; --ok-bg:#16301F; --warn:#E0A94A; --warn-bg:#352A14; --err:#EE7B70; --err-bg:#3A1C19;
+  --idle:#93A1A9; --idle-bg:#222C31;
+  --term:#0A0E10; --term-ink:#C9D5DB; --term-dim:#6B7B84;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--ground);color:var(--ink);font:14px/1.5 var(--sans);padding:0 16px}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 40px;display:grid;gap:16px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h1{font:600 22px/1.2 var(--cond);letter-spacing:.01em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px}
+.hright{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.conn{font:500 12px var(--mono);padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface);display:inline-flex;align-items:center;gap:6px}
+.conn::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--idle)}
+.conn.on{color:var(--ok)} .conn.on::before{background:var(--ok)}
+.conn.connecting::before{background:var(--warn)} .conn.error{color:var(--err)} .conn.error::before{background:var(--err)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface);flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--muted);padding:7px 14px;font:500 13px var(--sans);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav.tabs button{border:0;background:transparent;color:var(--muted);font:600 14px var(--cond);letter-spacing:.04em;text-transform:uppercase;padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs .count{font:500 11px var(--mono);color:var(--muted);margin-left:4px}
+.tabpanel{display:grid;gap:16px}
+.banner{font-size:13px;color:var(--muted);background:var(--sunk);border-radius:6px;padding:8px 12px}
+.banner b{color:var(--ink);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.kpi{background:var(--surface);padding:10px 14px;display:grid;gap:2px}
+.kpi .k{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font:500 20px var(--mono);font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.col{display:grid;gap:16px;min-width:0}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+section.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:12px;min-width:0}
+h2{font:600 15px/1.3 var(--cond);letter-spacing:.06em;text-transform:uppercase;margin:0;color:var(--muted)}
+h3{font:600 15px/1.3 var(--cond);margin:0}
+.phead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.field{display:grid;gap:4px;flex:1 1 200px;min-width:0}
+.field.narrow{flex:0 1 140px}
+label,.lbl{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.03em}
+select,input,textarea{width:100%;background:var(--ground);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:13px var(--sans)}
+input:disabled{opacity:.6}
+textarea{font:12.5px/1.5 var(--mono);resize:vertical;min-height:120px}
+select:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible,tr:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.bad{border-color:var(--err)!important}
+.hint{font-size:12px;color:var(--muted);min-height:18px}
+.hint.bad{color:var(--err)} .hint.good{color:var(--ok)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:6px;font:500 13px var(--sans);cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--sunk)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--err)}
+.btn.danger.armed{background:var(--err);border-color:var(--err);color:#fff}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.sm{padding:4px 10px;font-size:12px}
+.check{display:inline-flex;gap:6px;align-items:center;font-size:13px;font-weight:400;letter-spacing:0;color:var(--muted);cursor:pointer}
+.check input{width:auto}
+.days{display:flex;gap:4px;flex-wrap:wrap}
+.days label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:6px;padding:4px 8px;font:500 12px var(--sans);color:var(--ink);cursor:pointer}
+.days input{width:auto}
+.route{font:12px var(--mono);color:var(--muted);overflow-wrap:anywhere}
+.route b{color:var(--ink);font-weight:500}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.steps li{display:flex;align-items:center;gap:6px;font-size:12.5px}
+.steps li+li::before{content:"→";color:var(--muted);margin-right:2px}
+.step{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:6px;padding:4px 8px;background:var(--ground)}
+.step small{color:var(--muted);font:11px var(--mono)}
+.step.running{border-color:var(--warn)} .step.success{border-color:var(--ok)} .step.error{border-color:var(--err)} .step.skipped{opacity:.5}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--idle)}
+.step.running .dot{background:var(--warn);animation:blink 1s infinite}
+.step.success .dot{background:var(--ok)} .step.error .dot{background:var(--err)}
+.step button{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:0 2px;font:13px var(--sans)}
+.step button:hover{color:var(--ink)}
+.result{border-radius:6px;background:var(--sunk);padding:10px 12px;display:grid;gap:8px;min-width:0}
+.result-head{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.result pre{margin:0;font:12px/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;max-height:280px;overflow:auto}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.idle,.pill.skipped,.pill.pending,.pill.off{color:var(--idle);background:var(--idle-bg)}
+.pill.running{color:var(--warn);background:var(--warn-bg)}
+.pill.running::before{animation:blink 1s infinite}
+.pill.success{color:var(--ok);background:var(--ok-bg)}
+.pill.error{color:var(--err);background:var(--err-bg)}
+.tag{font:600 10.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+@keyframes blink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.pill.running::before,.step.running .dot{animation:none}}
+.agent{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:12px 0;border-top:1px solid var(--line)}
+.agent:first-child{border-top:0;padding-top:0}
+.agent .name{font:600 15px var(--cond)}
+.agent .role{color:var(--muted);font-size:12px}
+.agent .meta{display:grid;justify-items:end;gap:4px}
+.health{font:11px var(--mono);color:var(--muted)}
+.stats{grid-column:1/-1;display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted)}
+.stats span b{color:var(--ink);font:500 12px var(--mono);font-variant-numeric:tabular-nums}
+.spark{margin-left:auto;display:block}
+.last{grid-column:1/-1;font:11.5px var(--mono);color:var(--muted);overflow-wrap:anywhere}
+.tbl-wrap{overflow-x:auto;max-height:360px;overflow-y:auto;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{position:sticky;top:0;background:var(--sunk);text-align:left;font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:7px 10px;white-space:nowrap;z-index:1}
+td{padding:7px 10px;border-top:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+td.num,th.num{text-align:right}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td.mono{font:12px var(--mono);color:var(--muted)}
+tbody.clickable tr{cursor:pointer}
+tbody.clickable tr:hover,tbody tr[aria-selected="true"]{background:var(--accent-soft)}
+.empty-row td{color:var(--muted);cursor:default;white-space:normal}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+details summary{cursor:pointer;font:600 13px var(--sans);color:var(--ink)}
+details[open] summary{margin-bottom:10px}
+.stack{display:grid;gap:10px}
+.plist{display:grid;gap:0}
+.pl{display:grid;gap:8px;padding:14px 0;border-top:1px solid var(--line)}
+.pl:first-child{border-top:0;padding-top:0}
+.pl-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.pl-title{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hook{background:var(--sunk);border-radius:6px;padding:8px 10px;display:grid;gap:6px}
+.hook code{font:12px var(--mono);overflow-wrap:anywhere;color:var(--ink)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:4px 10px;font:500 12px var(--sans);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink);border-color:var(--accent)}
+.term{background:var(--term);color:var(--term-ink);border-radius:6px;height:260px;overflow:auto;padding:10px 12px;font:12px/1.6 var(--mono)}
+.term div{white-space:pre-wrap;overflow-wrap:anywhere}
+.term .t{color:var(--term-dim)}
+.term .lv-ok{color:var(--ok)} .term .lv-err{color:var(--err)} .term .lv-warn{color:var(--warn)}
+.term .empty{color:var(--term-dim)}
+.note{font-size:13px;color:var(--muted);border-left:3px solid var(--line);padding:2px 0 2px 10px}
+.note b{color:var(--ink)}
+pre.code{margin:0;background:var(--term);color:var(--term-ink);border-radius:6px;padding:10px 12px;font:12px/1.5 var(--mono);overflow-x:auto;white-space:pre}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Platinum Agent Console</h1>
+      <span class="sub">Nova Digitus · phase 3</span>
+    </div>
+    <div class="hright">
+      <span class="conn" id="conn-chip">Local simulation</span>
+      <div class="seg" role="group" aria-label="Execution mode">
+        <button type="button" id="mode-sim" aria-pressed="true">Simulated</button>
+        <button type="button" id="mode-live" aria-pressed="false">Live</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button type="button" role="tab" id="tab-operate" aria-controls="p-operate" aria-selected="true">Operate</button>
+    <button type="button" role="tab" id="tab-pipelines" aria-controls="p-pipelines" aria-selected="false">Pipelines<span class="count" id="count-pl"></span></button>
+    <button type="button" role="tab" id="tab-automations" aria-controls="p-automations" aria-selected="false">Automations<span class="count" id="count-sc"></span></button>
+    <button type="button" role="tab" id="tab-settings" aria-controls="p-settings" aria-selected="false">Settings</button>
+  </nav>
+
+  <!-- ============ OPERATE ============ -->
+  <div class="tabpanel" id="p-operate" role="tabpanel" aria-labelledby="tab-operate">
+    <div class="banner" id="mode-banner"></div>
+    <div class="kpis" aria-label="Summary">
+      <div class="kpi"><span class="k">Runs</span><span class="v" id="k-runs">0</span></div>
+      <div class="kpi"><span class="k">Success rate</span><span class="v" id="k-rate">—</span></div>
+      <div class="kpi"><span class="k">Median step</span><span class="v" id="k-p50">—</span></div>
+      <div class="kpi"><span class="k">Automated runs</span><span class="v" id="k-auto">0</span></div>
+      <div class="kpi"><span class="k">Agents healthy</span><span class="v" id="k-healthy">—</span></div>
+    </div>
+    <div class="grid">
+      <div class="col">
+        <section class="panel" aria-labelledby="h-run">
+          <h2 id="h-run">Run</h2>
+          <div class="row">
+            <div class="field">
+              <label for="target">Workflow or pipeline</label>
+              <select id="target"></select>
+            </div>
+            <button type="button" class="btn" id="load-sample">Load sample payload</button>
+          </div>
+          <div class="route" id="route"></div>
+          <ol class="steps" id="steps" aria-label="Pipeline steps"></ol>
+          <div class="field">
+            <label for="input-data">Payload (JSON)</label>
+            <textarea id="input-data" spellcheck="false"></textarea>
+            <div class="hint" id="json-hint"></div>
+          </div>
+          <div class="row" style="align-items:center">
+            <button type="button" class="btn primary" id="run">Run</button>
+            <button type="button" class="btn" id="format">Format JSON</button>
+            <label class="check" id="retry-wrap"><input type="checkbox" id="retry" checked> Retry failed steps once</label>
+          </div>
+          <div class="result" id="result" hidden>
+            <div class="result-head"><div id="result-head"></div><button type="button" class="btn sm" id="copy-result">Copy JSON</button></div>
+            <pre id="result-body"></pre>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="h-hist">
+          <div class="phead">
+            <h2 id="h-hist">Run history</h2>
+            <div class="filters" role="group" aria-label="Filter history">
+              <button type="button" class="chip" data-hf="all" aria-pressed="true">All</button>
+              <button type="button" class="chip" data-hf="auto" aria-pressed="false">Automated</button>
+              <button type="button" class="chip" data-hf="error" aria-pressed="false">Failed</button>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Time</th><th>Run</th><th>Trigger</th><th class="num">Steps</th><th>Status</th><th class="num">Total ms</th></tr></thead>
+              <tbody id="hist" class="clickable"></tbody>
+            </table>
+          </div>
+          <div class="hint">Select a run to open its payload and every step's response.</div>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="panel" aria-labelledby="h-agents">
+          <div class="phead">
+            <h2 id="h-agents">Agents</h2>
+            <button type="button" class="btn sm" id="health">Check health</button>
+          </div>
+          <div id="agents"></div>
+        </section>
+        <section class="panel" aria-labelledby="h-log">
+          <div class="phead">
+            <h2 id="h-log">Event log</h2>
+            <div class="filters" role="group" aria-label="Filter log">
+              <button type="button" class="chip" data-f="all" aria-pressed="true">All</button>
+              <button type="button" class="chip" data-f="ok" aria-pressed="false">Success</button>
+              <button type="button" class="chip" data-f="err" aria-pressed="false">Errors</button>
+              <button type="button" class="chip" id="copy-log">Copy</button>
+              <button type="button" class="chip" id="clear-log">Clear</button>
+            </div>
+          </div>
+          <div class="term" id="logs" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PIPELINES ============ -->
+  <div class="tabpanel" id="p-pipelines" role="tabpanel" aria-labelledby="tab-pipelines" hidden>
+    <div class="banner" id="pl-banner"></div>
+    <div class="grid">
+      <section class="panel" aria-labelledby="h-pls">
+        <div class="phead">
+          <h2 id="h-pls">Pipelines</h2>
+          <button type="button" class="btn sm primary" id="pl-new">New pipeline</button>
+        </div>
+        <div class="plist" id="plist"></div>
+      </section>
+      <section class="panel" aria-labelledby="h-ple">
+        <h2 id="h-ple">Pipeline builder</h2>
+        <div class="row">
+          <div class="field">
+            <label for="pl-name">Name</label>
+            <input id="pl-name" type="text" maxlength="60" placeholder="e.g. Inbound lead → nurture">
+          </div>
+          <div class="field narrow">
+            <label for="pl-id">ID</label>
+            <input id="pl-id" type="text" maxlength="40" spellcheck="false" placeholder="auto">
+          </div>
+        </div>
+        <div class="stack">
+          <span class="lbl">Steps, in order</span>
+          <ol class="steps" id="pl-steps" aria-label="Steps in this pipeline"></ol>
+          <div class="row">
+            <div class="field">
+              <label for="pl-step-add">Add step</label>
+              <select id="pl-step-add"></select>
+            </div>
+            <button type="button" class="btn" id="pl-add">Add step</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="pl-sample">Sample payload (JSON)</label>
+          <textarea id="pl-sample" spellcheck="false"></textarea>
+        </div>
+        <div class="row" style="align-items:center">
+          <button type="button" class="btn primary" id="pl-save">Save pipeline</button>
+          <button type="button" class="btn" id="pl-cancel">Clear</button>
+          <span class="hint" id="pl-hint"></span>
+        </div>
+        <div class="note">Each step receives <b>{ input, previous, step, pipeline }</b>: the original payload plus the output of the step before it. A failed step stops the pipeline.</div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============ AUTOMATIONS ============ -->
+  <div class="tabpanel" id="p-automations" role="tabpanel" aria-labelledby="tab-automations" hidden>
+    <div class="banner" id="sc-banner"></div>
+    <section class="panel" aria-labelledby="h-scs">
+      <h2 id="h-scs">Schedules</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>On</th><th>Name</th><th>Runs</th><th>When</th><th>Next run</th><th>Last run</th><th></th></tr></thead>
+          <tbody id="sclist"></tbody>
+        </table>
+      </div>
+    </section>
+    <div class="grid">
+      <section class="panel" aria-labelledby="h-sce">
+        <h2 id="h-sce">Schedule builder</h2>
+        <div class="row">
+          <div class="field">
+            <label for="sc-name">Name</label>
+            <input id="sc-name" type="text" maxlength="60" placeholder="e.g. Monday growth review">
+          </div>
+          <div class="field">
+            <label for="sc-target">Runs</label>
+            <select id="sc-target"></select>
+          </div>
+        </div>
+        <div class="stack">
+          <span class="lbl">When</span>
+          <div class="seg" role="group" aria-label="Cadence">
+            <button type="button" id="cad-daily" aria-pressed="true">Daily at a time</button>
+            <button type="button" id="cad-every" aria-pressed="false">Every N minutes</button>
+          </div>
+          <div class="row" id="daily-fields">
+            <div class="field narrow">
+              <label for="sc-at">Time (server local)</label>
+              <input id="sc-at" type="time" value="09:00">
+            </div>
+            <div class="field">
+              <span class="lbl">Days (none = every day)</span>
+              <div class="days" id="sc-days"></div>
+            </div>
+          </div>
+          <div class="row" id="every-fields" hidden>
+            <div class="field narrow">
+              <label for="sc-every">Minutes</label>
+              <input id="sc-every" type="number" min="5" max="10080" step="1" value="60">
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="sc-payload">Payload (JSON)</label>
+          <textarea id="sc-payload" spellcheck="false"></textarea>
+        </div>
+        <div class="row" style="align-items:center">
+          <button type="button" class="btn primary" id="sc-save">Save schedule</button>
+          <button type="button" class="btn" id="sc-cancel">Clear</button>
+          <span class="hint" id="sc-hint"></span>
+        </div>
+      </section>
+      <div class="col">
+        <section class="panel" aria-labelledby="h-alerts">
+          <h2 id="h-alerts">Failure alerts</h2>
+          <div id="alerts-status"></div>
+          <div class="note">When any run fails, the relay posts a message to <b>ALERT_WEBHOOK_URL</b>. Slack incoming webhooks and Discord webhooks both work. Set it in the server's <b>.env</b> and restart.</div>
+        </section>
+        <section class="panel" aria-labelledby="h-hooks">
+          <h2 id="h-hooks">Inbound webhooks</h2>
+          <div class="note">Every pipeline has its own URL and secret, so forms, Stripe, Zapier or another n8n flow can start it. Find them on the <b>Pipelines</b> tab once the relay is connected.</div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SETTINGS ============ -->
+  <div class="tabpanel" id="p-settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
+    <div class="grid">
+      <section class="panel" aria-labelledby="h-conn">
+        <h2 id="h-conn">Connection</h2>
+        <div class="field">
+          <span class="lbl">Live requests go</span>
+          <div class="seg" role="group" aria-label="Transport">
+            <button type="button" id="tx-relay" aria-pressed="true">Through relay server</button>
+            <button type="button" id="tx-direct" aria-pressed="false">Direct to endpoints</button>
+          </div>
+        </div>
+        <div id="relay-fields" class="stack">
+          <div class="field">
+            <label for="relay-url">Relay server URL</label>
+            <input id="relay-url" type="url" placeholder="http://localhost:8787" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="relay-key">Relay key</label>
+            <input id="relay-key" type="password" placeholder="Matches RELAY_KEY in the server's .env" autocomplete="off">
+          </div>
+          <div class="hint">With the relay, runs, pipelines, schedules and webhooks live on the server and keep going when this page is closed.</div>
+        </div>
+        <details id="direct-fields">
+          <summary>Direct endpoint URLs</summary>
+          <div class="stack" id="eps"></div>
+          <div class="hint">Direct calls need CORS on each endpoint, can't carry secret tokens safely, and don't support schedules or webhooks.</div>
+        </details>
+        <div class="row" style="align-items:center">
+          <button type="button" class="btn primary" id="save-conn">Save and connect</button>
+          <button type="button" class="btn" id="reset-conn">Reset</button>
+          <span class="hint" id="conn-hint"></span>
+        </div>
+      </section>
+      <div class="col">
+        <section class="panel" aria-labelledby="h-server">
+          <h2 id="h-server">Relay server</h2>
+          <div id="server-info" class="stack"></div>
+        </section>
+        <section class="panel" aria-labelledby="h-data">
+          <h2 id="h-data">Data in this browser</h2>
+          <div class="hint">Simulated runs, local pipelines and local schedules are stored only in this browser.</div>
+          <div class="row">
+            <button type="button" class="btn danger" id="clear-local-hist">Clear local history</button>
+            <button type="button" class="btn danger" id="clear-local-all">Reset local pipelines &amp; schedules</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* =========================================================
+     Catalog (mirrors lib/catalog.js on the relay)
+     ========================================================= */
+  const AGENTS = {
+    langsmith:{name:"LangSmith", role:"Tracing & evaluation"},
+    langchain:{name:"LangChain", role:"Reasoning & analysis chains"},
+    lindy:{name:"Lindy AI", role:"Assistant collaboration"},
+    n8n:{name:"n8n", role:"Automation & webhooks"}
+  };
+  const WORKFLOWS = {
+    customer_support:{label:"Customer Support", agent:"langsmith", url:"https://langsmith-staging.yourdomain.com/runs",
+      sample:{ticket_id:"T-12345",customer:"acme@example.com",priority:"urgent",ticket_details:"Cannot log in after password reset; MFA code rejected."}},
+    sales_automation:{label:"Sales Automation", agent:"langchain", url:"https://langchain-staging.yourdomain.com/analyze_lead",
+      sample:{lead_id:"L-2201",company:"Brightline Logistics",source:"webinar",notes:"Asked about AI dispatch routing, 40-truck fleet."}},
+    marketing_automation:{label:"Marketing Automation", agent:"lindy", url:"https://lindy-staging.yourdomain.com/collaborate",
+      sample:{campaign:"Q4 AI Readiness Audit",channel:"email",audience:"SMB owners, 10-50 staff",goal:"booked consults"}},
+    data_analysis:{label:"Data Analysis", agent:"n8n", url:"https://n8n-staging.yourdomain.com/webhook/data_analysis",
+      sample:{dataset:"orders_2026_q3.csv",metrics:["revenue","aov","repeat_rate"],group_by:"week"}}
+  };
+  const BUILTIN = [
+    {id:"lead_to_campaign", label:"Lead → Campaign", builtin:true, steps:["sales_automation","marketing_automation"],
+      sample:{lead_id:"L-2207",company:"Harbor & Pine Dental",source:"referral",notes:"3 locations, wants AI intake + reminder automation."}},
+    {id:"ticket_to_insight", label:"Ticket → Insight", builtin:true, steps:["customer_support","data_analysis"],
+      sample:{ticket_id:"T-12390",customer:"ops@brightline.example",priority:"high",ticket_details:"Weekly report export failing since Monday."}},
+    {id:"growth_loop", label:"Weekly growth loop", builtin:true, steps:["data_analysis","sales_automation","marketing_automation"],
+      sample:{dataset:"pipeline_week_38.csv",metrics:["new_leads","win_rate","cac"],group_by:"source"}}
+  ];
+  const MAX_STEPS = 8, DAY = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const DEFAULT_URLS = Object.fromEntries(Object.entries(WORKFLOWS).map(([k,w])=>[k,w.url]));
+  const STORE_KEY = "platinum-console-v3";
+  const servedByRelay = !!document.querySelector('meta[name="platinum-relay"]');
+
+  /* =========================================================
+     State
+     ========================================================= */
+  const $ = id => document.getElementById(id);
+  const state = {
+    mode: servedByRelay ? "live" : "sim",
+    transport:"relay", relayUrl: servedByRelay ? location.origin : "", relayKey:"",
+    urls:{...DEFAULT_URLS},
+    logFilter:"all", histFilter:"all", logs:[], selected:null, busy:false, currentRunId:null,
+    agents:{}, health:{},
+    local:{history:[], pipelines:[], schedules:[]},
+    server:{status:"off", err:"", config:null, history:[], es:null, sse:false},
+    editor:{editingId:null, steps:[]},
+    sched:{editingId:null, cadence:"daily"}
+  };
+  const useRelay = () => state.mode==="live" && state.transport==="relay";
+  const relayReady = () => useRelay() && state.server.status==="on" && state.server.config;
+  const runList = () => useRelay() ? state.server.history : state.local.history;
+  const pipelines = () => relayReady() ? state.server.config.pipelines : [...BUILTIN, ...state.local.pipelines];
+  const schedules = () => relayReady() ? state.server.config.schedules : state.local.schedules;
+  const findPipeline = id => pipelines().find(p=>p.id===id);
+
+  /* ---------- persistence (per-browser convenience) ---------- */
+  function load(){
+    try{
+      let s = JSON.parse(localStorage.getItem(STORE_KEY)||"null");
+      if(!s){ const v2 = JSON.parse(localStorage.getItem("platinum-console-v2")||"{}"); s = {urls:v2.urls, transport:v2.transport, relayUrl:v2.relayUrl, relayKey:v2.relayKey}; }
+      if(s.urls) Object.assign(state.urls, s.urls);
+      if(!servedByRelay && (s.mode==="live"||s.mode==="sim")) state.mode=s.mode;
+      if(s.transport==="relay"||s.transport==="direct") state.transport=s.transport;
+      if(typeof s.relayUrl==="string" && s.relayUrl && !servedByRelay) state.relayUrl=s.relayUrl;
+      if(typeof s.relayKey==="string") state.relayKey=s.relayKey;
+      if(Array.isArray(s.history)) state.local.history=s.history;
+      if(Array.isArray(s.pipelines)) state.local.pipelines=s.pipelines;
+      if(Array.isArray(s.schedules)) state.local.schedules=s.schedules;
+    }catch(e){}
+  }
+  function save(){
+    const clip=v=>{ const s=JSON.stringify(v); return s && s.length>4000 ? {truncated:s.slice(0,4000)+"…"} : v; };
+    const hist=state.local.history.slice(0,60).map(h=>({...h, payload:clip(h.payload), steps:h.steps.map(s=>({...s, output:clip(s.output)}))}));
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify({urls:state.urls, mode:state.mode, transport:state.transport, relayUrl:state.relayUrl, relayKey:state.relayKey,
+      history:hist, pipelines:state.local.pipelines, schedules:state.local.schedules})); }catch(e){}
+  }
+
+  /* =========================================================
+     Helpers
+     ========================================================= */
+  const el=(tag,cls,text)=>{ const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; };
+  const btn=(text,cls,fn)=>{ const b=el("button","btn sm"+(cls?" "+cls:""),text); b.type="button"; b.addEventListener("click",fn); return b; };
+  const median=a=>{ if(!a.length) return null; const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2); };
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  const uid=()=>Math.random().toString(36).slice(2,10);
+  const slug=s=>{ const v=String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40); return v.length>=2?v:"item-"+uid().slice(0,4); };
+  const fmtTime=iso=>{ if(!iso) return "—"; const d=new Date(iso); const today=new Date().toDateString()===d.toDateString();
+    return today ? d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"}) : d.toLocaleDateString([], {month:"short",day:"numeric"})+" "+d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}); };
+  const targetLabel=t=>{ const [k,key]=String(t).split(":"); if(k==="wf") return WORKFLOWS[key]?.label||key; return findPipeline(key)?.label||key; };
+  const triggerLabel=t=>{ if(!t||t==="console") return "Console"; if(t==="webhook") return "Webhook"; if(t==="api") return "API";
+    if(t.startsWith("schedule:")){ const id=t.split(":")[1]; const s=schedules().find(x=>x.id===id); return "Schedule · "+(s?.label||id); } return t; };
+  async function copyText(text, what){
+    try{ await navigator.clipboard.writeText(text); log(what+" copied","ok"); }
+    catch{ log("Clipboard unavailable here — copy it from the page instead","warn"); }
+  }
+  // Two-click confirmation instead of confirm() (blocked in the viewer).
+  function armed(b, fn){
+    if(b.classList.contains("armed")){ b.classList.remove("armed"); b.textContent=b.dataset.label; fn(); return; }
+    b.dataset.label=b.textContent; b.classList.add("armed"); b.textContent="Click again to confirm";
+    setTimeout(()=>{ if(b.classList.contains("armed")){ b.classList.remove("armed"); b.textContent=b.dataset.label; } },4000);
+  }
+  function parseJsonField(ta, hint){
+    const txt=ta.value.trim();
+    if(!txt){ ta.classList.remove("bad"); return {}; }
+    try{ const v=JSON.parse(txt); if(typeof v!=="object"||v===null) throw new Error("must be a JSON object or array"); ta.classList.remove("bad"); return v; }
+    catch(e){ ta.classList.add("bad"); if(hint){ hint.className="hint bad"; hint.textContent="Payload: "+e.message; } return null; }
+  }
+  function setHint(id, text, kind){ const h=$(id); h.className="hint"+(kind?" "+kind:""); h.textContent=text; }
+
+  /* ---------- log ---------- */
+  function log(msg, lv="info"){ state.logs.push({t:new Date(), msg, lv}); if(state.logs.length>500) state.logs.shift(); renderLogs(); }
+  function renderLogs(){
+    const box=$("logs"); box.textContent="";
+    const rows=state.logs.filter(l=>state.logFilter==="all"||l.lv===state.logFilter);
+    if(!rows.length){ box.appendChild(el("div","empty","No events for this filter.")); return; }
+    for(const l of rows){ const d=el("div"); d.append(el("span","t","["+l.t.toLocaleTimeString()+"] "), el("span","lv-"+l.lv,l.msg)); box.appendChild(d); }
+    box.scrollTop=box.scrollHeight;
+  }
+
+  /* =========================================================
+     Networking
+     ========================================================= */
+  async function httpJson(url, opts={}, timeout=25000){
+    const ctrl=new AbortController(), t=setTimeout(()=>ctrl.abort(), timeout);
+    try{
+      const res=await fetch(url,{...opts, signal:ctrl.signal});
+      const text=await res.text(); let body; try{ body=JSON.parse(text); }catch{ body={raw:text}; }
+      if(!res.ok) throw new Error(body.error ? body.error : `HTTP ${res.status} — ${text.slice(0,160)}`);
+      return body;
+    }catch(e){
+      if(e.name==="AbortError") throw new Error(`Timed out after ${timeout/1000}s.`);
+      if(e instanceof TypeError) throw new Error("Can't reach it. Check the URL, that the server is running, and CORS. Hosted previews block outside calls.");
+      throw e;
+    }finally{ clearTimeout(t); }
+  }
+  const base=()=>state.relayUrl.replace(/\/$/,"");
+  function relay(method, path, body){
+    const headers={"Content-Type":"application/json"}; if(state.relayKey) headers["x-relay-key"]=state.relayKey;
+    return httpJson(base()+path, {method, headers, body: body===undefined?undefined:JSON.stringify(body)});
+  }
+
+  /* ---------- relay connection ---------- */
+  function disconnect(){
+    if(state.server.es){ state.server.es.close(); state.server.es=null; }
+    state.server.sse=false;
+  }
+  async function connect(){
+    disconnect();
+    if(!useRelay()){ state.server.status="off"; rebuildStats(); renderAll(); return; }
+    if(!state.relayUrl){ state.server.status="error"; state.server.err="Set the relay URL in Settings."; renderAll(); return; }
+    state.server.status="connecting"; renderConn();
+    try{
+      const cfg=await relay("GET","/api/config");
+      const r=await relay("GET","/api/runs?limit=200");
+      state.server.config=cfg; state.server.history=r.runs||[]; state.server.status="on"; state.server.err="";
+      openEvents();
+      log(`Connected to relay v${cfg.version}${cfg.simulate?" (simulate on)":""}`,"ok");
+    }catch(e){
+      state.server.status="error"; state.server.err=e.message; state.server.config=null; state.server.history=[];
+      log("Relay connection failed: "+e.message,"err");
+    }
+    rebuildStats(); renderAll();
+  }
+  async function refreshConfig(){ if(!useRelay()) return; try{ state.server.config=await relay("GET","/api/config"); }catch(e){ log("Couldn't refresh relay config: "+e.message,"err"); } renderAll(); }
+  function openEvents(){
+    try{
+      const es=new EventSource(base()+"/api/events"+(state.relayKey?"?key="+encodeURIComponent(state.relayKey):""));
+      es.addEventListener("run", ev=>{ try{ onRunEvent(JSON.parse(ev.data)); }catch(e){} });
+      es.onopen=()=>{ state.server.sse=true; renderConn(); };
+      es.onerror=()=>{ state.server.sse=false; renderConn(); };
+      state.server.es=es;
+    }catch(e){ state.server.sse=false; }
+  }
+
+  /* =========================================================
+     Agent stats (derived from history)
+     ========================================================= */
+  const counted=new Set();
+  function resetStats(){ counted.clear(); for(const k of Object.keys(AGENTS)) state.agents[k]={status:"idle", runs:0, ok:0, lat:[], last:"No runs yet"}; }
+  function recordStep(runId, i, s, when){
+    const key=runId+":"+i; if(counted.has(key)) return; counted.add(key);
+    const a=state.agents[WORKFLOWS[s.wf].agent]; if(!a) return;
+    const ok=s.status==="success";
+    a.runs++; if(ok) a.ok++; a.lat.push({ms:s.ms||0, ok}); a.lat=a.lat.slice(-20);
+    a.status=ok?"success":"error";
+    a.last=`${fmtTime(when)} · ${WORKFLOWS[s.wf].label} · ${ok ? (s.ms+" ms") : (s.output?.error||"failed")}`;
+  }
+  function absorbRun(run){
+    run.steps.forEach((s,i)=>{
+      if(s.status==="running") state.agents[WORKFLOWS[s.wf].agent].status="running";
+      if(s.status==="success"||s.status==="error") recordStep(run.id,i,s,run.finishedAt||run.startedAt);
+    });
+  }
+  function rebuildStats(){ resetStats(); [...runList()].reverse().forEach(absorbRun); }
+
+  /* =========================================================
+     Rendering — shared
+     ========================================================= */
+  const NS="http://www.w3.org/2000/svg";
+  function sparkline(points){
+    const W=120,H=28,P=3, svg=document.createElementNS(NS,"svg");
+    svg.setAttribute("width",W); svg.setAttribute("height",H); svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.classList.add("spark"); svg.setAttribute("role","img");
+    if(points.length<2){ svg.setAttribute("aria-label","Not enough runs for a trend");
+      const l=document.createElementNS(NS,"line"); [["x1",P],["x2",W-P],["y1",H-P],["y2",H-P]].forEach(([k,v])=>l.setAttribute(k,v));
+      l.setAttribute("stroke","var(--line)"); l.setAttribute("stroke-dasharray","3 3"); svg.appendChild(l); return svg; }
+    const vals=points.map(p=>p.ms), max=Math.max(...vals), min=Math.min(...vals), span=Math.max(1,max-min);
+    const x=i=>P+i*(W-2*P)/(points.length-1), y=v=>H-P-(v-min)/span*(H-2*P);
+    const d=points.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(p.ms).toFixed(1)}`).join("");
+    const area=document.createElementNS(NS,"path"); area.setAttribute("d",`${d}L${x(points.length-1).toFixed(1)},${H-P}L${P},${H-P}Z`); area.setAttribute("fill","var(--accent-soft)"); svg.appendChild(area);
+    const line=document.createElementNS(NS,"path"); line.setAttribute("d",d); line.setAttribute("fill","none"); line.setAttribute("stroke","var(--accent)"); line.setAttribute("stroke-width","1.5"); svg.appendChild(line);
+    points.forEach((p,i)=>{ if(!p.ok||i===points.length-1){ const c=document.createElementNS(NS,"circle"); c.setAttribute("cx",x(i)); c.setAttribute("cy",y(p.ms)); c.setAttribute("r",p.ok?2.5:3); c.setAttribute("fill",p.ok?"var(--accent)":"var(--err)"); svg.appendChild(c);} });
+    svg.setAttribute("aria-label",`Latency over last ${points.length} steps, ${min}–${max} ms`);
+    return svg;
+  }
+  function renderConn(){
+    const c=$("conn-chip"); let cls="", text;
+    if(state.mode==="sim") text="Local simulation";
+    else if(state.transport==="direct") text="Live · direct";
+    else { const s=state.server.status;
+      cls = s==="on"?"on":s==="connecting"?"connecting":s==="error"?"error":"";
+      text = s==="on" ? `Relay connected${state.server.sse?"":" · polling"}` : s==="connecting" ? "Relay connecting…" : "Relay offline"; }
+    c.className="conn "+cls; c.textContent=text; c.title = state.server.status==="error" ? state.server.err : "";
+  }
+  function renderBanner(){
+    const b=$("mode-banner"); b.textContent="";
+    if(state.mode==="sim") b.append(el("b",null,"Simulated mode."), " Runs, pipelines and schedules are stored in this browser and return realistic mock responses.");
+    else if(state.transport==="direct") b.append(el("b",null,"Live · direct."), " Runs POST straight to each endpoint from this browser. Schedules and webhooks need the relay.");
+    else if(state.server.status==="on") b.append(el("b",null,"Live · relay."), ` Runs execute on ${state.relayUrl} and continue if this page closes. Scheduled and webhook runs appear here as they happen.`);
+    else b.append(el("b",null,"Relay not connected. "), state.server.err || "Open Settings to connect.");
+    const pb=$("pl-banner"); pb.textContent="";
+    pb.append(el("b",null, relayReady() ? "Stored on the relay." : "Stored in this browser."), relayReady() ? " Custom pipelines are saved on the server; each one gets a webhook URL." : " Connect a relay in Settings to save pipelines on the server and get webhook URLs.");
+    const sb=$("sc-banner"); sb.textContent="";
+    sb.append(el("b",null, relayReady() ? "Active on the relay." : "Draft mode."), relayReady() ? ` Schedules run on the server's clock whether or not this page is open.` : " Schedules are saved in this browser but only execute on a relay server. Connect one in Settings to activate them.");
+  }
+  function renderKpis(){
+    const h=runList(), fin=h.filter(r=>r.status==="success"||r.status==="error");
+    $("k-runs").textContent=h.length;
+    $("k-rate").textContent=fin.length ? Math.round(fin.filter(r=>r.status==="success").length/fin.length*100)+"%" : "—";
+    const m=median(h.flatMap(r=>r.steps.filter(s=>s.ms!=null&&s.status==="success").map(s=>s.ms)));
+    $("k-p50").textContent=m==null?"—":m+" ms";
+    $("k-auto").textContent=h.filter(r=>r.trigger&&r.trigger!=="console").length;
+    const checked=Object.values(state.health);
+    $("k-healthy").textContent=checked.length ? checked.filter(x=>x.ok).length+" / "+Object.keys(AGENTS).length : "—";
+  }
+  function renderAgents(){
+    const box=$("agents"); box.textContent="";
+    for(const [k,a] of Object.entries(AGENTS)){
+      const s=state.agents[k], hh=state.health[k];
+      const row=el("div","agent");
+      const left=el("div"); left.append(el("div","name",a.name), el("div","role",a.role));
+      const meta=el("div","meta");
+      meta.appendChild(el("span","pill "+s.status,{idle:"Idle",running:"Running",success:"Healthy",error:"Error"}[s.status]));
+      if(hh) meta.appendChild(el("span","health", hh.ok ? `reachable · ${hh.ms} ms` : `down · ${hh.detail}`));
+      const stats=el("div","stats");
+      const p50=median(s.lat.filter(p=>p.ok).map(p=>p.ms));
+      [["Steps",s.runs],["Success",s.runs?Math.round(s.ok/s.runs*100)+"%":"—"],["p50",p50==null?"—":p50+" ms"]].forEach(([lb,v])=>{ const sp=el("span"); sp.append(lb+" "); sp.appendChild(el("b",null,v)); stats.appendChild(sp); });
+      stats.appendChild(sparkline(s.lat));
+      row.append(left, meta, stats, el("div","last","Last: "+s.last));
+      box.appendChild(row);
+    }
+    renderKpis();
+  }
+
+  /* =========================================================
+     Operate tab
+     ========================================================= */
+  function fillTargetSelect(sel, keep){
+    const prev=keep ?? sel.value; sel.textContent="";
+    const g2=el("optgroup"); g2.label="Pipelines";
+    for(const p of pipelines()){ const o=el("option",null,`${p.label} (${p.steps.length} steps)`); o.value="pl:"+p.id; g2.appendChild(o); }
+    const g1=el("optgroup"); g1.label="Single workflows";
+    for(const [k,w] of Object.entries(WORKFLOWS)){ const o=el("option",null,w.label); o.value="wf:"+k; g1.appendChild(o); }
+    sel.append(g1,g2);
+    if([...sel.options].some(o=>o.value===prev)) sel.value=prev;
+  }
+  function parseTarget(v=$("target").value){
+    const [kind,key]=v.split(":");
+    if(kind==="wf") return {kind,key,label:WORKFLOWS[key].label,steps:[key],sample:WORKFLOWS[key].sample};
+    const p=findPipeline(key)||BUILTIN[0]; return {kind,key:p.id,label:p.label,steps:p.steps,sample:p.sample||{}};
+  }
+  function renderRoute(){
+    const t=parseTarget(), r=$("route"); r.textContent="";
+    const dest = state.mode==="sim" ? "simulated in this browser" : state.transport==="relay" ? `relay ${state.relayUrl||"(not set)"}` : "direct from this browser";
+    if(t.kind==="wf") r.append("Routes to ", el("b",null,AGENTS[WORKFLOWS[t.key].agent].name), " · ", el("b",null,dest));
+    else r.append(el("b",null,t.steps.length+" steps"), " · each gets the original input plus the previous output · ", el("b",null,dest));
+    $("retry-wrap").hidden = useRelay(); // relay applies its own RETRIES setting
+    if(!state.busy) renderSteps($("steps"), t.steps.map(wf=>({wf,status:"idle"})));
+  }
+  function renderSteps(box, steps, editable){
+    box.textContent=""; box.hidden = !editable && steps.length<2;
+    steps.forEach((s,i)=>{
+      const li=el("li"), st=el("span","step "+(s.status||"idle"));
+      st.append(el("span","dot"), WORKFLOWS[s.wf].label+" ");
+      st.appendChild(el("small",null, s.ms!=null ? s.ms+" ms" : AGENTS[WORKFLOWS[s.wf].agent].name));
+      if(editable){
+        const mk=(t,label,fn,dis)=>{ const b=el("button",null,t); b.type="button"; b.setAttribute("aria-label",label); b.disabled=dis; b.addEventListener("click",fn); return b; };
+        st.append(
+          mk("↑",`Move ${WORKFLOWS[s.wf].label} earlier`,()=>{ const a=state.editor.steps; [a[i-1],a[i]]=[a[i],a[i-1]]; renderEditorSteps(); }, i===0),
+          mk("↓",`Move ${WORKFLOWS[s.wf].label} later`,()=>{ const a=state.editor.steps; [a[i+1],a[i]]=[a[i],a[i+1]]; renderEditorSteps(); }, i===steps.length-1),
+          mk("✕",`Remove ${WORKFLOWS[s.wf].label}`,()=>{ state.editor.steps.splice(i,1); renderEditorSteps(); }, false));
+      }
+      li.appendChild(st); box.appendChild(li);
+    });
+    if(editable && !steps.length) box.appendChild(el("li","hint","No steps yet. Add at least one."));
+  }
+  function loadSample(){ $("input-data").value=JSON.stringify(parseTarget().sample,null,2); validateRun(); }
+  function validateRun(){
+    const ta=$("input-data"), h=$("json-hint"), txt=ta.value.trim();
+    if(!txt){ ta.classList.add("bad"); h.className="hint bad"; h.textContent="Payload is empty. Load a sample or paste JSON."; return null; }
+    try{ const v=JSON.parse(txt); if(typeof v!=="object"||v===null) throw new Error("Payload must be a JSON object or array.");
+      ta.classList.remove("bad"); h.className="hint"; h.textContent="Valid JSON · "+Object.keys(v).length+" top-level keys"; return v; }
+    catch(e){ ta.classList.add("bad"); h.className="hint bad"; h.textContent="Invalid JSON: "+e.message; return null; }
+  }
+  function setBusy(b){ state.busy=b; const r=$("run"); r.disabled=b; r.textContent=b?"Running…":"Run"; }
+
+  /* ---------- local execution (simulated or direct) ---------- */
+  let simFailRate=0.08;
+  async function simulate(k, body){
+    await sleep(300+Math.random()*800);
+    if(Math.random()<simFailRate) throw new Error("Simulated upstream timeout (504).");
+    const id="sim_"+uid(), input=body.input||body||{}, prev=body.previous||null;
+    const out={
+      customer_support:{run_id:id, ticket_id:input.ticket_id??null, category:"authentication", sentiment:"frustrated", priority:"P1", suggested_reply:"Reset MFA enrollment and resend verification link."},
+      sales_automation:{run_id:id, lead_id:input.lead_id??null, company:input.company??(prev?"Top segment from analysis":null), score:82, fit:"high", next_step:"Book discovery call within 48h"},
+      marketing_automation:{run_id:id, campaign:input.campaign??(prev?.company?`Follow-up: ${prev.company}`:"Nurture sequence"), drafts:3, channels:["email","linkedin"], status:"awaiting_review"},
+      data_analysis:{run_id:id, dataset:input.dataset??(prev?.ticket_id?`tickets_related_${prev.ticket_id}`:null), rows_processed:18432, summary:{trend_wow:"+6.4%",top_segment:"referral"}}
+    }[k];
+    if(prev) out.received_from=prev.run_id??"previous step";
+    return out;
+  }
+  async function callStepLocal(k, body){
+    if(state.mode==="sim") return simulate(k, body);
+    return httpJson(state.urls[k], {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  }
+  async function runLocal(t, payload){
+    const run={id:"loc_"+uid(), kind:t.kind, key:t.key, label:t.label, trigger:"console", payload, mode:state.mode,
+      status:"running", startedAt:new Date().toISOString(), finishedAt:null, total:0,
+      steps:t.steps.map(wf=>({wf, status:"pending", ms:null, attempts:0, output:null}))};
+    state.local.history.unshift(run); state.local.history=state.local.history.slice(0,60);
+    const retry=$("retry").checked;
+    let prev=null, failed=false;
+    for(let i=0;i<run.steps.length;i++){
+      const st=run.steps[i];
+      if(failed){ st.status="skipped"; continue; }
+      st.status="running"; state.agents[WORKFLOWS[st.wf].agent].status="running";
+      renderSteps($("steps"), run.steps); renderAgents(); renderHistory();
+      const body = t.kind==="wf" ? payload : {input:payload, previous:prev, step:st.wf, pipeline:t.key, run_id:run.id};
+      let attempts=0, ms=0;
+      for(;;){
+        attempts++; const t0=performance.now();
+        try{ const out=await callStepLocal(st.wf, body); ms+=Math.round(performance.now()-t0); Object.assign(st,{status:"success", output:out}); break; }
+        catch(e){ ms+=Math.round(performance.now()-t0);
+          if(retry && attempts===1){ log(`↻ ${WORKFLOWS[st.wf].label} failed (${e.message}) — retrying`,"warn"); await sleep(1000); continue; }
+          Object.assign(st,{status:"error", output:{error:e.message}}); break; }
+      }
+      st.ms=ms; st.attempts=attempts; run.total+=ms;
+      recordStep(run.id, i, st, new Date().toISOString());
+      if(st.status==="success"){ prev=st.output; log(`✓ ${WORKFLOWS[st.wf].label} · ${ms} ms${attempts>1?" (after retry)":""}`,"ok"); }
+      else { failed=true; log(`✗ ${WORKFLOWS[st.wf].label}: ${st.output.error}`,"err"); }
+    }
+    run.status=failed?"error":"success"; run.finishedAt=new Date().toISOString();
+    save(); finishRun(run);
+  }
+
+  /* ---------- relay execution ---------- */
+  async function runRelay(t, payload){
+    if(state.server.status!=="on"){ log("Relay isn't connected. Open Settings → Save and connect.","err"); setBusy(false); return; }
+    let run;
+    try{ run=await relay("POST","/api/runs",{target:`${t.kind}:${t.key}`, payload}); }
+    catch(e){ log("Couldn't start run: "+e.message,"err"); setBusy(false); return; }
+    state.currentRunId=run.id;
+    onRunEvent(run);
+    const known=state.server.history.find(r=>r.id===run.id);
+    if(known && known.status!=="running") return finishRun(known);
+    if(!state.server.sse){ // fall back to polling when live updates aren't available
+      for(let i=0;i<120 && state.currentRunId===run.id;i++){
+        await sleep(800);
+        try{ onRunEvent(await relay("GET","/api/runs/"+run.id)); }catch(e){}
+      }
+    }
+  }
+  function onRunEvent(run){
+    const list=state.server.history, i=list.findIndex(r=>r.id===run.id);
+    const wasDone = i>=0 && list[i].status!=="running";
+    if(i>=0) list[i]=run; else list.unshift(run);
+    if(list.length>200) list.pop();
+    absorbRun(run);
+    if(run.id===state.currentRunId){
+      renderSteps($("steps"), run.steps);
+      if(run.status!=="running"){ run.steps.forEach(s=>{ if(s.status==="success") log(`✓ ${WORKFLOWS[s.wf].label} · ${s.ms} ms${s.attempts>1?" (after retry)":""}`,"ok"); if(s.status==="error") log(`✗ ${WORKFLOWS[s.wf].label}: ${s.output?.error}`,"err"); }); finishRun(run); }
+    } else if(run.status!=="running" && !wasDone){
+      log(`${run.status==="success"?"✓":"✗"} ${run.label} via ${triggerLabel(run.trigger)} · ${run.total} ms`, run.status==="success"?"ok":"err");
+    }
+    renderAgents(); renderHistory();
+  }
+  function finishRun(run){
+    if(state.currentRunId && run.id!==state.currentRunId && useRelay()) return;
+    state.currentRunId=null; setBusy(false);
+    state.selected=run.id; renderHistory(); showEntry(run); renderAgents();
+    log(`■ ${run.status==="success"?"Finished":"Stopped"} "${run.label}" · ${run.total} ms total`, run.status==="success"?"ok":"err");
+  }
+  async function run(){
+    if(state.busy) return;
+    const payload=validateRun(); if(!payload) return;
+    const t=parseTarget(); setBusy(true);
+    log(`▶ ${t.kind==="pl"?"Pipeline":"Workflow"} "${t.label}"`);
+    if(useRelay()) await runRelay(t,payload); else await runLocal(t,payload);
+  }
+
+  /* ---------- history + detail ---------- */
+  function renderHistory(){
+    const tb=$("hist"); tb.textContent="";
+    let rows=runList();
+    if(state.histFilter==="auto") rows=rows.filter(r=>r.trigger&&r.trigger!=="console");
+    if(state.histFilter==="error") rows=rows.filter(r=>r.status==="error");
+    rows=rows.slice(0,50);
+    if(!rows.length){ const tr=el("tr","empty-row"), td=el("td",null, runList().length?"No runs match this filter.":"No runs yet. Run a workflow or pipeline to see it here."); td.colSpan=6; tr.appendChild(td); tb.appendChild(tr); renderKpis(); return; }
+    for(const h of rows){
+      const tr=el("tr"); tr.tabIndex=0; tr.setAttribute("aria-selected", h.id===state.selected);
+      const ok=h.steps.filter(s=>s.status==="success").length;
+      tr.append(el("td","mono",fmtTime(h.startedAt)), el("td",null,h.label+(h.mode==="sim"?" · sim":"")), el("td",null,triggerLabel(h.trigger)), el("td","num",`${ok}/${h.steps.length}`));
+      const td=el("td"); td.appendChild(el("span","pill "+h.status,{success:"Success",error:"Failed",running:"Running"}[h.status]||h.status)); tr.appendChild(td);
+      tr.appendChild(el("td","num",h.status==="running"?"…":h.total));
+      const open=()=>{ state.selected=h.id; renderHistory(); showEntry(h); };
+      tr.addEventListener("click",open);
+      tr.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); open(); } });
+      tb.appendChild(tr);
+    }
+    renderKpis();
+  }
+  function showEntry(h){
+    $("result").hidden=false;
+    const head=$("result-head"); head.textContent="";
+    head.append(el("span","pill "+h.status,{success:"Success",error:"Failed",running:"Running"}[h.status]), ` ${h.label} · ${triggerLabel(h.trigger)} · ${h.total} ms · ${fmtTime(h.startedAt)}`);
+    const view = h.steps.length===1 && h.kind==="wf" ? h.steps[0].output
+      : {run_id:h.id, payload:h.payload, steps:h.steps.map(s=>({step:WORKFLOWS[s.wf].label, agent:AGENTS[WORKFLOWS[s.wf].agent].name, status:s.status, ms:s.ms, attempts:s.attempts, output:s.output}))};
+    $("result-body").textContent=JSON.stringify(view,null,2);
+  }
+
+  /* ---------- health ---------- */
+  async function checkHealth(){
+    const b=$("health"); b.disabled=true; b.textContent="Checking…";
+    try{
+      if(state.mode==="sim"){ await sleep(400); for(const k of Object.keys(AGENTS)) state.health[k]={ok:true, ms:Math.round(40+Math.random()*260), detail:"ok"}; }
+      else if(useRelay()){
+        const r=await relay("GET","/api/health");
+        for(const [wf,h] of Object.entries(r.targets||{})){ const ak=WORKFLOWS[wf]?.agent; if(ak) state.health[ak]={ok:!!h.ok, ms:h.ms??0, detail:h.detail||String(h.status)}; }
+      } else {
+        await Promise.all(Object.entries(WORKFLOWS).map(async([wf,w])=>{ const t0=performance.now();
+          try{ await fetch(state.urls[wf],{method:"GET"}); state.health[w.agent]={ok:true, ms:Math.round(performance.now()-t0), detail:"ok"}; }
+          catch{ state.health[w.agent]={ok:false, ms:0, detail:"unreachable"}; } }));
+      }
+      const down=Object.entries(state.health).filter(([,h])=>!h.ok).map(([k])=>AGENTS[k].name);
+      log(down.length?`Health: ${down.join(", ")} not reachable`:"Health: all agents reachable", down.length?"err":"ok");
+    }catch(e){ log("Health check failed: "+e.message,"err"); }
+    renderAgents(); b.disabled=false; b.textContent="Check health";
+  }
+
+  /* =========================================================
+     Pipelines tab
+     ========================================================= */
+  function hookUrl(id){ return `${base()}/hooks/${id}`; }
+  function psExample(p, secret){
+    const sample=JSON.stringify(p.sample||{}).replace(/'/g,"''");
+    return `Invoke-RestMethod -Method Post -Uri "${hookUrl(p.id)}" \`\n  -Headers @{ "x-hook-secret" = "${secret}" } \`\n  -ContentType "application/json" -Body '${sample}'`;
+  }
+  function renderPipelines(){
+    const box=$("plist"); box.textContent="";
+    const hooks=relayReady()?state.server.config.hooks||{}:{};
+    for(const p of pipelines()){
+      const item=el("div","pl");
+      const head=el("div","pl-head"), title=el("div","pl-title");
+      title.append(el("h3",null,p.label), el("span","tag",p.builtin?"Built-in":"Custom"));
+      const acts=el("div","acts");
+      acts.append(btn("Run","",()=>{ fillTargetSelect($("target"),"pl:"+p.id); $("target").value="pl:"+p.id; renderRoute(); loadSample(); switchTab("operate"); $("run").focus(); }));
+      acts.append(btn("Duplicate","",()=>openEditor({...p, id:null, label:p.label+" (copy)", builtin:false})));
+      if(!p.builtin){
+        acts.append(btn("Edit","",()=>openEditor(p)));
+        const del=btn("Delete","danger",()=>armed(del,()=>deletePipeline(p))); acts.append(del);
+      }
+      head.append(title, acts); item.appendChild(head);
+      const steps=el("ol","steps"); renderSteps(steps, p.steps.map(wf=>({wf,status:"idle"}))); steps.hidden=false; item.appendChild(steps);
+      if(hooks[p.id]){
+        const hk=el("div","hook");
+        hk.append(el("span","lbl","Webhook"), el("code",null,"POST "+hookUrl(p.id)));
+        const ha=el("div","acts");
+        ha.append(btn("Copy URL","",()=>copyText(hookUrl(p.id),"Webhook URL")),
+                  btn("Copy secret","",()=>copyText(hooks[p.id],"Hook secret")),
+                  btn("Copy PowerShell test","",()=>copyText(psExample(p,hooks[p.id]),"PowerShell command")));
+        const rot=btn("Rotate secret","danger",()=>armed(rot,async()=>{ try{ await relay("POST",`/api/pipelines/${p.id}/rotate-hook`); log(`New webhook secret for "${p.label}" — update any senders`,"warn"); await refreshConfig(); }catch(e){ log("Rotate failed: "+e.message,"err"); } }));
+        ha.appendChild(rot); hk.appendChild(ha); item.appendChild(hk);
+      }
+      box.appendChild(item);
+    }
+    $("count-pl").textContent=pipelines().length;
+  }
+  function openEditor(p){
+    state.editor={editingId: p && p.id && !p.builtin ? p.id : null, steps: p ? [...p.steps] : []};
+    $("pl-name").value=p?.label||""; $("pl-id").value=state.editor.editingId||"";
+    $("pl-id").disabled=!!state.editor.editingId;
+    $("pl-sample").value=p ? JSON.stringify(p.sample||{},null,2) : "{\n  \n}";
+    setHint("pl-hint", state.editor.editingId ? `Editing "${p.label}"` : "");
+    renderEditorSteps(); $("pl-name").focus();
+    switchTab("pipelines");
+  }
+  function renderEditorSteps(){ renderSteps($("pl-steps"), state.editor.steps.map(wf=>({wf,status:"idle"})), true); $("pl-add").disabled=state.editor.steps.length>=MAX_STEPS; }
+  async function savePipeline(){
+    const label=$("pl-name").value.trim();
+    if(!label) return setHint("pl-hint","Give the pipeline a name.","bad");
+    if(!state.editor.steps.length) return setHint("pl-hint","Add at least one step.","bad");
+    const sample=parseJsonField($("pl-sample"), $("pl-hint")); if(sample===null) return;
+    const id=state.editor.editingId || ($("pl-id").value.trim() ? slug($("pl-id").value) : slug(label));
+    if(!state.editor.editingId && findPipeline(id)) return setHint("pl-hint",`ID "${id}" is taken. Change the name or ID.`,"bad");
+    const p={id, label, steps:[...state.editor.steps], sample, builtin:false};
+    if(relayReady()){
+      try{ await relay("PUT",`/api/pipelines/${id}`,p); await refreshConfig(); }
+      catch(e){ return setHint("pl-hint",e.message,"bad"); }
+    } else {
+      const i=state.local.pipelines.findIndex(x=>x.id===id);
+      if(i>=0) state.local.pipelines[i]=p; else state.local.pipelines.push(p); save();
+    }
+    log(`Pipeline "${label}" saved`,"ok");
+    openEditor(null); setHint("pl-hint",`Saved "${label}".`,"good");
+    fillTargetSelect($("target")); fillTargetSelect($("sc-target")); renderPipelines();
+  }
+  async function deletePipeline(p){
+    if(schedules().some(s=>s.target==="pl:"+p.id)) return log(`"${p.label}" is used by a schedule. Delete that schedule first.`,"err");
+    if(relayReady()){ try{ await relay("DELETE",`/api/pipelines/${p.id}`); await refreshConfig(); }catch(e){ return log("Delete failed: "+e.message,"err"); } }
+    else { state.local.pipelines=state.local.pipelines.filter(x=>x.id!==p.id); save(); }
+    log(`Pipeline "${p.label}" deleted`,"warn");
+    if(state.editor.editingId===p.id) openEditor(null);
+    fillTargetSelect($("target")); fillTargetSelect($("sc-target")); renderRoute(); renderPipelines();
+  }
+
+  /* =========================================================
+     Automations tab
+     ========================================================= */
+  function isDue(s, now){
+    if(!s.enabled) return false;
+    if(s.every){ const last=Date.parse(s.lastRunAt||s.createdAt||0)||0; return now-last>=s.every*60000; }
+    if(s.at){ if(s.days?.length && !s.days.includes(now.getDay())) return false;
+      const [h,m]=s.at.split(":").map(Number), slot=new Date(now); slot.setHours(h,m,0,0);
+      if(now<slot||now-slot>3600000) return false; const last=s.lastRunAt?new Date(s.lastRunAt):null; return !last||last<slot; }
+    return false;
+  }
+  function nextRunLocal(s, now=new Date()){
+    if(!s.enabled) return null;
+    if(s.every){ const last=Date.parse(s.lastRunAt||s.createdAt||0)||now.getTime(); return new Date(Math.max(now.getTime(), last+s.every*60000)).toISOString(); }
+    if(isDue(s,now)) return now.toISOString();
+    const [h,m]=s.at.split(":").map(Number);
+    for(let d=0;d<8;d++){ const c=new Date(now); c.setDate(c.getDate()+d); c.setHours(h,m,0,0); if(c<=now) continue; if(s.days?.length && !s.days.includes(c.getDay())) continue; return c.toISOString(); }
+    return null;
+  }
+  function cadenceText(s){
+    if(s.every) return s.every%60===0 ? `Every ${s.every/60} h` : `Every ${s.every} min`;
+    const d=s.days||[]; let days="";
+    if(d.length && d.length<7) days = d.join()==="1,2,3,4,5" ? " · Mon–Fri" : d.join()==="0,6" ? " · weekends" : " · "+d.map(x=>DAY[x]).join(", ");
+    return `Daily ${s.at}${days}`;
+  }
+  function renderSchedules(){
+    const tb=$("sclist"); tb.textContent="";
+    const list=schedules();
+    $("count-sc").textContent=list.length||"";
+    if(!list.length){ const tr=el("tr","empty-row"), td=el("td",null,"No schedules yet. Build one below — e.g. run the Weekly growth loop every Monday at 08:00."); td.colSpan=7; tr.appendChild(td); tb.appendChild(tr); return; }
+    for(const s of list){
+      const tr=el("tr");
+      const onTd=el("td"), cb=el("input"); cb.type="checkbox"; cb.checked=s.enabled; cb.setAttribute("aria-label",`Enable ${s.label}`);
+      cb.addEventListener("change",()=>saveSchedule({...s, enabled:cb.checked}, true)); onTd.appendChild(cb);
+      const last=s.lastRunId ? runList().find(r=>r.id===s.lastRunId) : null;
+      const lastTd=el("td");
+      if(s.lastError) lastTd.appendChild(el("span","pill error","Couldn't start"));
+      else if(last) lastTd.appendChild(el("span","pill "+last.status,{success:"Success",error:"Failed",running:"Running"}[last.status]));
+      if(s.lastRunAt) lastTd.append(" ", el("span","mono",fmtTime(s.lastRunAt))); else if(!s.lastError) lastTd.append(el("span","mono","—"));
+      const next = relayReady() ? s.nextRunAt : nextRunLocal(s);
+      const acts=el("td"), a=el("div","acts");
+      const runNow=btn("Run now","",()=>runScheduleNow(s)); runNow.disabled=!relayReady(); runNow.title=relayReady()?"":"Needs a connected relay";
+      a.append(runNow, btn("Edit","",()=>openSchedule(s)));
+      const del=btn("Delete","danger",()=>armed(del,()=>deleteSchedule(s))); a.appendChild(del); acts.appendChild(a);
+      tr.append(onTd, el("td",null,s.label), el("td",null,targetLabel(s.target)), el("td",null,cadenceText(s)),
+        el("td","mono", s.enabled ? (relayReady()?fmtTime(next):(next?fmtTime(next)+" (draft)":"—")) : "Paused"), lastTd, acts);
+      tb.appendChild(tr);
+    }
+  }
+  function renderDays(sel){
+    const box=$("sc-days"); box.textContent="";
+    DAY.forEach((d,i)=>{ const l=el("label"), c=el("input"); c.type="checkbox"; c.value=i; c.checked=sel.includes(i); c.id="sc-day-"+i; l.append(c,d); box.appendChild(l); });
+  }
+  function setCadence(c){
+    state.sched.cadence=c;
+    $("cad-daily").setAttribute("aria-pressed",c==="daily"); $("cad-every").setAttribute("aria-pressed",c==="every");
+    $("daily-fields").hidden=c!=="daily"; $("every-fields").hidden=c!=="every";
+  }
+  function schedSample(){ $("sc-payload").value=JSON.stringify(parseTarget($("sc-target").value).sample||{},null,2); }
+  function openSchedule(s){
+    state.sched.editingId=s?.id||null;
+    $("sc-name").value=s?.label||"";
+    fillTargetSelect($("sc-target"), s?.target||"pl:growth_loop");
+    setCadence(s?.every?"every":"daily");
+    $("sc-at").value=s?.at||"09:00"; $("sc-every").value=s?.every||60;
+    renderDays(s?.days||[1,2,3,4,5]);
+    if(s) $("sc-payload").value=JSON.stringify(s.payload??{},null,2); else schedSample();
+    setHint("sc-hint", s?`Editing "${s.label}"`:"");
+    if(s){ switchTab("automations"); $("sc-name").focus(); }
+  }
+  function readScheduleForm(){
+    const label=$("sc-name").value.trim();
+    if(!label){ setHint("sc-hint","Give the schedule a name.","bad"); return null; }
+    const payload=parseJsonField($("sc-payload"), $("sc-hint")); if(payload===null) return null;
+    const s={id:state.sched.editingId||slug(label), label, target:$("sc-target").value, payload, enabled:true};
+    if(state.sched.cadence==="every"){
+      const n=Number($("sc-every").value);
+      if(!Number.isInteger(n)||n<5||n>10080){ setHint("sc-hint","Minutes must be a whole number from 5 to 10080.","bad"); return null; }
+      s.every=n;
+    } else {
+      if(!/^([01]\d|2[0-3]):[0-5]\d$/.test($("sc-at").value)){ setHint("sc-hint","Pick a time.","bad"); return null; }
+      s.at=$("sc-at").value; s.days=[...document.querySelectorAll("#sc-days input:checked")].map(c=>Number(c.value));
+    }
+    if(!state.sched.editingId && schedules().some(x=>x.id===s.id)){ setHint("sc-hint",`A schedule called "${label}" already exists.`,"bad"); return null; }
+    const prev=schedules().find(x=>x.id===s.id); if(prev) s.enabled=prev.enabled;
+    return s;
+  }
+  async function saveSchedule(s, quiet){
+    if(!s) return;
+    if(relayReady()){
+      try{ await relay("PUT",`/api/schedules/${s.id}`,s); await refreshConfig(); }
+      catch(e){ if(!quiet) setHint("sc-hint",e.message,"bad"); log("Schedule save failed: "+e.message,"err"); return; }
+    } else {
+      const i=state.local.schedules.findIndex(x=>x.id===s.id), prev=state.local.schedules[i];
+      const merged={every:null, at:null, days:[], ...s, createdAt:prev?.createdAt||new Date().toISOString(), lastRunAt:prev?.lastRunAt||null, lastRunId:prev?.lastRunId||null};
+      if(i>=0) state.local.schedules[i]=merged; else state.local.schedules.push(merged); save();
+    }
+    if(!quiet){ log(`Schedule "${s.label}" saved`,"ok"); openSchedule(null); setHint("sc-hint",`Saved "${s.label}".`,"good"); }
+    else log(`Schedule "${s.label}" ${s.enabled?"enabled":"paused"}`,"warn");
+    renderSchedules();
+  }
+  async function deleteSchedule(s){
+    if(relayReady()){ try{ await relay("DELETE",`/api/schedules/${s.id}`); await refreshConfig(); }catch(e){ return log("Delete failed: "+e.message,"err"); } }
+    else { state.local.schedules=state.local.schedules.filter(x=>x.id!==s.id); save(); }
+    log(`Schedule "${s.label}" deleted`,"warn"); if(state.sched.editingId===s.id) openSchedule(null); renderSchedules();
+  }
+  async function runScheduleNow(s){
+    try{ const r=await relay("POST",`/api/schedules/${s.id}/run-now`); onRunEvent(r); log(`Started "${s.label}" now`,"ok"); }
+    catch(e){ log("Run now failed: "+e.message,"err"); }
+  }
+  function renderAlerts(){
+    const box=$("alerts-status"); box.textContent="";
+    if(relayReady()){
+      const on=state.server.config.alerts;
+      box.append(el("span","pill "+(on?"success":"off"), on?"On":"Off"), " ", on?"Failures post to your alert webhook.":"No ALERT_WEBHOOK_URL set on the relay.");
+    } else box.append(el("span","pill off","Unknown"), " Connect the relay to see alert status.");
+  }
+
+  /* =========================================================
+     Settings tab
+     ========================================================= */
+  function renderEps(){
+    const box=$("eps"); box.textContent="";
+    for(const [k,w] of Object.entries(WORKFLOWS)){
+      const f=el("div","field"), l=el("label",null,`${w.label} → ${AGENTS[w.agent].name}`); l.htmlFor="ep-"+k;
+      const i=el("input"); i.id="ep-"+k; i.type="url"; i.value=state.urls[k]; i.spellcheck=false; f.append(l,i); box.appendChild(f);
+    }
+    $("relay-url").value=state.relayUrl; $("relay-key").value=state.relayKey;
+  }
+  function renderServerInfo(){
+    const box=$("server-info"); box.textContent="";
+    if(!useRelay()){ box.appendChild(el("div","hint","Switch to Live mode with the relay transport to connect.")); return; }
+    if(state.server.status!=="on"){ box.appendChild(el("div","hint "+(state.server.status==="error"?"bad":""), state.server.err || "Not connected.")); return; }
+    const c=state.server.config, tbl=el("table"), tb=el("tbody");
+    const rows=[["Version",c.version],["Live updates",state.server.sse?"streaming":"polling"],["Retries per step",c.retries],["Simulate unconfigured",c.simulate?"on":"off"],["Failure alerts",c.alerts?"on":"off"],
+      ...Object.entries(c.workflows).map(([k,w])=>[w.label, w.configured?"configured":(c.simulate?"simulated":"not configured")])];
+    rows.forEach(([k,v])=>{ const tr=el("tr"); tr.append(el("td",null,k), el("td","mono",String(v))); tb.appendChild(tr); });
+    tbl.appendChild(tb); const w=el("div","tbl-wrap"); w.appendChild(tbl); box.appendChild(w);
+  }
+  function setTransport(t){
+    state.transport=t;
+    $("tx-relay").setAttribute("aria-pressed",t==="relay"); $("tx-direct").setAttribute("aria-pressed",t==="direct");
+    $("relay-fields").hidden=t!=="relay"; $("direct-fields").open=t==="direct";
+  }
+  async function saveConn(){
+    const okUrl=v=>{ try{ return /^https?:$/.test(new URL(v).protocol); }catch{ return false; } };
+    const r=$("relay-url").value.trim();
+    if(r && !okUrl(r)) return setHint("conn-hint","Relay: enter a full http(s) URL.","bad");
+    for(const k of Object.keys(WORKFLOWS)){ const v=$("ep-"+k).value.trim(); if(!okUrl(v)) return setHint("conn-hint",WORKFLOWS[k].label+": enter a full http(s) URL.","bad"); state.urls[k]=v; }
+    state.relayUrl=r.replace(/\/$/,""); state.relayKey=$("relay-key").value;
+    if(state.mode!=="live"){ state.mode="live"; }
+    save(); setHint("conn-hint","Saved.","good"); log("Connection settings saved","warn");
+    await connect();
+    if(state.server.status==="on") setHint("conn-hint","Connected.","good"); else if(useRelay()) setHint("conn-hint",state.server.err,"bad");
+  }
+
+  /* =========================================================
+     Mode, tabs, full render
+     ========================================================= */
+  async function setMode(m){
+    state.mode=m; save();
+    $("mode-sim").setAttribute("aria-pressed",m==="sim"); $("mode-live").setAttribute("aria-pressed",m==="live");
+    log("Mode set to "+(m==="sim"?"simulated":"live"),"warn");
+    await connect();
+  }
+  const TABS=["operate","pipelines","automations","settings"];
+  function switchTab(name){
+    if(!TABS.includes(name)) name="operate";
+    TABS.forEach(t=>{ $("tab-"+t).setAttribute("aria-selected",t===name); $("p-"+t).hidden=t!==name; });
+    try{ window.history.replaceState(null,"","#"+name); }catch(e){}
+  }
+  function renderAll(){
+    $("mode-sim").setAttribute("aria-pressed",state.mode==="sim"); $("mode-live").setAttribute("aria-pressed",state.mode==="live");
+    renderConn(); renderBanner();
+    fillTargetSelect($("target")); fillTargetSelect($("sc-target"));
+    renderRoute(); renderAgents(); renderHistory(); renderPipelines(); renderSchedules(); renderAlerts(); renderServerInfo();
+  }
+
+  /* =========================================================
+     Init
+     ========================================================= */
+  async function init(){
+    load(); resetStats();
+    // wiring — operate
+    $("target").addEventListener("change",()=>{ renderRoute(); loadSample(); });
+    $("load-sample").addEventListener("click",loadSample);
+    $("input-data").addEventListener("input",validateRun);
+    $("format").addEventListener("click",()=>{ const v=validateRun(); if(v) $("input-data").value=JSON.stringify(v,null,2); });
+    $("run").addEventListener("click",run);
+    $("health").addEventListener("click",checkHealth);
+    $("mode-sim").addEventListener("click",()=>setMode("sim"));
+    $("mode-live").addEventListener("click",()=>setMode("live"));
+    $("copy-result").addEventListener("click",()=>copyText($("result-body").textContent,"Result JSON"));
+    document.querySelectorAll(".chip[data-f]").forEach(c=>c.addEventListener("click",()=>{ state.logFilter=c.dataset.f; document.querySelectorAll(".chip[data-f]").forEach(x=>x.setAttribute("aria-pressed",x===c)); renderLogs(); }));
+    document.querySelectorAll(".chip[data-hf]").forEach(c=>c.addEventListener("click",()=>{ state.histFilter=c.dataset.hf; document.querySelectorAll(".chip[data-hf]").forEach(x=>x.setAttribute("aria-pressed",x===c)); renderHistory(); }));
+    $("clear-log").addEventListener("click",()=>{ state.logs=[]; renderLogs(); });
+    $("copy-log").addEventListener("click",()=>copyText(state.logs.map(l=>"["+l.t.toLocaleTimeString()+"] "+l.msg).join("\n"),"Log"));
+    // tabs
+    TABS.forEach(t=>$("tab-"+t).addEventListener("click",()=>switchTab(t)));
+    $("p-operate").parentElement.querySelector("nav.tabs").addEventListener("keydown",e=>{
+      const i=TABS.findIndex(t=>$("tab-"+t).getAttribute("aria-selected")==="true");
+      if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ const n=TABS[(i+(e.key==="ArrowRight"?1:TABS.length-1))%TABS.length]; switchTab(n); $("tab-"+n).focus(); }
+    });
+    // pipelines
+    const addSel=$("pl-step-add"); for(const [k,w] of Object.entries(WORKFLOWS)){ const o=el("option",null,`${w.label} (${AGENTS[w.agent].name})`); o.value=k; addSel.appendChild(o); }
+    $("pl-add").addEventListener("click",()=>{ if(state.editor.steps.length<MAX_STEPS){ state.editor.steps.push(addSel.value); renderEditorSteps(); } });
+    $("pl-name").addEventListener("input",()=>{ if(!state.editor.editingId) $("pl-id").placeholder=slug($("pl-name").value||"auto"); });
+    $("pl-save").addEventListener("click",savePipeline);
+    $("pl-cancel").addEventListener("click",()=>openEditor(null));
+    $("pl-new").addEventListener("click",()=>openEditor(null));
+    // automations
+    $("cad-daily").addEventListener("click",()=>setCadence("daily"));
+    $("cad-every").addEventListener("click",()=>setCadence("every"));
+    $("sc-target").addEventListener("change",schedSample);
+    $("sc-save").addEventListener("click",()=>saveSchedule(readScheduleForm()));
+    $("sc-cancel").addEventListener("click",()=>openSchedule(null));
+    // settings
+    $("tx-relay").addEventListener("click",()=>setTransport("relay"));
+    $("tx-direct").addEventListener("click",()=>setTransport("direct"));
+    $("save-conn").addEventListener("click",saveConn);
+    $("reset-conn").addEventListener("click",()=>{ state.urls={...DEFAULT_URLS}; state.relayUrl=servedByRelay?location.origin:""; state.relayKey=""; renderEps(); save(); setHint("conn-hint","Defaults restored."); });
+    $("clear-local-hist").addEventListener("click",e=>armed(e.currentTarget,()=>{ state.local.history=[]; save(); rebuildStats(); renderAll(); log("Local history cleared","warn"); }));
+    $("clear-local-all").addEventListener("click",e=>armed(e.currentTarget,()=>{ state.local.pipelines=[]; state.local.schedules=[]; save(); renderAll(); log("Local pipelines and schedules reset","warn"); }));
+
+    renderEps(); setTransport(state.transport); openEditor(null); openSchedule(null);
+    let hash=""; try{ hash=location.hash.slice(1); }catch(e){}
+    switchTab(TABS.includes(hash)?hash:"operate");
+    log("Platinum Agent Console loaded"+(servedByRelay?" from relay server":"")+".");
+    await connect();
+    $("target").value="wf:customer_support"; renderRoute(); loadSample();
+
+    // First visit in simulated mode: seed sample data so every panel shows what it does.
+    if(state.mode==="sim" && !state.local.history.length){
+      simFailRate=0;
+      if(!state.local.schedules.length){
+        state.local.schedules.push({id:"monday-growth", label:"Monday growth review", target:"pl:growth_loop", payload:BUILTIN[2].sample, enabled:true, every:null, at:"08:00", days:[1], createdAt:new Date().toISOString(), lastRunAt:null, lastRunId:null});
+        state.local.schedules.push({id:"ticket-sweep", label:"Hourly ticket sweep", target:"pl:ticket_to_insight", payload:BUILTIN[1].sample, enabled:false, every:60, at:null, days:[], createdAt:new Date().toISOString(), lastRunAt:null, lastRunId:null});
+      }
+      for(const v of ["pl:growth_loop","pl:ticket_to_insight"]){ $("target").value=v; renderRoute(); loadSample(); await run(); }
+      await checkHealth();
+      simFailRate=0.08; save(); renderSchedules();
+      $("target").value="wf:customer_support"; renderRoute(); loadSample();
+      log("Sample data loaded: 2 simulated pipeline runs and 2 draft schedules","warn");
+    }
+  }
+  init();
+})();
+</script>
+</body>
+</html>

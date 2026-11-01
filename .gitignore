@@ -29,6 +29,49 @@ env/
 ENV/
 env.bak/
 venv.bak/
+# Dependencies
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.tox/
+htmlcov/
+.coverage
+*.cover
+*.log
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables (never commit secrets!)
+.env
+server/.env
+*.local
+
+# Model weights / cache
+*.pth
+*.pt
+*.onnx
+*.engine
+*.weights
+models/weights/
+.cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
 
 # IDEs
 .vscode/
@@ -53,3 +96,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Ingenium platform runtime data
+ingenium_data/

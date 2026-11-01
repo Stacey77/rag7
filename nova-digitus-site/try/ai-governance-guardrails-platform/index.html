@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="AI Governance &amp; Guardrails Platform: live preview by Nova Digitus Designs.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise AI Architecture & Governance Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>tailwind.config={theme:{extend:{colors:{brand:{50:"#f0f7ff",100:"#e0effe",500:"#0284c7",600:"#0369a1",700:"#095186",900:"#0c2a4a"},accent:{500:"#6366f1",600:"#4f46e5"}}}}};</script>
+    <style>.gradient-bg{background:linear-gradient(135deg,#0c2a4a 0,#0284c7 50%,#4f46e5 100%)}.card-hover{transition:all .3s ease}.card-hover:hover{transform:translateY(-4px);box-shadow:0 12px 24px -10px rgba(0,0,0,.15)}</style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-network-wired text-cyan-400 text-2xl"></i>
+                    <span class="font-bold text-xl tracking-tight">NexusAI Enterprise</span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium">
+                    <a href="#architecture" class="hover:text-cyan-400 transition-colors">Architecture</a>
+                    <a href="#governance" class="hover:text-cyan-400 transition-colors">Governance</a>
+                    <a href="#calculator" class="hover:text-cyan-400 transition-colors">Risk Assessment</a>
+                    <a href="#audit" class="hover:text-cyan-400 transition-colors">Audit Trail</a>
+                </div>
+                <div>
+                    <a href="#calculator" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-semibold px-4 py-2 rounded-lg text-sm transition-all shadow-sm">
+                        Run Risk Assessment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    
+    <section class="gradient-bg text-white py-20 px-4">
+        <div class="max-w-7xl mx-auto text-center">
+            <span class="inline-block px-3 py-1 bg-white/10 text-cyan-200 rounded-full text-sm font-medium mb-4 backdrop-blur-sm">
+                Enterprise AI Blueprint & Governance Standard
+            </span>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                Composable Infrastructure & <br/>Responsible AI Governance
+            </h1>
+            <p class="text-lg md:text-xl text-slate-200 max-w-3xl mx-auto mb-10">
+                A unified framework integrating modular AI compute, vector search, continuous observational lineage, and automated GRC safeguards across the entire lifecycle.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#architecture" class="bg-white text-slate-900 font-bold px-6 py-3 rounded-lg shadow-lg hover:bg-slate-100 transition-all">
+                    Explore Architecture
+                </a>
+                <a href="#governance" class="bg-slate-800/80 border border-slate-600 text-white font-bold px-6 py-3 rounded-lg hover:bg-slate-800 transition-all">
+                    View Governance Framework
+                </a>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="max-w-7xl mx-auto px-4 -mt-10 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Architecture</span>
+                    <i class="fa-solid fa-cubes text-cyan-500"></i>
+                </div>
+                <div class="text-2xl font-bold text-slate-800 mt-2">Composable</div>
+                <p class="text-xs text-slate-500 mt-1">Decoupled compute & data layers[cite: 1]</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Compliance</span>
+                    <i class="fa-solid fa-shield-halved text-emerald-500"></i>
+                </div>
+                <div class="text-2xl font-bold text-slate-800 mt-2">EU AI Act</div>
+                <p class="text-xs text-slate-500 mt-1">Tiered risk classification[cite: 3]</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Security</span>
+                    <i class="fa-solid fa-user-lock text-indigo-500"></i>
+                </div>
+                <div class="text-2xl font-bold text-slate-800 mt-2">PII Guardrails</div>
+                <p class="text-xs text-slate-500 mt-1">Real-time filtering & lineage[cite: 3]</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Oversight</span>
+                    <i class="fa-solid fa-diagram-project text-amber-500"></i>
+                </div>
+                <div class="text-2xl font-bold text-slate-800 mt-2">Federated</div>
+                <p class="text-xs text-slate-500 mt-1">Central standards, local ownership[cite: 3]</p>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="architecture" class="py-16 max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-slate-900">Composable AI Architecture</h2>
+            <p class="text-slate-600 mt-2 max-w-2xl mx-auto">
+                Modular components supporting low-latency retrieval, flexible model orchestration, and standard APIs to eliminate vendor lock-in[cite: 1].
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-hover">
+                <div class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-lg flex items-center justify-center mb-4 text-xl">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">1. Compute & Orchestration</h3>
+                <p class="text-sm text-slate-600 mb-4">
+                    Serverless platforms and orchestration hubs defining business logic and API connections[cite: 1, 2].
+                </p>
+                <ul class="text-xs text-slate-500 space-y-2">
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Standard APIs (HTTP/TCP)[cite: 1]</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Automatic scaling[cite: 1]</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Hardware acceleration (GPUs/TPUs)[cite: 2]</li>
+                </ul>
+            </div>
+
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-hover">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mb-4 text-xl">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">2. Inference Engine</h3>
+                <p class="text-sm text-slate-600 mb-4">
+                    Flexible execution across managed serverless LLMs and custom self-hosted model deployments[cite: 1].
+                </p>
+                <ul class="text-xs text-slate-500 space-y-2">
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> REST & Streaming APIs[cite: 1]</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Dynamic model switching[cite: 1]</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Framework integrations[cite: 2]</li>
+                </ul>
+            </div>
+
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-hover">
+                <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-4 text-xl">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">3. Vector & Retrieval</h3>
+                <p class="text-sm text-slate-600 mb-4">
+                    Dedicated DBaaS vector engines for similarity matching and Retrieval-Augmented Generation (RAG)[cite: 1].
+                </p>
+                <ul class="text-xs text-slate-500 space-y-2">
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Low-latency index lookup[cite: 1]</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> High-dimensional embedding storage[cite: 1]</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Automated binding integration[cite: 1]</li>
+                </ul>
+            </div>
+
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-hover">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center mb-4 text-xl">
+                    <i class="fa-solid fa-server"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">4. Unified Data Layer</h3>
+                <p class="text-sm text-slate-600 mb-4">
+                    Relational storage and object buckets providing state, user sessions, and persistent auditing[cite: 1].
+                </p>
+                <ul class="text-xs text-slate-500 space-y-2">
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Session & state management[cite: 1]</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Distributed object storage[cite: 1]</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-1"></i> Data lineage tracking[cite: 3]</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="governance" class="bg-slate-100 py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Governance & GRC Pillars</h2>
+                <p class="text-slate-600 mt-2 max-w-2xl mx-auto">
+                    A operational framework aligning risk management, data privacy, and accountability across the AI lifecycle[cite: 3].
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-cyan-600 text-2xl mb-4"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Accountability & Roles</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Federated operational model assigning cross-functional RACI responsibilities across business owners, legal teams, and AI engineers[cite: 3].
+                    </p>
+                    <span class="inline-block bg-cyan-50 text-cyan-700 text-xs px-2.5 py-1 rounded font-medium">Federated Oversight[cite: 3]</span>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-indigo-600 text-2xl mb-4"><i class="fa-solid fa-shield-virus"></i></div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Privacy & Guardrails</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Automated PII redact controls, real-time prompt sanitation, and output filtering before data hits external foundation models[cite: 3].
+                    </p>
+                    <span class="inline-block bg-indigo-50 text-indigo-700 text-xs px-2.5 py-1 rounded font-medium">PII & Output Safety[cite: 3]</span>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-purple-600 text-2xl mb-4"><i class="fa-solid fa-eye"></i></div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Observability & Audit</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Full end-to-end data lineage, model evaluation summaries, and human-in-the-loop review triggers for high-stakes decisions[cite: 3].
+                    </p>
+                    <span class="inline-block bg-purple-50 text-purple-700 text-xs px-2.5 py-1 rounded font-medium">Human-in-the-Loop[cite: 3]</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="calculator" class="py-16 max-w-7xl mx-auto px-4">
+        <div class="bg-slate-900 text-white rounded-2xl p-8 md:p-12 shadow-xl">
+            <div class="max-w-3xl mb-8">
+                <h2 class="text-3xl font-bold mb-2">Interactive AI Risk Assessment Tool</h2>
+                <p class="text-slate-400 text-sm">
+                    Classify your deployment based on governance criteria to determine required controls and approval thresholds[cite: 3].
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Use Case Scope</label>
+                        <select id="risk-scope" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-cyan-500" onchange="calculateRisk()">
+                            <option value="low">Internal Document Summarization & Knowledge Search</option>
+                            <option value="medium">Customer Support Automated Recommendations</option>
+                            <option value="high">Automated Hiring / Credit Evaluation / Medical Diagnostics</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Data Sensitivity</label>
+                        <select id="risk-data" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-cyan-500" onchange="calculateRisk()">
+                            <option value="low">Public Data / Non-Sensitive Internal</option>
+                            <option value="medium">Internal Business Metrics & Operations</option>
+                            <option value="high">Personally Identifiable Information (PII) / Regulated Data</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Human Oversight Level</label>
+                        <select id="risk-human" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-cyan-500" onchange="calculateRisk()">
+                            <option value="high">Strict Human-in-the-Loop Approval Required</option>
+                            <option value="medium">Human-on-the-Loop (Periodic Audits)</option>
+                            <option value="low">Fully Autonomous Action Execution</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                    <h4 class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">Calculated Risk Profile</h4>
+                    <div id="risk-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        LOW RISK
+                    </div>
+
+                    <h5 class="text-sm font-semibold text-slate-200 mb-2">Mandatory Compliance Controls:</h5>
+                    <ul id="risk-controls" class="text-xs text-slate-300 space-y-2 mb-6">
+                        <li><i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> Lightweight documentation & period review[cite: 3]</li>
+                        <li><i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> Standard role-based access controls[cite: 3]</li>
+                    </ul>
+
+                    <div class="pt-4 border-t border-slate-700">
+                        <span class="text-xs text-slate-400">Approval Authority Required:</span>
+                        <p id="risk-approval" class="text-sm font-medium text-slate-200 mt-1">Domain Team / Engineering Lead[cite: 3]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="audit" class="py-16 max-w-7xl mx-auto px-4">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold text-slate-900">Governance & Audit Log Explorer</h2>
+            <p class="text-slate-600 mt-2 max-w-2xl mx-auto">
+                Real-time tracking of model lineage, guardrail events, and human intervention checkpoints[cite: 3].
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Live System Events</span>
+                <span class="inline-flex items-center text-xs text-emerald-600 font-medium">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> Active Lineage Feed
+                </span>
+            </div>
+            <div class="divide-y divide-slate-100 text-sm">
+                <div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded">PII REDACT</span>
+                        <span class="text-slate-700 font-mono text-xs">Model: Llama-3-70B</span>
+                    </div>
+                    <span class="text-slate-500 text-xs">Output filtered: Account number stripped before database persist[cite: 3]</span>
+                    <span class="text-slate-400 text-xs font-mono">11:34:02 UTC</span>
+                </div>
+                <div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded">HITL TRIGGER</span>
+                        <span class="text-slate-700 font-mono text-xs">Model: Credit Risk Evaluator</span>
+                    </div>
+                    <span class="text-slate-500 text-xs">High-risk decision threshold reached. Sent for manual human review[cite: 3].</span>
+                    <span class="text-slate-400 text-xs font-mono">11:32:15 UTC</span>
+                </div>
+                <div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded">VECTOR SYNC</span>
+                        <span class="text-slate-700 font-mono text-xs">Index: Knowledge-Base-v2</span>
+                    </div>
+                    <span class="text-slate-500 text-xs">1,240 document embeddings synced via standard REST API[cite: 1]</span>
+                    <span class="text-slate-400 text-xs font-mono">11:28:40 UTC</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer class="bg-slate-900 text-slate-400 py-10 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs space-y-4">
+            <p>Enterprise AI Architecture & Governance Reference Platform</p>
+            <p class="text-slate-600">Designed for composability, interoperability, and responsible AI innovation[cite: 1, 3].</p>
+        </div>
+    </footer>
+
+    <script>function calculateRisk(){const e=document.getElementById("risk-scope").value,i=document.getElementById("risk-data").value,t=document.getElementById("risk-human").value,a=document.getElementById("risk-badge"),l=document.getElementById("risk-controls"),n=document.getElementById("risk-approval");"high"===e||"high"===i||"low"===t?(a.className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 bg-rose-500/20 text-rose-400 border border-rose-500/30",a.innerText="HIGH RISK TIER",l.innerHTML='\n                    <li><i class="fa-solid fa-circle-exclamation text-rose-400 mr-2"></i> Mandatory Human-in-the-Loop review setup[cite: 3]</li>\n                    <li><i class="fa-solid fa-circle-exclamation text-rose-400 mr-2"></i> Formal cross-functional RACI approval required[cite: 3]</li>\n                    <li><i class="fa-solid fa-circle-exclamation text-rose-400 mr-2"></i> Automated PII filtering & continuous lineage tracing[cite: 3]</li>\n                    <li><i class="fa-solid fa-circle-exclamation text-rose-400 mr-2"></i> Incident response playbook & audit logging[cite: 3]</li>\n                ',n.innerText="Cross-Functional AI Governance Committee & Legal[cite: 3]"):"medium"===e||"medium"===i||"medium"===t?(a.className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 bg-amber-500/20 text-amber-400 border border-amber-500/30",a.innerText="MEDIUM RISK TIER",l.innerHTML='\n                    <li><i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i> Periodic human oversight audits[cite: 3]</li>\n                    <li><i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i> System summaries & evaluation documentation[cite: 3]</li>\n                    <li><i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i> Automated output safety checks[cite: 3]</li>\n                ',n.innerText="Domain Product Lead & Security Officer[cite: 3]"):(a.className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",a.innerText="LOW RISK TIER",l.innerHTML='\n                    <li><i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> Lightweight documentation & periodic review[cite: 3]</li>\n                    <li><i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> Standard role-based access controls[cite: 3]</li>\n                ',n.innerText="Domain Team / Engineering Lead[cite: 3]")}</script>
+<div id="nd-try" style="position:fixed;left:12px;bottom:12px;z-index:2147483647;display:flex;gap:8px;align-items:center;background:#0E1729;color:#E8EDF7;border:1px solid #2F5BEA;border-radius:999px;padding:6px 6px 6px 14px;font:500 13px/1.2 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:calc(100vw - 24px)"><span>Live preview · sample data</span><a href="https://cal.com/stacey-williams-5enqex/discovery-call?app=AI%20Governance%20%26%20Guardrails%20Platform" target="_blank" rel="noopener" style="background:#2F5BEA;color:#fff;text-decoration:none;border-radius:999px;padding:6px 12px;font-weight:600;white-space:nowrap">Book a demo</a><button type="button" aria-label="Hide" onclick="this.parentNode.remove()" style="background:none;border:0;color:#A9B6CF;font-size:16px;cursor:pointer;padding:0 6px">×</button></div></body>
+</html>

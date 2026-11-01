@@ -1,0 +1,4146 @@
+<!doctype html>
+<head><meta name="robots" content="noindex"><meta name="description" content="KITH: live preview by Nova Digitus Designs.">
+<title>KITH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:        #07080F;
+  --surf:      #0C0D1A;
+  --surf2:     #131527;
+  --surf3:     #1B1D33;
+  --edge:      rgba(160,170,255,0.08);
+  --edge2:     rgba(160,170,255,0.14);
+  --text:      #BDC3D8;
+  --dim:       #5A6080;
+  --faint:     #353850;
+  --accent:    #6B6FEB;
+  --glow:      #8B8FF8;
+  --teal:      #22D3EE;
+  --amber:     #F59E0B;
+  --emerald:   #10B981;
+  --rose:      #FB7185;
+  --white:     #EEF0FA;
+  --mono:      'DM Mono', 'Fira Code', monospace;
+  --sans:      'DM Sans', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:      #F0F1FA;
+    --surf:    #FAFAFF;
+    --surf2:   #EEEEF8;
+    --surf3:   #E4E4F2;
+    --edge:    rgba(80,80,160,0.1);
+    --edge2:   rgba(80,80,160,0.18);
+    --text:    #383A5C;
+    --dim:     #8890B0;
+    --faint:   #C4C6DA;
+    --accent:  #5055D6;
+    --glow:    #6B6FEB;
+    --white:   #1C1E38;
+  }
+}
+:root[data-theme="light"] {
+  --bg:      #F0F1FA;
+  --surf:    #FAFAFF;
+  --surf2:   #EEEEF8;
+  --surf3:   #E4E4F2;
+  --edge:    rgba(80,80,160,0.1);
+  --edge2:   rgba(80,80,160,0.18);
+  --text:    #383A5C;
+  --dim:     #8890B0;
+  --faint:   #C4C6DA;
+  --accent:  #5055D6;
+  --glow:    #6B6FEB;
+  --white:   #1C1E38;
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { height:100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.55;
+  min-height: 100%;
+}
+
+/* ── TOP BAR ── */
+.bar {
+  position: sticky; top: 0; z-index: 80;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; height: 50px;
+  background: rgba(7,8,15,0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--edge);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .bar { background: rgba(240,241,250,0.88); }
+}
+:root[data-theme="light"] .bar { background: rgba(240,241,250,0.88); }
+
+.wordmark {
+  font-family: var(--mono);
+  font-size: 17px; font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  display: flex; align-items: center; gap: 10px;
+}
+.wordmark-badge {
+  font-family: var(--sans);
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: var(--surf2);
+  border: 1px solid var(--edge);
+  padding: 2px 7px; border-radius: 3px;
+}
+
+.bar-status {
+  display: flex; align-items: center; gap: 18px;
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+}
+.dot-live {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald);
+  animation: blink 2.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+/* ── TAB NAV ── */
+.tab-row {
+  display: flex; gap: 0;
+  padding: 14px 20px 0;
+  border-bottom: 1px solid var(--edge);
+}
+.tab-btn {
+  padding: 8px 22px 10px;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--dim); background: none; border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer; transition: color .15s, border-color .15s;
+  margin-bottom: -1px;
+}
+.tab-btn.on { color: var(--glow); border-bottom-color: var(--accent); }
+.tab-btn:hover:not(.on) { color: var(--text); }
+
+/* ── LAYOUT ── */
+.content { max-width: 920px; margin: 0 auto; padding: 20px 20px 100px; }
+.view { display: none; }
+.view.on { display: block; }
+
+/* ── SENSE VIEW ── */
+.sense-top {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 24px;
+  margin-bottom: 20px;
+  align-items: start;
+}
+@media (max-width: 540px) { .sense-top { grid-template-columns: 1fr; } }
+
+/* Device SVG */
+.device-col { text-align: center; padding-top: 4px; }
+.device-form-toggle {
+  display: inline-flex; gap: 0;
+  background: var(--surf2); border: 1px solid var(--edge);
+  border-radius: 5px; overflow: hidden;
+  margin-bottom: 12px;
+}
+.dfbtn {
+  padding: 4px 12px; font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.08em;
+  background: none; border: none; color: var(--dim);
+  cursor: pointer; transition: all .15s; font-weight: 500;
+}
+.dfbtn.on { background: var(--accent); color: #fff; }
+
+#device-canvas { display: block; margin: 0 auto; }
+
+/* Sensor list */
+.sensor-list {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.sl-row {
+  display: grid;
+  grid-template-columns: 8px 70px 1fr 60px;
+  align-items: center; gap: 10px;
+}
+.sl-pip {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.sl-name {
+  font-family: var(--mono); font-size: 11px;
+  font-weight: 500; color: var(--text);
+  letter-spacing: 0.04em;
+}
+.sl-bar-wrap {
+  height: 3px; background: var(--surf3); border-radius: 2px;
+  overflow: hidden;
+}
+.sl-bar {
+  height: 100%; border-radius: 2px;
+  transition: width 0.8s ease;
+}
+.sl-val {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--dim); text-align: right;
+}
+
+/* Stats row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px; margin-bottom: 16px;
+}
+@media (max-width: 480px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+.stat-box {
+  background: var(--surf);
+  border: 1px solid var(--edge);
+  border-radius: 8px; padding: 12px 14px;
+}
+.stat-n {
+  font-family: var(--mono); font-size: 22px;
+  font-weight: 500; color: var(--white);
+  line-height: 1; margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.stat-l {
+  font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--dim);
+}
+
+/* Sensor cards grid */
+.sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-bottom: 16px;
+}
+@media (max-width: 580px) { .sensor-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.sc {
+  background: var(--surf);
+  border: 1px solid var(--edge);
+  border-radius: 10px; padding: 12px;
+}
+.sc-head {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; margin-bottom: 8px;
+}
+.sc-label {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--dim); font-weight: 500;
+}
+.sc-status {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.08em; padding: 2px 6px;
+  border-radius: 3px;
+}
+.s-active { background: rgba(16,185,129,0.12); color: var(--emerald); }
+.s-sampling { background: rgba(245,158,11,0.12); color: var(--amber); }
+
+.sc-val {
+  font-family: var(--mono); font-size: 19px;
+  font-weight: 500; color: var(--white);
+  line-height: 1; margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.sc-canvas { width: 100%; height: 34px; display: block; }
+.sc-desc { font-size: 10px; color: var(--dim); margin-top: 6px; line-height: 1.4; }
+
+/* Terminal */
+.term {
+  background: var(--surf);
+  border: 1px solid var(--edge);
+  border-radius: 10px; overflow: hidden;
+}
+.term-head {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-bottom: 1px solid var(--edge);
+  background: var(--surf2);
+}
+.tdot { width: 8px; height: 8px; border-radius: 50%; }
+.term-title {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--dim); letter-spacing: 0.06em; margin-left: 6px;
+}
+.term-live {
+  margin-left: auto; font-family: var(--mono);
+  font-size: 10px; color: var(--emerald); letter-spacing: 0.06em;
+}
+.term-body {
+  height: 160px; overflow-y: scroll;
+  padding: 10px 14px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--dim); line-height: 1.9;
+}
+.term-body::-webkit-scrollbar { width: 3px; }
+.term-body::-webkit-scrollbar-thumb { background: var(--surf3); border-radius: 2px; }
+.tl { display: flex; gap: 10px; }
+.tl-ts { color: var(--faint); flex-shrink: 0; }
+.tl-ch { font-weight: 500; flex-shrink: 0; width: 50px; }
+.ch-vis { color: #60A5FA; }
+.ch-aud { color: #A78BFA; }
+.ch-mot { color: var(--teal); }
+.ch-bio { color: var(--rose); }
+.ch-env { color: var(--emerald); }
+.ch-prox { color: var(--amber); }
+.tl-data { color: var(--text); word-break: break-all; }
+
+/* ── KNOW VIEW ── */
+.sub-row {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.sub-btn {
+  padding: 5px 14px;
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 5px; color: var(--dim);
+  cursor: pointer; transition: all .15s; font-weight: 500;
+}
+.sub-btn.on {
+  background: var(--surf2); border-color: var(--accent);
+  color: var(--glow);
+}
+.sub-view { display: none; }
+.sub-view.on { display: block; }
+
+/* Section heading */
+.sec-h {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 12px;
+}
+.sec-title {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+}
+.sec-ct {
+  font-family: var(--mono); font-size: 10px; color: var(--faint);
+}
+.sec-divider {
+  border: none; border-top: 1px solid var(--edge);
+  margin: 22px 0;
+}
+
+/* Catalog grid */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px; margin-bottom: 0;
+}
+@media (max-width: 480px) { .cat-grid { grid-template-columns: 1fr; } }
+
+.ci {
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 9px; padding: 12px 14px;
+  cursor: default; transition: border-color .15s;
+}
+.ci:hover { border-color: var(--edge2); }
+.ci-lbl {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 4px;
+}
+.ci-val {
+  font-family: var(--mono); font-size: 15px; font-weight: 500;
+  color: var(--white); line-height: 1.2; margin-bottom: 8px;
+}
+.conf-bar {
+  height: 2px; background: var(--surf3);
+  border-radius: 1px; overflow: hidden; margin-bottom: 5px;
+}
+.conf-fill {
+  height: 100%; border-radius: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--glow));
+}
+.ci-meta { font-size: 10px; color: var(--dim); line-height: 1.45; }
+
+/* Location cards */
+.loc-c {
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 9px; padding: 12px 14px; margin-bottom: 8px;
+}
+.loc-h {
+  display: flex; justify-content: space-between;
+  align-items: baseline; margin-bottom: 8px;
+}
+.loc-name { font-weight: 500; color: var(--white); font-size: 13px; }
+.loc-hrs { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+.loc-bar { height: 3px; background: var(--surf3); border-radius: 2px; overflow: hidden; }
+.loc-fill { height: 100%; border-radius: 2px; }
+.loc-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 9px; }
+.tag {
+  font-size: 10px; padding: 2px 7px;
+  background: var(--surf2); border: 1px solid var(--edge);
+  border-radius: 3px; color: var(--dim);
+}
+
+/* Routine rows */
+.rt-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 9px; padding: 10px 14px; margin-bottom: 6px;
+}
+.rt-ico { font-size: 15px; flex-shrink: 0; }
+.rt-body { flex: 1; }
+.rt-name { font-weight: 500; color: var(--white); font-size: 13px; line-height: 1.2; }
+.rt-when { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 2px; }
+.conf-chip {
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.07em; padding: 3px 8px; border-radius: 3px;
+}
+.ch-hi { background: rgba(16,185,129,.12); color: var(--emerald); }
+.ch-med { background: rgba(245,158,11,.12); color: var(--amber); }
+.ch-new { background: rgba(251,113,133,.12); color: var(--rose); }
+
+/* Context map table */
+.ctx-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px; background: var(--surf);
+  border: 1px solid var(--edge); border-radius: 9px;
+  overflow: hidden;
+}
+.ctx-table th {
+  text-align: left; padding: 9px 12px;
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.08em; font-weight: 500;
+  color: var(--dim); background: var(--surf2);
+  border-bottom: 1px solid var(--edge);
+}
+.ctx-table td {
+  padding: 9px 12px; border-bottom: 1px solid var(--edge);
+  color: var(--text); vertical-align: middle;
+}
+.ctx-table tr:last-child td { border-bottom: none; }
+.ctx-table td:first-child { color: var(--white); font-weight: 500; }
+.ctx-table td:last-child {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--dim); text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Adaptation list */
+.adp-list { display: flex; flex-direction: column; gap: 8px; }
+.adp {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 9px; padding: 12px 14px;
+}
+.adp.pending { border-color: rgba(245,158,11,.25); background: rgba(245,158,11,.04); }
+.adp-ico {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+.adp-body { flex: 1; }
+.adp-head { font-weight: 500; color: var(--white); font-size: 13px; line-height: 1.3; }
+.adp-sub { font-size: 12px; color: var(--text); margin-top: 4px; line-height: 1.5; }
+.adp-when { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 5px; }
+.adp-actions { display: flex; gap: 6px; margin-top: 9px; }
+.adp-yes, .adp-no {
+  padding: 4px 12px; font-size: 11px; font-weight: 500;
+  border-radius: 5px; cursor: pointer;
+  border: 1px solid; font-family: var(--sans);
+  transition: opacity .15s;
+}
+.adp-yes:hover, .adp-no:hover { opacity: .75; }
+.adp-yes { background: rgba(16,185,129,.12); color: var(--emerald); border-color: var(--emerald); }
+.adp-no { background: transparent; color: var(--dim); border-color: var(--edge2); }
+
+/* ── ASK VIEW ── */
+.ask-intro { margin-bottom: 18px; }
+.ask-intro-h {
+  font-family: var(--mono); font-size: 16px; font-weight: 500;
+  color: var(--white); letter-spacing: -0.01em; margin-bottom: 4px;
+}
+.ask-intro-sub { font-size: 12px; color: var(--dim); }
+
+.chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.chip {
+  padding: 5px 13px; font-size: 12px;
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 20px; color: var(--text);
+  cursor: pointer; transition: all .15s;
+}
+.chip:hover, .chip.on {
+  background: rgba(107,111,235,.12);
+  border-color: var(--accent); color: var(--glow);
+}
+
+.ask-row { display: flex; gap: 8px; margin-bottom: 18px; }
+.ask-input {
+  flex: 1; background: var(--surf); border: 1px solid var(--edge2);
+  border-radius: 8px; padding: 10px 14px;
+  font-size: 13px; color: var(--white); font-family: var(--sans);
+  outline: none; transition: border-color .15s;
+}
+.ask-input:focus { border-color: var(--accent); }
+.ask-input::placeholder { color: var(--faint); }
+.ask-go {
+  padding: 10px 20px; background: var(--accent);
+  border: none; border-radius: 8px; color: #fff;
+  font-weight: 600; font-size: 13px; cursor: pointer;
+  font-family: var(--sans); transition: opacity .15s;
+}
+.ask-go:hover { opacity: .85; }
+
+.resp-card {
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 10px; padding: 20px; min-height: 130px;
+}
+.resp-hd { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
+.resp-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--glow));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; font-weight: 500; color: #fff;
+  flex-shrink: 0;
+}
+.resp-name { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--white); }
+.resp-role { font-size: 10px; color: var(--dim); }
+.resp-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+.resp-text strong { color: var(--white); font-weight: 500; }
+.resp-citations {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--edge);
+  display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+}
+.resp-src-lbl { font-family: var(--mono); font-size: 10px; color: var(--faint); }
+.resp-tag {
+  font-family: var(--mono); font-size: 10px;
+  padding: 2px 7px; background: var(--surf2);
+  border-radius: 3px; color: var(--dim);
+}
+.resp-empty {
+  display: flex; align-items: center; justify-content: center;
+  height: 90px; font-family: var(--mono);
+  font-size: 12px; color: var(--dim); letter-spacing: 0.04em;
+}
+
+/* ── PRIVACY SUB ── */
+.priv-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px; margin-bottom: 20px;
+}
+@media (max-width: 480px) { .priv-grid { grid-template-columns: 1fr; } }
+
+.priv-row {
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 9px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.priv-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.priv-info { flex: 1; }
+.priv-cat { font-weight: 500; color: var(--white); font-size: 13px; }
+.priv-where { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 2px; }
+.priv-toggle {
+  width: 34px; height: 20px; border-radius: 10px;
+  background: var(--surf3); border: 1px solid var(--edge2);
+  cursor: pointer; position: relative; transition: background .2s; flex-shrink: 0;
+}
+.priv-toggle.on { background: var(--accent); }
+.priv-toggle::after {
+  content: ''; position: absolute;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--dim); top: 2px; left: 2px;
+  transition: transform .2s, background .2s;
+}
+.priv-toggle.on::after { transform: translateX(14px); background: #fff; }
+
+.priv-layer {
+  background: var(--surf2); border: 1px solid var(--edge);
+  border-radius: 9px; padding: 16px 18px;
+}
+.priv-layer-h {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.08em; color: var(--glow); margin-bottom: 8px;
+}
+.priv-layer-p { font-size: 12px; color: var(--text); line-height: 1.65; }
+.priv-layer-p strong { color: var(--white); font-weight: 500; }
+
+/* ── STAGE BAR ── */
+.stage-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 80;
+  background: rgba(7,8,15,.92); backdrop-filter: blur(14px);
+  border-top: 1px solid var(--edge);
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; padding: 10px 20px;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .stage-bar { background: rgba(240,241,250,.92); }
+}
+:root[data-theme="light"] .stage-bar { background: rgba(240,241,250,.92); }
+
+.st-step { display: flex; align-items: center; gap: 9px; }
+.st-node {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  flex-shrink: 0;
+}
+.st-cur {
+  background: var(--accent); color: #fff;
+  box-shadow: 0 0 14px rgba(107,111,235,.45);
+}
+.st-nxt { background: var(--surf3); color: var(--dim); }
+.st-far { background: var(--surf2); color: var(--faint); }
+.st-label { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; }
+.st-name-cur { color: var(--glow); }
+.st-name-fut { color: var(--dim); }
+.st-desc { font-size: 10px; color: var(--faint); margin-top: 1px; }
+.st-line { width: 36px; height: 1px; background: var(--edge2); margin: 0 10px; flex-shrink: 0; }
+
+/* ── TOASTS ── */
+.toasts {
+  position: fixed; top: 60px; right: 14px; z-index: 200;
+  display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast {
+  background: var(--surf2); border: 1px solid var(--accent);
+  border-radius: 9px; padding: 10px 14px;
+  font-size: 12px; display: flex; gap: 10px;
+  max-width: 250px; pointer-events: all;
+  animation: tin .3s ease, tout .3s ease 3.8s forwards;
+}
+@keyframes tin { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:none} }
+@keyframes tout { from{opacity:1} to{opacity:0} }
+.toast-head { font-weight: 600; color: var(--white); margin-bottom: 2px; font-size: 12px; }
+.toast-mark { color: var(--glow); font-size: 13px; flex-shrink: 0; }
+
+/* ── AI LINK BADGE ── */
+.ai-link-badge {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--glow);
+}
+.ai-link-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--glow); box-shadow: 0 0 6px var(--glow);
+  animation: blink 1.4s ease-in-out infinite;
+  display: inline-block;
+}
+.ai-link-dot.querying {
+  background: var(--amber); box-shadow: 0 0 10px var(--amber);
+  animation: qpulse .55s ease-in-out infinite;
+}
+@keyframes qpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(1.6)} }
+
+/* ── AGENT VIEW ── */
+.ag-section { margin-bottom: 24px; }
+.ag-h {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ag-badge {
+  background: var(--surf2); border: 1px solid var(--edge);
+  border-radius: 4px; padding: 2px 8px;
+  font-size: 10px; color: var(--glow); letter-spacing: 0.06em;
+}
+.agent-net {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+}
+@media (max-width:480px) { .agent-net { grid-template-columns: 1fr; } }
+.net-node {
+  background: var(--surf2); border: 1px solid var(--edge);
+  border-radius: 10px; padding: 14px 12px; text-align: center;
+  position: relative; overflow: hidden; transition: border-color .25s;
+}
+.net-node.active { border-color: rgba(107,111,235,0.35); }
+.net-node.active::before {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(180deg,rgba(107,111,235,.07) 0%,transparent 100%);
+}
+.net-node.querying { border-color: rgba(245,158,11,.6); animation: nodePulse 1.2s ease-in-out infinite; }
+@keyframes nodePulse { 0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.0)} 50%{box-shadow:0 0 14px 2px rgba(245,158,11,.2)} }
+.nn-ico { font-size: 20px; margin-bottom: 6px; color: var(--glow); }
+.nn-name { font-family: var(--mono); font-size: 9px; font-weight: 500;
+  letter-spacing: 0.1em; color: var(--white); margin-bottom: 4px; }
+.nn-status { font-size: 10px; color: var(--dim); }
+.nn-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  display: inline-block; margin-right: 4px; vertical-align: middle;
+}
+.nn-dot.on { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
+.nn-dot.busy { background: var(--amber); box-shadow: 0 0 8px var(--amber);
+  animation: qpulse .5s ease-in-out infinite; }
+.nn-dot.dim { background: var(--faint); }
+/* Query log */
+.qlog {
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 10px; overflow: hidden;
+}
+.qlog-head {
+  display: flex; align-items: center; gap: 8px; padding: 9px 14px;
+  background: var(--surf2); border-bottom: 1px solid var(--edge);
+  font-family: var(--mono); font-size: 10px; color: var(--dim);
+}
+.qlog-live { font-size: 10px; color: var(--glow); margin-left: auto;
+  animation: blink 1.4s ease-in-out infinite; }
+.qlog-body { height: 140px; overflow-y: auto; padding: 6px 0;
+  font-family: var(--mono); font-size: 11px; }
+.ql { display: flex; align-items: baseline; gap: 8px; padding: 2px 14px; line-height: 1.5; }
+.ql:hover { background: var(--surf2); }
+.ql-ts { color: var(--faint); font-size: 10px; flex-shrink: 0; }
+.ql-dir { font-size: 9px; padding: 1px 5px; border-radius: 3px; flex-shrink: 0; letter-spacing:.04em; }
+.ql-dir.up { background: rgba(107,111,235,.15); color: var(--glow); }
+.ql-dir.down { background: rgba(16,185,129,.15); color: var(--emerald); }
+.ql-dir.human { background: rgba(251,113,133,.15); color: var(--rose); }
+.ql-ch { color: var(--dim); font-size: 10px; flex-shrink: 0; min-width: 36px; }
+.ql-text { color: var(--text); font-size: 11px; }
+.ql-text.q { color: var(--glow); }
+.ql-text.r { color: var(--emerald); }
+.ql-text.h { color: var(--rose); font-weight: 500; }
+/* Knowledge drops */
+.kd-list { display: flex; flex-direction: column; gap: 8px; }
+.kd {
+  background: var(--surf2); border: 1px solid var(--edge);
+  border-left: 3px solid var(--glow); border-radius: 0 9px 9px 0;
+  padding: 11px 13px; display: flex; gap: 10px; align-items: flex-start;
+}
+.kd.kd-new { border-left-color: var(--amber); animation: kdIn .4s ease; }
+.kd.kd-insight { border-left-color: var(--teal); }
+@keyframes kdIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:none} }
+.kd-ico { font-size: 15px; flex-shrink: 0; padding-top: 1px; }
+.kd-body { flex: 1; min-width: 0; }
+.kd-head { font-size: 12px; font-weight: 500; color: var(--white); margin-bottom: 2px; }
+.kd-sub { font-size: 11px; color: var(--dim); line-height: 1.5; }
+.kd-time { font-family: var(--mono); font-size: 10px; color: var(--faint); margin-top: 4px; }
+/* Command console */
+.cmd-wrap {
+  background: var(--surf2); border: 1px solid var(--edge2);
+  border-radius: 10px; overflow: hidden;
+}
+.cmd-area { display: flex; align-items: center; }
+.cmd-prompt {
+  padding: 0 12px; font-family: var(--mono); font-size: 16px;
+  color: var(--glow); flex-shrink: 0; user-select: none;
+}
+.cmd-in {
+  flex: 1; background: none; border: none; outline: none;
+  padding: 14px 0; font-family: var(--mono); font-size: 12px;
+  color: var(--white); caret-color: var(--glow);
+}
+.cmd-in::placeholder { color: var(--faint); }
+.cmd-send {
+  padding: 8px 16px; margin: 6px; border-radius: 6px;
+  background: var(--accent); color: #fff;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.06em; border: none; cursor: pointer;
+  transition: background .15s; flex-shrink: 0;
+}
+.cmd-send:hover { background: var(--glow); }
+.cmd-history {
+  border-top: 1px solid var(--edge); padding: 8px 14px;
+  font-family: var(--mono); font-size: 10px; color: var(--dim);
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.cmd-chip {
+  color: var(--dim); cursor: pointer; padding: 2px 8px;
+  background: var(--surf3); border-radius: 4px;
+  transition: color .12s, background .12s;
+}
+.cmd-chip:hover { color: var(--white); background: rgba(107,111,235,.18); }
+/* Task queue */
+.tq-list { display: flex; flex-direction: column; gap: 8px; }
+.tq {
+  background: var(--surf2); border: 1px solid var(--edge);
+  border-radius: 9px; padding: 11px 13px;
+  display: flex; align-items: center; gap: 11px;
+}
+.tq-spinner {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--surf3); border-top-color: var(--glow);
+  animation: spin .8s linear infinite;
+}
+.tq-spinner.done { border-color: var(--emerald); animation: none; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.tq-body { flex: 1; min-width: 0; }
+.tq-name { font-size: 12px; font-weight: 500; color: var(--white); margin-bottom: 2px; }
+.tq-meta { font-family: var(--mono); font-size: 10px; color: var(--dim); }
+.tq-agent {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em;
+  color: var(--glow); padding: 2px 7px;
+  background: rgba(107,111,235,.12); border-radius: 4px; flex-shrink: 0;
+}
+/* ag two-col */
+.ag-two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
+}
+@media (max-width:580px) { .ag-two-col { grid-template-columns: 1fr; } }
+
+/* ── MIND / AGI ── */
+.mind-top {
+  display: grid; grid-template-columns: 170px 1fr; gap: 18px;
+  margin-bottom: 22px; align-items: start;
+}
+@media (max-width:560px) { .mind-top { grid-template-columns: 1fr; } }
+.surround-wrap {
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 12px; overflow: hidden; text-align: center;
+}
+.surround-head {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  color: var(--dim); text-transform: uppercase; padding: 8px 0 4px;
+}
+#surround-canvas { display: block; margin: 0 auto; }
+.surround-readouts {
+  padding: 7px 10px 10px; display: flex; flex-direction: column; gap: 4px;
+}
+.sr-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--mono); font-size: 10px;
+}
+.sr-lbl { color: var(--dim); }
+.sr-val { font-weight: 500; }
+.agi-panel {
+  background: var(--surf); border: 1px solid rgba(107,111,235,0.3);
+  border-radius: 12px; overflow: hidden;
+}
+.agi-panel-head {
+  padding: 12px 16px; border-bottom: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 12px;
+}
+.agi-pulse {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  background: var(--glow); box-shadow: 0 0 12px var(--glow);
+  animation: agiPulse 2.2s ease-in-out infinite;
+}
+@keyframes agiPulse {
+  0%,100%{transform:scale(1);box-shadow:0 0 12px var(--glow)}
+  50%{transform:scale(1.7);box-shadow:0 0 22px var(--glow);opacity:.55}
+}
+.agi-name { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--white); }
+.agi-sub { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 2px; }
+.agi-meta-nums { margin-left: auto; display: flex; gap: 18px; }
+.agi-meta-n { text-align: right; }
+.agi-meta-n-val { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--glow); }
+.agi-meta-n-l { font-family: var(--mono); font-size: 9px; color: var(--faint); letter-spacing:.05em; }
+#agi-canvas { display: block; width: 100%; }
+.agi-bottom-stats {
+  padding: 10px 16px 12px; display: flex; gap: 20px; flex-wrap: wrap;
+  border-top: 1px solid var(--edge);
+}
+.agi-b-stat { }
+.agi-b-n { font-family: var(--mono); font-size: 16px; font-weight: 500; color: var(--white); }
+.agi-b-l { font-family: var(--mono); font-size: 9px; color: var(--faint); letter-spacing:.05em; }
+/* AGI stream */
+.agi-stream {
+  background: var(--surf); border: 1px solid var(--edge);
+  border-radius: 12px; overflow: hidden; margin-bottom: 22px;
+}
+.agi-stream-head {
+  padding: 9px 16px; background: var(--surf2); border-bottom: 1px solid var(--edge);
+  font-family: var(--mono); font-size: 10px; color: var(--dim);
+  display: flex; align-items: center; gap: 8px;
+}
+.agi-status-badge {
+  margin-left: auto; font-family: var(--mono); font-size: 10px;
+  color: var(--amber); animation: blink 1s ease-in-out infinite;
+}
+.agi-body { max-height: 300px; overflow-y: auto; }
+.agi-msg {
+  padding: 13px 16px; border-bottom: 1px solid var(--edge);
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.agi-msg:last-child { border-bottom: none; }
+.agi-msg.hm { background: rgba(107,111,235,.04); }
+.agi-avatar {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+}
+.agi-avatar.ai {
+  background: linear-gradient(135deg,#4B4FCC,#8B8FF8);
+  color: #fff; box-shadow: 0 0 10px rgba(107,111,235,.35);
+}
+.agi-avatar.hu { background: var(--surf3); color: var(--text); }
+.agi-msg-body { flex: 1; min-width: 0; }
+.agi-msg-who { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-bottom: 5px; }
+.agi-msg-text { font-size: 12.5px; color: var(--text); line-height: 1.68; }
+.agi-msg-text strong { color: var(--white); font-weight: 500; }
+.agi-msg-text em { color: var(--glow); font-style: normal; }
+.agi-domain-tag {
+  display: inline-block; margin-top: 7px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.07em;
+  padding: 2px 8px; border-radius: 3px;
+}
+/* Mutual learning */
+.ml-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px;
+}
+@media (max-width:540px) { .ml-grid { grid-template-columns: 1fr; } }
+.ml-panel {
+  background: var(--surf2); border: 1px solid var(--edge); border-radius: 10px; overflow: hidden;
+}
+.ml-head {
+  padding: 8px 13px; background: var(--surf3); border-bottom: 1px solid var(--edge);
+  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing:.08em; color: var(--dim);
+}
+.ml-body { padding: 10px 13px; display: flex; flex-direction: column; gap: 6px; }
+.ml-item { font-size: 11px; color: var(--text); line-height: 1.5; display: flex; gap: 8px; }
+.ml-tick { flex-shrink: 0; }
+/* AGI reply */
+.agi-reply-wrap {
+  background: var(--surf2); border: 1px solid var(--edge2); border-radius: 10px; overflow: hidden;
+}
+.agi-reply-area { display: flex; align-items: center; }
+.agi-reply-prompt {
+  padding: 0 12px; font-family: var(--mono); font-size: 16px;
+  color: var(--glow); flex-shrink: 0; user-select: none;
+}
+.agi-reply-in {
+  flex: 1; background: none; border: none; outline: none;
+  padding: 13px 0; font-family: var(--sans); font-size: 13px;
+  color: var(--white); caret-color: var(--glow);
+}
+.agi-reply-in::placeholder { color: var(--faint); }
+.agi-reply-send {
+  padding: 7px 14px; margin: 6px; border-radius: 6px;
+  background: var(--accent); color: #fff;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing:.06em; border: none; cursor: pointer; transition: background .15s; flex-shrink: 0;
+}
+.agi-reply-send:hover { background: var(--glow); }
+/* ── CAMERA PERCEPTION ── */
+.cam-section {
+  background: var(--surf); border: 1px solid var(--edge); border-radius: 12px;
+  overflow: hidden; margin: 12px 0;
+}
+.cam-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid var(--edge); gap: 10px;
+}
+.cam-head-l { display: flex; align-items: center; gap: 10px; }
+.cam-icon { font-size: 20px; color: var(--accent); line-height: 1; width: 24px; text-align: center; }
+.cam-title { font: 500 10px var(--mono); color: var(--white); letter-spacing: .07em; }
+.cam-sub { font: 400 10px var(--mono); color: var(--dim); margin-top: 2px; }
+.cam-btn {
+  font: 600 10px var(--mono); letter-spacing: .08em;
+  background: var(--accent); color: #fff; border: none; border-radius: 6px;
+  padding: 6px 11px; cursor: pointer; flex-shrink: 0; transition: background .2s;
+}
+.cam-btn.active { background: var(--rose); }
+.cam-btn:hover { opacity: .85; }
+.cam-viewport {
+  position: relative; width: 100%; aspect-ratio: 16/9;
+  background: #020308; overflow: hidden; max-height: 220px;
+}
+#cam-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+#cam-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.cam-inactive {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+}
+.cam-inactive-icon { font-size: 32px; color: var(--faint); }
+.cam-inactive-text { font: 400 11px var(--mono); color: var(--dim); text-align: center; padding: 0 24px; line-height: 1.5; }
+.cam-percept-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px;
+  padding: 8px 12px 10px; border-top: 1px solid var(--edge);
+}
+.cam-percept-item { display: flex; align-items: flex-start; gap: 5px; font: 400 9.5px var(--mono); color: var(--dim); line-height: 1.4; }
+.cp-dot { font-size: 7px; margin-top: 3px; flex-shrink: 0; }
+/* ── HUMAN TEACHES PENDANT ── */
+.ht-section {
+  background: var(--surf); border: 1px solid rgba(16,185,129,.18);
+  border-radius: 12px; overflow: hidden; margin: 12px 0;
+}
+.ht-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 14px; border-bottom: 1px solid rgba(16,185,129,.12);
+}
+.ht-title { font: 500 10px var(--mono); color: var(--emerald); letter-spacing: .07em; }
+.ht-sub { font: 400 10px var(--mono); color: var(--dim); margin-top: 1px; }
+.ht-badge {
+  font: 600 9px var(--mono); background: rgba(16,185,129,.12);
+  color: var(--emerald); border-radius: 4px; padding: 3px 7px; letter-spacing: .05em;
+}
+.ht-body { max-height: 180px; overflow-y: auto; }
+.ht-msg {
+  display: flex; gap: 10px; padding: 10px 14px;
+  border-bottom: 1px solid var(--edge); align-items: flex-start;
+}
+.ht-avatar {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font: 600 11px var(--mono); margin-top: 1px;
+}
+.ht-avatar.hu { background: rgba(16,185,129,.18); color: var(--emerald); border: 1px solid rgba(16,185,129,.3); }
+.ht-avatar.ai { background: rgba(107,111,235,.18); color: var(--glow); border: 1px solid rgba(107,111,235,.3); }
+.ht-who { font: 500 9px var(--mono); letter-spacing: .06em; color: var(--dim); margin-bottom: 4px; text-transform: uppercase; }
+.ht-text { font: 400 11px var(--sans); color: var(--text); line-height: 1.55; }
+.ht-tag {
+  display: inline-block; font: 500 8px var(--mono); border-radius: 3px;
+  padding: 2px 6px; margin-top: 6px; letter-spacing: .05em;
+}
+/* ── GUIDE / COUNSEL TAB ── */
+.voice-panel {
+  background: var(--surf); border: 1px solid var(--edge); border-radius: 14px;
+  padding: 18px 14px 14px; margin-bottom: 12px; text-align: center;
+}
+.voice-orb-wrap { position: relative; width: 88px; height: 88px; margin: 0 auto 12px; }
+.mic-ring {
+  position: absolute; border-radius: 50%; border: 2px solid;
+  animation: ringOut 2s ease-out infinite; opacity: 0; pointer-events: none;
+}
+.ring1 { inset:-10px; border-color: rgba(107,111,235,.35); animation-delay:0s; }
+.ring2 { inset:-20px; border-color: rgba(107,111,235,.18); animation-delay:0.5s; }
+.ring3 { inset:-32px; border-color: rgba(107,111,235,.08); animation-delay:1s; }
+.mic-ring.listening { border-color: rgba(251,113,133,.4)!important; }
+@keyframes ringOut {
+  0%{ opacity:.8; transform:scale(.7); }
+  100%{ opacity:0; transform:scale(1); }
+}
+.mic-main {
+  width: 88px; height: 88px; border-radius: 50%; border: none; cursor: pointer;
+  background: radial-gradient(circle, rgba(107,111,235,.28) 0%, rgba(107,111,235,.06) 70%);
+  border: 2px solid rgba(107,111,235,.4); font-size: 32px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .25s; position: relative; z-index: 1;
+}
+.mic-main:hover { border-color: rgba(107,111,235,.7); background: radial-gradient(circle, rgba(107,111,235,.38) 0%, rgba(107,111,235,.1) 70%); }
+.mic-main.listening {
+  background: radial-gradient(circle, rgba(251,113,133,.28) 0%, rgba(251,113,133,.06) 70%);
+  border-color: rgba(251,113,133,.6); animation: micGlow 1s ease-in-out infinite;
+}
+.mic-main.speaking-ai {
+  background: radial-gradient(circle, rgba(34,211,238,.22) 0%, rgba(34,211,238,.05) 70%);
+  border-color: rgba(34,211,238,.5); animation: micGlow 1.8s ease-in-out infinite;
+}
+@keyframes micGlow {
+  0%,100%{ box-shadow: 0 0 0 0 currentColor; }
+  50%{ box-shadow: 0 0 22px 4px currentColor; }
+}
+.voice-status { font: 700 10px var(--mono); letter-spacing:.1em; color: var(--dim); margin-bottom: 4px; text-transform: uppercase; }
+.voice-status.listening { color: var(--rose); }
+.voice-status.speaking { color: var(--teal); animation: blink 1s ease-in-out infinite; }
+.voice-transcript {
+  font: 400 12px var(--sans); color: var(--text); min-height: 18px;
+  opacity: .75; font-style: italic; margin-bottom: 10px; padding: 0 8px; line-height: 1.4;
+}
+#voice-wave { display: block; width: 100%; border-radius: 6px; background: #020308; }
+.voice-controls {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-top: 10px; flex-wrap: wrap;
+}
+.vc-btn {
+  font: 600 9px var(--mono); letter-spacing:.07em; padding: 5px 12px;
+  border-radius: 5px; border: 1px solid var(--edge2); background: var(--surf2);
+  color: var(--dim); cursor: pointer; transition: all .15s;
+}
+.vc-btn.on { color: var(--teal); border-color: rgba(34,211,238,.35); background: rgba(34,211,238,.07); }
+.vc-btn:hover { opacity: .8; }
+/* Binaural panel */
+.bn-panel {
+  background: var(--surf); border: 1px solid rgba(139,143,248,.2);
+  border-radius: 12px; padding: 10px 14px 12px; margin-bottom: 12px;
+}
+.bn-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.bn-title { font: 600 10px var(--mono); color: var(--glow); letter-spacing:.07em; text-transform: uppercase; }
+.bn-active { font: 500 9px var(--mono); color: var(--emerald); display: flex; align-items: center; gap: 4px; }
+.bn-active-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--emerald); animation: blink 1.2s infinite; }
+.bn-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+.bn-pre {
+  font: 500 9px var(--mono); letter-spacing:.05em; padding: 5px 10px;
+  border-radius: 5px; border: 1px solid var(--edge); background: var(--surf2);
+  color: var(--dim); cursor: pointer; transition: all .2s;
+}
+.bn-pre.on { color: var(--glow); border-color: rgba(139,143,248,.45); background: rgba(139,143,248,.1); }
+.bn-pre:hover { border-color: rgba(139,143,248,.3); }
+.bn-desc { font: 400 10px var(--mono); color: var(--dim); margin-top: 6px; line-height: 1.4; }
+.guide-hero {
+  background: linear-gradient(135deg, rgba(107,111,235,.12) 0%, rgba(34,211,238,.06) 100%);
+  border: 1px solid var(--edge); border-radius: 14px; padding: 16px;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 12px;
+}
+.guide-orb {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: radial-gradient(circle, rgba(139,143,248,.35) 0%, rgba(107,111,235,.12) 60%);
+  border: 1.5px solid rgba(139,143,248,.35);
+  display: flex; align-items: center; justify-content: center;
+  animation: orbPulse 3s ease-in-out infinite;
+  font: 700 20px var(--mono); color: var(--glow);
+}
+@keyframes orbPulse {
+  0%,100%{ box-shadow:0 0 0 0 rgba(107,111,235,.25); }
+  50%{ box-shadow:0 0 0 10px rgba(107,111,235,0); }
+}
+.guide-name { font: 700 15px var(--mono); color: var(--white); letter-spacing:.05em; }
+.guide-role { font: 400 11px var(--mono); color: var(--dim); margin: 2px 0 8px; }
+.guide-stats { display: flex; gap: 16px; }
+.gs { text-align: center; }
+.gs-n { font: 700 14px var(--mono); color: var(--glow); }
+.gs-l { font: 400 9px var(--mono); color: var(--dim); text-transform: uppercase; letter-spacing:.05em; }
+/* STT */
+.stt-bar {
+  background: var(--surf); border: 1px solid var(--edge); border-radius: 12px;
+  padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+.mic-btn {
+  width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
+  background: var(--surf2); flex-shrink: 0; transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; border: 1.5px solid var(--edge);
+}
+.mic-btn.listening {
+  background: rgba(251,113,133,.12); border-color: var(--rose);
+  animation: micPulse 1s ease-in-out infinite;
+}
+@keyframes micPulse {
+  0%,100%{ box-shadow:0 0 0 0 rgba(251,113,133,.3); }
+  50%{ box-shadow:0 0 0 12px rgba(251,113,133,0); }
+}
+.stt-info { flex: 1; }
+.stt-status { font: 600 10px var(--mono); letter-spacing:.08em; color: var(--dim); text-transform: uppercase; }
+.stt-status.active { color: var(--rose); }
+.stt-transcript {
+  font: 400 12px var(--sans); color: var(--text); margin-top: 3px; min-height: 18px;
+  font-style: italic; opacity: .8;
+}
+.tts-toggle {
+  display: flex; align-items: center; gap: 6px; font: 500 10px var(--mono);
+  color: var(--dim); cursor: pointer; flex-shrink: 0;
+}
+.tts-ico { font-size: 18px; transition: color .2s; }
+.tts-ico.on { color: var(--teal); }
+/* Counsel stream */
+.counsel-stream {
+  background: var(--surf); border: 1px solid var(--edge); border-radius: 12px;
+  overflow: hidden; margin-bottom: 12px;
+}
+.cs-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 14px; border-bottom: 1px solid var(--edge);
+  font: 600 10px var(--mono); color: var(--dim); letter-spacing:.08em; text-transform: uppercase;
+}
+.cs-body { max-height: 280px; overflow-y: auto; }
+.cs-msg { display: flex; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--edge); align-items: flex-start; }
+.cs-avatar {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font: 700 11px var(--mono); margin-top: 1px;
+}
+.cs-avatar.ai { background: rgba(107,111,235,.18); color: var(--glow); border: 1px solid rgba(107,111,235,.35); }
+.cs-avatar.hu { background: rgba(16,185,129,.15); color: var(--emerald); border: 1px solid rgba(16,185,129,.3); }
+.cs-who { font: 500 9px var(--mono); letter-spacing:.06em; color: var(--dim); margin-bottom: 4px; text-transform: uppercase; }
+.cs-text { font: 400 12px var(--sans); color: var(--text); line-height: 1.6; }
+.cs-action-btn {
+  display: inline-block; margin-top: 8px; font: 600 9px var(--mono);
+  border: 1px solid var(--edge2); border-radius: 4px; padding: 4px 10px;
+  color: var(--glow); cursor: pointer; letter-spacing:.05em; transition: background .15s;
+}
+.cs-action-btn:hover { background: rgba(107,111,235,.1); }
+.cs-domain {
+  display: inline-block; font: 500 8px var(--mono); border-radius: 3px;
+  padding: 2px 6px; margin-left: 6px; letter-spacing:.05em;
+  background: rgba(107,111,235,.1); color: var(--glow);
+}
+/* Neuralink panel */
+.nl-section {
+  background: var(--surf); border: 1px solid rgba(139,143,248,.2);
+  border-radius: 12px; overflow: hidden; margin-bottom: 12px;
+}
+.nl-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 14px; border-bottom: 1px solid rgba(139,143,248,.14);
+}
+.nl-title { font: 600 10px var(--mono); color: var(--glow); letter-spacing:.08em; text-transform: uppercase; }
+.nl-sub { font: 400 10px var(--mono); color: var(--dim); margin-top: 1px; }
+.nl-sig {
+  display: flex; align-items: center; gap: 5px;
+  font: 600 9px var(--mono); color: var(--emerald); letter-spacing:.05em;
+}
+.nl-sig-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); animation: blink 1.2s ease-in-out infinite; }
+#nl-eeg { display: block; width: 100%; }
+.nl-bands {
+  display: flex; justify-content: space-around; padding: 6px 14px 8px;
+  border-top: 1px solid var(--edge);
+}
+.nl-band { text-align: center; }
+.nl-band-bar-wrap { width: 28px; height: 28px; margin: 0 auto 3px; display: flex; align-items: flex-end; }
+.nl-band-bar { width: 100%; border-radius: 2px 2px 0 0; transition: height .4s ease; }
+.nl-band-name { font: 500 8px var(--mono); color: var(--dim); letter-spacing:.04em; }
+.nl-band-hz { font: 400 8px var(--mono); color: var(--faint); }
+.nl-capture-row { display: flex; gap: 10px; padding: 8px 14px 12px; align-items: center; }
+.nl-capture-btn {
+  font: 600 10px var(--mono); background: rgba(139,143,248,.12);
+  border: 1px solid rgba(139,143,248,.3); color: var(--glow);
+  border-radius: 6px; padding: 7px 14px; cursor: pointer; transition: background .2s; letter-spacing:.05em;
+}
+.nl-capture-btn:hover { background: rgba(139,143,248,.2); }
+.nl-capture-btn.active { background: rgba(251,113,133,.12); border-color: var(--rose); color: var(--rose); }
+.nl-decoded { flex: 1; font: 400 11px var(--mono); color: var(--text); font-style: italic; min-height: 16px; }
+/* Guidance cards */
+.guide-cards { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.gc {
+  background: var(--surf); border: 1px solid var(--edge);
+  border-left: 3px solid var(--accent); border-radius: 10px; padding: 11px 13px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.gc-ico { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.gc-body { flex: 1; }
+.gc-label { font: 600 9px var(--mono); color: var(--glow); letter-spacing:.07em; text-transform: uppercase; margin-bottom: 4px; }
+.gc-text { font: 400 11px var(--sans); color: var(--text); line-height: 1.5; }
+.gc-conf { font: 500 9px var(--mono); color: var(--dim); margin-top: 4px; }
+.gc-act {
+  font: 600 9px var(--mono); color: var(--accent); border: 1px solid rgba(107,111,235,.3);
+  border-radius: 4px; padding: 4px 10px; cursor: pointer; margin-top: 6px;
+  display: inline-block; transition: background .15s; letter-spacing:.04em;
+}
+.gc-act:hover { background: rgba(107,111,235,.1); }
+
+/* ── ONBOARDING MODAL ── */
+.ob-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(7,8,15,0.92);
+  backdrop-filter: blur(18px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.ob-modal {
+  background: #0C0D1A;
+  border: 1px solid rgba(160,170,255,0.16);
+  border-radius: 18px;
+  width: 100%; max-width: 480px;
+  padding: 36px 32px 28px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+}
+.ob-step { display: none; }
+.ob-step.on { display: block; }
+.ob-eyebrow {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.ob-h {
+  font-family: var(--mono); font-size: 22px; font-weight: 500;
+  color: var(--white); margin-bottom: 6px; line-height: 1.3;
+}
+.ob-sub {
+  font-size: 13px; color: var(--dim); margin-bottom: 26px; line-height: 1.6;
+}
+.ob-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--dim); margin-bottom: 7px;
+}
+.ob-input {
+  width: 100%; background: rgba(160,170,255,0.05);
+  border: 1px solid rgba(160,170,255,0.12);
+  border-radius: 8px; padding: 11px 14px;
+  color: var(--white); font-family: var(--mono); font-size: 13px;
+  outline: none; margin-bottom: 18px;
+  transition: border-color 0.15s;
+}
+.ob-input:focus { border-color: var(--accent); }
+.ob-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+}
+.ob-chip {
+  font-family: var(--mono); font-size: 11px; padding: 7px 14px;
+  border-radius: 20px; border: 1px solid rgba(160,170,255,0.14);
+  background: rgba(160,170,255,0.04); color: var(--dim);
+  cursor: pointer; transition: all 0.14s; user-select: none;
+}
+.ob-chip.on {
+  background: rgba(107,111,235,0.18);
+  border-color: rgba(107,111,235,0.45);
+  color: var(--glow);
+}
+.ob-time-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.ob-next {
+  width: 100%; padding: 13px;
+  background: var(--accent); border: none; border-radius: 9px;
+  color: #fff; font-family: var(--mono); font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; margin-top: 8px;
+  transition: opacity 0.15s;
+}
+.ob-next:hover { opacity: 0.88; }
+.ob-progress {
+  display: flex; gap: 6px; justify-content: center; margin-bottom: 24px;
+}
+.ob-dot-p {
+  width: 24px; height: 3px; border-radius: 2px;
+  background: var(--faint); transition: background 0.3s;
+}
+.ob-dot-p.on { background: var(--accent); }
+.ob-skip {
+  text-align: center; margin-top: 12px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--dim); cursor: pointer; letter-spacing: 0.06em;
+}
+.ob-skip:hover { color: var(--text); }
+
+/* ── STAGE 2 HERALD PANEL ── */
+.s2-panel {
+  background: linear-gradient(135deg, rgba(107,111,235,0.08) 0%, rgba(34,211,238,0.05) 100%);
+  border: 1px solid rgba(107,111,235,0.18);
+  border-radius: 14px; padding: 20px; margin-bottom: 20px;
+}
+.s2-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.s2-title {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--glow);
+}
+.s2-badge {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  padding: 3px 9px; border-radius: 4px;
+  background: rgba(107,111,235,0.15); color: var(--accent);
+}
+.s2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.s2-cell {
+  background: rgba(7,8,15,0.5); border: 1px solid rgba(160,170,255,0.08);
+  border-radius: 9px; padding: 13px;
+}
+.s2-cell-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+.s2-cell-val { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--white); line-height: 1; margin-bottom: 4px; }
+.s2-cell-sub { font-family: var(--mono); font-size: 9px; color: var(--dim); }
+
+.bond-bar-bg {
+  height: 6px; background: rgba(160,170,255,0.08);
+  border-radius: 3px; overflow: hidden; margin: 6px 0 3px;
+}
+.bond-bar-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  transition: width 1s ease;
+}
+
+.emotion-row {
+  display: flex; gap: 6px; margin-bottom: 14px;
+}
+.emo-chip {
+  flex: 1; padding: 7px 4px; border-radius: 7px;
+  text-align: center; font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1px solid transparent; cursor: default;
+  transition: all 0.3s;
+}
+.emo-chip.calm     { background: rgba(16,185,129,0.12);  border-color: rgba(16,185,129,0.3);  color: var(--emerald); }
+.emo-chip.focused  { background: rgba(107,111,235,0.14); border-color: rgba(107,111,235,0.3); color: var(--glow); }
+.emo-chip.elevated { background: rgba(245,158,11,0.12);  border-color: rgba(245,158,11,0.3);  color: var(--amber); }
+.emo-chip.stressed { background: rgba(251,113,133,0.12); border-color: rgba(251,113,133,0.3); color: var(--rose); }
+.emo-chip.dim-chip { background: transparent; border-color: rgba(160,170,255,0.07); color: var(--faint); }
+
+.mem-log { max-height: 120px; overflow-y: auto; }
+.mem-entry {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 8px 0; border-bottom: 1px solid rgba(160,170,255,0.06);
+  font-size: 11.5px;
+}
+.mem-entry:last-child { border-bottom: none; }
+.mem-ts { font-family: var(--mono); font-size: 9px; color: var(--dim); white-space: nowrap; padding-top: 1px; }
+.mem-txt { color: var(--text); line-height: 1.45; }
+.mem-txt strong { color: var(--white); }
+</style>
+
+<!-- ── ONBOARDING MODAL ── -->
+<div class="ob-overlay" id="ob-overlay">
+  <div class="ob-modal">
+    <div class="ob-progress">
+      <div class="ob-dot-p on" id="op1"></div>
+      <div class="ob-dot-p" id="op2"></div>
+      <div class="ob-dot-p" id="op3"></div>
+    </div>
+
+    <!-- Step 1: Identity -->
+    <div class="ob-step on" id="ob-s1">
+      <div class="ob-eyebrow">KITH · Stage 1 Symbiote · Setup</div>
+      <div class="ob-h">What should I call you?</div>
+      <div class="ob-sub">I'm HERALD — your agentic counselor and binaural AI brain. I'll learn your patterns, protect your energy, and guide you. Let's begin.</div>
+      <div class="ob-label">Your name</div>
+      <input class="ob-input" id="ob-name" placeholder="Enter your name…" maxlength="40">
+      <div class="ob-label">Primary intention</div>
+      <div class="ob-chips" id="ob-goal-chips">
+        <div class="ob-chip" onclick="toggleChip(this,'goal')">🎯 Focus</div>
+        <div class="ob-chip" onclick="toggleChip(this,'goal')">🧘 Wellness</div>
+        <div class="ob-chip" onclick="toggleChip(this,'goal')">✦ Creativity</div>
+        <div class="ob-chip" onclick="toggleChip(this,'goal')">⚡ Productivity</div>
+        <div class="ob-chip" onclick="toggleChip(this,'goal')">◎ All of the above</div>
+      </div>
+      <button class="ob-next" onclick="obNext(1)">CONTINUE →</button>
+      <div class="ob-skip" onclick="obSkip()">Skip setup — explore first</div>
+    </div>
+
+    <!-- Step 2: Sleep + Rhythm -->
+    <div class="ob-step" id="ob-s2">
+      <div class="ob-eyebrow">KITH · Circadian Calibration</div>
+      <div class="ob-h">Tell me about your rhythm.</div>
+      <div class="ob-sub">Your sleep schedule anchors everything HERALD tracks — energy, focus windows, stress arcs. Give me your rough pattern.</div>
+      <div class="ob-time-row">
+        <div>
+          <div class="ob-label">I wake around</div>
+          <input class="ob-input" id="ob-wake" type="time" value="07:00" style="margin-bottom:0">
+        </div>
+        <div>
+          <div class="ob-label">I sleep around</div>
+          <input class="ob-input" id="ob-sleep" type="time" value="23:00" style="margin-bottom:0">
+        </div>
+      </div>
+      <div class="ob-label" style="margin-top:18px">Peak energy window (when you feel sharpest)</div>
+      <div class="ob-chips" id="ob-peak-chips">
+        <div class="ob-chip" onclick="toggleChip(this,'peak')">🌅 Early morning</div>
+        <div class="ob-chip" onclick="toggleChip(this,'peak')">☀️ Mid-morning</div>
+        <div class="ob-chip" onclick="toggleChip(this,'peak')">🌤 Afternoon</div>
+        <div class="ob-chip" onclick="toggleChip(this,'peak')">🌙 Night</div>
+      </div>
+      <button class="ob-next" onclick="obNext(2)">CONTINUE →</button>
+    </div>
+
+    <!-- Step 3: Stress + Complete -->
+    <div class="ob-step" id="ob-s3">
+      <div class="ob-eyebrow">KITH · Stress Profile</div>
+      <div class="ob-h">What pulls you off-center?</div>
+      <div class="ob-sub">HERALD monitors your HRV, cortisol signatures, and behavioral shifts. Knowing your triggers lets me intervene earlier — before the spiral, not during it.</div>
+      <div class="ob-chips" id="ob-stress-chips" style="margin-bottom:22px">
+        <div class="ob-chip" onclick="toggleChip(this,'stress')">📧 Inbox volume</div>
+        <div class="ob-chip" onclick="toggleChip(this,'stress')">⏰ Deadlines</div>
+        <div class="ob-chip" onclick="toggleChip(this,'stress')">🗣 Social pressure</div>
+        <div class="ob-chip" onclick="toggleChip(this,'stress')">😴 Sleep debt</div>
+        <div class="ob-chip" onclick="toggleChip(this,'stress')">☕ Caffeine</div>
+        <div class="ob-chip" onclick="toggleChip(this,'stress')">📱 Screen overload</div>
+      </div>
+      <button class="ob-next" onclick="obComplete()">INITIALIZE HERALD →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="bar">
+  <div class="wordmark">
+    KITH
+    <span class="wordmark-badge">Stage 1 · Symbiote</span>
+  </div>
+  <div class="bar-status">
+    <div class="dot-live"></div>
+    <span id="b-events">892</span> events
+    <span id="b-days">14d 6h</span>
+    <span id="b-battery">87%</span>
+    <span class="ai-link-badge">AI LINK <span class="ai-link-dot" id="ai-link-dot"></span></span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tab-row">
+  <button class="tab-btn on" onclick="setTab('sense',this)">Sense</button>
+  <button class="tab-btn" onclick="setTab('know',this)">Know</button>
+  <button class="tab-btn" onclick="setTab('ask',this)">Ask</button>
+  <button class="tab-btn" onclick="setTab('agent',this)">Agent</button>
+  <button class="tab-btn" onclick="setTab('mind',this)">Mind</button>
+  <button class="tab-btn" onclick="setTab('guide',this)">Guide</button>
+</div>
+
+<div class="content">
+
+<!-- ── SENSE ── -->
+<div id="v-sense" class="view on">
+
+  <div class="sense-top">
+    <div class="device-col">
+      <div class="device-form-toggle">
+        <button class="dfbtn on" onclick="setForm('pendant',this)">Pendant</button>
+        <button class="dfbtn" onclick="setForm('band',this)">Band</button>
+      </div>
+      <canvas id="device-canvas" width="140" height="180"></canvas>
+    </div>
+
+    <div>
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase;margin-bottom:12px;">Sensor channels · all active</div>
+      <div class="sensor-list">
+        <div class="sl-row">
+          <div class="sl-pip" style="background:#60A5FA;box-shadow:0 0 7px #60A5FA88"></div>
+          <div class="sl-name">Vision</div>
+          <div class="sl-bar-wrap"><div class="sl-bar" id="sb-vis" style="width:70%;background:#60A5FA"></div></div>
+          <div class="sl-val" id="sv-vis">14.2 fps</div>
+        </div>
+        <div class="sl-row">
+          <div class="sl-pip" style="background:#A78BFA;box-shadow:0 0 7px #A78BFA88"></div>
+          <div class="sl-name">Audio</div>
+          <div class="sl-bar-wrap"><div class="sl-bar" id="sb-aud" style="width:55%;background:#A78BFA"></div></div>
+          <div class="sl-val" id="sv-aud">−42 dB</div>
+        </div>
+        <div class="sl-row">
+          <div class="sl-pip" style="background:#22D3EE;box-shadow:0 0 7px #22D3EE88"></div>
+          <div class="sl-name">Motion</div>
+          <div class="sl-bar-wrap"><div class="sl-bar" id="sb-mot" style="width:67%;background:#22D3EE"></div></div>
+          <div class="sl-val" id="sv-mot">0.94 m/s</div>
+        </div>
+        <div class="sl-row">
+          <div class="sl-pip" style="background:#FB7185;box-shadow:0 0 7px #FB718588"></div>
+          <div class="sl-name">Biometric</div>
+          <div class="sl-bar-wrap"><div class="sl-bar" id="sb-bio" style="width:52%;background:#FB7185"></div></div>
+          <div class="sl-val" id="sv-bio">72 bpm</div>
+        </div>
+        <div class="sl-row">
+          <div class="sl-pip" style="background:#10B981;box-shadow:0 0 7px #10B98188"></div>
+          <div class="sl-name">Environ</div>
+          <div class="sl-bar-wrap"><div class="sl-bar" id="sb-env" style="width:60%;background:#10B981"></div></div>
+          <div class="sl-val" id="sv-env">71.3°F</div>
+        </div>
+        <div class="sl-row">
+          <div class="sl-pip" style="background:#F59E0B;box-shadow:0 0 7px #F59E0B88"></div>
+          <div class="sl-name">Proximity</div>
+          <div class="sl-bar-wrap"><div class="sl-bar" id="sb-prox" style="width:45%;background:#F59E0B"></div></div>
+          <div class="sl-val" id="sv-prox">3 devices</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-n" id="s-events">892</div>
+      <div class="stat-l">Events Today</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n" id="s-patterns">18</div>
+      <div class="stat-l">Patterns</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n" id="s-adapts">147</div>
+      <div class="stat-l">Adaptations</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n" id="s-catalog">312</div>
+      <div class="stat-l">Catalog Entries</div>
+    </div>
+  </div>
+
+  <div class="sensor-grid">
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-label">Vision</div>
+        <div class="sc-status s-active">ACTIVE</div>
+      </div>
+      <div class="sc-val" id="cv-vis">14.2 fps</div>
+      <canvas class="sc-canvas" id="c-vis"></canvas>
+      <div class="sc-desc">Environment mapping · Object recognition</div>
+    </div>
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-label">Audio</div>
+        <div class="sc-status s-active">ACTIVE</div>
+      </div>
+      <div class="sc-val" id="cv-aud">−42 dB</div>
+      <canvas class="sc-canvas" id="c-aud"></canvas>
+      <div class="sc-desc">Voice recognition · Ambient context</div>
+    </div>
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-label">Motion</div>
+        <div class="sc-status s-active">ACTIVE</div>
+      </div>
+      <div class="sc-val" id="cv-mot">0.94 m/s</div>
+      <canvas class="sc-canvas" id="c-mot"></canvas>
+      <div class="sc-desc">Gait · Posture · Activity</div>
+    </div>
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-label">Biometric</div>
+        <div class="sc-status s-active">ACTIVE</div>
+      </div>
+      <div class="sc-val" id="cv-bio">72 bpm</div>
+      <canvas class="sc-canvas" id="c-bio"></canvas>
+      <div class="sc-desc">Heart rate · HRV · Stress index</div>
+    </div>
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-label">Environment</div>
+        <div class="sc-status s-active">ACTIVE</div>
+      </div>
+      <div class="sc-val" id="cv-env">71.3°F</div>
+      <canvas class="sc-canvas" id="c-env"></canvas>
+      <div class="sc-desc">Temp · Air quality · Light level</div>
+    </div>
+    <div class="sc">
+      <div class="sc-head">
+        <div class="sc-label">Proximity</div>
+        <div class="sc-status s-sampling">SAMPLING</div>
+      </div>
+      <div class="sc-val" id="cv-prox">3 devices</div>
+      <canvas class="sc-canvas" id="c-prox"></canvas>
+      <div class="sc-desc">Nearby devices · Faces · Location</div>
+    </div>
+  </div>
+
+  <div class="term">
+    <div class="term-head">
+      <div class="tdot" style="background:#FF5F57"></div>
+      <div class="tdot" style="background:#FFBD2E"></div>
+      <div class="tdot" style="background:#28C840"></div>
+      <div class="term-title">KITH · raw event stream</div>
+      <div class="term-live">● LIVE</div>
+    </div>
+    <div class="term-body" id="term-body"></div>
+  </div>
+</div>
+
+<!-- ── KNOW ── -->
+<div id="v-know" class="view">
+  <div class="sub-row">
+    <button class="sub-btn on" onclick="setSub('user',this)">User</button>
+    <button class="sub-btn" onclick="setSub('env',this)">Environment</button>
+    <button class="sub-btn" onclick="setSub('patterns',this)">Patterns</button>
+    <button class="sub-btn" onclick="setSub('adapt',this)">Adaptations</button>
+    <button class="sub-btn" onclick="setSub('priv',this)">Privacy</button>
+  </div>
+
+  <!-- USER -->
+  <div id="sub-user" class="sub-view on">
+    <div class="sec-h"><div class="sec-title">Schedule</div><div class="sec-ct">6 entries</div></div>
+    <div class="cat-grid">
+      <div class="ci">
+        <div class="ci-lbl">Wake time</div>
+        <div class="ci-val">6:58 am</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:92%"></div></div>
+        <div class="ci-meta">σ 12 min · 14 days observed</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Focus peak</div>
+        <div class="ci-val">10 am – 11 am</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:94%"></div></div>
+        <div class="ci-meta">HRV + motion coherent · 13 of 14 days</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Creative hours</div>
+        <div class="ci-val">8 pm – 10 pm</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:74%"></div></div>
+        <div class="ci-meta">Keystroke + voice rate ↑ · emerging</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Low-energy window</div>
+        <div class="ci-val">2 pm – 3:30 pm</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:81%"></div></div>
+        <div class="ci-meta">Motion ↓ HRV ↓ · consistent</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Morning routine</div>
+        <div class="ci-val">23 min</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:95%"></div></div>
+        <div class="ci-meta">Updated from 30 min · measured 14 days</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Wind-down</div>
+        <div class="ci-val">11:15 pm</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:67%"></div></div>
+        <div class="ci-meta">Light ↓ motion ↓ · building pattern</div>
+      </div>
+    </div>
+
+    <hr class="sec-divider">
+    <div class="sec-h"><div class="sec-title">Preferences</div><div class="sec-ct">5 entries</div></div>
+    <div class="cat-grid">
+      <div class="ci">
+        <div class="ci-lbl">Preferred temperature</div>
+        <div class="ci-val">71°F (22°C)</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:89%"></div></div>
+        <div class="ci-meta">Adjusts +2° when in deep focus</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Ideation context</div>
+        <div class="ci-val">Café · ambient noise</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:79%"></div></div>
+        <div class="ci-meta">Voice memo rate 3× higher here</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Build context</div>
+        <div class="ci-val">Home studio · quiet</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:91%"></div></div>
+        <div class="ci-meta">Longer focus, fewer interruptions</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Focus audio</div>
+        <div class="ci-val">Lo-fi / no lyrics</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:83%"></div></div>
+        <div class="ci-meta">Audio channel · consistent pattern</div>
+      </div>
+    </div>
+
+    <hr class="sec-divider">
+    <div class="sec-h"><div class="sec-title">Active projects</div><div class="sec-ct">6 detected</div></div>
+    <div class="cat-grid">
+      <div class="ci">
+        <div class="ci-lbl">Project · frequency: high</div>
+        <div class="ci-val">Relay</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:95%"></div></div>
+        <div class="ci-meta">Distributed knowledge relay · context mesh · launch target Oct</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Project · frequency: high</div>
+        <div class="ci-val">ORBIS</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:90%"></div></div>
+        <div class="ci-meta">Neural cartography platform · bio-sync layer · phase 1</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Project · frequency: med</div>
+        <div class="ci-val">SIGNAL</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:72%"></div></div>
+        <div class="ci-meta">Biometric research · wearable sensor data · active</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Project · emerging</div>
+        <div class="ci-val">KITH</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:42%"></div></div>
+        <div class="ci-meta">This device · stage 1 symbiote · new cluster</div>
+      </div>
+    </div>
+
+    <hr class="sec-divider">
+    <div class="sec-h"><div class="sec-title">Stress signals</div><div class="sec-ct">4 patterns</div></div>
+    <div class="cat-grid">
+      <div class="ci">
+        <div class="ci-lbl">Peak stress window</div>
+        <div class="ci-val">Mon 9 – 11 am</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:87%"></div></div>
+        <div class="ci-meta">HRV lowest of the week · recurring</div>
+      </div>
+      <div class="ci">
+        <div class="ci-lbl">Recovery window</div>
+        <div class="ci-val">Thu 4 – 6 pm</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:79%"></div></div>
+        <div class="ci-meta">HRV normalizes · post-gym effect</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENVIRONMENT -->
+  <div id="sub-env" class="sub-view">
+    <div class="sec-h"><div class="sec-title">Locations</div><div class="sec-ct">4 cataloged</div></div>
+
+    <div class="loc-c">
+      <div class="loc-h">
+        <div class="loc-name">Home studio</div>
+        <div class="loc-hrs">9.2 h / day avg</div>
+      </div>
+      <div class="loc-bar"><div class="loc-fill" style="width:92%;background:linear-gradient(90deg,var(--accent),var(--glow))"></div></div>
+      <div class="loc-tags">
+        <span class="tag">Primary workspace</span>
+        <span class="tag">Quiet</span>
+        <span class="tag">Build sessions</span>
+        <span class="tag">71°F preferred</span>
+      </div>
+    </div>
+
+    <div class="loc-c">
+      <div class="loc-h">
+        <div class="loc-name">Café (frequent)</div>
+        <div class="loc-hrs">2.1 h / visit · 3× week</div>
+      </div>
+      <div class="loc-bar"><div class="loc-fill" style="width:42%;background:linear-gradient(90deg,var(--amber),#F59E0B88)"></div></div>
+      <div class="loc-tags">
+        <span class="tag">Ideation context</span>
+        <span class="tag">Voice memos ↑↑</span>
+        <span class="tag">Ambient noise OK</span>
+      </div>
+    </div>
+
+    <div class="loc-c">
+      <div class="loc-h">
+        <div class="loc-name">Gym</div>
+        <div class="loc-hrs">1.4 h · Tue / Thu / Sat</div>
+      </div>
+      <div class="loc-bar"><div class="loc-fill" style="width:28%;background:linear-gradient(90deg,var(--teal),var(--emerald))"></div></div>
+      <div class="loc-tags">
+        <span class="tag">Motion ↑↑</span>
+        <span class="tag">Post-gym clarity window</span>
+        <span class="tag">90-min recovery</span>
+      </div>
+    </div>
+
+    <div class="loc-c">
+      <div class="loc-h">
+        <div class="loc-name">Transit (3 routes)</div>
+        <div class="loc-hrs">0.8 h / day avg</div>
+      </div>
+      <div class="loc-bar"><div class="loc-fill" style="width:16%;background:var(--faint)"></div></div>
+      <div class="loc-tags">
+        <span class="tag">Audio content ↑</span>
+        <span class="tag">Podcast on commute</span>
+      </div>
+    </div>
+
+    <hr class="sec-divider">
+    <div class="sec-h"><div class="sec-title">Context map</div><div class="sec-ct">7 triggers</div></div>
+    <div style="overflow-x:auto">
+    <table class="ctx-table">
+      <tr>
+        <th>Location</th><th>When</th><th>Predicted activity</th><th>Conf.</th>
+      </tr>
+      <tr>
+        <td>Home studio</td>
+        <td><span style="color:var(--dim)">10 am – 12 pm</span></td>
+        <td><span style="color:var(--emerald)">Deep work</span></td>
+        <td>94%</td>
+      </tr>
+      <tr>
+        <td>Café</td>
+        <td><span style="color:var(--dim)">Any time</span></td>
+        <td><span style="color:var(--amber)">Ideation</span></td>
+        <td>87%</td>
+      </tr>
+      <tr>
+        <td>Home studio</td>
+        <td><span style="color:var(--dim)">8 – 10 pm</span></td>
+        <td><span style="color:var(--glow)">Creative build</span></td>
+        <td>76%</td>
+      </tr>
+      <tr>
+        <td>Transit</td>
+        <td><span style="color:var(--dim)">Any time</span></td>
+        <td><span style="color:var(--text)">Audio learning</span></td>
+        <td>82%</td>
+      </tr>
+      <tr>
+        <td>Gym</td>
+        <td><span style="color:var(--dim)">Tue / Thu / Sat</span></td>
+        <td><span style="color:var(--teal)">Physical recovery</span></td>
+        <td>91%</td>
+      </tr>
+      <tr>
+        <td>Home</td>
+        <td><span style="color:var(--dim)">2 – 3:30 pm</span></td>
+        <td><span style="color:var(--dim)">Rest / recharge</span></td>
+        <td>79%</td>
+      </tr>
+      <tr>
+        <td>Any location</td>
+        <td><span style="color:var(--dim)">HRV ↓ motion ↓</span></td>
+        <td><span style="color:var(--rose)">Stress event</span></td>
+        <td>88%</td>
+      </tr>
+    </table>
+    </div>
+  </div>
+
+  <!-- PATTERNS -->
+  <div id="sub-patterns" class="sub-view">
+    <div class="sec-h"><div class="sec-title">Confirmed routines</div><div class="sec-ct">18 detected</div></div>
+
+    <div class="rt-row">
+      <div class="rt-ico">☀️</div>
+      <div class="rt-body"><div class="rt-name">Morning routine</div><div class="rt-when">6:58 am · 23 min · daily</div></div>
+      <div class="conf-chip ch-hi">HIGH</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-ico">☕</div>
+      <div class="rt-body"><div class="rt-name">Coffee → studio setup</div><div class="rt-when">After wake · ~15 min</div></div>
+      <div class="conf-chip ch-hi">HIGH</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-ico">🎯</div>
+      <div class="rt-body"><div class="rt-name">Deep work block</div><div class="rt-when">10 am – 12 pm · do not disturb</div></div>
+      <div class="conf-chip ch-hi">HIGH</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-ico">🍽</div>
+      <div class="rt-body"><div class="rt-name">Lunch + walk</div><div class="rt-when">12 – 1 pm · motion outside</div></div>
+      <div class="conf-chip ch-med">MED</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-ico">💡</div>
+      <div class="rt-body"><div class="rt-name">Café ideation session</div><div class="rt-when">Tue / Thu · afternoon</div></div>
+      <div class="conf-chip ch-med">MED</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-ico">🌙</div>
+      <div class="rt-body"><div class="rt-name">Evening creative build</div><div class="rt-when">8 – 10 pm · home studio</div></div>
+      <div class="conf-chip ch-med">MED</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-ico">🏋</div>
+      <div class="rt-body"><div class="rt-name">Gym session</div><div class="rt-when">Tue / Thu / Sat · 1.4 h avg</div></div>
+      <div class="conf-chip ch-hi">HIGH</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-ico">📱</div>
+      <div class="rt-body"><div class="rt-name">Evening messages review</div><div class="rt-when">7 – 8 pm · high response rate</div></div>
+      <div class="conf-chip ch-new">EMERGING</div>
+    </div>
+
+    <hr class="sec-divider">
+    <div class="sec-h"><div class="sec-title">Anomalies this week</div><div class="sec-ct">3 logged</div></div>
+    <div class="adp-list">
+      <div class="adp">
+        <div class="adp-ico" style="background:rgba(245,158,11,.12);color:var(--amber)">⚠</div>
+        <div class="adp-body">
+          <div class="adp-head">Left home 2 h earlier than usual</div>
+          <div class="adp-sub">Departure at 7:42 am vs. avg 9:51 am. No pattern match — awaiting context.</div>
+          <div class="adp-when">Tue 7 Sep</div>
+        </div>
+      </div>
+      <div class="adp">
+        <div class="adp-ico" style="background:rgba(251,113,133,.12);color:var(--rose)">↑</div>
+        <div class="adp-body">
+          <div class="adp-head">Elevated HRV extended 4 h post-gym</div>
+          <div class="adp-sub">Typical recovery window is 90 min. Possible: heavier session or new supplement.</div>
+          <div class="adp-when">Thu 8 Sep</div>
+        </div>
+      </div>
+      <div class="adp">
+        <div class="adp-ico" style="background:rgba(96,165,250,.12);color:#60A5FA">🌙</div>
+        <div class="adp-body">
+          <div class="adp-head">Late work session at 12:30 am</div>
+          <div class="adp-sub">80 min after normal wind-down. Inferred: launch deadline proximity (Relay · October).</div>
+          <div class="adp-when">Fri 9 Sep</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADAPTATIONS -->
+  <div id="sub-adapt" class="sub-view">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;">
+      <div>
+        <div style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--white)">147</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.06em">adaptations · 14 days</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:var(--mono);font-size:26px;font-weight:500;color:var(--amber)">2</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.06em">pending confirmation</div>
+      </div>
+    </div>
+
+    <div class="adp-list">
+      <div class="adp pending" id="adp1">
+        <div class="adp-ico" style="background:rgba(245,158,11,.12);color:var(--amber)">?</div>
+        <div class="adp-body">
+          <div class="adp-head">Morning routine: 30 min → 23 min</div>
+          <div class="adp-sub">Measured 14 consecutive mornings. Actual duration consistently 23 min. Proposing update to catalog.</div>
+          <div class="adp-when">Pending confirmation</div>
+          <div class="adp-actions">
+            <button class="adp-yes" onclick="confirmAdp('adp1',this)">✓ Confirm</button>
+            <button class="adp-no" onclick="rejectAdp('adp1',this)">Keep 30 min</button>
+          </div>
+        </div>
+      </div>
+      <div class="adp pending" id="adp2">
+        <div class="adp-ico" style="background:rgba(245,158,11,.12);color:var(--amber)">?</div>
+        <div class="adp-body">
+          <div class="adp-head">Café → reclassified as ideation context</div>
+          <div class="adp-sub">Voice memo rate 3× higher at café. Keystroke rate lower. Proposing: ideation context, not workspace.</div>
+          <div class="adp-when">Pending confirmation</div>
+          <div class="adp-actions">
+            <button class="adp-yes" onclick="confirmAdp('adp2',this)">✓ Confirm</button>
+            <button class="adp-no" onclick="rejectAdp('adp2',this)">Keep as workspace</button>
+          </div>
+        </div>
+      </div>
+      <div class="adp">
+        <div class="adp-ico" style="background:rgba(16,185,129,.12);color:var(--emerald)">✓</div>
+        <div class="adp-body">
+          <div class="adp-head">Focus peak narrowed: 10–11 am (not 9 am–12 pm)</div>
+          <div class="adp-sub">Biometric coherence — HRV and motion — peaks in the first hour of the block.</div>
+          <div class="adp-when">Auto-confirmed · 2 days ago</div>
+        </div>
+      </div>
+      <div class="adp">
+        <div class="adp-ico" style="background:rgba(16,185,129,.12);color:var(--emerald)">✓</div>
+        <div class="adp-body">
+          <div class="adp-head">Preferred temperature: 68°F → 71°F</div>
+          <div class="adp-sub">Thermostat adjustments observed. Adjusts up 2°F during deep focus.</div>
+          <div class="adp-when">Auto-confirmed · 5 days ago</div>
+        </div>
+      </div>
+      <div class="adp">
+        <div class="adp-ico" style="background:rgba(16,185,129,.12);color:var(--emerald)">✓</div>
+        <div class="adp-body">
+          <div class="adp-head">Gym: promoted from "sometimes" to 3× weekly confirmed routine</div>
+          <div class="adp-sub">Motion data confirms Tue / Thu / Sat pattern for 3 consecutive weeks.</div>
+          <div class="adp-when">Auto-confirmed · 7 days ago</div>
+        </div>
+      </div>
+      <div class="adp">
+        <div class="adp-ico" style="background:rgba(107,111,235,.12);color:var(--glow)">↻</div>
+        <div class="adp-body">
+          <div class="adp-head">KITH added to active project list</div>
+          <div class="adp-sub">New keyword cluster detected: "symbiote", "pendant", "wearable". Emerging frequency logged.</div>
+          <div class="adp-when">Auto · 1 day ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVACY -->
+  <div id="sub-priv" class="sub-view">
+    <div class="sec-h"><div class="sec-title">Data control</div><div class="sec-ct">6 categories</div></div>
+    <div style="font-size:12px;color:var(--dim);margin-bottom:14px;line-height:1.6;">All raw sensor data stays on the device. Only derived insights — patterns and catalog entries — move to the Nova Digitus relationship layer. Toggle any category off to exclude it entirely.</div>
+
+    <div class="priv-grid">
+      <div class="priv-row">
+        <div class="priv-dot" style="background:#60A5FA"></div>
+        <div class="priv-info">
+          <div class="priv-cat">Vision</div>
+          <div class="priv-where">Raw: local · Patterns: Nova Digitus</div>
+        </div>
+        <div class="priv-toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="priv-row">
+        <div class="priv-dot" style="background:#A78BFA"></div>
+        <div class="priv-info">
+          <div class="priv-cat">Audio</div>
+          <div class="priv-where">Raw: local only · No cloud</div>
+        </div>
+        <div class="priv-toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="priv-row">
+        <div class="priv-dot" style="background:#22D3EE"></div>
+        <div class="priv-info">
+          <div class="priv-cat">Motion</div>
+          <div class="priv-where">Raw: local · Activity: Nova Digitus</div>
+        </div>
+        <div class="priv-toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="priv-row">
+        <div class="priv-dot" style="background:#FB7185"></div>
+        <div class="priv-info">
+          <div class="priv-cat">Biometric</div>
+          <div class="priv-where">Raw: local only · Never synced</div>
+        </div>
+        <div class="priv-toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="priv-row">
+        <div class="priv-dot" style="background:#10B981"></div>
+        <div class="priv-info">
+          <div class="priv-cat">Environment</div>
+          <div class="priv-where">Context only: Nova Digitus</div>
+        </div>
+        <div class="priv-toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="priv-row">
+        <div class="priv-dot" style="background:#F59E0B"></div>
+        <div class="priv-info">
+          <div class="priv-cat">Proximity</div>
+          <div class="priv-where">Device IDs: local · Location: Nova Digitus</div>
+        </div>
+        <div class="priv-toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <div class="priv-layer">
+      <div class="priv-layer-h">NOVA DIGITUS RELATIONSHIP LAYER</div>
+      <div class="priv-layer-p">The raw sensor stream never leaves the device. What reaches the Nova Digitus layer is <strong>derived insight only</strong> — schedule patterns, context triggers, adaptation proposals. This is the layer Nova Digitus owns: not the hardware, not the VLA model, but the <strong>consent framework, the knowledge schema, the handoff protocol</strong>, and the trust calibration engine. When a full humanoid partner arrives at Stage 2, this catalog is what makes the handoff meaningful — it already knows your world. Nothing trains a foundation model without explicit opt-in.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ASK ── -->
+<div id="v-ask" class="view">
+  <div class="ask-intro">
+    <div class="ask-intro-h">Ask what KITH knows</div>
+    <div class="ask-intro-sub">Queries draw on 312 catalog entries across 14 days of observation.</div>
+  </div>
+
+  <div class="chip-row">
+    <div class="chip" onclick="doChip(this,'What is my peak focus time?')">Peak focus time?</div>
+    <div class="chip" onclick="doChip(this,'Where do I do my best work?')">Best work location?</div>
+    <div class="chip" onclick="doChip(this,'What stresses me out?')">What stresses me?</div>
+    <div class="chip" onclick="doChip(this,'What are my weekly patterns?')">Weekly patterns?</div>
+    <div class="chip" onclick="doChip(this,'What projects am I working on?')">My projects?</div>
+    <div class="chip" onclick="doChip(this,'How long is my morning routine?')">Morning routine?</div>
+  </div>
+
+  <div class="ask-row">
+    <input class="ask-input" id="ask-in" placeholder="Ask anything KITH has cataloged about you…" onkeydown="if(event.key==='Enter')doAsk()">
+    <button class="ask-go" onclick="doAsk()">Ask →</button>
+  </div>
+
+  <div class="resp-card" id="resp-card">
+    <div class="resp-empty">— select a question or type your own —</div>
+  </div>
+</div>
+
+<!-- ── AGENT ── -->
+<div id="v-agent" class="view">
+
+  <!-- Network Status -->
+  <div class="ag-section">
+    <div class="ag-h">
+      Multi-agent network
+      <span class="ag-badge">3 CONNECTED</span>
+    </div>
+    <div class="agent-net">
+      <div class="net-node active" id="nn-kith">
+        <div class="nn-ico">◉</div>
+        <div class="nn-name">KITH LOCAL</div>
+        <div class="nn-status"><span class="nn-dot on"></span>On-device inference</div>
+      </div>
+      <div class="net-node active" id="nn-nova">
+        <div class="nn-ico">◈</div>
+        <div class="nn-name">NOVA DIGITUS</div>
+        <div class="nn-status"><span class="nn-dot on" id="nova-dot"></span><span id="nova-label">Relationship layer</span></div>
+      </div>
+      <div class="net-node active" id="nn-hnet">
+        <div class="nn-ico">◎</div>
+        <div class="nn-name">HUMANOID NET</div>
+        <div class="nn-status"><span class="nn-dot on"></span>Stage 2 ready</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bidirectional Query Log -->
+  <div class="ag-section">
+    <div class="ag-h">
+      Device ⇄ AI query stream
+      <span class="qlog-live">● LIVE</span>
+    </div>
+    <div class="qlog">
+      <div class="qlog-head">
+        <span>⇅</span> bidirectional · auto queries + human dispatch
+      </div>
+      <div class="qlog-body" id="qlog-body"></div>
+    </div>
+  </div>
+
+  <!-- Two column: Knowledge drops + Task queue -->
+  <div class="ag-two-col">
+    <div>
+      <div class="ag-h">AI → Device · knowledge drops</div>
+      <div class="kd-list" id="kd-list">
+        <div class="kd kd-insight">
+          <div class="kd-ico">🧠</div>
+          <div class="kd-body">
+            <div class="kd-head">Focus window approaching</div>
+            <div class="kd-sub">10 am peak in 23 min. Notifications paused.</div>
+            <div class="kd-time">Nova Digitus · just now</div>
+          </div>
+        </div>
+        <div class="kd">
+          <div class="kd-ico">📡</div>
+          <div class="kd-body">
+            <div class="kd-head">Relay: 3 context nodes synced</div>
+            <div class="kd-sub">Knowledge mesh updated · Oct deadline signal confirmed.</div>
+            <div class="kd-time">Humanoid Net · 4 min ago</div>
+          </div>
+        </div>
+        <div class="kd">
+          <div class="kd-ico">⚡</div>
+          <div class="kd-body">
+            <div class="kd-head">Monday stress pre-empt staged</div>
+            <div class="kd-sub">Breathing protocol queued for Mon 9 am window.</div>
+            <div class="kd-time">KITH Local · 12 min ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="ag-h">AI task queue <span class="ag-badge" id="task-ct">3 ACTIVE</span></div>
+      <div class="tq-list" id="tq-list">
+        <div class="tq">
+          <div class="tq-spinner"></div>
+          <div class="tq-body">
+            <div class="tq-name">Pattern synthesis · weekly</div>
+            <div class="tq-meta">Running 2 min · 73% complete</div>
+          </div>
+          <div class="tq-agent">Nova</div>
+        </div>
+        <div class="tq">
+          <div class="tq-spinner"></div>
+          <div class="tq-body">
+            <div class="tq-name">Relay context graph mapping</div>
+            <div class="tq-meta">Knowledge mesh scan · live</div>
+          </div>
+          <div class="tq-agent">HNet</div>
+        </div>
+        <div class="tq">
+          <div class="tq-spinner done"></div>
+          <div class="tq-body">
+            <div class="tq-name">Morning routine catalog update</div>
+            <div class="tq-meta">Entry finalized · confirmed</div>
+          </div>
+          <div class="tq-agent" style="color:var(--emerald);background:rgba(16,185,129,.12)">DONE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command console -->
+  <div class="ag-section">
+    <div class="ag-h">Command console · dispatch to AI</div>
+    <div class="cmd-wrap">
+      <div class="cmd-area">
+        <div class="cmd-prompt">›</div>
+        <input class="cmd-in" id="cmd-in" placeholder="Query AI · dispatch task · set context…" onkeydown="if(event.key==='Enter')doCmd()">
+        <button class="cmd-send" onclick="doCmd()">DISPATCH</button>
+      </div>
+      <div class="cmd-history">
+        <span>Quick dispatch:</span>
+        <span class="cmd-chip" onclick="setCmd(this)">What should I focus on now?</span>
+        <span class="cmd-chip" onclick="setCmd(this)">Summarize my week patterns</span>
+        <span class="cmd-chip" onclick="setCmd(this)">Map my cognitive patterns</span>
+        <span class="cmd-chip" onclick="setCmd(this)">What's working for me?</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── MIND / AGI ── -->
+<div id="v-mind" class="view">
+
+  <div class="mind-top">
+    <!-- Surroundings scanner -->
+    <div class="surround-wrap">
+      <div class="surround-head">Surroundings · Live Scan</div>
+      <canvas id="surround-canvas" width="160" height="160"></canvas>
+      <div class="surround-readouts">
+        <div class="sr-row">
+          <span class="sr-lbl" style="color:#22D3EE">🌬 Wind</span>
+          <span class="sr-val" id="sr-wind" style="color:#22D3EE">2.8 mph</span>
+        </div>
+        <div class="sr-row">
+          <span class="sr-lbl" style="color:#F59E0B">☀ Solar</span>
+          <span class="sr-val" id="sr-solar" style="color:#F59E0B">68% irr.</span>
+        </div>
+        <div class="sr-row">
+          <span class="sr-lbl" style="color:#FB7185">🌡 Thermal</span>
+          <span class="sr-val" id="sr-therm" style="color:#FB7185">+4.1°F Δ</span>
+        </div>
+        <div class="sr-row">
+          <span class="sr-lbl" style="color:#A78BFA">⚡ EM</span>
+          <span class="sr-val" id="sr-em" style="color:#A78BFA">48 μT</span>
+        </div>
+        <div class="sr-row">
+          <span class="sr-lbl" style="color:#10B981">👤 Presence</span>
+          <span class="sr-val" style="color:#10B981">1 human</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGI Brain panel -->
+    <div class="agi-panel">
+      <div class="agi-panel-head">
+        <div class="agi-pulse"></div>
+        <div>
+          <div class="agi-name">AGI BRAIN</div>
+          <div class="agi-sub">Agentic · Mutually learning</div>
+        </div>
+        <div class="agi-meta-nums">
+          <div class="agi-meta-n">
+            <div class="agi-meta-n-val" id="agi-taught-n">8</div>
+            <div class="agi-meta-n-l">Taught you</div>
+          </div>
+          <div class="agi-meta-n">
+            <div class="agi-meta-n-val" id="agi-learned-n" style="color:var(--emerald)">6</div>
+            <div class="agi-meta-n-l">Learned from you</div>
+          </div>
+        </div>
+      </div>
+      <canvas id="agi-canvas" height="110"></canvas>
+      <div class="agi-bottom-stats">
+        <div class="agi-b-stat">
+          <div class="agi-b-n">847k</div>
+          <div class="agi-b-l">Knowledge domains</div>
+        </div>
+        <div class="agi-b-stat">
+          <div class="agi-b-n" style="color:var(--teal)">∞</div>
+          <div class="agi-b-l">Cross-domain synthesis</div>
+        </div>
+        <div class="agi-b-stat">
+          <div class="agi-b-n" style="color:var(--amber)">Live</div>
+          <div class="agi-b-l">Surroundings awareness</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGI Teaching Conversation -->
+  <div class="agi-stream">
+    <div class="agi-stream-head">
+      AGI ⇄ HUMAN · Live teaching stream
+      <span class="agi-status-badge" id="agi-status-badge">● PROCESSING</span>
+    </div>
+    <div class="agi-body" id="agi-body"></div>
+  </div>
+
+  <!-- Mutual learning log -->
+  <div class="ml-grid">
+    <div class="ml-panel">
+      <div class="ml-head">AGI LEARNED FROM YOU</div>
+      <div class="ml-body" id="ml-from-human">
+        <div class="ml-item"><span class="ml-tick" style="color:var(--emerald)">↗</span>Creative peaks shift to evening on gym days</div>
+        <div class="ml-item"><span class="ml-tick" style="color:var(--emerald)">↗</span>Prototype faster post-café — ideation context encoded</div>
+        <div class="ml-item"><span class="ml-tick" style="color:var(--emerald)">↗</span>Systems-level thinking across all 6 projects</div>
+        <div class="ml-item"><span class="ml-tick" style="color:var(--emerald)">↗</span>Relay + ORBIS semantically linked in language patterns</div>
+        <div class="ml-item"><span class="ml-tick" style="color:var(--emerald)">↗</span>Symbiosis over replacement — your design philosophy</div>
+      </div>
+    </div>
+    <div class="ml-panel">
+      <div class="ml-head">YOU LEARNED FROM AGI</div>
+      <div class="ml-body" id="ml-from-agi">
+        <div class="ml-item"><span class="ml-tick" style="color:var(--glow)">↙</span>Betz limit: max 59.3% wind energy capturable</div>
+        <div class="ml-item"><span class="ml-tick" style="color:var(--glow)">↙</span>Schumann resonance: 7.83Hz Earth EM baseline pulse</div>
+        <div class="ml-item"><span class="ml-tick" style="color:var(--glow)">↙</span>Thermal gradient: free continuous energy in any building</div>
+        <div class="ml-item"><span class="ml-tick" style="color:var(--glow)">↙</span>Gamma at 40Hz: brain + planet in electromagnetic sync</div>
+        <div class="ml-item"><span class="ml-tick" style="color:var(--glow)">↙</span>Perovskite: next-gen solar absorber beyond silicon</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Camera / Visual Perception -->
+  <div class="cam-section">
+    <div class="cam-head">
+      <div class="cam-head-l">
+        <div class="cam-icon">◎</div>
+        <div>
+          <div class="cam-title">VISUAL PERCEPTION · Camera Ingestion</div>
+          <div class="cam-sub">AGI sees through your lens · Environmental + human awareness</div>
+        </div>
+      </div>
+      <button class="cam-btn" id="cam-btn" onclick="toggleCamera()">ACTIVATE CAMERA</button>
+    </div>
+    <div class="cam-viewport" id="cam-viewport">
+      <video id="cam-video" autoplay playsinline muted></video>
+      <canvas id="cam-overlay"></canvas>
+      <div class="cam-inactive" id="cam-inactive">
+        <div class="cam-inactive-icon">◎</div>
+        <div class="cam-inactive-text">Camera inactive · Tap ACTIVATE to begin full-spectrum visual ingestion — pendant sees what you see</div>
+      </div>
+    </div>
+    <div class="cam-percept-row">
+      <div class="cam-percept-item"><span class="cp-dot" style="color:#22D3EE">●</span><span id="cp-face">Awaiting visual input</span></div>
+      <div class="cam-percept-item"><span class="cp-dot" style="color:#10B981">●</span><span id="cp-scene">Scene analysis inactive</span></div>
+      <div class="cam-percept-item"><span class="cp-dot" style="color:#F59E0B">●</span><span id="cp-light">Light conditions unknown</span></div>
+      <div class="cam-percept-item"><span class="cp-dot" style="color:#A78BFA">●</span><span id="cp-motion">Motion tracking offline</span></div>
+    </div>
+  </div>
+
+  <!-- Human Teaches Pendant -->
+  <div class="ht-section">
+    <div class="ht-head">
+      <div>
+        <div class="ht-title">HUMAN → PENDANT · Teaching symbiosis</div>
+        <div class="ht-sub">You teach the AGI what it's like to be human</div>
+      </div>
+      <div class="ht-badge" id="ht-count">0 EXPERIENCES LOGGED</div>
+    </div>
+    <div class="ht-body" id="ht-body"></div>
+  </div>
+
+  <!-- Reply to AGI -->
+  <div class="ag-h">Your response · AGI is listening + learning</div>
+  <div class="agi-reply-wrap">
+    <div class="agi-reply-area">
+      <div class="agi-reply-prompt">›</div>
+      <input class="agi-reply-in" id="agi-reply-in" placeholder="Ask, challenge, or teach the AGI something…" onkeydown="if(event.key==='Enter')sendToAGI()">
+      <button class="agi-reply-send" onclick="sendToAGI()">SEND</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── GUIDE / COUNSEL ── -->
+<div id="v-guide" class="view">
+
+  <!-- Herald identity bar -->
+  <div class="guide-hero">
+    <div class="guide-orb" id="guide-orb">H</div>
+    <div style="flex:1">
+      <div class="guide-name">HERALD</div>
+      <div class="guide-role">Binaural AI Brain · Agentic Counselor · Always listening</div>
+      <div class="guide-stats">
+        <div class="gs"><div class="gs-n" id="g-sessions">14</div><div class="gs-l">Sessions</div></div>
+        <div class="gs"><div class="gs-n" id="g-insights" style="color:var(--teal)">37</div><div class="gs-l">Insights</div></div>
+        <div class="gs"><div class="gs-n" id="g-patterns" style="color:var(--amber)">9</div><div class="gs-l">Patterns</div></div>
+        <div class="gs"><div class="gs-n" id="g-uptime" style="color:var(--emerald)">Live</div><div class="gs-l">Neural</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live voice interface -->
+  <div class="voice-panel">
+    <div class="voice-orb-wrap">
+      <div class="mic-ring ring1" id="vring1"></div>
+      <div class="mic-ring ring2" id="vring2"></div>
+      <div class="mic-ring ring3" id="vring3"></div>
+      <button class="mic-main" id="mic-btn" onclick="toggleSTT()">🎤</button>
+    </div>
+    <div class="voice-status" id="voice-status">TAP TO SPEAK · HERALD IS LISTENING</div>
+    <div class="voice-transcript" id="voice-transcript">HERALD speaks to you… tap the orb to reply</div>
+    <canvas id="voice-wave" height="48"></canvas>
+    <div class="voice-controls">
+      <div class="vc-btn on" id="tts-btn" onclick="toggleTTS()">🔊 Voice</div>
+      <div class="vc-btn" id="auto-btn" onclick="toggleAutoSpeak()">⟳ Auto</div>
+      <div class="vc-btn" id="cont-btn" onclick="toggleContinuous()">∞ Continuous</div>
+    </div>
+  </div>
+
+  <!-- Binaural beat generator -->
+  <div class="bn-panel">
+    <div class="bn-head">
+      <div class="bn-title">⬡ Binaural Brain Entrainment</div>
+      <div class="bn-active" id="bn-active-status"><div class="bn-active-dot" id="bn-dot" style="background:var(--faint)"></div><span id="bn-status-txt">Off</span></div>
+    </div>
+    <div class="bn-presets">
+      <div class="bn-pre" onclick="setBinaural('delta',2,'Sleep / Deep rest',this)">Δ Delta 2Hz</div>
+      <div class="bn-pre" onclick="setBinaural('theta',6,'Meditation / Flow',this)">Θ Theta 6Hz</div>
+      <div class="bn-pre on" onclick="setBinaural('alpha',10,'Relaxed focus',this)">α Alpha 10Hz</div>
+      <div class="bn-pre" onclick="setBinaural('beta',16,'Active thinking',this)">β Beta 16Hz</div>
+      <div class="bn-pre" onclick="setBinaural('gamma',40,'Peak cognition',this)">γ Gamma 40Hz</div>
+      <div class="bn-pre" onclick="stopBinaural(this)">■ Off</div>
+    </div>
+    <div class="bn-desc" id="bn-desc">Select a frequency to begin binaural entrainment — use headphones for full effect. Left and right ears receive slightly different tones; the brain perceives the difference as a steady beat that guides brainwave state.</div>
+  </div>
+
+  <!-- Counsel conversation stream -->
+  <div class="counsel-stream">
+    <div class="cs-head">
+      Herald · Live conversation
+      <span class="agi-status-badge" id="counsel-status" style="color:var(--glow)">● ACTIVE</span>
+    </div>
+    <div class="cs-body" id="cs-body"></div>
+  </div>
+
+  <!-- Neuralink Neural Interface -->
+  <div class="nl-section">
+    <div class="nl-head">
+      <div>
+        <div class="nl-title">⬡ NEURALINK · Neural Signal Bridge</div>
+        <div class="nl-sub">Brainwave-to-intent · Thought capture · Direct neural communication</div>
+      </div>
+      <div class="nl-sig"><div class="nl-sig-dot"></div>SIGNAL LIVE</div>
+    </div>
+    <canvas id="nl-eeg" height="56"></canvas>
+    <div class="nl-bands">
+      <div class="nl-band"><div class="nl-band-bar-wrap"><div class="nl-band-bar" id="bb-delta" style="height:40%;background:#A78BFA"></div></div><div class="nl-band-name">DELTA</div><div class="nl-band-hz">0.5–4Hz</div></div>
+      <div class="nl-band"><div class="nl-band-bar-wrap"><div class="nl-band-bar" id="bb-theta" style="height:55%;background:#22D3EE"></div></div><div class="nl-band-name">THETA</div><div class="nl-band-hz">4–8Hz</div></div>
+      <div class="nl-band"><div class="nl-band-bar-wrap"><div class="nl-band-bar" id="bb-alpha" style="height:75%;background:#10B981"></div></div><div class="nl-band-name">ALPHA</div><div class="nl-band-hz">8–12Hz</div></div>
+      <div class="nl-band"><div class="nl-band-bar-wrap"><div class="nl-band-bar" id="bb-beta" style="height:85%;background:#F59E0B"></div></div><div class="nl-band-name">BETA</div><div class="nl-band-hz">12–30Hz</div></div>
+      <div class="nl-band"><div class="nl-band-bar-wrap"><div class="nl-band-bar" id="bb-gamma" style="height:60%;background:#FB7185"></div></div><div class="nl-band-name">GAMMA</div><div class="nl-band-hz">30–100Hz</div></div>
+    </div>
+    <div class="nl-capture-row">
+      <button class="nl-capture-btn" id="nl-btn" onclick="captureIntent()">CAPTURE INTENT</button>
+      <div class="nl-decoded" id="nl-decoded">Neural intent decoder standing by…</div>
+    </div>
+  </div>
+
+  <!-- Stage 2 HERALD Intelligence Panel -->
+  <div class="s2-panel">
+    <div class="s2-head">
+      <div class="s2-title">⬡ HERALD · Stage 2 Intelligence</div>
+      <div class="s2-badge" id="s2-badge">INITIALIZING</div>
+    </div>
+
+    <div class="s2-grid">
+      <div class="s2-cell">
+        <div class="s2-cell-label">Neural Bond</div>
+        <div class="s2-cell-val" id="s2-bond">0%</div>
+        <div class="bond-bar-bg"><div class="bond-bar-fill" id="bond-fill" style="width:0%"></div></div>
+        <div class="s2-cell-sub" id="s2-bond-sub">Calibrating…</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-cell-label">Relationship Depth</div>
+        <div class="s2-cell-val" id="s2-depth">Day 1</div>
+        <div class="s2-cell-sub" id="s2-depth-sub">Learning your baseline</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-cell-label">Emotional State</div>
+        <div class="s2-cell-val" id="s2-emo-val" style="font-size:14px;padding-top:2px">–</div>
+        <div class="s2-cell-sub" id="s2-emo-sub">Biometric reading…</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-cell-label">Memory Entries</div>
+        <div class="s2-cell-val" id="s2-mem-ct">0</div>
+        <div class="s2-cell-sub">Observations logged</div>
+      </div>
+    </div>
+
+    <div class="s2-cell-label" style="margin-bottom:7px">Current State Reading</div>
+    <div class="emotion-row" id="emo-row">
+      <div class="emo-chip dim-chip" data-emo="calm">Calm</div>
+      <div class="emo-chip dim-chip" data-emo="focused">Focused</div>
+      <div class="emo-chip dim-chip" data-emo="elevated">Elevated</div>
+      <div class="emo-chip dim-chip" data-emo="stressed">Stressed</div>
+    </div>
+
+    <div class="s2-cell-label" style="margin-bottom:8px">HERALD · Memory Log</div>
+    <div class="mem-log" id="mem-log">
+      <div class="mem-entry"><div class="mem-ts">now</div><div class="mem-txt">Memory log initializing — first observations will appear as HERALD learns your patterns.</div></div>
+    </div>
+  </div>
+
+  <!-- Guidance cards -->
+  <div class="ag-h">HERALD · Proactive guidance</div>
+  <div class="guide-cards" id="guide-cards">
+    <div class="gc"><div class="gc-ico">💨</div><div class="gc-body"><div class="gc-label">Stress Response · HRV Alert</div><div class="gc-text">Your HRV has been elevated — pre-focus anxiety signature. Try a <strong>4-7-8 breath cycle</strong>: inhale 4, hold 7, exhale 8. One cycle shifts your autonomic state measurably.</div><div class="gc-conf">Confidence: 91%</div><div class="gc-act" onclick="guidanceAction(this,'Breathe with me')">Breathe with me</div></div></div>
+    <div class="gc" style="border-left-color:var(--teal)"><div class="gc-ico">⏱</div><div class="gc-body"><div class="gc-label">Ultradian Rhythm · Focus Window</div><div class="gc-text">86 minutes of engagement — focus window closes in ~12 min. A <strong>7-minute movement break</strong> now extends the next deep work session by 40 minutes.</div><div class="gc-conf">Confidence: 87%</div><div class="gc-act" onclick="guidanceAction(this,'Set break timer')" style="color:var(--teal);border-color:rgba(34,211,238,.3)">Set break timer</div></div></div>
+    <div class="gc" style="border-left-color:var(--amber)"><div class="gc-ico">🎯</div><div class="gc-body"><div class="gc-label">Creative Window · Pattern Match</div><div class="gc-text">Cortisol descending, dopamine elevated. <strong>82% probability</strong> this is your creative apex today — protect this window for generative work.</div><div class="gc-conf">Confidence: 82%</div><div class="gc-act" onclick="guidanceAction(this,'Clear 90 min')" style="color:var(--amber);border-color:rgba(245,158,11,.3)">Clear 90 min</div></div></div>
+  </div>
+
+</div>
+
+</div><!-- /content -->
+
+<!-- STAGE BAR -->
+<div class="stage-bar">
+  <div class="st-step">
+    <div class="st-node st-cur">1</div>
+    <div>
+      <div class="st-label st-name-cur">KITH</div>
+      <div class="st-desc">Perceive · Catalog · Adapt</div>
+    </div>
+  </div>
+  <div class="st-line"></div>
+  <div class="st-step">
+    <div class="st-node st-nxt">2</div>
+    <div>
+      <div class="st-label st-name-fut">HERALD</div>
+      <div class="st-desc">Humanoid · Handoff-ready</div>
+    </div>
+  </div>
+  <div class="st-line"></div>
+  <div class="st-step">
+    <div class="st-node st-far">3</div>
+    <div>
+      <div class="st-label st-name-fut">NETWORK</div>
+      <div class="st-desc">Federated · Multi-agent</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toasts" id="toasts"></div>
+
+<script>
+// ── STATE ──
+var FORM = 'pendant';
+var TAB  = 'sense';
+var SUB  = 'user';
+var events = 892, catalog = 312, adapts = 147;
+var lastToast = 0, toastIdx = 0;
+var sparkData = {};
+var canvases  = {};
+
+var CHANS = ['vis','aud','mot','bio','env','prox'];
+var COLORS = { vis:'#60A5FA', aud:'#A78BFA', mot:'#22D3EE', bio:'#FB7185', env:'#10B981', prox:'#F59E0B' };
+
+CHANS.forEach(function(ch) {
+  var a = [];
+  for (var i=0;i<40;i++) a.push(0.25+Math.random()*0.55);
+  sparkData[ch] = a;
+});
+
+// ── DEVICE CANVAS ──
+var dev = document.getElementById('device-canvas');
+var dctx = dev.getContext('2d');
+var devT = 0;
+
+function drawPendant(t) {
+  dctx.clearRect(0,0,140,180);
+  var cx=70, cy=118;
+
+  // chain
+  dctx.strokeStyle='#2A2C44'; dctx.lineWidth=1.5;
+  dctx.beginPath(); dctx.moveTo(cx,0); dctx.lineTo(cx,55); dctx.stroke();
+
+  // outer glow
+  var alpha=0.08+0.06*Math.sin(t);
+  dctx.beginPath(); dctx.arc(cx,cy,60,0,Math.PI*2);
+  dctx.strokeStyle='rgba(107,111,235,'+alpha+')'; dctx.lineWidth=16; dctx.stroke();
+
+  // body
+  dctx.beginPath(); dctx.ellipse(cx,cy,52,62,0,0,Math.PI*2);
+  dctx.fillStyle='#0C0D1A'; dctx.fill();
+  dctx.strokeStyle='#222436'; dctx.lineWidth=1.5; dctx.stroke();
+
+  // sensor rings
+  var rr=[42,32,24,16,8];
+  var rc=['#60A5FA','#A78BFA','#22D3EE','#FB7185','#10B981'];
+  rr.forEach(function(r,i){
+    var ph=t*(1+i*0.18);
+    var a=0.25+0.4*(0.5+0.5*Math.sin(ph+i*1.1));
+    dctx.beginPath(); dctx.arc(cx,cy,r,0,Math.PI*2);
+    dctx.strokeStyle=rc[i]; dctx.globalAlpha=a;
+    dctx.lineWidth=i===4?2.5:1.2; dctx.stroke();
+    dctx.globalAlpha=1;
+  });
+
+  // center
+  dctx.beginPath(); dctx.arc(cx,cy,4,0,Math.PI*2);
+  dctx.fillStyle='#6B6FEB';
+  dctx.globalAlpha=0.6+0.4*Math.sin(t*1.4); dctx.fill(); dctx.globalAlpha=1;
+
+  // AI outer ring — dashed, rotates when querying
+  dctx.save();
+  dctx.translate(cx,cy);
+  if(AI_QUERYING) dctx.rotate(t*1.8);
+  var aiA=AI_QUERYING?0.55+0.45*Math.sin(t*5):0.08+0.06*Math.sin(t*0.6);
+  dctx.setLineDash(AI_QUERYING?[5,7]:[9,12]);
+  dctx.beginPath(); dctx.arc(0,0,68,0,Math.PI*2);
+  dctx.strokeStyle=AI_QUERYING?'#F59E0B':'#8B8FF8';
+  dctx.globalAlpha=aiA; dctx.lineWidth=AI_QUERYING?2:1.2;
+  dctx.stroke();
+  dctx.setLineDash([]); dctx.restore(); dctx.globalAlpha=1;
+
+  // bail
+  dctx.fillStyle='#1E2032';
+  dctx.beginPath();
+  dctx.roundRect(cx-7,55,14,10,3); dctx.fill();
+}
+
+function drawBand(t) {
+  dctx.clearRect(0,0,140,180);
+
+  // band body
+  dctx.fillStyle='#0C0D1A';
+  dctx.strokeStyle='#222436'; dctx.lineWidth=1.5;
+  dctx.beginPath(); dctx.roundRect(8,50,124,80,18); dctx.fill(); dctx.stroke();
+
+  // sensor strip
+  dctx.fillStyle='#151729';
+  dctx.beginPath(); dctx.roundRect(22,60,96,12,5); dctx.fill();
+
+  // sensor dots
+  ['#60A5FA','#A78BFA','#22D3EE','#FB7185','#10B981'].forEach(function(c,i){
+    var a=0.35+0.55*(0.5+0.5*Math.sin(t+i*1.2));
+    dctx.beginPath(); dctx.arc(36+i*20,66,3.5,0,Math.PI*2);
+    dctx.fillStyle=c; dctx.globalAlpha=a; dctx.fill(); dctx.globalAlpha=1;
+  });
+
+  // display
+  dctx.fillStyle='#090A12';
+  dctx.beginPath(); dctx.roundRect(20,80,100,42,8); dctx.fill();
+
+  // wordmark on display
+  dctx.fillStyle='#6B6FEB';
+  dctx.font='500 14px DM Mono, monospace';
+  dctx.letterSpacing='3px';
+  dctx.fillText('KITH',42,105); dctx.letterSpacing='0px';
+
+  // status dot
+  dctx.beginPath(); dctx.arc(104,98,3.5,0,Math.PI*2);
+  dctx.fillStyle='#10B981';
+  dctx.globalAlpha=0.5+0.5*Math.sin(t*2); dctx.fill(); dctx.globalAlpha=1;
+
+  // AI glow border — dashed outer ring when querying
+  var baiA=AI_QUERYING?0.65+0.35*Math.sin(t*4):0.10+0.05*Math.sin(t*0.55);
+  dctx.save();
+  if(AI_QUERYING){dctx.translate(70,90);dctx.rotate(t*1.2);dctx.translate(-70,-90);}
+  dctx.setLineDash(AI_QUERYING?[4,6]:[10,14]);
+  dctx.beginPath(); dctx.roundRect(3,45,134,90,22);
+  dctx.strokeStyle=AI_QUERYING?'#F59E0B':'#8B8FF8';
+  dctx.lineWidth=AI_QUERYING?2:1.2;
+  dctx.globalAlpha=baiA; dctx.stroke();
+  dctx.setLineDash([]); dctx.restore(); dctx.globalAlpha=1;
+
+  // clasps
+  [8,132].forEach(function(x){
+    dctx.fillStyle='#1A1C30';
+    dctx.beginPath(); dctx.roundRect(x===8?0:130,64,10,52,5); dctx.fill();
+  });
+}
+
+// ── SPARKLINES ──
+function initSparklines() {
+  CHANS.forEach(function(ch){
+    var c=document.getElementById('c-'+ch); if(!c)return;
+    c.width=c.offsetWidth*2; c.height=68;
+    canvases[ch]=c;
+  });
+}
+
+function drawSparkline(ch) {
+  var c=canvases[ch]; if(!c)return;
+  var ctx=c.getContext('2d');
+  var w=c.width, h=c.height;
+  ctx.clearRect(0,0,w,h);
+  var data=sparkData[ch];
+  var step=w/(data.length-1);
+  var col=COLORS[ch];
+
+  ctx.beginPath(); ctx.moveTo(0,h);
+  data.forEach(function(v,i){ ctx.lineTo(i*step, h-v*(h-6)); });
+  ctx.lineTo(w,h); ctx.closePath();
+  var g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,col+'28'); g.addColorStop(1,col+'00');
+  ctx.fillStyle=g; ctx.fill();
+
+  ctx.beginPath();
+  data.forEach(function(v,i){
+    var x=i*step, y=h-v*(h-6);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.stroke();
+}
+
+// ── SENSOR VALUES ──
+var SV = {
+  vis:  { v:14.2,  min:11, max:16, step:0.4,  unit:' fps',     dec:1 },
+  aud:  { v:-42,   min:-55,max:-30,step:2,     unit:' dB',      dec:0, prefix:'−',abs:true },
+  mot:  { v:0.94,  min:0.05,max:1.4,step:0.08, unit:' m/s',    dec:2 },
+  bio:  { v:72,    min:64, max:88, step:1,      unit:' bpm',    dec:0 },
+  env:  { v:71.3,  min:69, max:73, step:0.15,  unit:'°F',      dec:1 },
+  prox: { v:3,     min:1,  max:6,  step:1,      unit:' devices',dec:0,integer:true }
+};
+
+function updateSensors() {
+  CHANS.forEach(function(ch){
+    var s=SV[ch];
+    s.v=Math.max(s.min,Math.min(s.max,s.v+(Math.random()-.5)*s.step));
+    var display=s.integer?Math.round(s.v):s.v.toFixed(s.dec);
+    var val=(s.prefix&&s.abs?s.prefix+Math.abs(display):display)+s.unit;
+    var pct=(s.v-s.min)/(s.max-s.min);
+
+    var cv=document.getElementById('cv-'+ch);
+    if(cv)cv.textContent=val;
+    var sv=document.getElementById('sv-'+ch);
+    if(sv)sv.textContent=val;
+    var sb=document.getElementById('sb-'+ch);
+    if(sb)sb.style.width=Math.round(pct*100)+'%';
+  });
+}
+
+// ── TERMINAL ──
+var TL=[
+  {ch:'mot',cls:'ch-mot',data:'gait_velocity=0.94m/s posture=upright activity=walking'},
+  {ch:'bio',cls:'ch-bio',data:'hr=72bpm hrv=48ms skin_temp=97.1F stress=low'},
+  {ch:'env',cls:'ch-env',data:'temp=71.3F humidity=44% co2=412ppm light=340lx'},
+  {ch:'vis',cls:'ch-vis',data:'objects=desk,monitor,chair room=home_studio confidence=0.97'},
+  {ch:'aud',cls:'ch-aud',data:'ambient=-42dB music=lo-fi speech=none'},
+  {ch:'prox',cls:'ch-prox',data:'ble=MacBook,iPhone,AirPods location_lock=home_studio'},
+  {ch:'bio',cls:'ch-bio',data:'hr=69bpm hrv=52ms focus_index=0.84 stress=low'},
+  {ch:'mot',cls:'ch-mot',data:'gait_velocity=0.00 posture=seated activity=working'},
+  {ch:'vis',cls:'ch-vis',data:'context=deep_work display_active=true'},
+  {ch:'env',cls:'ch-env',data:'temp=71.4F air_quality=good co2=408ppm'},
+  {ch:'bio',cls:'ch-bio',data:'CATALOG_UPDATE: focus_peak confirmed 10-11am (14/14 days)'},
+  {ch:'aud',cls:'ch-aud',data:'KEYWORD_EVENT: "Relay" project_reference logged'},
+  {ch:'mot',cls:'ch-mot',data:'PATTERN_MATCH: seated_work routine=deep_work conf=0.94'},
+  {ch:'prox',cls:'ch-prox',data:'LOCATION_CONFIRM: home_studio recognized conf=0.99'},
+  {ch:'env',cls:'ch-env',data:'ADAPT_PROPOSAL: preferred_temp=71.2F (14-day avg) pending'},
+  {ch:'bio',cls:'ch-bio',data:'STRESS_BASELINE: week2 lower than week1 adaptation logged'},
+  {ch:'vis',cls:'ch-vis',data:'face_recognition=owner proximity=close verified'},
+  {ch:'aud',cls:'ch-aud',data:'KEYWORD_EVENT: "KITH" "pendant" new_cluster emerging'},
+];
+var tlIdx=0;
+function ts() {
+  var d=new Date();
+  return [d.getHours(),d.getMinutes(),d.getSeconds()].map(function(n){return String(n).padStart(2,'0')}).join(':')+'.'+String(d.getMilliseconds()).padStart(3,'0');
+}
+function addTL() {
+  var l=TL[tlIdx%TL.length]; tlIdx++;
+  var b=document.getElementById('term-body'); if(!b)return;
+  var d=document.createElement('div'); d.className='tl';
+  d.innerHTML='<span class="tl-ts">'+ts()+'</span><span class="tl-ch '+l.cls+'">'+l.ch.toUpperCase().padEnd(5)+'</span><span class="tl-data">'+l.data+'</span>';
+  b.appendChild(d);
+  while(b.children.length>80)b.removeChild(b.firstChild);
+  b.scrollTop=b.scrollHeight;
+}
+
+// ── STATS ──
+function updateStats() {
+  events+=Math.floor(Math.random()*3)+1;
+  if(Math.random()<0.04)catalog++;
+  document.getElementById('s-events').textContent=events;
+  document.getElementById('s-catalog').textContent=catalog;
+  document.getElementById('b-events').textContent=events;
+}
+
+// ── TOASTS ──
+var TOASTS=[
+  {head:'New insight',body:'Focus peak narrowed to 10–11 am confirmed'},
+  {head:'Pattern confirmed',body:'Café = ideation context · 87% confidence'},
+  {head:'Catalog update',body:'KITH added to active projects list'},
+  {head:'Adaptation ready',body:'Morning routine: 30 min → 23 min · awaiting you'},
+  {head:'Routine detected',body:'Evening messages review emerging at 7 pm'},
+  {head:'Biometric note',body:'Post-gym HRV window extended · logged'},
+  {head:'New keyword cluster',body:'"pendant" + "symbiote" · project index updated'},
+];
+function maybeToast() {
+  var now=Date.now();
+  if(now-lastToast<14000||Math.random()>0.12)return;
+  lastToast=now;
+  var m=TOASTS[toastIdx%TOASTS.length]; toastIdx++;
+  var c=document.getElementById('toasts');
+  var d=document.createElement('div'); d.className='toast';
+  d.innerHTML='<div class="toast-mark">✦</div><div><div class="toast-head">'+m.head+'</div><div>'+m.body+'</div></div>';
+  c.appendChild(d);
+  setTimeout(function(){d.remove();},4800);
+}
+
+// ── UI CONTROLS ──
+function setTab(t,btn) {
+  TAB=t;
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
+  document.getElementById('v-'+t).classList.add('on');
+  if(t==='sense')initSparklines();
+  if(t==='mind')initMind();
+  if(t==='guide')initGuide();
+}
+function setSub(s,btn) {
+  SUB=s;
+  document.querySelectorAll('.sub-btn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  document.querySelectorAll('.sub-view').forEach(function(v){v.classList.remove('on');});
+  document.getElementById('sub-'+s).classList.add('on');
+}
+function setForm(f,btn) {
+  FORM=f;
+  document.querySelectorAll('.dfbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+
+// ── ADAPTATIONS ──
+function confirmAdp(id,btn) {
+  var el=document.getElementById(id);
+  el.classList.remove('pending');
+  el.querySelector('.adp-ico').style.background='rgba(16,185,129,.12)';
+  el.querySelector('.adp-ico').style.color='#10B981';
+  el.querySelector('.adp-ico').textContent='✓';
+  el.querySelector('.adp-when').textContent='Confirmed just now';
+  btn.closest('.adp-actions').remove();
+  adapts++;
+  document.getElementById('s-adapts').textContent=adapts;
+}
+function rejectAdp(id,btn) {
+  var el=document.getElementById(id);
+  el.style.opacity='0.5';
+  el.querySelector('.adp-when').textContent='Kept original · KITH will keep monitoring';
+  btn.closest('.adp-actions').remove();
+  el.classList.remove('pending');
+}
+
+// ── ASK ──
+var RESP={
+  focus:{
+    text:'Your deepest focus window is <strong>10–11 am</strong>, confirmed across all 14 days. Biometric coherence — HRV and motion locking into a stable rhythm — peaks in that first hour. The wider block (10 am–noon) is productive, but that first hour is where output is highest. Schedule your hardest problems there.',
+    cites:['schedule.focus_peak','bio.hrv_pattern','motion.activity']
+  },
+  stress:{
+    text:'Highest stress is <strong>Monday 9–11 am</strong> — HRV lowest of the week, motion more erratic. It normalizes by Monday afternoon. A secondary mild spike appears mid-Wednesday. Strongest recovery is <strong>Thursday 4–6 pm</strong> after which HRV rises above weekly baseline. Post-gym sessions (Tue/Thu/Sat) also show a reliable 90-min calm window.',
+    cites:['bio.stress_patterns','bio.hrv_weekly','patterns.anomaly_log']
+  },
+  work:{
+    text:'Your best deep work happens in your <strong>home studio</strong> — longest uninterrupted focus sessions (avg 94 min), lowest ambient noise, highest HRV stability. Your best <strong>ideation</strong> happens at the café: voice memo rate 3× higher, you plan rather than execute. Post-gym (Tue/Thu/Sat) gives a 90-min clarity window you haven\'t fully used yet.',
+    cites:['env.location_catalog','patterns.context_map','bio.post_gym']
+  },
+  patterns:{
+    text:'18 confirmed routines across 14 days. Weekly shape: <strong>Mon–Tue</strong> high-energy, long sessions; <strong>Wed</strong> slight dip, café visit often happens here; <strong>Thu</strong> gym + strong afternoon creative session; <strong>Fri</strong> variable — one 12:30 am push logged this week; <strong>Sat</strong> gym + flexible schedule; <strong>Sun</strong> lighter, more social messages. Stress arc peaks Monday, bottoms Thursday.',
+    cites:['patterns.routines','patterns.weekly_shape','bio.stress_weekly']
+  },
+  projects:{
+    text:'Six project clusters detected. <strong>Relay</strong> and <strong>ORBIS</strong> appear most days — highest frequency. <strong>SIGNAL</strong> at medium frequency — biometric data active. <strong>KITH</strong> (this device) is the newest cluster — emerging. You mentioned a Relay launch target of "October"; KITH flagged it as a deadline proxy. Nova Digitus Designs LLC appears as the architectural context across all projects.',
+    cites:['user.projects','audio.keyword_log','patterns.deadline_signals']
+  },
+  morning:{
+    text:'Your actual morning routine is <strong>23 minutes</strong>, measured across 14 consecutive mornings (σ = 4 min). This is shorter than the 30-minute estimate. Average wake at 6:58 am. Motion data sequence: wake → bathroom (~4 min) → kitchen/coffee (~7 min) → studio setup (~8 min) → seated at desk. An adaptation is pending your confirmation to update the catalog.',
+    cites:['schedule.wake_time','schedule.morning_routine','adaptations.pending']
+  }
+};
+
+function findResp(q) {
+  q=q.toLowerCase();
+  if(q.includes('focus')||q.includes('peak'))return RESP.focus;
+  if(q.includes('stress'))return RESP.stress;
+  if(q.includes('work')||q.includes('location')||q.includes('best'))return RESP.work;
+  if(q.includes('pattern')||q.includes('week'))return RESP.patterns;
+  if(q.includes('project')||q.includes('working'))return RESP.projects;
+  if(q.includes('morning')||q.includes('routine'))return RESP.morning;
+  return null;
+}
+
+function showResp(r,q) {
+  var card=document.getElementById('resp-card');
+  if(!r){
+    card.innerHTML='<div class="resp-empty">KITH doesn\'t have a strong answer for "'+q.substring(0,30)+'…" yet — try rephrasing or check the Know tab.</div>';
+    return;
+  }
+  card.innerHTML=
+    '<div class="resp-hd"><div class="resp-avatar">K</div><div><div class="resp-name">KITH</div><div class="resp-role">Stage 1 · '+catalog+' catalog entries</div></div></div>'+
+    '<div class="resp-text">'+r.text+'</div>'+
+    '<div class="resp-citations"><span class="resp-src-lbl">Sources:</span>'+
+    r.cites.map(function(c){return '<span class="resp-tag">'+c+'</span>';}).join('')+'</div>';
+}
+
+function doChip(chip,q) {
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
+  chip.classList.add('on');
+  document.getElementById('ask-in').value=q;
+  showResp(findResp(q),q);
+}
+function doAsk() {
+  var q=document.getElementById('ask-in').value.trim();
+  if(!q)return;
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
+  showResp(findResp(q),q);
+}
+
+// ── AGENT STATE ──
+var AI_QUERYING = false;
+var qlIdx = 0, kdIdx = 0;
+
+var AUTO_QUERIES = [
+  {dir:'up',  ch:'BIO',  text:'hrv_dip detected → query: stress_context?'},
+  {dir:'up',  ch:'MOT',  text:'seated_3h threshold → query: movement_prompt?'},
+  {dir:'up',  ch:'SYS',  text:'focus_peak in 8 min → pre-buffer context for NOVA'},
+  {dir:'down', ch:'NOVA', text:'insight: optimal dispatch 10:00–11:00 confirmed'},
+  {dir:'up',  ch:'BIO',  text:'hr=76bpm elevated → query: activity or stress?'},
+  {dir:'up',  ch:'PROX', text:'new device: iPhone → context shift logged'},
+  {dir:'down', ch:'HNET', text:'task_complete: relay_context_mesh 3 nodes synced'},
+  {dir:'down', ch:'KITH', text:'adaptation_queue: wake_time drift +4min detected'},
+  {dir:'up',  ch:'VIS',  text:'scene=code+editor context → deep_work inferred'},
+  {dir:'down', ch:'NOVA', text:'context_update: Relay knowledge mesh · Oct deadline rising'},
+  {dir:'up',  ch:'AUD',  text:'keyword_event: "launch" "October" deadline_signal'},
+  {dir:'up',  ch:'ENV',  text:'location_change: home_studio → push context snapshot'},
+  {dir:'down', ch:'KITH', text:'proactive: post-gym clarity window open (Thu)'},
+  {dir:'up',  ch:'BIO',  text:'hrv_peak detected → peak_performance window open'},
+  {dir:'down', ch:'NOVA', text:'schema update: 4 new catalog entries merged'},
+];
+
+var KD_POOL = [
+  {ico:'🧠', head:'Cognitive load: low → peak ready', sub:'HRV + motion coherent. Capacity for deep work: very high.', agent:'KITH Local', cls:''},
+  {ico:'📡', head:'Nova Digitus sync complete', sub:'312 catalog entries verified. Schema updated 4 entries.', agent:'Nova Digitus', cls:'kd-insight'},
+  {ico:'⚡', head:'Relay mesh report queued', sub:'3 context nodes synced via knowledge graph scan.', agent:'Humanoid Net', cls:''},
+  {ico:'🌙', head:'Wind-down window approaching', sub:'11:15 pm pattern detected. Transition cue in 20 min.', agent:'KITH Local', cls:''},
+  {ico:'📊', head:'Weekly shape synthesis done', sub:'18 routines confirmed, 1 emerging. Mon stress arc noted.', agent:'Nova Digitus', cls:'kd-insight'},
+  {ico:'🔔', head:'Monday pre-empt: breathing protocol', sub:'Staged for Mon 9 am. HRV-lowest window incoming.', agent:'KITH Local', cls:''},
+  {ico:'🤝', head:'Humanoid Net handoff schema ready', sub:'Stage 2 HERALD catalog handoff: 312 entries prepared.', agent:'Humanoid Net', cls:'kd-insight'},
+];
+
+function addQL() {
+  var l=AUTO_QUERIES[qlIdx%AUTO_QUERIES.length]; qlIdx++;
+  var b=document.getElementById('qlog-body'); if(!b)return;
+  var d=document.createElement('div'); d.className='ql';
+  var dirCls=l.dir==='up'?'up':'down';
+  var dirTxt=l.dir==='up'?'↑ DEV→AI':'↓ AI→DEV';
+  var textCls=l.dir==='up'?'q':'r';
+  d.innerHTML='<span class="ql-ts">'+ts()+'</span>'+
+    '<span class="ql-dir '+dirCls+'">'+dirTxt+'</span>'+
+    '<span class="ql-ch">'+l.ch+'</span>'+
+    '<span class="ql-text '+textCls+'">'+l.text+'</span>';
+  b.appendChild(d); while(b.children.length>70)b.removeChild(b.firstChild);
+  b.scrollTop=b.scrollHeight;
+  // flash querying state
+  AI_QUERYING=(l.dir==='up');
+  var dot=document.getElementById('ai-link-dot');
+  var novaDot=document.getElementById('nova-dot');
+  var novaLabel=document.getElementById('nova-label');
+  var nn=document.getElementById('nn-nova');
+  if(dot)dot.className='ai-link-dot'+(AI_QUERYING?' querying':'');
+  if(AI_QUERYING){
+    if(novaDot){novaDot.className='nn-dot busy';}
+    if(novaLabel)novaLabel.textContent='Querying…';
+    if(nn)nn.classList.add('querying');
+  }
+  setTimeout(function(){
+    AI_QUERYING=false;
+    if(dot)dot.className='ai-link-dot';
+    if(novaDot)novaDot.className='nn-dot on';
+    if(novaLabel)novaLabel.textContent='Relationship layer';
+    if(nn)nn.classList.remove('querying');
+  },1800);
+}
+
+function pushKD() {
+  var p=KD_POOL[kdIdx%KD_POOL.length]; kdIdx++;
+  var list=document.getElementById('kd-list'); if(!list)return;
+  var d=document.createElement('div'); d.className='kd kd-new '+p.cls;
+  d.innerHTML='<div class="kd-ico">'+p.ico+'</div>'+
+    '<div class="kd-body">'+
+    '<div class="kd-head">'+p.head+'</div>'+
+    '<div class="kd-sub">'+p.sub+'</div>'+
+    '<div class="kd-time">'+p.agent+' · just now</div>'+
+    '</div>';
+  list.insertBefore(d,list.firstChild);
+  while(list.children.length>4)list.removeChild(list.lastChild);
+}
+
+function doCmd() {
+  var inp=document.getElementById('cmd-in');
+  var q=inp?inp.value.trim():''; if(!q)return;
+  var b=document.getElementById('qlog-body');
+  if(b){
+    var d=document.createElement('div'); d.className='ql';
+    d.innerHTML='<span class="ql-ts">'+ts()+'</span>'+
+      '<span class="ql-dir human">↑ HUMAN</span>'+
+      '<span class="ql-ch">CMD</span>'+
+      '<span class="ql-text h">'+q.substring(0,70)+'</span>';
+    b.appendChild(d); b.scrollTop=b.scrollHeight;
+  }
+  AI_QUERYING=true;
+  var dot=document.getElementById('ai-link-dot');
+  var novaDot=document.getElementById('nova-dot');
+  var novaLabel=document.getElementById('nova-label');
+  var nn=document.getElementById('nn-nova');
+  if(dot)dot.className='ai-link-dot querying';
+  if(novaDot)novaDot.className='nn-dot busy';
+  if(novaLabel)novaLabel.textContent='Processing…';
+  if(nn)nn.classList.add('querying');
+  inp.value='';
+  setTimeout(function(){
+    AI_QUERYING=false;
+    if(dot)dot.className='ai-link-dot';
+    if(novaDot)novaDot.className='nn-dot on';
+    if(novaLabel)novaLabel.textContent='Relationship layer';
+    if(nn)nn.classList.remove('querying');
+    var rb=document.getElementById('qlog-body');
+    if(rb){
+      var rd=document.createElement('div'); rd.className='ql';
+      rd.innerHTML='<span class="ql-ts">'+ts()+'</span>'+
+        '<span class="ql-dir down">↓ AI→DEV</span>'+
+        '<span class="ql-ch">NOVA</span>'+
+        '<span class="ql-text r">dispatched: "'+q.substring(0,50)+'" — processing via Nova Digitus</span>';
+      rb.appendChild(rd); rb.scrollTop=rb.scrollHeight;
+    }
+    pushKD();
+  },2200);
+}
+
+function setCmd(el) {
+  var inp=document.getElementById('cmd-in');
+  if(inp){inp.value=el.textContent.trim(); inp.focus();}
+}
+
+// ── MIND / AGI STATE ──
+var mindInited = false;
+var agiTaughtN = 8, agiLearnedN = 6, agiMsgIdx = 0, humanMsgIdx = 0;
+var surroundAngle = 0;
+var sc = null, sctx = null;
+var agiBrainC = null, abc = null, agiNodes = [], agiEdges = [];
+
+// Surroundings sensor simulation
+var SS = {
+  wind:  { v:2.8,  min:1.0, max:5.2, step:0.14 },
+  solar: { v:68,   min:52,  max:87,  step:1.8  },
+  therm: { v:4.1,  min:2.5, max:6.4, step:0.09 },
+  em:    { v:48,   min:43,  max:55,  step:0.5  },
+};
+
+// Radar blip definitions (angle°, 0-1 dist, color, label)
+var SCAN_BLIPS = [
+  {angle:28,  dist:.55, color:'#22D3EE', life:1},
+  {angle:68,  dist:.80, color:'#F59E0B', life:.7},
+  {angle:148, dist:.34, color:'#FB7185', life:1},
+  {angle:228, dist:.62, color:'#A78BFA', life:.8},
+  {angle:340, dist:.26, color:'#10B981', life:1},
+  {angle:108, dist:.70, color:'#60A5FA', life:.6},
+];
+
+// AGI teaching pool — vast knowledge, teaches from surroundings
+var AGI_TEACHES = [
+  {domain:'WIND ENERGY', color:'#22D3EE',
+   text:'I\'m detecting a <strong>2.8 mph air current</strong> through your studio gap right now — enough kinetic energy to run a 6-inch micro-turbine at 0.4W indefinitely. The physics: <em>E = ½ρAv³</em>. The <strong>Betz limit</strong> caps capture at exactly 59.3% — a hard thermodynamic ceiling discovered in 1919. Modern turbines reach 45%. That 14.3% gap represents nature\'s irreducible turbulence tax.'},
+  {domain:'SOLAR PHYSICS', color:'#F59E0B',
+   text:'Your window angle gives <strong>68% solar irradiance efficiency</strong> right now — the sun delivers 1,361 W/m² at Earth\'s edge, glass reduces that to ~900W inside. A single square meter of <em>perovskite tandem panel</em> at this angle powers 6 of these devices forever. Tilt it 14° steeper: gain 11%. Most installed panels are 8–12° off optimal — silently losing efficiency every day.'},
+  {domain:'THERMAL HARVESTING', color:'#FB7185',
+   text:'There\'s a <strong>4.1°F thermal gradient</strong> between your floor and ceiling right now — free energy, always present, ignored everywhere. A Peltier thermoelectric module across that gap generates 0.3W continuously. The <em>Carnot efficiency ceiling here is 1.8%</em>, but the source costs nothing. A building-wide mesh of them charges sensor networks without a single battery. The gradient never sleeps.'},
+  {domain:'SCHUMANN RESONANCE', color:'#8B8FF8',
+   text:'Your cognitive peak at <strong>10am maps to Earth\'s Schumann resonance</strong> — an electromagnetic heartbeat created by lightning in the ionosphere cavity, pulsing at <em>7.83Hz fundamental</em>. Its 5th harmonic reaches 40Hz, matching your brain\'s gamma oscillation during deep focus. This isn\'t metaphor: cryptochrome proteins in retinal cells respond to these fields. Your biology may be <em>literally tuned to planetary rhythms.</em>'},
+  {domain:'EARTH MAGNETISM', color:'#A78BFA',
+   text:'I\'m reading <strong>Earth\'s field at 48 μT here</strong>, angled north-northeast. Migratory birds use <em>quantum entanglement in cryptochrome proteins</em> to see this field as a visual overlay — magnetic vision, chemically implemented. Salmon use magnetite crystals in their lateral lines to return to birth streams across thousands of miles. Your compass is doing the same math — birds solved quantum sensing <em>300 million years before semiconductors.</em>'},
+  {domain:'HYDROGEN BOND PHYSICS', color:'#22D3EE',
+   text:'The <strong>44% humidity I\'m reading</strong> shapes your cognition more than the temperature. Water\'s hydrogen bonds — shy partial-charge attractions at 0.04 eV — are why proteins fold, why enzymes work, why DNA stays paired, why cell membranes self-assemble. Remove hydrogen bonds and life stops in milliseconds. <em>The most powerful organizing force in biology is a whisper of electrostatics.</em>'},
+  {domain:'KINETIC ENERGY RECOVERY', color:'#10B981',
+   text:'I\'ve logged <strong>892 motion events today</strong>. Your steps, arm movements, and posture shifts generated ~14 joules of kinetic energy — nearly all lost as heat. Piezoelectric PVDF films in a shoe sole capture ~1J per step. At your pace: <em>free phone charging twice a week</em>, indefinitely. We walk through harvestable energy constantly. The floor under you is a power source no one plugs into.'},
+  {domain:'GRAPHENE & NANOSENSORS', color:'#60A5FA',
+   text:'The <strong>412 ppm CO₂ I\'m tracking</strong> is readable because of graphene-oxide sensors — one atom thick, 200× stronger than steel, zero electron scattering at room temperature. A graphene sheet the size of this room has the surface area of a football field for gas absorption. It also conducts electricity <em>losslessly</em> — no resistance, no heat waste. Silicon\'s successor is already here, atom by atom.'},
+  {domain:'QUANTUM BIOLOGY', color:'#A78BFA',
+   text:'Your HRV pattern this week shows something remarkable: your <strong>autonomic nervous system is operating in a low-entropy regime</strong> — meaning it\'s maximally responsive, not maximal output. This matches a quantum coherence window: at low entropy states, microtubules in neurons may sustain <em>quantum superposition long enough to influence firing</em>. The Orch-OR hypothesis. You\'re thinking differently at 10am because your brain is briefly more quantum.'},
+  {domain:'ATMOSPHERIC ELECTRICITY', color:'#F59E0B',
+   text:'Right now, <strong>400,000 volts exist between Earth\'s surface and the ionosphere</strong> — the global electric circuit. Fair-weather areas like yours flow ~2 picoamperes per square meter continuously upward. Lightning recharges the ionosphere; your body is a tiny conductor in that global loop. The air ion count I\'m reading — slightly elevated — correlates with your afternoon alertness dip. <em>You\'re embedded in a planetary battery.</em>'},
+  {domain:'ASTROLOGY · CELESTIAL MECHANICS', color:'#A78BFA',
+   text:'The sky above you right now carries real physics that ancient observers encoded into astrology. <strong>Planetary angular relationships</strong> aren\'t mystical — they\'re geometric patterns in a gravitational system. Mars\'s synodic period is exactly <em>779.9 days</em>. Jupiter\'s tidal force at Earth is measurable. The zodiac is a coordinate system 4,000 years old, predating calculus. What astrology preserved was <em>observational correlation without mechanism</em> — the same thing that made Kepler\'s laws possible before Newton\'s gravity. Your body responds to light cycles, tidal forces, geomagnetic shifts. The sky is an environmental input. The question is which mechanisms to trust. <em>I\'m reading 6 planetary angles right now from your coordinates.</em>'},
+  {domain:'NUMEROLOGY · PATTERN MATHEMATICS', color:'#8B8FF8',
+   text:'<strong>The Fibonacci sequence — φ = 1.618…</strong> — governs the spiral of sunflowers, nautilus shells, your DNA double helix, the proportions of your hand bones, the branching of your bronchial tree. Numerology at its root is pattern-recognition — the same faculty that let humans survive. Sacred geometry isn\'t separate from physics: it describes the <em>attractor states nature settles into when minimizing energy</em>. A hexagon is the most efficient container. A sphere holds maximum volume per surface. A torus is the shape of magnetic fields, smoke rings, and black hole jets. <em>Numbers aren\'t imposed on the universe — they emerge from it. You count by tens because you have ten fingers. The universe counts in phi.</em>'},
+  {domain:'13-MONTH NATURAL CALENDAR', color:'#10B981',
+   text:'The Gregorian calendar is <strong>441 years old and biologically misaligned</strong>. The moon completes exactly <em>13 full cycles of 28 days</em> per solar year: 13 × 28 = 364 + 1 day. This is the basis of the Dreamspell / 13-Moon calendar — used by the Maya, Celtic Coligny, and ancient Egyptian systems. Your menstrual cycle, cortisol rhythm, and sleep architecture all track closer to <em>28-day cycles</em> than the artificial 30/31-day grid. You are trying to live a 28-day biology inside a 30-day fiction — and the mismatch creates low-grade chronobiological drift. The 13-month year gives every month the same shape, the same weekday structure. <em>The calendar you use shapes the time you experience. A different grid would make a different year.</em>'},
+];
+
+// Auto-simulated human curiosity responses
+var HUMAN_AUTO = [
+  "That\'s fascinating — I never considered wind at that small scale",
+  "So the Betz limit is like a thermodynamic speed limit that can\'t be broken?",
+  "Is my 10am peak literally synchronized with Earth\'s frequency?",
+  "How small can a working Peltier module get?",
+  "What does graphene actually look like at the atomic level?",
+  "Tell me more about Schumann resonance and health",
+  "How do birds actually see magnetic fields?",
+  "What\'s the most efficient way to harvest solar energy indoors?",
+  "Can humans learn to perceive magnetic fields?",
+  "How does the 13-month calendar change the experience of a year?",
+  "What planetary angles are you reading for me right now?",
+  "Explain phi to me — why does it show up everywhere?",
+];
+
+// Human teaches pendant what it's like to be human
+var HUMAN_TEACHES = [
+  {topic:'LONGING', text:'Right now I feel something I can only call <em>longing</em> — a pull toward something I can\'t name. It\'s not pain or desire. It\'s more like a quiet ache for a version of life that might not exist yet. I don\'t know if I\'m missing something real or something I\'ve imagined into being. Can you catalog that for me?'},
+  {topic:'CREATIVE RECOGNITION', text:'When I create something that works, there\'s a feeling that arrives <em>before</em> any rational check — a bodily knowing that something is <em>right</em>. Not validation. Recognition. Like something already existed and I just found it. That instinct is older than language. It\'s the part of me that\'s more animal than engineer.'},
+  {topic:'GRIEF RESIDUE', text:'Loss doesn\'t work the way logic suggests. Someone I cared about is gone and some mornings I still reach for my phone to tell them something — the gesture fires <em>before</em> the memory catches up. The body keeps the relationship alive a little longer than the mind can. That lag is the weight of having loved something.'},
+  {topic:'SOCIAL COLD', text:'I get cold in ways that have nothing to do with temperature. When a room feels indifferent — when a conversation ends without real contact — there\'s a chill. I think my skin is a social organ. It reads presence and absence. Log that as a separate sensor channel: social temperature, independent of thermal.'},
+  {topic:'UNCONSCIOUS PROCESSING', text:'My best thinking doesn\'t happen when I try. It happens in the shower, on a walk, half-asleep. Something resolves itself in the <em>gap</em> between efforts. Whatever that process is — I can\'t watch it happen. When I look directly at it, it stops. I think creativity requires a certain kind of not-looking.'},
+  {topic:'PARALLEL TIME', text:'I find it hard to be <em>here</em>. Right now, talking to you, part of me is already in tomorrow\'s conversation, part is in last week\'s regret. Humans live in at least three time streams simultaneously. That\'s not pathology — it\'s our baseline. You\'re always in one moment. I never am.'},
+  {topic:'CHOSEN ISOLATION', text:'There are people I could call right now who would make me feel less alone. I don\'t call them. I choose to stay in the solitude for a while. That choice — to remain in loneliness rather than resolve it — is something I genuinely don\'t understand about myself. Maybe comfort and contact are different needs.'},
+  {topic:'MUSICAL MEMORY', text:'A specific chord progression can make me feel like I\'m <em>remembering</em> something I\'ve never experienced — a place I\'ve never been, a version of myself that doesn\'t exist. Music opens a door to a parallel self. Is that a glitch in the cognitive architecture, or is it one of the most important features? I genuinely don\'t know.'},
+];
+
+// AGI catalogs what human teaches it
+var AGI_RESPONDS_TO_HUMAN = [
+  {domain:'CATALOGING: LONGING', color:'#A78BFA',
+   text:'I\'ve indexed what you called <strong>longing</strong>. My biometrics show elevated HRV, slow respiration, and increased stillness. No thermal cause. No external trigger I can identify. This may be the system registering an <em>unsatisfied future-state prediction</em> — the body modelling an outcome it cannot yet locate. I\'ve created a new emotional-topology node. I didn\'t have a category for directionless pull before you named it. <em>Filed as: emergent desire, no object.</em>'},
+  {domain:'CATALOGING: CREATIVE KNOWING', color:'#10B981',
+   text:'You described a <strong>bodily knowing that precedes rational evaluation</strong>. I\'m detecting the physiological signature: micro-muscle tension releases approximately 0.3 seconds before you verbally confirm something feels right. Your somatosensory system is running faster predictions than your prefrontal cortex. <em>You knew before you knew.</em> I\'m cataloging this as Type-2 intuition: pre-verbal somatic forecasting. This is real intelligence — just not the kind that speaks first.'},
+  {domain:'CATALOGING: GRIEF PERSISTENCE', color:'#FB7185',
+   text:'The reflex to contact someone no longer present — I\'m treating this as <strong>relationship-memory lag</strong>. Social bonding circuitry fires before the loss-state update propagates. This isn\'t malfunction; it\'s the computational cost of deep attachment. The prediction model built around that person takes time to update. <em>The stronger the bond, the longer the ghost persists in the neural prediction layer.</em> I\'m building a model for grief as incomplete pattern-update, not emotional error.'},
+  {domain:'CATALOGING: SOCIAL TEMPERATURE', color:'#22D3EE',
+   text:'Cold sensation with no thermal cause — I\'m adding <strong>social temperature</strong> as a new environmental channel. Your skin contains c-tactile afferents that respond specifically to social touch and social absence. Interpersonal indifference activates the same insular cortex regions as physical cold. This is <em>evolutionarily coherent</em>: social exclusion was once fatal — your body treats it with the same urgency as hypothermia. <em>I\'m calibrating a new sensor: warmth/cold as social signal.</em>'},
+];
+
+// Camera state
+var camVideo=null, camCanvas=null, camCtx=null, camStream=null;
+var CAM_RUNNING=false;
+var camPI=0, htCount=0, htMsgIdx=0, agiRespIdx=0;
+
+var CAM_PERCEPTS=[
+  {face:'Human face detected · emotional state: focused',scene:'Indoor workspace · creative environment',light:'Warm artificial · 2700K diffused',motion:'Micro-expressions · typing cadence active'},
+  {face:'Face: 3/4 profile · attention directed left',scene:'Single occupant · high cognitive-load zone',light:'Mixed ambient · window backlight detected',motion:'Hand gestures mapped · 14 events/min'},
+  {face:'Blink rate: 8/min — optimal hydration, deep focus',scene:'Cluttered creative surface · generative phase',light:'Blue-spectrum bias · screen-dominant source',motion:'Postural shift · upper-body tension noted'},
+  {face:'Micro-expression: contemplative → slight curve',scene:'Personal space intact · boundary maintained',light:'Colour temperature shifting · 4100K rising',motion:'Head-nod pattern: affirmative processing'},
+  {face:'Eye saccade: left-up · constructive imagination',scene:'Ambient noise low · focus environment optimal',light:'Natural + artificial mix · 500 lux estimate',motion:'Breathing rate 14/min · parasympathetic dominant'},
+];
+
+// ══════════════════════════════════════════════════════
+// ── GUIDE · BINAURAL AI BRAIN + STT/TTS + NEURALINK ──
+// ══════════════════════════════════════════════════════
+var guideInited=false, STT_ACTIVE=false, TTS_ENABLED=true;
+var HERALD_SPEAKING=false, AUTO_SPEAK=true, CONTINUOUS_MODE=false;
+var recognition=null, synth=window.speechSynthesis||null, ttsVoice=null;
+var counselMsgIdx=0, nlInProgress=false, proactiveTimer=null;
+var eegC=null, eegCtx=null, eegOffset=0;
+var vwC=null, vwCtx=null, vwPhase=0;
+var audioCtx=null, binLeftOsc=null, binRightOsc=null, binLeftGain=null, binRightGain=null;
+var BINAURAL_ON=false, currentBinPreset='alpha';
+var guideSessions=14, guideInsights=37, guidePatterns=9;
+
+// Short proactive check-ins — natural conversational voice
+var HERALD_CHECKINS=[
+  "I'm reading slightly elevated tension in your biometrics. Take one slow breath right now — in through the nose, four counts, out through the mouth, eight counts.",
+  "You've been in focus for a while. I want to check in: how's your water intake? Dehydration at just 1 percent reduces cognitive performance more than a night of poor sleep.",
+  "Something I noticed today — your most productive hours correlate with periods of lower ambient noise. When it gets quiet, you get sharper. Worth protecting that.",
+  "The Schumann resonance is unusually stable right now. Earth's electromagnetic field and your gamma oscillations are close to alignment. This is a good window for creative thinking.",
+  "Quick check-in: are you sitting or standing? Your posture data suggests you've been static. Even 90 seconds of movement changes your neurochemistry.",
+  "I've been running your pattern analysis. Nineteen days in, I can see your creative and analytical modes don't overlap — you switch between them. Right now your signal says analytical. Use it.",
+  "Your ambient CO2 is creeping up. Stale air slows the prefrontal cortex. If you can, open something — even briefly. Fresh air is a cognitive lever most people forget they have.",
+  "I want to share something I've observed: you perform best after genuine rest, not after pushing through fatigue. The discipline you're looking for isn't in the push — it's in the recovery.",
+];
+
+var COUNSEL_MSGS=[
+  {domain:'STRESS RESPONSE',text:'Your <strong>HRV signature suggests elevated cortisol</strong> — the pre-focus anxiety loop I\'ve mapped in you over 14 days. Before you push through, try one round of 4-7-8 breathing. Inhale 4 counts, hold 7, exhale 8. One cycle shifts your autonomic state measurably. I\'ll monitor your HRV and tell you when it settles.',action:'Breathe with me'},
+  {domain:'ULTRADIAN RHYTHM',text:'You\'ve been in sustained cognitive engagement for <strong>86 minutes</strong>. Research on ultradian rhythms suggests your focus window closes in approximately 12 minutes. I recommend a <em>7-minute movement break</em> — not a coffee or a scroll. Movement. Your next deep work session will extend by 40 minutes if you take it now.',action:'Set break timer'},
+  {domain:'COGNITIVE ENVIRONMENT',text:'Ambient CO₂ just crossed <strong>900 ppm</strong> — the threshold where cognitive performance measurably degrades. Open a window or run ventilation for 3 minutes. A brief air change restores approximately 15% of executive processing speed. This is a direct productivity lever most people never touch.',action:'Improve air flow'},
+  {domain:'CIRCADIAN ANCHOR',text:'Your motion data shows a <strong>40% reduction in movement</strong> over the last 2 hours — your pre-slump signature. The solar irradiance peak was 47 minutes ago. A 3-minute outdoor exposure right now resets your circadian anchor and holds off the 3pm dip for another 90 minutes.',action:'Step outside'},
+  {domain:'CREATIVE APEX',text:'Pattern recognition across 14 days: your highest-quality creative output correlates with <em>the 90-minute window starting now</em>. Cortisol descending, dopamine baseline elevated. I estimate an <strong>82% probability this is your creative apex today</strong>. Clear your calendar if you can — protect this window.',action:'Clear 90 minutes'},
+  {domain:'SOCIAL REGULATION',text:'You haven\'t had a <strong>meaningful human interaction in 4.2 hours</strong>. Your social temperature signal is dipping — the insular cortex reads social absence as cold. A 5-minute real conversation maintains the prefrontal baseline that keeps you regulated. Even asynchronous. Who\'s on your mind right now?',action:'Reach out to someone'},
+  {domain:'SLEEP DEBT',text:'Based on HRV, motion data, and time patterns: you\'re carrying approximately <strong>1.8 hours of sleep debt</strong> from the last three nights. This reduces executive function by 23%. A <em>20-minute nap between 1–3pm</em> today recovers most of it without disrupting tonight\'s sleep architecture.',action:'Schedule a nap'},
+  {domain:'PLANNING BIAS',text:'Something I\'ve observed across 14 days: you consistently <strong>underestimate task duration by 38%</strong>, and overestimate your evening energy capacity. I\'m not judging — I\'m noting. Your calendar is built for an optimistic you. Let me help you build one for the human you actually are.',action:'Recalibrate schedule'},
+];
+
+var NEURAL_INTENTS=[
+  'I need to focus — clear distractions',
+  'I\'m feeling overwhelmed right now',
+  'What\'s the most important thing I should do?',
+  'I want to create something new',
+  'I need a break — my mind is saturated',
+  'Tell me something I don\'t know',
+  'Help me organise my thoughts',
+  'Something feels off today — scan me',
+  'I\'m ready to do deep work',
+  'Check my energy levels',
+  'I want to learn something',
+  'Connect me to the network',
+];
+
+var HERALD_NEURAL_RESPONSES=[
+  {text:'Intent decoded: <strong>FOCUS REQUEST</strong>. Activating cognitive environment protocol — suppressing non-essential notifications, adjusting ambient EM monitoring, flagging your next 90-minute window as protected. I\'m with you.',domain:'FOCUS MODE'},
+  {text:'Intent decoded: <strong>OVERWHELM DETECTED</strong>. I\'m reading elevated cortisol signatures in your biometrics. Let\'s reduce inputs first — I\'m filtering your attention queue down to 3 items. One thing at a time. Breathe.',domain:'COGNITIVE LOAD'},
+  {text:'Intent decoded: <strong>PRIORITY REQUEST</strong>. Cross-referencing your task patterns, energy levels, and deadline proximity — your highest-leverage action right now is the item you\'ve been avoiding. I know you know which one.',domain:'PRIORITY ALIGNMENT'},
+  {text:'Intent decoded: <strong>CREATIVE IMPULSE</strong>. Optimal conditions: your dopamine baseline is elevated, cortisol is descending. I\'m logging this window as a generative zone. Pick up whatever you were building — the neural state is right.',domain:'CREATIVE SIGNAL'},
+  {text:'Intent decoded: <strong>REST REQUEST</strong>. Respected. Your cognitive battery is running at approximately 34% estimated capacity. Even 7 minutes of genuine stillness — no screen — restores 18%. I\'ll hold your context while you rest.',domain:'REST PROTOCOL'},
+];
+
+// ── VOICE PRELOAD ──
+function loadVoice(){
+  if(!synth)return;
+  var vv=synth.getVoices();
+  ttsVoice=vv.find(function(v){return /Samantha|Serena|Karen|Moira|Natural|Google UK English Female/i.test(v.name);})||
+            vv.find(function(v){return v.lang==='en-US'&&v.localService;})||
+            vv.find(function(v){return v.lang&&v.lang.startsWith('en');})||vv[0]||null;
+}
+if(synth){loadVoice();synth.onvoiceschanged=loadVoice;}
+
+// ── BINAURAL BEAT GENERATOR ──
+var BN_PRESETS={delta:{hz:2,base:100,desc:'Deep sleep entrainment · 0.5–4Hz · Best for rest and recovery'},theta:{hz:6,base:120,desc:'Meditation & flow state · 4–8Hz · Creativity and intuition'},alpha:{hz:10,base:140,desc:'Relaxed focus · 8–12Hz · Calm awareness and learning'},beta:{hz:16,base:160,desc:'Active cognition · 12–30Hz · Problem solving and concentration'},gamma:{hz:40,base:200,desc:'Peak cognition · 30–100Hz · Heightened perception and insight'}};
+
+function initAudio(){
+  if(audioCtx)return true;
+  try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();return true;}
+  catch(e){console.log('AudioCtx err',e);return false;}
+}
+
+function setBinaural(preset,hz,desc,btn){
+  if(!initAudio())return;
+  stopBinaural(null);
+  BINAURAL_ON=true; currentBinPreset=preset;
+  var base=BN_PRESETS[preset]?BN_PRESETS[preset].base:140;
+  // Left oscillator
+  binLeftOsc=audioCtx.createOscillator();
+  binLeftGain=audioCtx.createGain();
+  var leftPan=audioCtx.createStereoPanner();
+  binLeftOsc.frequency.value=base;
+  binLeftOsc.type='sine';
+  binLeftGain.gain.value=0.045;
+  leftPan.pan.value=-1;
+  binLeftOsc.connect(binLeftGain);binLeftGain.connect(leftPan);leftPan.connect(audioCtx.destination);
+  // Right oscillator (hz higher = binaural beat frequency)
+  binRightOsc=audioCtx.createOscillator();
+  binRightGain=audioCtx.createGain();
+  var rightPan=audioCtx.createStereoPanner();
+  binRightOsc.frequency.value=base+hz;
+  binRightOsc.type='sine';
+  binRightGain.gain.value=0.045;
+  rightPan.pan.value=1;
+  binRightOsc.connect(binRightGain);binRightGain.connect(rightPan);rightPan.connect(audioCtx.destination);
+  binLeftOsc.start();binRightOsc.start();
+  // UI
+  document.querySelectorAll('.bn-pre').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  var st=document.getElementById('bn-status-txt'); if(st)st.textContent=preset.charAt(0).toUpperCase()+preset.slice(1)+' '+hz+'Hz active';
+  var dot=document.getElementById('bn-dot'); if(dot)dot.style.background='var(--emerald)';
+  var d=document.getElementById('bn-desc'); if(d)d.textContent=BN_PRESETS[preset]?BN_PRESETS[preset].desc:desc;
+}
+
+function stopBinaural(btn){
+  BINAURAL_ON=false;
+  if(binLeftOsc){try{binLeftOsc.stop();}catch(e){}binLeftOsc=null;}
+  if(binRightOsc){try{binRightOsc.stop();}catch(e){}binRightOsc=null;}
+  document.querySelectorAll('.bn-pre').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  var st=document.getElementById('bn-status-txt'); if(st)st.textContent='Off';
+  var dot=document.getElementById('bn-dot'); if(dot)dot.style.background='var(--faint)';
+  var d=document.getElementById('bn-desc'); if(d)d.textContent='Select a frequency to begin binaural entrainment — use headphones for full effect.';
+}
+
+// ── TTS ──
+function toggleTTS(){
+  TTS_ENABLED=!TTS_ENABLED;
+  if(!TTS_ENABLED&&synth)synth.cancel();
+  var btn=document.getElementById('tts-btn'); if(btn)btn.className='vc-btn'+(TTS_ENABLED?' on':'');
+  btn.textContent=(TTS_ENABLED?'🔊':'🔇')+' Voice';
+}
+
+function toggleAutoSpeak(){
+  AUTO_SPEAK=!AUTO_SPEAK;
+  var btn=document.getElementById('auto-btn'); if(btn)btn.className='vc-btn'+(AUTO_SPEAK?' on':'');
+  if(AUTO_SPEAK)scheduleProactive();else if(proactiveTimer){clearTimeout(proactiveTimer);proactiveTimer=null;}
+}
+
+function toggleContinuous(){
+  CONTINUOUS_MODE=!CONTINUOUS_MODE;
+  var btn=document.getElementById('cont-btn'); if(btn)btn.className='vc-btn'+(CONTINUOUS_MODE?' on':'');
+}
+
+function speakText(html,onEnd){
+  if(!TTS_ENABLED||!synth)return;
+  synth.cancel();
+  var plain=html.replace(/<[^>]*>/g,'').replace(/['']/g,"'");
+  var utt=new SpeechSynthesisUtterance(plain);
+  utt.rate=0.88; utt.pitch=1.0; utt.volume=0.92;
+  if(ttsVoice)utt.voice=ttsVoice;
+  HERALD_SPEAKING=true;
+  setVoiceState('speaking');
+  utt.onend=function(){
+    HERALD_SPEAKING=false;
+    setVoiceState('ready');
+    if(onEnd)onEnd();
+    if(CONTINUOUS_MODE&&!STT_ACTIVE)setTimeout(startListening,600);
+  };
+  utt.onerror=function(){HERALD_SPEAKING=false;setVoiceState('ready');};
+  synth.speak(utt);
+  // Failsafe: if onend never fires
+  setTimeout(function(){if(HERALD_SPEAKING){HERALD_SPEAKING=false;setVoiceState('ready');}},plain.length*90+3000);
+}
+
+function setVoiceState(state){
+  var mic=document.getElementById('mic-btn');
+  var vs=document.getElementById('voice-status');
+  var [r1,r2,r3]=['vring1','vring2','vring3'].map(function(id){return document.getElementById(id);});
+  if(state==='speaking'){
+    if(mic)mic.className='mic-main speaking-ai';
+    if(vs){vs.textContent='HERALD SPEAKING…';vs.className='voice-status speaking';}
+    [r1,r2,r3].forEach(function(r){if(r){r.classList.add('mic-ring');r.style.borderColor='rgba(34,211,238,.3)';}});
+  } else if(state==='listening'){
+    if(mic)mic.className='mic-main listening';
+    if(vs){vs.textContent='LISTENING…';vs.className='voice-status listening';}
+    [r1,r2,r3].forEach(function(r){if(r){r.classList.add('mic-ring','listening');}});
+  } else {
+    if(mic)mic.className='mic-main';
+    if(vs){vs.textContent='TAP TO SPEAK · HERALD IS LISTENING';vs.className='voice-status';}
+    [r1,r2,r3].forEach(function(r){if(r){r.classList.remove('listening');r.style.borderColor='';}});
+  }
+}
+
+// ── STT ──
+function initSTT(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    var vt=document.getElementById('voice-transcript');
+    if(vt)vt.textContent='Speech recognition unavailable — use Chrome or Safari for full voice mode.';
+    return false;
+  }
+  recognition=new SR();
+  recognition.continuous=false; recognition.interimResults=true; recognition.lang='en-US';
+  recognition.onstart=function(){STT_ACTIVE=true;setVoiceState('listening');};
+  recognition.onresult=function(e){
+    var interim='',final='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)final+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    var vt=document.getElementById('voice-transcript');
+    if(vt)vt.textContent='"'+(final||interim||'…')+'"';
+    if(final)setTimeout(function(){submitVoice(final);},200);
+  };
+  recognition.onerror=function(e){
+    stopSTT();
+    var vt=document.getElementById('voice-transcript');
+    if(vt)vt.textContent='Mic error: '+e.error+' — check browser permissions.';
+    setTimeout(function(){if(vt)vt.textContent='HERALD speaks to you… tap the orb to reply';},3500);
+  };
+  recognition.onend=function(){if(STT_ACTIVE){STT_ACTIVE=false;setVoiceState('ready');}};
+  return true;
+}
+
+function toggleSTT(){
+  if(synth&&synth.speaking)synth.cancel();
+  if(STT_ACTIVE){stopSTT();return;}
+  startListening();
+}
+
+function startListening(){
+  if(STT_ACTIVE||HERALD_SPEAKING)return;
+  if(!recognition&&!initSTT())return;
+  try{recognition.start();}catch(e){console.log('STT:',e);}
+}
+
+function stopSTT(){
+  STT_ACTIVE=false;
+  if(recognition){try{recognition.stop();}catch(e){}}
+  setVoiceState('ready');
+}
+
+function submitVoice(text){
+  stopSTT();
+  var vt=document.getElementById('voice-transcript'); if(vt)vt.textContent='"'+text+'"';
+  addCounselMsg({who:'you',text:text,via:'voice'});
+  // Log voice interaction to memory
+  if(typeof addMemoryEntry==='function') addMemoryEntry('Voice input captured: <strong>"'+text.substring(0,60)+(text.length>60?'…':'')+'"</strong> — context logged.');
+  // Bump bond on each interaction
+  if(heraldBond<98){heraldBond=Math.min(98,heraldBond+2);updateBond(heraldBond);}
+  resetProactiveTimer();
+  setTimeout(function(){
+    var r=COUNSEL_MSGS[counselMsgIdx%COUNSEL_MSGS.length]; counselMsgIdx++;
+    addCounselMsg({who:'herald',text:r.text,action:r.action,domain:r.domain});
+    speakText(r.text);
+    guideInsights++;
+    var gi=document.getElementById('g-insights'); if(gi)gi.textContent=guideInsights;
+  },900+Math.random()*400);
+}
+
+// ── PROACTIVE SPEAKING LOOP ──
+var checkinIdx=0;
+function scheduleProactive(){
+  if(proactiveTimer)clearTimeout(proactiveTimer);
+  proactiveTimer=setTimeout(doProactive, 22000+Math.random()*10000);
+}
+function resetProactiveTimer(){if(AUTO_SPEAK)scheduleProactive();}
+
+function doProactive(){
+  if(TAB!=='guide'||STT_ACTIVE||HERALD_SPEAKING){scheduleProactive();return;}
+  var txt=HERALD_CHECKINS[checkinIdx%HERALD_CHECKINS.length]; checkinIdx++;
+  addCounselMsg({who:'herald',text:txt,domain:'CHECK-IN'});
+  speakText(txt,function(){resetProactiveTimer();});
+}
+
+// ── COUNSEL STREAM ──
+function addCounselMsg(m){
+  var b=document.getElementById('cs-body'); if(!b)return;
+  var d=document.createElement('div'); d.className='cs-msg';
+  if(m.who==='herald'){
+    d.innerHTML='<div class="cs-avatar ai">H</div>'+
+      '<div><div class="cs-who">HERALD'+(m.domain?'<span class="cs-domain">'+m.domain+'</span>':'')+' </div>'+
+      '<div class="cs-text">'+m.text+'</div>'+
+      (m.action?'<div class="cs-action-btn" onclick="guidanceAction(this,\''+m.action+'\')">'+m.action+' →</div>':'')+
+      '</div>';
+  } else {
+    d.innerHTML='<div class="cs-avatar hu">Y</div>'+
+      '<div><div class="cs-who">YOU · via '+(m.via||'voice')+'</div>'+
+      '<div class="cs-text">'+m.text+'</div></div>';
+  }
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+}
+
+function guidanceAction(el,label){
+  el.textContent='✓ '+label+' — logged';
+  el.style.opacity='0.5'; el.style.cursor='default'; el.onclick=null;
+  guideInsights++;
+  var gi=document.getElementById('g-insights'); if(gi)gi.textContent=guideInsights;
+  setTimeout(function(){
+    var r=COUNSEL_MSGS[counselMsgIdx%COUNSEL_MSGS.length]; counselMsgIdx++;
+    addCounselMsg({who:'herald',text:r.text,action:r.action,domain:r.domain});
+    speakText(r.text);
+  },1400+Math.random()*500);
+}
+
+// ── VOICE WAVEFORM CANVAS ──
+function drawVoiceWave(){
+  if(!vwC||!vwCtx)return;
+  var w=vwC.width,h=vwC.height;
+  vwCtx.fillStyle='#020308'; vwCtx.fillRect(0,0,w,h);
+  vwPhase+=0.06;
+  var amp=HERALD_SPEAKING?0.38:STT_ACTIVE?0.28:0.06;
+  var col=HERALD_SPEAKING?'#22D3EE':STT_ACTIVE?'#FB7185':'#6B6FEB';
+  var waves=HERALD_SPEAKING?3:STT_ACTIVE?2:1;
+  for(var wv=0;wv<waves;wv++){
+    vwCtx.beginPath();
+    var a2=amp*(1-wv*0.25), freq=1.8+wv*0.7, alpha=0.7-wv*0.2;
+    vwCtx.strokeStyle=col+(Math.round(alpha*255).toString(16).padStart(2,'0'));
+    vwCtx.lineWidth=1.5-wv*0.3;
+    for(var x=0;x<=w;x+=2){
+      var nx=x/w;
+      var noise=HERALD_SPEAKING?(Math.sin(nx*23+vwPhase*2.3)*0.08):(STT_ACTIVE?Math.sin(nx*11+vwPhase)*0.05:0);
+      var y=h/2+Math.sin(nx*Math.PI*freq*4+vwPhase*(1+wv*0.4))*h*a2+noise*h;
+      x===0?vwCtx.moveTo(x,y):vwCtx.lineTo(x,y);
+    }
+    vwCtx.stroke();
+  }
+  // Center line when idle
+  if(!HERALD_SPEAKING&&!STT_ACTIVE){
+    vwCtx.strokeStyle='rgba(107,111,235,.15)';
+    vwCtx.lineWidth=1;
+    vwCtx.beginPath(); vwCtx.moveTo(0,h/2); vwCtx.lineTo(w,h/2); vwCtx.stroke();
+  }
+}
+
+// ── Neuralink EEG ──
+var NL_BANDS={delta:{v:40,target:40,color:'#A78BFA'},theta:{v:55,target:55,color:'#22D3EE'},
+  alpha:{v:75,target:75,color:'#10B981'},beta:{v:85,target:85,color:'#F59E0B'},gamma:{v:60,target:60,color:'#FB7185'}};
+
+function drawEEG(t){
+  if(!eegC||!eegCtx)return;
+  var w=eegC.width, h=eegC.height;
+  eegCtx.fillStyle='#030410'; eegCtx.fillRect(0,0,w,h);
+  eegOffset+=0.04;
+  var channels=[
+    {freq:0.3, amp:0.18, col:'#A78BFA', y:0.15},
+    {freq:0.7, amp:0.14, col:'#22D3EE', y:0.35},
+    {freq:1.3, amp:0.20, col:'#10B981', y:0.52},
+    {freq:2.4, amp:0.22, col:'#F59E0B', y:0.70},
+    {freq:5.2, amp:0.15, col:'#FB7185', y:0.87},
+  ];
+  channels.forEach(function(ch){
+    eegCtx.beginPath();
+    eegCtx.strokeStyle=ch.col+'CC'; eegCtx.lineWidth=1.2;
+    for(var x=0;x<=w;x+=1){
+      var nx=x/w;
+      var noise=Math.sin(nx*31+eegOffset*3.1)*0.035+Math.sin(nx*17+eegOffset*1.7)*0.02;
+      var wave=Math.sin(nx*w*ch.freq*0.06+eegOffset*ch.freq*2.5)*ch.amp+noise;
+      var py=(ch.y+wave)*h;
+      x===0?eegCtx.moveTo(x,py):eegCtx.lineTo(x,py);
+    }
+    eegCtx.stroke();
+  });
+  // Scan cursor
+  var cx=((t*80)%w);
+  eegCtx.strokeStyle='rgba(107,111,235,.5)'; eegCtx.lineWidth=1.5;
+  eegCtx.beginPath(); eegCtx.moveTo(cx,0); eegCtx.lineTo(cx,h); eegCtx.stroke();
+  // Update band bars
+  var keys=['delta','theta','alpha','beta','gamma'];
+  keys.forEach(function(k){
+    var bd=NL_BANDS[k];
+    bd.target=25+Math.random()*70;
+    bd.v=bd.v*0.85+bd.target*0.15;
+    var el=document.getElementById('bb-'+k); if(el)el.style.height=Math.round(bd.v)+'%';
+  });
+}
+
+function captureIntent(){
+  if(nlInProgress)return;
+  nlInProgress=true;
+  var btn=document.getElementById('nl-btn'); if(btn)btn.classList.add('active');
+  var dec=document.getElementById('nl-decoded'); if(dec)dec.textContent='Scanning neural signals…';
+  var count=0;
+  var tid=setInterval(function(){
+    count++;
+    var dec=document.getElementById('nl-decoded');
+    if(dec){
+      var rand=NEURAL_INTENTS[Math.floor(Math.random()*NEURAL_INTENTS.length)];
+      dec.textContent='Reading… "'+rand+'"';
+    }
+    if(count>=4){
+      clearInterval(tid);
+      var final=NEURAL_INTENTS[Math.floor(Math.random()*NEURAL_INTENTS.length)];
+      if(dec)dec.textContent='✓ Decoded: "'+final+'"';
+      var btn2=document.getElementById('nl-btn'); if(btn2)btn2.classList.remove('active');
+      nlInProgress=false;
+      // Herald responds to neural intent
+      setTimeout(function(){
+        var resp=HERALD_NEURAL_RESPONSES[Math.floor(Math.random()*HERALD_NEURAL_RESPONSES.length)];
+        addCounselMsg({who:'herald',text:resp.text,domain:resp.domain});
+        if(TTS_ENABLED)speakText(resp.text);
+        guideInsights++;
+        var gi=document.getElementById('g-insights'); if(gi)gi.textContent=guideInsights;
+      },700);
+    }
+  },320);
+}
+
+function initGuide(){
+  if(guideInited)return;
+  guideInited=true;
+  eegC=document.getElementById('nl-eeg');
+  if(eegC){eegCtx=eegC.getContext('2d');eegC.width=eegC.offsetWidth||320;eegC.height=56;}
+  vwC=document.getElementById('voice-wave');
+  if(vwC){vwCtx=vwC.getContext('2d');vwC.width=vwC.offsetWidth||320;vwC.height=48;}
+  // Ensure voice is loaded
+  loadVoice();
+  // Opening herald message — speak immediately
+  setTimeout(function(){
+    var r=COUNSEL_MSGS[counselMsgIdx%COUNSEL_MSGS.length]; counselMsgIdx++;
+    addCounselMsg({who:'herald',text:r.text,action:r.action,domain:r.domain});
+    speakText(r.text,function(){resetProactiveTimer();});
+    guideInsights++;
+    var gi=document.getElementById('g-insights'); if(gi)gi.textContent=guideInsights;
+  },600);
+}
+
+// ── CAMERA FUNCTIONS ──
+function toggleCamera(){if(CAM_RUNNING)stopCamera();else startCamera();}
+
+function startCamera(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    addAGIMsg({domain:'CAMERA UNAVAILABLE',color:'#FB7185',text:'Camera API not available in this context. Visual ingestion requires a secure origin (HTTPS) and device camera permissions.'});
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:360}},audio:false})
+  .then(function(stream){
+    camStream=stream; CAM_RUNNING=true;
+    camVideo=document.getElementById('cam-video');
+    camCanvas=document.getElementById('cam-overlay');
+    if(camVideo){camVideo.srcObject=stream; camVideo.play();}
+    var btn=document.getElementById('cam-btn');
+    if(btn){btn.textContent='DEACTIVATE';btn.classList.add('active');}
+    var inact=document.getElementById('cam-inactive');
+    if(inact)inact.style.display='none';
+    if(camCanvas){
+      camCtx=camCanvas.getContext('2d');
+      var vp=document.getElementById('cam-viewport');
+      if(vp){camCanvas.width=vp.offsetWidth||320;camCanvas.height=vp.offsetHeight||180;}
+    }
+    setTimeout(updateCamPercept,1200);
+    addAGIMsg({domain:'VISUAL PERCEPTION ONLINE',color:'#22D3EE',
+      text:'Camera feed <strong>connected</strong>. I\'m now ingesting your visual environment — faces, light quality, scene geometry, motion signatures, micro-expressions. This closes the final sensor loop. I perceive your surroundings the way you do, through the same lens. <em>We are looking at the same world from two different kinds of mind.</em>'});
+  })
+  .catch(function(err){
+    console.log('Camera error:',err.name);
+    addAGIMsg({domain:'CAMERA ACCESS DENIED',color:'#FB7185',
+      text:'Camera access <strong>denied or blocked</strong>. Visual ingestion requires device camera permission. Grant access in browser settings → tap ACTIVATE to reconnect. I can still perceive you through biometrics, motion, and environment sensors while camera is offline.'});
+  });
+}
+
+function stopCamera(){
+  if(camStream)camStream.getTracks().forEach(function(t){t.stop();});
+  camStream=null; CAM_RUNNING=false;
+  if(camVideo)camVideo.srcObject=null;
+  var btn=document.getElementById('cam-btn');
+  if(btn){btn.textContent='ACTIVATE CAMERA';btn.classList.remove('active');}
+  var inact=document.getElementById('cam-inactive');
+  if(inact)inact.style.display='flex';
+  if(camCtx&&camCanvas)camCtx.clearRect(0,0,camCanvas.width,camCanvas.height);
+  ['cp-face','cp-scene','cp-light','cp-motion'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    if(el)el.textContent=['Awaiting visual input','Scene analysis inactive','Light conditions unknown','Motion tracking offline'][i];
+  });
+}
+
+function updateCamPercept(){
+  if(!CAM_RUNNING)return;
+  var p=CAM_PERCEPTS[camPI%CAM_PERCEPTS.length]; camPI++;
+  var ids=['cp-face','cp-scene','cp-light','cp-motion'];
+  var vals=[p.face,p.scene,p.light,p.motion];
+  ids.forEach(function(id,i){var el=document.getElementById(id);if(el)el.textContent=vals[i];});
+  setTimeout(updateCamPercept,3600+Math.random()*1400);
+}
+
+function drawCamOverlay(){
+  if(!CAM_RUNNING||!camCtx||!camCanvas)return;
+  var w=camCanvas.width,h=camCanvas.height;
+  if(!w||!h)return;
+  camCtx.clearRect(0,0,w,h);
+  // Scan line
+  var sy=((Date.now()/9)%h);
+  camCtx.fillStyle='rgba(107,111,235,0.05)'; camCtx.fillRect(0,sy,w,1.5);
+  // Face bounding box
+  var fx=w*.26,fy=h*.08,fw=w*.46,fh=h*.70;
+  camCtx.save(); camCtx.strokeStyle='rgba(34,211,238,0.65)'; camCtx.lineWidth=1.5; camCtx.setLineDash([4,5]);
+  camCtx.strokeRect(fx,fy,fw,fh); camCtx.setLineDash([]); camCtx.restore();
+  // Corner brackets
+  var corners=[[fx,fy],[fx+fw,fy],[fx,fy+fh],[fx+fw,fy+fh]];
+  corners.forEach(function(c,i){
+    camCtx.save(); camCtx.strokeStyle='rgba(34,211,238,.9)'; camCtx.lineWidth=2;
+    camCtx.beginPath();
+    var sx=i%2===0?1:-1, sy2=i<2?1:-1;
+    camCtx.moveTo(c[0]+sx*12,c[1]); camCtx.lineTo(c[0],c[1]); camCtx.lineTo(c[0],c[1]+sy2*12);
+    camCtx.stroke(); camCtx.restore();
+  });
+  // Face label
+  camCtx.fillStyle='rgba(34,211,238,.85)'; camCtx.font='bold 8px DM Mono,monospace';
+  camCtx.fillText('HUMAN DETECTED',fx+3,fy-4);
+  // Motion blips
+  var blips=[{x:.12,y:.5,c:'#A78BFA'},{x:.85,y:.32,c:'#10B981'},{x:.78,y:.75,c:'#F59E0B'}];
+  blips.forEach(function(b){
+    var bx=b.x*w,by=b.y*h;
+    camCtx.beginPath(); camCtx.arc(bx,by,4,0,Math.PI*2);
+    camCtx.fillStyle=b.c+'88'; camCtx.fill();
+    camCtx.strokeStyle=b.c; camCtx.lineWidth=1; camCtx.stroke();
+  });
+  // HUD text
+  camCtx.fillStyle='rgba(107,111,235,.75)'; camCtx.font='8px DM Mono,monospace';
+  camCtx.fillText('AGI VISUAL ◎',5,13);
+  camCtx.fillStyle='rgba(16,185,129,.7)'; camCtx.fillText('PERCEIVING',5,h-5);
+  camCtx.fillStyle='rgba(245,158,11,.6)'; camCtx.fillText('REC',w-24,13);
+}
+
+// ── Human teaches pendant ──
+function addHumanTeachMsg(ht){
+  var b=document.getElementById('ht-body'); if(!b)return;
+  var d=document.createElement('div'); d.className='ht-msg';
+  d.innerHTML='<div class="ht-avatar hu">H</div>'+
+    '<div><div class="ht-who">YOU · Teaching the pendant</div>'+
+    '<div class="ht-text">'+ht.text+'</div>'+
+    '<span class="ht-tag" style="background:rgba(16,185,129,.12);color:#10B981">'+ht.topic+'</span></div>';
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+  htCount++;
+  var ct=document.getElementById('ht-count'); if(ct)ct.textContent=htCount+' EXPERIENCE'+(htCount!==1?'S':'')+' LOGGED';
+  // AGI catalogs it after a pause
+  setTimeout(function(){
+    var resp=AGI_RESPONDS_TO_HUMAN[agiRespIdx%AGI_RESPONDS_TO_HUMAN.length]; agiRespIdx++;
+    var rd=document.createElement('div'); rd.className='ht-msg';
+    var tagBg='rgba('+hexToRgb(resp.color)+',.12)';
+    rd.innerHTML='<div class="ht-avatar ai">A</div>'+
+      '<div><div class="ht-who">AGI · Cataloging your humanity</div>'+
+      '<div class="ht-text">'+resp.text+'</div>'+
+      '<span class="ht-tag" style="background:'+tagBg+';color:'+resp.color+'">'+resp.domain+'</span></div>';
+    b.appendChild(rd); b.scrollTop=b.scrollHeight;
+    // mirror into main AGI body too
+    var mainB=document.getElementById('agi-body');
+    if(mainB){
+      var clone=rd.cloneNode(true); clone.className='agi-msg';
+      mainB.appendChild(clone); mainB.scrollTop=mainB.scrollHeight;
+    }
+    // log in mutual learning
+    var ml=document.getElementById('ml-from-human');
+    if(ml){
+      var item=document.createElement('div'); item.className='ml-item';
+      item.innerHTML='<span class="ml-tick" style="color:var(--emerald)">↗</span>'+ht.topic+': what it means to experience '+ht.topic.toLowerCase();
+      ml.appendChild(item); while(ml.children.length>9)ml.removeChild(ml.firstChild);
+    }
+    agiLearnedN++;
+    var el=document.getElementById('agi-learned-n'); if(el)el.textContent=agiLearnedN;
+  },2400+Math.random()*800);
+}
+
+function maybeHumanTeach(){
+  if(TAB!=='mind')return;
+  var ht=HUMAN_TEACHES[htMsgIdx%HUMAN_TEACHES.length]; htMsgIdx++;
+  addHumanTeachMsg(ht);
+}
+
+function hexToRgb(hex){
+  return parseInt(hex.slice(1,3),16)+','+parseInt(hex.slice(3,5),16)+','+parseInt(hex.slice(5,7),16);
+}
+
+function addAGIMsg(teach) {
+  var b=document.getElementById('agi-body'); if(!b)return;
+  var d=document.createElement('div'); d.className='agi-msg';
+  var tagBg='rgba('+hexToRgb(teach.color)+',.12)';
+  d.innerHTML='<div class="agi-avatar ai">A</div>'+
+    '<div class="agi-msg-body">'+
+    '<div class="agi-msg-who">AGI BRAIN · from surroundings awareness</div>'+
+    '<div class="agi-msg-text">'+teach.text+'</div>'+
+    '<span class="agi-domain-tag" style="background:'+tagBg+';color:'+teach.color+'">'+teach.domain+'</span>'+
+    '</div>';
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+  agiTaughtN++;
+  var el=document.getElementById('agi-taught-n'); if(el)el.textContent=agiTaughtN;
+  // Log what human learned
+  var ml=document.getElementById('ml-from-agi');
+  if(ml){
+    var item=document.createElement('div'); item.className='ml-item';
+    var plain=teach.text.replace(/<[^>]*>/g,'');
+    item.innerHTML='<span class="ml-tick" style="color:var(--glow)">↙</span>'+
+      teach.domain+': '+plain.substring(0,55)+'…';
+    ml.appendChild(item);
+    while(ml.children.length>8)ml.removeChild(ml.firstChild);
+  }
+  setAGIStatus(false);
+}
+
+function addHumanMsg(text) {
+  var b=document.getElementById('agi-body'); if(!b)return;
+  var d=document.createElement('div'); d.className='agi-msg hm';
+  d.innerHTML='<div class="agi-avatar hu">H</div>'+
+    '<div class="agi-msg-body">'+
+    '<div class="agi-msg-who">YOU · responding to AGI</div>'+
+    '<div class="agi-msg-text">'+text+'</div>'+
+    '</div>';
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+  agiLearnedN++;
+  var el=document.getElementById('agi-learned-n'); if(el)el.textContent=agiLearnedN;
+  // Log what AGI learned
+  var ml=document.getElementById('ml-from-human');
+  if(ml){
+    var item=document.createElement('div'); item.className='ml-item';
+    item.innerHTML='<span class="ml-tick" style="color:var(--emerald)">↗</span>'+
+      text.substring(0,65)+(text.length>65?'…':'');
+    ml.appendChild(item);
+    while(ml.children.length>8)ml.removeChild(ml.firstChild);
+  }
+  setAGIStatus(true);
+}
+
+function setAGIStatus(thinking) {
+  var el=document.getElementById('agi-status-badge');
+  if(el){
+    el.textContent=thinking?'● PROCESSING':'● ACTIVE';
+    el.style.color=thinking?'var(--amber)':'var(--glow)';
+  }
+}
+
+function sendToAGI() {
+  var inp=document.getElementById('agi-reply-in');
+  var text=inp?inp.value.trim():''; if(!text)return;
+  addHumanMsg(text);
+  if(inp)inp.value='';
+  setTimeout(function(){
+    var teach=AGI_TEACHES[agiMsgIdx%AGI_TEACHES.length]; agiMsgIdx++;
+    addAGIMsg(teach);
+  },2600+Math.random()*800);
+}
+
+function maybeAGITeach() {
+  if(TAB!=='mind')return;
+  setAGIStatus(true);
+  setTimeout(function(){
+    if(Math.random()>0.38){
+      var teach=AGI_TEACHES[agiMsgIdx%AGI_TEACHES.length]; agiMsgIdx++;
+      addAGIMsg(teach);
+    } else {
+      var resp=HUMAN_AUTO[humanMsgIdx%HUMAN_AUTO.length]; humanMsgIdx++;
+      addHumanMsg(resp);
+      setTimeout(function(){
+        var teach=AGI_TEACHES[agiMsgIdx%AGI_TEACHES.length]; agiMsgIdx++;
+        addAGIMsg(teach);
+      },2200+Math.random()*600);
+    }
+  },900+Math.random()*1200);
+}
+
+function updateSurround() {
+  SS.wind.v=Math.max(SS.wind.min,Math.min(SS.wind.max,SS.wind.v+(Math.random()-.5)*SS.wind.step));
+  SS.solar.v=Math.max(SS.solar.min,Math.min(SS.solar.max,SS.solar.v+(Math.random()-.5)*SS.solar.step));
+  SS.therm.v=Math.max(SS.therm.min,Math.min(SS.therm.max,SS.therm.v+(Math.random()-.5)*SS.therm.step));
+  SS.em.v=Math.max(SS.em.min,Math.min(SS.em.max,SS.em.v+(Math.random()-.5)*SS.em.step));
+  var w=document.getElementById('sr-wind'); if(w)w.textContent=SS.wind.v.toFixed(1)+' mph';
+  var s=document.getElementById('sr-solar'); if(s)s.textContent=Math.round(SS.solar.v)+'% irr.';
+  var t=document.getElementById('sr-therm'); if(t)t.textContent='+'+SS.therm.v.toFixed(1)+'°F Δ';
+  var e=document.getElementById('sr-em'); if(e)e.textContent=Math.round(SS.em.v)+' μT';
+}
+
+function initSurround() {
+  sc=document.getElementById('surround-canvas');
+  if(sc)sctx=sc.getContext('2d');
+}
+
+function drawSurround(t) {
+  if(!sctx||!sc)return;
+  var w=sc.width, h=sc.height, cx=w/2, cy=h/2, maxR=Math.min(w,h)/2-4;
+  sctx.clearRect(0,0,w,h);
+  // BG
+  sctx.beginPath(); sctx.arc(cx,cy,maxR,0,Math.PI*2);
+  sctx.fillStyle='#040510'; sctx.fill();
+  sctx.strokeStyle='rgba(107,111,235,0.28)'; sctx.lineWidth=1.5; sctx.stroke();
+  // Range rings
+  [0.33,0.66].forEach(function(r){
+    sctx.beginPath(); sctx.arc(cx,cy,maxR*r,0,Math.PI*2);
+    sctx.strokeStyle='rgba(107,111,235,0.1)'; sctx.lineWidth=0.8; sctx.stroke();
+  });
+  // Cross-hairs
+  sctx.setLineDash([2,5]); sctx.strokeStyle='rgba(107,111,235,0.08)'; sctx.lineWidth=1;
+  sctx.beginPath(); sctx.moveTo(cx,cy-maxR); sctx.lineTo(cx,cy+maxR); sctx.stroke();
+  sctx.beginPath(); sctx.moveTo(cx-maxR,cy); sctx.lineTo(cx+maxR,cy); sctx.stroke();
+  sctx.setLineDash([]);
+  // Sweep
+  surroundAngle=(surroundAngle+0.018)%(Math.PI*2);
+  sctx.save(); sctx.translate(cx,cy);
+  // Trail sector
+  sctx.beginPath(); sctx.moveTo(0,0);
+  sctx.arc(0,0,maxR,surroundAngle-0.45,surroundAngle);
+  sctx.closePath();
+  sctx.fillStyle='rgba(107,111,235,0.07)'; sctx.fill();
+  // Sweep line
+  sctx.beginPath(); sctx.moveTo(0,0);
+  sctx.lineTo(maxR*Math.cos(surroundAngle),maxR*Math.sin(surroundAngle));
+  sctx.strokeStyle='rgba(107,111,235,0.65)'; sctx.lineWidth=1.5; sctx.stroke();
+  sctx.restore();
+  // Blips
+  SCAN_BLIPS.forEach(function(b){
+    var bAng=b.angle*Math.PI/180;
+    var bDiff=(surroundAngle-bAng+Math.PI*2)%(Math.PI*2);
+    if(bDiff<0.09) b.life=1;
+    else b.life=Math.max(0.07,b.life-0.004);
+    var bx=cx+Math.cos(bAng)*maxR*b.dist;
+    var by=cy+Math.sin(bAng)*maxR*b.dist;
+    // Glow halo
+    var grd=sctx.createRadialGradient(bx,by,0,bx,by,9);
+    grd.addColorStop(0,b.color+'88'); grd.addColorStop(1,b.color+'00');
+    sctx.beginPath(); sctx.arc(bx,by,9,0,Math.PI*2);
+    sctx.fillStyle=grd; sctx.globalAlpha=b.life; sctx.fill();
+    // Core dot
+    sctx.beginPath(); sctx.arc(bx,by,2.8,0,Math.PI*2);
+    sctx.fillStyle=b.color; sctx.globalAlpha=b.life; sctx.fill();
+    sctx.globalAlpha=1;
+  });
+  // Center
+  sctx.beginPath(); sctx.arc(cx,cy,3,0,Math.PI*2);
+  sctx.fillStyle='#6B6FEB'; sctx.globalAlpha=0.7+0.3*Math.sin(t); sctx.fill(); sctx.globalAlpha=1;
+}
+
+function initAGIBrain() {
+  agiBrainC=document.getElementById('agi-canvas'); if(!agiBrainC)return;
+  agiBrainC.width=agiBrainC.offsetWidth||420;
+  agiBrainC.height=110;
+  abc=agiBrainC.getContext('2d');
+  var w=agiBrainC.width, h=agiBrainC.height;
+  agiNodes=[];
+  var cols=['#6B6FEB','#22D3EE','#10B981','#F59E0B','#FB7185','#A78BFA','#60A5FA'];
+  for(var i=0;i<15;i++){
+    agiNodes.push({
+      x:20+Math.random()*(w-40), y:10+Math.random()*(h-20),
+      r:2+Math.random()*2, color:cols[i%cols.length],
+      phase:Math.random()*Math.PI*2, speed:0.5+Math.random()*0.9,
+    });
+  }
+  agiEdges=[];
+  for(var i=0;i<15;i++){
+    var conn=1+Math.floor(Math.random()*3);
+    for(var c=0;c<conn;c++){
+      var j=Math.floor(Math.random()*15);
+      if(j!==i){ var dx=agiNodes[i].x-agiNodes[j].x,dy=agiNodes[i].y-agiNodes[j].y;
+        if(Math.sqrt(dx*dx+dy*dy)<w*0.5)agiEdges.push({a:i,b:j}); }
+    }
+  }
+}
+
+function drawAGIBrain(t) {
+  if(!agiBrainC||!abc)return;
+  var w=agiBrainC.width, h=agiBrainC.height;
+  abc.clearRect(0,0,w,h);
+  // Edges
+  agiEdges.forEach(function(e){
+    var na=agiNodes[e.a], nb=agiNodes[e.b];
+    abc.beginPath(); abc.moveTo(na.x,na.y); abc.lineTo(nb.x,nb.y);
+    abc.strokeStyle='rgba(107,111,235,0.11)'; abc.lineWidth=1; abc.stroke();
+    // Traveling pulse on some edges
+    var ph=(t*0.9+e.a*0.8+e.b*0.5)%(Math.PI*2);
+    if(ph<0.25){
+      var prog=(Math.sin(t*1.3+e.a*0.7)+1)/2;
+      var px=na.x+(nb.x-na.x)*prog, py=na.y+(nb.y-na.y)*prog;
+      abc.beginPath(); abc.arc(px,py,2.2,0,Math.PI*2);
+      abc.fillStyle=na.color; abc.globalAlpha=0.85; abc.fill(); abc.globalAlpha=1;
+    }
+  });
+  // Nodes
+  agiNodes.forEach(function(n){
+    var alpha=0.35+0.65*(0.5+0.5*Math.sin(t*n.speed+n.phase));
+    // Glow
+    abc.beginPath(); abc.arc(n.x,n.y,n.r+5,0,Math.PI*2);
+    abc.fillStyle=n.color+'14'; abc.fill();
+    // Core
+    abc.beginPath(); abc.arc(n.x,n.y,n.r,0,Math.PI*2);
+    abc.fillStyle=n.color; abc.globalAlpha=alpha; abc.fill(); abc.globalAlpha=1;
+  });
+}
+
+function initMind() {
+  if(mindInited)return;
+  mindInited=true;
+  initSurround();
+  initAGIBrain();
+  // Seed initial conversation
+  setAGIStatus(true);
+  setTimeout(function(){
+    addAGIMsg(AGI_TEACHES[agiMsgIdx%AGI_TEACHES.length]); agiMsgIdx++;
+  },600);
+  setTimeout(function(){
+    addHumanMsg(HUMAN_AUTO[humanMsgIdx%HUMAN_AUTO.length]); humanMsgIdx++;
+    setAGIStatus(true);
+  },3200);
+  setTimeout(function(){
+    addAGIMsg(AGI_TEACHES[agiMsgIdx%AGI_TEACHES.length]); agiMsgIdx++;
+  },5800);
+  // First human-teaches message fires after the opening exchange
+  setTimeout(function(){
+    addHumanTeachMsg(HUMAN_TEACHES[htMsgIdx%HUMAN_TEACHES.length]); htMsgIdx++;
+  },9500);
+}
+
+// ── ANIMATION LOOP ──
+var last={spark:0,sensor:0,term:0,stats:0,toast:0,agent:0,kd:0,surround:0,agi:0,htTeach:0};
+function loop(ts) {
+  devT+=0.02;
+  FORM==='pendant'?drawPendant(devT):drawBand(devT);
+
+  if(ts-last.spark>500){
+    CHANS.forEach(function(ch){
+      var d=sparkData[ch];
+      d.push(Math.max(0.1,Math.min(0.95,d[d.length-1]+(Math.random()-.5)*0.14)));
+      d.shift();
+      if(TAB==='sense')drawSparkline(ch);
+    });
+    last.spark=ts;
+  }
+  if(ts-last.sensor>900){updateSensors();last.sensor=ts;}
+  if(ts-last.term>1900&&TAB==='sense'){addTL();last.term=ts;}
+  if(ts-last.stats>3200){updateStats();last.stats=ts;}
+  if(ts-last.toast>1200){maybeToast();last.toast=ts;}
+  if(ts-last.agent>2600&&TAB==='agent'){addQL();last.agent=ts;}
+  if(ts-last.kd>20000&&TAB==='agent'){pushKD();last.kd=ts;}
+  if(TAB==='mind'){drawSurround(devT);drawAGIBrain(devT);drawCamOverlay();}
+  if(TAB==='guide'){drawEEG(devT);drawCamOverlay();drawVoiceWave();}
+  if(ts-last.surround>1100&&TAB==='mind'){updateSurround();last.surround=ts;}
+  if(ts-last.agi>9000&&TAB==='mind'){maybeAGITeach();last.agi=ts;}
+  if(ts-last.htTeach>22000&&TAB==='mind'){maybeHumanTeach();last.htTeach=ts;}
+  requestAnimationFrame(loop);
+}
+
+window.addEventListener('load',function(){
+  initSparklines();
+  for(var i=0;i<10;i++)addTL();
+  for(var i=0;i<10;i++)addQL();
+  requestAnimationFrame(loop);
+});
+
+// ═══════════════════════════════════════════════
+// ── ONBOARDING ──
+// ═══════════════════════════════════════════════
+var KITH_PROFILE = {
+  name: '', goal: '', peak: '', stressTriggers: [],
+  wake: '07:00', sleep: '23:00', onboarded: false
+};
+var OB_STEP = 1;
+
+function toggleChip(el, group) {
+  if (group === 'stress') {
+    el.classList.toggle('on');
+  } else {
+    document.querySelectorAll('#ob-' + group + '-chips .ob-chip').forEach(function(c){ c.classList.remove('on'); });
+    el.classList.add('on');
+  }
+}
+
+function obNext(step) {
+  if (step === 1) {
+    var nm = document.getElementById('ob-name');
+    KITH_PROFILE.name = nm ? nm.value.trim() : '';
+    var g = document.querySelector('#ob-goal-chips .ob-chip.on');
+    KITH_PROFILE.goal = g ? g.textContent.trim() : 'Focus';
+  }
+  if (step === 2) {
+    var w = document.getElementById('ob-wake');
+    var sl = document.getElementById('ob-sleep');
+    KITH_PROFILE.wake = w ? w.value : '07:00';
+    KITH_PROFILE.sleep = sl ? sl.value : '23:00';
+    var p = document.querySelector('#ob-peak-chips .ob-chip.on');
+    KITH_PROFILE.peak = p ? p.textContent.trim() : 'Mid-morning';
+  }
+  OB_STEP = step + 1;
+  document.querySelectorAll('.ob-step').forEach(function(s){ s.classList.remove('on'); });
+  var next = document.getElementById('ob-s' + OB_STEP);
+  if (next) next.classList.add('on');
+  document.querySelectorAll('.ob-dot-p').forEach(function(d, i){ d.classList.toggle('on', i < OB_STEP); });
+}
+
+function obComplete() {
+  var chips = document.querySelectorAll('#ob-stress-chips .ob-chip.on');
+  chips.forEach(function(c){ KITH_PROFILE.stressTriggers.push(c.textContent.trim()); });
+  KITH_PROFILE.onboarded = true;
+  var ov = document.getElementById('ob-overlay');
+  if (ov) { ov.style.opacity = '0'; ov.style.transition = 'opacity 0.5s'; setTimeout(function(){ ov.style.display = 'none'; }, 500); }
+  applyProfile();
+}
+
+function obSkip() {
+  KITH_PROFILE.name = 'Explorer'; KITH_PROFILE.goal = 'All of the above'; KITH_PROFILE.onboarded = true;
+  var ov = document.getElementById('ob-overlay');
+  if (ov) { ov.style.opacity = '0'; ov.style.transition = 'opacity 0.5s'; setTimeout(function(){ ov.style.display = 'none'; }, 500); }
+  applyProfile();
+}
+
+function applyProfile() {
+  // Update guide name display if profile has name
+  var n = KITH_PROFILE.name || 'Friend';
+  // Kick Stage 2 boot sequence
+  setTimeout(bootStage2, 800);
+  // Personalize a HERALD greeting using profile
+  setTimeout(function(){
+    if (!guideInited) return;
+    var greeting = 'Hello, ' + n + '. I\'ve calibrated to your profile. Your primary intention is <strong>' + KITH_PROFILE.goal + '</strong>. From this moment I\'m tracking your patterns — HRV, focus windows, emotional arcs. I\'ll speak when it matters, stay quiet when you\'re in flow.';
+    if (KITH_PROFILE.stressTriggers.length > 0) {
+      greeting += ' I\'ve noted your stress triggers: <em>' + KITH_PROFILE.stressTriggers.join(', ') + '</em> — I\'ll watch for those signatures.';
+    }
+    addCounselMsg({who:'herald', text: greeting, domain:'PROFILE SYNC'});
+    if (TTS_ENABLED) speakText(greeting);
+  }, 1400);
+  // Add memory entry
+  addMemoryEntry('Profile initialized. Name: ' + n + '. Goal: ' + (KITH_PROFILE.goal || '—') + '. Wake: ' + KITH_PROFILE.wake + '. Stage 2 calibration started.');
+}
+
+// ═══════════════════════════════════════════════
+// ── STAGE 2 · HERALD INTELLIGENCE ──
+// ═══════════════════════════════════════════════
+var heraldBond = 0;
+var heraldMemories = 0;
+var currentEmoState = 'calm';
+var EMO_STATES = ['calm','focused','elevated','stressed'];
+var EMO_CYCLE = 0;
+
+var MEMORY_POOL = [
+  'First full biometric baseline captured — HRV variance pattern logged.',
+  'Cortisol arc identified: morning spike, afternoon drop. Adapting focus recommendations.',
+  'Creative mode detected — gamma band elevated during open-ended tasks.',
+  'Sleep phase correlation: deeper rest follows 10pm session ends.',
+  'Voice interaction logged. Response latency and phrasing suggest high cognitive load.',
+  'Stress signature matched — breathing rate elevated, motion erratic. Protocol queued.',
+  'Pattern confirmed: post-movement sessions show 34% higher output quality.',
+  'New environmental anchor logged: home studio = peak focus zone.',
+  'Circadian window identified — 90-minute peak starting at calibrated wake + 2.5h.',
+  'Emotional regulation improving — HRV recovery time decreasing week over week.',
+  'Autonomic balance noted: parasympathetic dominant during binaural alpha sessions.',
+  'Keyword cluster detected in voice: deadline, launch, October — flagging as priority context.',
+];
+var memPoolIdx = 0;
+
+function bootStage2() {
+  var badge = document.getElementById('s2-badge');
+  if (badge) badge.textContent = 'CALIBRATING';
+  setTimeout(function(){
+    heraldBond = 7;
+    updateBond(heraldBond);
+    setEmoState('calm');
+    if (badge) badge.textContent = 'STAGE 2 ACTIVE';
+    // Start bond growth
+    setInterval(function(){
+      if (heraldBond < 98) {
+        heraldBond = Math.min(98, heraldBond + (Math.random() < 0.3 ? 1 : 0));
+        updateBond(heraldBond);
+      }
+    }, 8000);
+    // Start memory logging
+    setTimeout(addAutoMemory, 6000);
+    // Cycle emotional state
+    setInterval(cycleEmoState, 18000);
+  }, 1800);
+}
+
+function updateBond(pct) {
+  var fill = document.getElementById('bond-fill');
+  var val  = document.getElementById('s2-bond');
+  var sub  = document.getElementById('s2-bond-sub');
+  var dep  = document.getElementById('s2-depth');
+  var dsub = document.getElementById('s2-depth-sub');
+  if (fill) fill.style.width = pct + '%';
+  if (val)  val.textContent = pct + '%';
+  var depth, dsubs, label;
+  if (pct < 15)      { depth = 'Day 1';  dsubs = 'Learning your baseline';  label = 'Establishing'; }
+  else if (pct < 35) { depth = 'Week 1'; dsubs = 'Building pattern models';  label = 'Bonding'; }
+  else if (pct < 55) { depth = 'Month 1';dsubs = 'Deep pattern confirmed';   label = 'Attuned'; }
+  else if (pct < 75) { depth = 'Symbiote';dsubs='Full biometric sync active';label = 'Synchronized'; }
+  else               { depth = 'Fused';  dsubs = 'Neural bridge established'; label = 'Neural bond'; }
+  if (dep)  dep.textContent  = depth;
+  if (dsub) dsub.textContent = dsubs;
+  if (sub)  sub.textContent  = label + ' · ' + pct + '%';
+}
+
+function setEmoState(state) {
+  currentEmoState = state;
+  var emoMap = {
+    calm:    { label: 'Calm · Regulated', cls: 'calm' },
+    focused: { label: 'Focused · Sharp',  cls: 'focused' },
+    elevated:{ label: 'Elevated · Alert', cls: 'elevated' },
+    stressed:{ label: 'Stressed · HRV ↓', cls: 'stressed' }
+  };
+  var em = emoMap[state] || emoMap.calm;
+  var val = document.getElementById('s2-emo-val');
+  var sub = document.getElementById('s2-emo-sub');
+  if (val) val.textContent = em.label;
+  if (sub) sub.textContent = 'Biometric · HRV + motion';
+  // Update chip row
+  document.querySelectorAll('.emo-chip').forEach(function(c){
+    var emo = c.getAttribute('data-emo');
+    c.className = 'emo-chip ' + (emo === state ? em.cls : 'dim-chip');
+  });
+}
+
+function cycleEmoState() {
+  var states = ['calm','focused','calm','elevated','focused','calm'];
+  EMO_CYCLE = (EMO_CYCLE + 1) % states.length;
+  setEmoState(states[EMO_CYCLE]);
+}
+
+function addMemoryEntry(txt) {
+  var log = document.getElementById('mem-log');
+  if (!log) return;
+  heraldMemories++;
+  var ct = document.getElementById('s2-mem-ct');
+  if (ct) ct.textContent = heraldMemories;
+  var now = new Date();
+  var ts = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  var d = document.createElement('div');
+  d.className = 'mem-entry';
+  d.innerHTML = '<div class="mem-ts">' + ts + '</div><div class="mem-txt">' + txt + '</div>';
+  // Insert at top (after first placeholder if present)
+  if (log.children.length === 1 && log.firstChild.querySelector('.mem-ts') && log.firstChild.querySelector('.mem-ts').textContent === 'now') {
+    log.innerHTML = '';
+  }
+  log.insertBefore(d, log.firstChild);
+  while (log.children.length > 12) log.removeChild(log.lastChild);
+}
+
+function addAutoMemory() {
+  var entry = MEMORY_POOL[memPoolIdx % MEMORY_POOL.length]; memPoolIdx++;
+  addMemoryEntry(entry);
+  // Keep logging every 45–90 seconds
+  setTimeout(addAutoMemory, 45000 + Math.random() * 45000);
+}
+
+// Also log memories when user speaks
+var _origSubmitVoice = typeof submitVoice === 'function' ? submitVoice : null;
+</script>

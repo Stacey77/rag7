@@ -1,0 +1,24 @@
+{
+  "name": "Stacey Williams - Digital Business Card",
+  "short_name": "Stacey Card",
+  "description": "Professional business card for Stacey Williams, Certified Service Technician at Mercedes Benz Of Collierville",
+  "start_url": "/rag7/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#C0C0C0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

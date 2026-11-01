@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Service dashboard for Stacey Williams, Certified Service Technician at Mercedes-Benz of Collierville" />
+  <meta name="theme-color" content="#C0C0C0" />
+  <title>Dashboard – Stacey Williams</title>
+  <link rel="manifest" href="/rag7/manifest.json" />
+  <link rel="stylesheet" href="/rag7/style.css" />
+  <link rel="stylesheet" href="/rag7/dashboard.css" />
+</head>
+<body class="dashboard-body">
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ── Top Nav ───────────────────────────────────────────────────── -->
+  <nav class="dash-nav" role="navigation" aria-label="Dashboard navigation">
+    <a href="/rag7/" class="dash-nav__back" aria-label="Back to business card">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Card
+    </a>
+
+    <div class="dash-nav__brand">
+      <svg width="24" height="24" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="30" cy="30" r="28" stroke="#C0C0C0" stroke-width="2"/>
+        <path d="M30 8 L30 30 L50 42" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round"/>
+        <path d="M30 8 L30 30 L10 42" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="30" cy="30" r="4" fill="#C0C0C0"/>
+      </svg>
+      <span>Stacey's Dashboard</span>
+    </div>
+
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle light/dark theme" title="Toggle theme">
+      <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display:none">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- ── Main Content ──────────────────────────────────────────────── -->
+  <main class="dash-main" id="main-content">
+
+    <!-- Greeting -->
+    <header class="dash-greeting">
+      <div>
+        <h1 class="dash-greeting__title">Good <span id="time-of-day">day</span>, Stacey!</h1>
+        <p class="dash-greeting__sub" id="today-date">Loading date…</p>
+      </div>
+      <span class="dash-greeting__badge">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        On Duty
+      </span>
+    </header>
+
+    <!-- ── Stat Cards ────────────────────────────────────────────── -->
+    <section class="stat-grid" aria-label="Key metrics">
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--blue" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <p class="stat-card__label">Today's Appointments</p>
+          <p class="stat-card__value" id="stat-today" aria-live="polite">4</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--green" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <p class="stat-card__label">Services This Week</p>
+          <p class="stat-card__value" id="stat-week" aria-live="polite">18</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--gold" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <p class="stat-card__label">Customer Rating</p>
+          <p class="stat-card__value" id="stat-rating" aria-live="polite">4.9 ★</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--silver" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <p class="stat-card__label">Vehicles In Shop</p>
+          <p class="stat-card__value" id="stat-inshop" aria-live="polite">2</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── Quick Actions ─────────────────────────────────────────── -->
+    <section class="dash-section" aria-labelledby="quick-actions-heading">
+      <h2 class="dash-section__title" id="quick-actions-heading">Quick Actions</h2>
+      <div class="quick-actions">
+        <a href="tel:+19014943990" class="qaction-btn" aria-label="Call Stacey's direct line">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.46 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6 6l1.27-.89a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          Call Direct
+        </a>
+        <a href="mailto:stacey.williams@mbcollierville.com" class="qaction-btn" aria-label="Send Stacey an email">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+          </svg>
+          Send Email
+        </a>
+        <a href="https://www.mbcollierville.com" target="_blank" rel="noopener noreferrer" class="qaction-btn" aria-label="Open dealer portal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          Dealer Portal
+        </a>
+        <a href="https://maps.google.com/?q=Mercedes-Benz+of+Collierville+1088+W+Poplar+Ave+Collierville+TN" target="_blank" rel="noopener noreferrer" class="qaction-btn" aria-label="Get directions to the dealership">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          Directions
+        </a>
+      </div>
+    </section>
+
+    <!-- ── AI Campaign Brain (Ingenium, runs in-browser) ─────────── -->
+    <section class="dash-section dash-section--card ai-campaign" id="ai-campaign" aria-labelledby="ai-heading">
+      <h2 class="dash-section__title" id="ai-heading">AI Campaign Brain</h2>
+      <p class="ai-intro">Turn a goal into ready-to-send marketing assets. Runs entirely in your browser — nothing is sent.</p>
+
+      <div class="ai-grid">
+        <div class="ai-fields">
+          <label class="ai-label" for="ai-positioning">What you do</label>
+          <input id="ai-positioning" class="ai-input" type="text" value="Mobile key fob programming & auto diagnostics that come to you">
+          <label class="ai-label" for="ai-offer">Current offer</label>
+          <input id="ai-offer" class="ai-input" type="text" value="Fall tune-up special: $99">
+          <label class="ai-label" for="ai-voice">Brand voice</label>
+          <input id="ai-voice" class="ai-input" type="text" value="direct, confident, no fluff">
+          <label class="ai-label" for="ai-customers">Customer emails (one per line)</label>
+          <textarea id="ai-customers" class="ai-input" rows="3" placeholder="lead@example.com"></textarea>
+        </div>
+
+        <div class="ai-run-col">
+          <label class="ai-label" for="ai-objective">Campaign goal</label>
+          <input id="ai-objective" class="ai-input" type="text" value="Launch fall tune-up campaign" autocomplete="off">
+          <button id="ai-run" class="qaction-btn ai-run-btn" type="button">Generate campaign</button>
+
+          <div class="ai-output" id="ai-output" hidden>
+            <span class="ai-rec" id="ai-rec"></span>
+            <ul class="ai-stages" id="ai-stages"></ul>
+            <div class="ai-downloads" id="ai-downloads" hidden>
+              <span class="ai-dl-label">Download:</span>
+              <button id="dl-landing" class="ai-dl" type="button">Landing page</button>
+              <button id="dl-emails" class="ai-dl" type="button">Emails</button>
+              <button id="dl-ics" class="ai-dl" type="button">Calendar</button>
+              <button id="dl-csv" class="ai-dl" type="button">CSV</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Appointments + Breakdown ──────────────────────────────── -->
+    <div class="dash-columns">
+
+      <!-- Today's Appointments -->
+      <section class="dash-section dash-section--card" aria-labelledby="appts-heading">
+        <h2 class="dash-section__title" id="appts-heading">Today's Appointments</h2>
+        <ol class="appt-list" id="appt-list" aria-label="Today's appointment list">
+
+          <li class="appt-item appt-item--done" data-status="done">
+            <div class="appt-time">
+              <span class="appt-time__hour">09:00</span>
+              <span class="appt-time__meridiem">AM</span>
+            </div>
+            <div class="appt-details">
+              <p class="appt-details__car">C-Class C300 – <span class="appt-details__plate">TN·C300SW</span></p>
+              <p class="appt-details__service">Service B – Full Maintenance</p>
+            </div>
+            <span class="appt-badge appt-badge--done" aria-label="Status: Completed">Done</span>
+          </li>
+
+          <li class="appt-item appt-item--progress" data-status="progress">
+            <div class="appt-time">
+              <span class="appt-time__hour">10:30</span>
+              <span class="appt-time__meridiem">AM</span>
+            </div>
+            <div class="appt-details">
+              <p class="appt-details__car">E-Class E350 – <span class="appt-details__plate">TN·E350MB</span></p>
+              <p class="appt-details__service">Front &amp; Rear Brake Service</p>
+            </div>
+            <span class="appt-badge appt-badge--progress" aria-label="Status: In Progress">In Progress</span>
+          </li>
+
+          <li class="appt-item" data-status="upcoming">
+            <div class="appt-time">
+              <span class="appt-time__hour">01:00</span>
+              <span class="appt-time__meridiem">PM</span>
+            </div>
+            <div class="appt-details">
+              <p class="appt-details__car">GLE 53 AMG – <span class="appt-details__plate">TN·GLE53</span></p>
+              <p class="appt-details__service">Service A – Oil &amp; Filter Change</p>
+            </div>
+            <span class="appt-badge appt-badge--upcoming" aria-label="Status: Upcoming">Upcoming</span>
+          </li>
+
+          <li class="appt-item" data-status="upcoming">
+            <div class="appt-time">
+              <span class="appt-time__hour">03:30</span>
+              <span class="appt-time__meridiem">PM</span>
+            </div>
+            <div class="appt-details">
+              <p class="appt-details__car">EQS 450+ – <span class="appt-details__plate">TN·EQS450</span></p>
+              <p class="appt-details__service">OTA Software Update &amp; Inspection</p>
+            </div>
+            <span class="appt-badge appt-badge--upcoming" aria-label="Status: Upcoming">Upcoming</span>
+          </li>
+
+        </ol>
+      </section>
+
+      <!-- Right column -->
+      <div class="dash-right-col">
+
+        <!-- Service Breakdown -->
+        <section class="dash-section dash-section--card" aria-labelledby="breakdown-heading">
+          <h2 class="dash-section__title" id="breakdown-heading">Service Breakdown</h2>
+          <p class="dash-section__sub">This week · 18 services</p>
+          <ul class="breakdown-list" aria-label="Service type breakdown">
+
+            <li class="breakdown-item">
+              <div class="breakdown-item__header">
+                <span class="breakdown-item__label">
+                  <span class="breakdown-item__dot" style="--dot-color:#6c9eff" aria-hidden="true"></span>
+                  Scheduled Maintenance
+                </span>
+                <span class="breakdown-item__pct">40%</span>
+              </div>
+              <div class="breakdown-bar" role="meter" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Scheduled maintenance 40%">
+                <div class="breakdown-bar__fill" style="--fill-pct:40%; --fill-color:#6c9eff"></div>
+              </div>
+            </li>
+
+            <li class="breakdown-item">
+              <div class="breakdown-item__header">
+                <span class="breakdown-item__label">
+                  <span class="breakdown-item__dot" style="--dot-color:#C0C0C0" aria-hidden="true"></span>
+                  Brake &amp; Tire Service
+                </span>
+                <span class="breakdown-item__pct">25%</span>
+              </div>
+              <div class="breakdown-bar" role="meter" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" aria-label="Brake and tire service 25%">
+                <div class="breakdown-bar__fill" style="--fill-pct:25%; --fill-color:#C0C0C0"></div>
+              </div>
+            </li>
+
+            <li class="breakdown-item">
+              <div class="breakdown-item__header">
+                <span class="breakdown-item__label">
+                  <span class="breakdown-item__dot" style="--dot-color:#4cd87a" aria-hidden="true"></span>
+                  EQ / Electric
+                </span>
+                <span class="breakdown-item__pct">20%</span>
+              </div>
+              <div class="breakdown-bar" role="meter" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" aria-label="EQ electric service 20%">
+                <div class="breakdown-bar__fill" style="--fill-pct:20%; --fill-color:#4cd87a"></div>
+              </div>
+            </li>
+
+            <li class="breakdown-item">
+              <div class="breakdown-item__header">
+                <span class="breakdown-item__label">
+                  <span class="breakdown-item__dot" style="--dot-color:#ff8c4b" aria-hidden="true"></span>
+                  Diagnostics &amp; Repair
+                </span>
+                <span class="breakdown-item__pct">15%</span>
+              </div>
+              <div class="breakdown-bar" role="meter" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" aria-label="Diagnostics and repair 15%">
+                <div class="breakdown-bar__fill" style="--fill-pct:15%; --fill-color:#ff8c4b"></div>
+              </div>
+            </li>
+
+          </ul>
+        </section>
+
+        <!-- Weekly Activity Sparkline -->
+        <section class="dash-section dash-section--card" aria-labelledby="activity-heading">
+          <h2 class="dash-section__title" id="activity-heading">Weekly Activity</h2>
+          <p class="dash-section__sub">Services completed per day</p>
+          <div class="spark-wrap" aria-hidden="true">
+            <div class="spark-chart" id="spark-chart" role="img" aria-label="Bar chart of services per day this week"></div>
+          </div>
+          <div class="spark-labels" aria-hidden="true">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span>
+          </div>
+        </section>
+
+      </div><!-- /.dash-right-col -->
+    </div><!-- /.dash-columns -->
+
+    <!-- ── Footer ────────────────────────────────────────────────── -->
+    <footer class="dash-footer">
+      <p>Mercedes-Benz of Collierville · 1088 W. Poplar Ave, Collierville, TN · (901) 494-3990</p>
+    </footer>
+
+  </main>
+
+  <script src="/rag7/dashboard.js"></script>
+  <script src="/rag7/ingenium-brain.js"></script>
+</body>
+</html>

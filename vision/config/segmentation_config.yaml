@@ -1,0 +1,6 @@
+model: deeplabv3plus
+backbone: resnet50
+device: cuda
+input_size: [512, 512]
+num_classes: 21
+threshold: 0.5

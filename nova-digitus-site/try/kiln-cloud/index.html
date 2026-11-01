@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Kiln Cloud: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Kiln Cloud</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Schibsted+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one-screen console — icon rail, top bar, then a view; the IDE view is tree | editor | preview+console */
+:root{
+  --bg:#12161f; --panel:#181d28; --panel2:#1e2432; --line:#2a3141; --fg:#e1e5ee; --mute:#8a94a9;
+  --accent:#f0a04b; --accent-ink:#1a1206; --live:#6cc7b5; --warn:#e8c25a; --err:#ef6f6c;
+  --tk-tag:#f0a04b; --tk-attr:#9fb4e8; --tk-str:#8fd1a8; --tk-kw:#d59cf0; --tk-com:#5f6a80; --tk-num:#f2c879; --tk-prop:#7fc6e0;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-ui:"Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-code:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#eef0f4; --panel:#ffffff; --panel2:#f6f7fa; --line:#d9dde6; --fg:#1a2030; --mute:#5c6578;
+  --accent:#c56d14; --accent-ink:#ffffff; --live:#1f8a76; --warn:#a37a0b; --err:#c8423f;
+  --tk-tag:#b8600f; --tk-attr:#3b5bb5; --tk-str:#237a4b; --tk-kw:#8a3fb0; --tk-com:#8a93a5; --tk-num:#a8670a; --tk-prop:#1d6f8f;
+  color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#eef0f4; --panel:#ffffff; --panel2:#f6f7fa; --line:#d9dde6; --fg:#1a2030; --mute:#5c6578;
+  --accent:#c56d14; --accent-ink:#ffffff; --live:#1f8a76; --warn:#a37a0b; --err:#c8423f;
+  --tk-tag:#b8600f; --tk-attr:#3b5bb5; --tk-str:#237a4b; --tk-kw:#8a3fb0; --tk-com:#8a93a5; --tk-num:#a8670a; --tk-prop:#1d6f8f;
+  color-scheme:light}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 var(--f-ui);overflow:hidden}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.app{height:100%;display:grid;grid-template-columns:60px 1fr;grid-template-rows:52px 1fr;
+  padding-left:max(0px, env(safe-area-inset-left,0px));padding-right:max(0px, env(safe-area-inset-right,0px))}
+/* rail */
+.rail{grid-row:1/3;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:4px;padding-block:10px}
+.brand{width:36px;height:36px;border-radius:9px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:700 18px var(--f-display);margin-bottom:10px}
+.rail button{width:44px;height:44px;border:0;border-radius:10px;background:transparent;color:var(--mute);display:grid;place-items:center;position:relative}
+.rail button:hover{color:var(--fg);background:var(--panel2)}
+.rail button.on{color:var(--fg);background:var(--panel2)}
+.rail button.on::before{content:"";position:absolute;left:-8px;top:12px;bottom:12px;width:3px;border-radius:2px;background:var(--accent)}
+.rail svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.rail .tip{position:absolute;left:52px;background:var(--fg);color:var(--bg);font-size:12px;padding:3px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:9}
+.rail button:hover .tip{opacity:1}
+.rail .sp{flex:1}
+/* top bar */
+.top{display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--line);background:var(--panel);min-width:0}
+.top h1{font:700 17px var(--f-display);margin:0;letter-spacing:-.01em;white-space:nowrap}
+.top h1 span{color:var(--mute);font-weight:500}
+.sitesel{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;max-width:200px}
+.url{font:12px var(--f-code);color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.url b{color:var(--live);font-weight:500}
+.btn{border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:hover{border-color:var(--mute)}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.sm{padding:3px 9px;font-size:12px}
+.btn.danger{color:var(--err)}
+.btn:disabled{opacity:.5;cursor:default}
+.kbd{font:11px var(--f-code);opacity:.7}
+/* views */
+main{min-height:0;min-width:0;overflow:hidden;position:relative}
+.view{position:absolute;inset:0;overflow:auto}
+.page{padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.page h2{font:700 26px/1.15 var(--f-display);margin:0;letter-spacing:-.015em;text-wrap:balance}
+.page h3{font:600 15px var(--f-ui);margin:0}
+.lede{color:var(--mute);margin:4px 0 0;max-width:65ch}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--mute)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.pad{padding:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:500;color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.07em;padding:10px 14px;border-bottom:1px solid var(--line)}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.tw{overflow-x:auto}
+.mono{font-family:var(--f-code);font-size:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:2px 9px;border-radius:99px;border:1px solid var(--line);white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.live{color:var(--live)} .pill.warn{color:var(--warn)} .pill.err{color:var(--err)} .pill.idle{color:var(--mute)}
+.pill.building::before{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+input.f,select.f,textarea.f{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:100%;min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row > .grow{flex:1;min-width:160px}
+.muted{color:var(--mute)}
+.empty{color:var(--mute);padding:28px 16px;text-align:center}
+/* IDE */
+.ide{position:absolute;inset:0;display:grid;grid-template-columns:220px minmax(0,1fr) minmax(0,1fr)}
+.tree{border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0}
+.tree header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 6px}
+.tree header .eyebrow{margin:0}
+.iconbtn{border:0;background:transparent;color:var(--mute);width:26px;height:26px;border-radius:6px;display:grid;place-items:center}
+.iconbtn:hover{background:var(--panel2);color:var(--fg)}
+.iconbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.files{overflow:auto;flex:1;padding:0 6px 10px}
+.file{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;font:12.5px var(--f-code);color:var(--mute);border:0;background:none;width:100%;text-align:left}
+.file:hover{background:var(--panel2);color:var(--fg)}
+.file.on{background:var(--panel2);color:var(--fg)}
+.file .dot{width:8px;height:8px;border-radius:2px;flex:none}
+.file .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file .x{opacity:0;font-size:14px;line-height:1;padding:0 2px}
+.file:hover .x{opacity:.7}
+.newfile{margin:0 8px 8px;display:none}
+.newfile.show{display:flex;gap:6px}
+.tree .meta{border-top:1px solid var(--line);padding:10px 12px;font-size:12px;color:var(--mute);display:flex;flex-direction:column;gap:4px}
+.editor{display:flex;flex-direction:column;min-height:0;min-width:0;border-right:1px solid var(--line)}
+.tabs{display:flex;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;flex:none}
+.tab{border:0;background:none;padding:9px 14px;font:12.5px var(--f-code);color:var(--mute);border-right:1px solid var(--line);white-space:nowrap;display:flex;gap:8px;align-items:center}
+.tab.on{color:var(--fg);background:var(--bg);box-shadow:inset 0 2px 0 var(--accent)}
+.tab .c{opacity:.5}
+.tab .c:hover{opacity:1}
+.code{position:relative;flex:1;min-height:0;display:flex;background:var(--bg)}
+.gutter{flex:none;width:46px;padding:12px 8px 12px 0;text-align:right;font:12.5px/1.6 var(--f-code);color:var(--tk-com);overflow:hidden;user-select:none;white-space:pre}
+.surface{position:relative;flex:1;min-width:0}
+.surface pre,.surface textarea{position:absolute;inset:0;margin:0;padding:12px 14px;font:12.5px/1.6 var(--f-code);white-space:pre;overflow:auto;tab-size:2;border:0;letter-spacing:0}
+.surface pre{pointer-events:none;color:var(--fg)}
+.surface textarea{background:transparent;color:transparent;caret-color:var(--accent);resize:none;outline:none}
+.surface textarea::selection{background:color-mix(in srgb,var(--accent) 30%,transparent);color:transparent}
+.t-tag{color:var(--tk-tag)} .t-attr{color:var(--tk-attr)} .t-str{color:var(--tk-str)} .t-kw{color:var(--tk-kw)} .t-com{color:var(--tk-com);font-style:italic} .t-num{color:var(--tk-num)} .t-prop{color:var(--tk-prop)}
+.status{flex:none;display:flex;gap:14px;padding:4px 12px;font:11.5px var(--f-code);color:var(--mute);background:var(--panel);border-top:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.status .sp{flex:1}
+.right{display:grid;grid-template-rows:auto minmax(0,1fr) 180px;min-height:0;min-width:0}
+.pbar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+.addr{flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:4px 12px;font:12px var(--f-code);color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frame{background:#fff;min-height:0}
+.frame iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+.cons{border-top:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0}
+.cons header{display:flex;justify-content:space-between;align-items:center;padding:4px 10px;border-bottom:1px solid var(--line)}
+.logs{flex:1;overflow:auto;font:12px/1.55 var(--f-code);padding:6px 0}
+.logs div{padding:1px 12px;white-space:pre-wrap;word-break:break-word;border-left:2px solid transparent}
+.logs .warn{color:var(--warn);border-color:var(--warn)} .logs .error{color:var(--err);border-color:var(--err)} .logs .info{color:var(--mute)}
+.mseg{display:none}
+/* sites */
+.grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.site{padding:16px;display:flex;flex-direction:column;gap:10px;text-align:left;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.site:hover{border-color:var(--mute)}
+.site.cur{border-color:var(--accent)}
+.thumb{height:110px;border-radius:8px;background:var(--panel2);overflow:hidden;position:relative;border:1px solid var(--line)}
+.thumb iframe{width:400%;height:400%;transform:scale(.25);transform-origin:0 0;border:0;pointer-events:none;background:#fff}
+.site .nm{font:700 16px var(--f-display)}
+.site .sub{font:12px var(--f-code);color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.newsite{display:grid;place-items:center;border-style:dashed;color:var(--mute);min-height:220px}
+/* deploys */
+.dsplit{display:grid;grid-template-columns:340px minmax(0,1fr);gap:16px;align-items:start}
+.dlist{display:flex;flex-direction:column}
+.ditem{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left}
+.ditem:last-child{border-bottom:0}
+.ditem:hover{background:var(--panel2)}
+.ditem.on{background:var(--panel2);box-shadow:inset 3px 0 0 var(--accent)}
+.ditem .r1{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.ditem .msg{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ditem .r2{font:11.5px var(--f-code);color:var(--mute);display:flex;gap:10px}
+.term{background:var(--bg);border:1px solid var(--line);border-radius:10px;font:12.5px/1.65 var(--f-code);padding:14px 16px;min-height:340px;max-height:60vh;overflow:auto}
+.term .ln{display:grid;grid-template-columns:70px 1fr;gap:10px}
+.term .ts{color:var(--tk-com)}
+.term .ok{color:var(--live)} .term .wa{color:var(--warn)} .term .er{color:var(--err)} .term .st{color:var(--accent);font-weight:500}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.step{font-size:11.5px;padding:3px 9px;border-radius:6px;background:var(--panel2);color:var(--mute);border:1px solid var(--line)}
+.step.done{color:var(--live)} .step.run{color:var(--accent);border-color:var(--accent)} .step.fail{color:var(--err);border-color:var(--err)}
+/* analytics */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{padding:14px 16px}
+.kpi .v{font:700 26px var(--f-display);font-variant-numeric:tabular-nums;margin-top:4px}
+.kpi .d{font-size:12px;color:var(--live)}
+.chart{height:240px;position:relative}
+.chart canvas{width:100%;height:100%;display:block}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.bar{height:8px;border-radius:4px;background:var(--panel2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+/* functions */
+.fnwrap{display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,340px);gap:14px;align-items:start}
+.fnedit{height:420px;display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.resp{font:12px/1.55 var(--f-code);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;white-space:pre-wrap;word-break:break-word;min-height:120px;max-height:260px;overflow:auto}
+/* modal */
+.scrim{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 70%,transparent);display:grid;place-items:center;z-index:50;padding:16px}
+.modal{width:min(960px,100%);height:min(680px,100%);display:flex;flex-direction:column;overflow:hidden}
+.modal .pbar{border-radius:12px 12px 0 0}
+.modal .frame{flex:1}
+.toast{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 14px;border-radius:9px;font-size:13px;z-index:60;box-shadow:0 8px 30px rgba(0,0,0,.3);max-width:calc(100% - 32px)}
+.note{font-size:12px;color:var(--mute);border:1px dashed var(--line);border-radius:8px;padding:8px 12px}
+.confirm{display:inline-flex;gap:6px;align-items:center}
+@media (max-width: 1100px){
+  .ide{grid-template-columns:190px minmax(0,1fr) minmax(0,1fr)}
+  .fnwrap{grid-template-columns:1fr}
+  .dsplit{grid-template-columns:1fr}
+}
+@media (max-width: 820px){
+  .app{grid-template-columns:1fr;grid-template-rows:52px 1fr 58px}
+  .rail{grid-row:3;flex-direction:row;justify-content:space-around;border-right:0;border-top:1px solid var(--line);padding:4px 6px calc(4px + env(safe-area-inset-bottom,0px));overflow-x:auto}
+  .rail .brand,.rail .sp,.rail .tip{display:none}
+  .rail button{flex:none;width:42px}
+  .rail button.on::before{left:12px;right:12px;top:-5px;bottom:auto;width:auto;height:3px}
+  .top{padding:0 max(12px,env(safe-area-inset-left,0px));gap:8px}
+  .top h1 span,.url,.kbd{display:none}
+  .sitesel{max-width:130px}
+  .ide{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+  .mseg{display:flex;gap:4px;padding:6px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+  .mseg button{flex:1;border:1px solid var(--line);background:var(--panel2);border-radius:7px;padding:5px}
+  .mseg button.on{border-color:var(--accent);color:var(--accent)}
+  .ide > .tree,.ide > .editor,.ide > .right{display:none;grid-row:2;border-right:0}
+  .ide[data-pane="files"] > .tree,.ide[data-pane="code"] > .editor,.ide[data-pane="preview"] > .right{display:flex}
+  .ide[data-pane="preview"] > .right{display:grid}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app" id="app">
+  <nav class="rail" aria-label="Sections">
+    <div class="brand" aria-hidden="true">K</div>
+    <button data-go="ide" aria-label="Editor"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span class="tip">Editor</span></button>
+    <button data-go="sites" aria-label="Sites"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg><span class="tip">Sites</span></button>
+    <button data-go="deploys" aria-label="Deploys"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/></svg><span class="tip">Deploys</span></button>
+    <button data-go="functions" aria-label="Functions"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg><span class="tip">Functions</span></button>
+    <button data-go="domains" aria-label="Domains"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><span class="tip">Domains &amp; SSL</span></button>
+    <button data-go="env" aria-label="Environment"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><span class="tip">Environment variables</span></button>
+    <button data-go="analytics" aria-label="Analytics"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="tip">Analytics</span></button>
+    <button data-go="settings" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg><span class="tip">Site settings</span></button>
+    <div class="sp"></div>
+  </nav>
+
+  <header class="top">
+    <h1>Kiln <span>Cloud</span></h1>
+    <select class="sitesel" id="siteSel" aria-label="Current site"></select>
+    <div class="url" id="topUrl"></div>
+    <button class="btn" id="runBtn" title="Run preview (Ctrl+Enter)">▶ Run <span class="kbd">⌃↵</span></button>
+    <button class="btn pri" id="deployBtn">Deploy</button>
+  </header>
+
+  <main id="main">
+    <!-- IDE -->
+    <section class="view" id="v-ide" hidden>
+      <div class="ide" id="ide" data-pane="code">
+        <div class="mseg" id="mseg"><button data-p="files">Files</button><button data-p="code" class="on">Code</button><button data-p="preview">Preview</button></div>
+        <aside class="tree">
+          <header><span class="eyebrow">Files</span>
+            <button class="iconbtn" id="addFileBtn" aria-label="New file" title="New file"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+          </header>
+          <form class="newfile" id="newFileForm"><input class="f mono" id="newFileName" placeholder="about.html" autocomplete="off"><button class="btn sm" type="submit">Add</button></form>
+          <div class="files" id="files"></div>
+          <div class="meta" id="treeMeta"></div>
+        </aside>
+        <div class="editor">
+          <div class="tabs" id="tabs"></div>
+          <div class="code">
+            <div class="gutter" id="gutter"></div>
+            <div class="surface"><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Code editor"></textarea></div>
+          </div>
+          <div class="status" id="status"></div>
+        </div>
+        <div class="right">
+          <div class="pbar"><span class="pill live" id="prevState">Preview</span><div class="addr" id="prevAddr">localhost:8888/</div><button class="btn sm" id="reloadBtn">Reload</button></div>
+          <div class="frame"><iframe id="preview" title="Live preview" sandbox="allow-scripts allow-modals allow-forms"></iframe></div>
+          <div class="cons"><header><span class="eyebrow">Console</span><button class="btn sm" id="clearCons">Clear</button></header><div class="logs" id="logs"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="v-sites" hidden><div class="page" id="sitesPage"></div></section>
+    <section class="view" id="v-deploys" hidden><div class="page" id="deploysPage"></div></section>
+    <section class="view" id="v-functions" hidden><div class="page" id="fnPage"></div></section>
+    <section class="view" id="v-domains" hidden><div class="page" id="domPage"></div></section>
+    <section class="view" id="v-env" hidden><div class="page" id="envPage"></div></section>
+    <section class="view" id="v-analytics" hidden><div class="page" id="anPage"></div></section>
+    <section class="view" id="v-settings" hidden><div class="page" id="setPage"></div></section>
+  </main>
+</div>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="modal box">
+    <div class="pbar"><span class="pill live">Live</span><div class="addr" id="mAddr"></div><button class="btn sm" id="mClose">Close</button></div>
+    <div class="frame"><iframe id="mFrame" title="Deployed site" sandbox="allow-scripts allow-modals allow-forms"></iframe></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SC = 'scr' + 'ipt';
+const REGIONS = [['iad','Virginia'],['ord','Chicago'],['sfo','San Francisco'],['gru','São Paulo'],['lhr','London'],['fra','Frankfurt'],['bom','Mumbai'],['sin','Singapore'],['nrt','Tokyo'],['syd','Sydney']];
+
+/* ---------- seed data ---------- */
+function landingFiles(name){
+  return {
+'index.html':`<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${name}</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <p class="tag">Small-batch roasts · delivered Fridays</p>
+    <h1>${name}</h1>
+    <button id="order">Order a bag</button>
+    <p id="count" class="count"></p>
+  </header>
+  <section id="menu" class="menu"></section>
+  <footer>Hosted on Kiln Cloud</footer>
+  <${SC} src="app.js"></${SC}>
+</body>
+</html>`,
+'styles.css':`:root {
+  --ink: #2b1d14;
+  --cream: #f7efe4;
+  --roast: #a4502a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Georgia, serif;
+  background: var(--cream);
+  color: var(--ink);
+}
+.hero {
+  padding: 64px 24px 40px;
+  text-align: center;
+}
+.hero h1 { font-size: 48px; margin: 8px 0 20px; }
+.tag { letter-spacing: .12em; text-transform: uppercase; font-size: 12px; }
+button {
+  background: var(--roast);
+  color: white;
+  border: 0;
+  padding: 12px 22px;
+  border-radius: 99px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.count { min-height: 1.4em; }
+.menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 0 24px 48px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.card { background: white; border-radius: 12px; padding: 18px; }
+.card b { display: block; font-size: 18px; }
+footer { text-align: center; padding: 24px; font-size: 13px; opacity: .6; }`,
+'app.js':`const roasts = [
+  { name: "Harbor Dawn", notes: "Citrus, honey", price: 16 },
+  { name: "Lighthouse", notes: "Cocoa, toasted almond", price: 17 },
+  { name: "Night Tide", notes: "Dark cherry, molasses", price: 18 },
+];
+
+const menu = document.getElementById("menu");
+menu.innerHTML = roasts.map(r => \`
+  <div class="card">
+    <b>\${r.name}</b>
+    <span>\${r.notes}</span>
+    <p>$\${r.price} / 12 oz</p>
+  </div>\`).join("");
+
+let orders = 0;
+document.getElementById("order").addEventListener("click", () => {
+  orders++;
+  document.getElementById("count").textContent = orders + " bag(s) in cart";
+  console.log("Added to cart:", orders);
+});
+
+console.log("Menu rendered with", roasts.length, "roasts");`
+  };
+}
+const blankFiles = () => ({
+'index.html':`<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>New site</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <h1>Hello from Kiln</h1>
+    <p>Edit index.html and press Run.</p>
+  </main>
+  <${SC} src="app.js"></${SC}>
+</body>
+</html>`,
+'styles.css':`body {
+  font-family: system-ui, sans-serif;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  margin: 0;
+}`,
+'app.js':`console.log("Ready");`
+});
+const fnSubscribe = `// POST /.kiln/functions/subscribe
+// Runs at the edge. "event" holds method, query, headers and body.
+export async function handler(event) {
+  const { email } = JSON.parse(event.body || "{}");
+  if (!email || !email.includes("@")) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Enter a valid email" }) };
+  }
+  // process.env holds your environment variables
+  const list = process.env.MAIL_LIST || "default";
+  return {
+    statusCode: 200,
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ subscribed: email, list })
+  };
+}`;
+const fnHello = `export async function handler(event) {
+  const name = event.query.name || "world";
+  return { statusCode: 200, body: "Hello, " + name + "!" };
+}`;
+
+function newSite(name, slug, template){
+  const id = 's' + Math.random().toString(36).slice(2, 8);
+  return { id, name, slug, framework: 'Static HTML', buildCmd: '', publishDir: '/',
+    files: template === 'blank' ? blankFiles() : landingFiles(name),
+    functions: template === 'blank' ? { hello: fnHello } : { subscribe: fnSubscribe, hello: fnHello },
+    env: template === 'blank' ? [] : [{ k:'MAIL_LIST', v:'friday-roasters', scope:'Functions' }, { k:'PUBLIC_SITE_NAME', v:name, scope:'All' }],
+    domains: [], deploys: [], liveId: null, created: Date.now() };
+}
+
+let state;
+function load(){
+  try { const raw = localStorage.getItem('kiln-v1'); if (raw) state = JSON.parse(raw); } catch(e){}
+  if (!state || !state.sites || !state.sites.length){
+    const a = newSite('Harbor Coffee', 'harbor-coffee', 'landing');
+    a.domains = [{ host:'harborcoffee.example', status:'active', ssl:'active', added: Date.now() - 864e5*20 }];
+    const b = newSite('Docs Starter', 'docs-starter', 'blank');
+    state = { sites:[a,b], cur:a.id, tabs:{}, open:{} };
+    // pre-seed a deploy history (examples)
+    seedDeploy(a, 'Initial launch', 864e5*6);
+    seedDeploy(a, 'New roast cards', 864e5*2);
+  }
+}
+function seedDeploy(site, msg, ago){
+  const files = JSON.parse(JSON.stringify(site.files));
+  const d = { id: hash(msg + ago).slice(0,8), msg, ts: Date.now() - ago, status:'ready', dur: 3.1 + Math.random()*2, files, functions: {...site.functions}, log: [], size: bytes(files) };
+  site.deploys.unshift(d); site.liveId = d.id;
+}
+let saveT;
+function save(){ clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem('kiln-v1', JSON.stringify(state)); } catch(e){} }, 250); }
+const site = () => state.sites.find(s => s.id === state.cur) || state.sites[0];
+
+/* ---------- utils ---------- */
+function hash(str){ let h = 2166136261; for (let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } let s=''; for(let k=0;k<3;k++){ h = Math.imul(h ^ (h>>>13), 2654435761); s += (h>>>0).toString(16).padStart(8,'0'); } return s; }
+const bytes = files => Object.values(files).reduce((n, c) => n + new Blob([c]).size, 0);
+const kb = n => (n/1024).toFixed(1) + ' KB';
+const ext = p => (p.split('.').pop() || '').toLowerCase();
+const ago = ts => { const s = (Date.now()-ts)/1000; if (s<60) return 'just now'; if (s<3600) return Math.floor(s/60)+'m ago'; if (s<86400) return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago'; };
+const liveUrl = s => 'https://' + s.slug + '.kiln.app';
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(t._t); t._t = setTimeout(() => t.hidden = true, 2600); }
+const extColor = e => ({html:'var(--tk-tag)', css:'var(--tk-prop)', js:'var(--tk-num)', json:'var(--tk-str)', md:'var(--tk-attr)', svg:'var(--tk-kw)'}[e] || 'var(--mute)');
+
+/* ---------- highlighter ---------- */
+const RULES = {
+  js: [['com', /\/\/[^\n]*|\/\*[\s\S]*?\*\//], ['str', /`(?:\\[\s\S]|[^`\\])*`|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/],
+       ['kw', /\b(?:const|let|var|function|return|if|else|for|while|of|in|new|class|export|import|from|async|await|try|catch|throw|true|false|null|undefined|this|typeof|default|break|continue|switch|case)\b/],
+       ['num', /\b\d+(?:\.\d+)?\b/], ['prop', /\b[A-Za-z_$][\w$]*(?=\()/]],
+  css: [['com', /\/\*[\s\S]*?\*\//], ['str', /"[^"\n]*"|'[^'\n]*'/], ['prop', /--?[a-zA-Z-]+(?=\s*:)/], ['num', /#[0-9a-fA-F]{3,8}\b|\b\d+(?:\.\d+)?(?:px|em|rem|%|vh|vw|s|ms|fr)?\b/],
+        ['tag', /[.#]?[a-zA-Z][\w-]*(?=[^{};]*\{)/], ['kw', /@[\w-]+|!important/]],
+  html: [['com', /<!--[\s\S]*?-->/], ['tag', /<\/?[a-zA-Z][\w-]*|\/?>|<!doctype[^>]*>/i], ['str', /"[^"]*"|'[^']*'/], ['attr', /\b[a-zA-Z-:]+(?==)/]]
+};
+RULES.json = [['str', /"(?:\\.|[^"\\])*"/], ['num', /-?\b\d+(?:\.\d+)?\b/], ['kw', /\b(?:true|false|null)\b/]];
+RULES.svg = RULES.html;
+const RX = {};
+for (const k in RULES) RX[k] = new RegExp(RULES[k].map(r => '(' + r[1].source + ')').join('|'), 'g' + (k==='html'||k==='svg'?'i':''));
+function highlight(src, e){
+  const rules = RULES[e]; if (!rules) return esc(src);
+  const rx = RX[e]; rx.lastIndex = 0; let out = '', last = 0, m;
+  while ((m = rx.exec(src))){
+    if (m[0] === ''){ rx.lastIndex++; continue; }
+    out += esc(src.slice(last, m.index));
+    const gi = m.slice(1).findIndex(x => x !== undefined);
+    out += '<span class="t-' + rules[gi][0] + '">' + esc(m[0]) + '</span>';
+    last = m.index + m[0].length;
+  }
+  return out + esc(src.slice(last)) + '\n';
+}
+function bindEditor(ta, pre, gut, getExt, onChange){
+  const paint = () => {
+    pre.innerHTML = highlight(ta.value, getExt());
+    const n = ta.value.split('\n').length;
+    if (gut && gut._n !== n){ gut.textContent = Array.from({length:n}, (_, i) => i+1).join('\n'); gut._n = n; }
+  };
+  ta.addEventListener('input', () => { paint(); onChange && onChange(ta.value); });
+  ta.addEventListener('scroll', () => { pre.scrollTop = ta.scrollTop; pre.scrollLeft = ta.scrollLeft; if (gut) gut.scrollTop = ta.scrollTop; });
+  ta.addEventListener('keydown', e => {
+    if (e.key === 'Tab' && !e.shiftKey){ e.preventDefault(); document.execCommand ? document.execCommand('insertText', false, '  ') || insertAt(ta, '  ') : insertAt(ta,'  '); }
+    else if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey){
+      const before = ta.value.slice(0, ta.selectionStart); const line = before.split('\n').pop();
+      let ind = (line.match(/^\s*/) || [''])[0]; if (/[{(\[>]$/.test(line.trim()) && !/^<\//.test(line.trim())) ind += '  ';
+      e.preventDefault(); if (!document.execCommand('insertText', false, '\n' + ind)) insertAt(ta, '\n' + ind);
+    }
+  });
+  return paint;
+}
+function insertAt(ta, txt){ const s = ta.selectionStart, e2 = ta.selectionEnd; ta.value = ta.value.slice(0,s) + txt + ta.value.slice(e2); ta.selectionStart = ta.selectionEnd = s + txt.length; ta.dispatchEvent(new Event('input')); }
+
+/* ---------- bundler ---------- */
+const bridge = `<${SC}>(function(){var p=function(l,a){try{parent.postMessage({kiln:1,level:l,args:[].map.call(a,function(x){try{return typeof x==='object'?JSON.stringify(x):String(x)}catch(e){return String(x)}})},'*')}catch(e){}};['log','info','warn','error'].forEach(function(l){var o=console[l];console[l]=function(){p(l,arguments);o.apply(console,arguments)}});window.addEventListener('error',function(e){p('error',[e.message+(e.lineno?' (line '+e.lineno+')':'')])});document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href');if(/^https?:|^#|^mailto:/.test(h))return;e.preventDefault();parent.postMessage({kiln:1,nav:h},'*')});})();</${SC}>`;
+function bundle(files, page){
+  page = page || 'index.html';
+  let html = files[page];
+  if (html == null) return `<!doctype html><body style="font-family:system-ui;padding:40px;color:#555"><h2>404</h2><p>No file named ${esc(page)} in this site.</p></body>`;
+  html = html.replace(/<link\b[^>]*href=["']([^"']+)["'][^>]*>/gi, (m, href) => (/stylesheet/i.test(m) && files[href.replace(/^\.?\//,'')] != null) ? '<style>\n' + files[href.replace(/^\.?\//,'')] + '\n</style>' : m);
+  html = html.replace(new RegExp('<'+SC+'\\b([^>]*)src=["\']([^"\']+)["\']([^>]*)>\\s*</'+SC+'>','gi'), (m, a, src, b) => {
+    const f = files[src.replace(/^\.?\//,'')]; if (f == null) return m;
+    return '<'+SC+a+b+'>\n' + f.replace(new RegExp('</'+SC,'gi'), '<\\/'+SC) + '\n</'+SC+'>';
+  });
+  return /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, h => h + bridge) : bridge + html;
+}
+
+/* ---------- console ---------- */
+const logs = $('#logs');
+function logLine(level, text){ const d = document.createElement('div'); d.className = level === 'log' ? '' : level; d.textContent = text; logs.appendChild(d); logs.scrollTop = logs.scrollHeight; }
+window.addEventListener('message', e => {
+  const d = e.data; if (!d || !d.kiln) return;
+  if (d.nav){
+    if (e.source === $('#preview').contentWindow){ curPage = d.nav.replace(/^\.?\//,''); run(); }
+    else if (e.source === $('#mFrame').contentWindow && modalDeploy){ $('#mFrame').srcdoc = bundle(modalDeploy.files, d.nav.replace(/^\.?\//,'')); $('#mAddr').textContent = modalUrl + '/' + d.nav.replace(/^\.?\//,''); }
+    return;
+  }
+  if (e.source === $('#preview').contentWindow) logLine(d.level, d.args.join(' '));
+});
+$('#clearCons').onclick = () => logs.innerHTML = '';
+
+/* ---------- IDE ---------- */
+let curPage = 'index.html';
+const ta = $('#ta'), hl = $('#hl'), gut = $('#gutter');
+const curFile = () => state.open[state.cur];
+const paint = bindEditor(ta, hl, gut, () => ext(curFile() || ''), v => {
+  const s = site(), f = curFile(); if (!f) return;
+  s.files[f] = v; save(); dirty = true; renderStatus();
+  clearTimeout(runT); runT = setTimeout(run, 700);
+});
+let runT, dirty = false;
+ta.addEventListener('keyup', renderStatus); ta.addEventListener('click', renderStatus);
+
+function openFile(p){
+  const s = site();
+  state.tabs[s.id] = state.tabs[s.id] || [];
+  if (!state.tabs[s.id].includes(p)) state.tabs[s.id].push(p);
+  state.open[s.id] = p; save(); renderIDE();
+  if (/\.html?$/.test(p)) { curPage = p; run(); }
+}
+function closeTab(p){
+  const s = site(); const t = state.tabs[s.id] || [];
+  state.tabs[s.id] = t.filter(x => x !== p);
+  if (state.open[s.id] === p) state.open[s.id] = state.tabs[s.id][state.tabs[s.id].length-1] || null;
+  save(); renderIDE();
+}
+function renderIDE(){
+  const s = site();
+  if (!state.tabs[s.id]) state.tabs[s.id] = Object.keys(s.files).slice(0,3);
+  state.tabs[s.id] = state.tabs[s.id].filter(p => s.files[p] != null);
+  if (!state.open[s.id] || s.files[state.open[s.id]] == null) state.open[s.id] = state.tabs[s.id][0] || Object.keys(s.files)[0] || null;
+  const open = state.open[s.id];
+  const names = Object.keys(s.files).sort((a,b) => (ext(a) > ext(b) ? 1 : -1) || a.localeCompare(b));
+  $('#files').innerHTML = names.map(p => `<div class="file ${p===open?'on':''}" data-f="${esc(p)}" role="button" tabindex="0"><span class="dot" style="background:${extColor(ext(p))}"></span><span class="nm">${esc(p)}</span><span class="x" data-del="${esc(p)}" title="Delete" role="button" aria-label="Delete ${esc(p)}">×</span></div>`).join('')
+    + `<div class="file" style="margin-top:8px;cursor:default"><span class="dot" style="background:var(--tk-kw)"></span><span class="nm">functions/ (${Object.keys(s.functions).length})</span></div>`;
+  $('#treeMeta').innerHTML = `<span>${names.length} files · ${kb(bytes(s.files))}</span><span>${esc(s.framework)}</span>`;
+  $('#tabs').innerHTML = (state.tabs[s.id]).map(p => `<button class="tab ${p===open?'on':''}" data-t="${esc(p)}"><span>${esc(p)}</span><span class="c" data-c="${esc(p)}" aria-label="Close">×</span></button>`).join('');
+  if (open){ ta.disabled = false; if (ta.value !== s.files[open]) ta.value = s.files[open]; }
+  else { ta.value = ''; ta.disabled = true; }
+  ta.scrollTop = 0; paint(); renderStatus();
+}
+function renderStatus(){
+  const f = curFile(); if (!f){ $('#status').innerHTML = '<span>No file open</span>'; return; }
+  const v = ta.value.slice(0, ta.selectionStart); const ln = v.split('\n').length; const col = v.length - v.lastIndexOf('\n');
+  $('#status').innerHTML = `<span>${esc(f)}</span><span>${({html:'HTML',css:'CSS',js:'JavaScript',json:'JSON',md:'Markdown',svg:'SVG'})[ext(f)]||'Plain text'}</span><span class="sp"></span><span>Ln ${ln}, Col ${col}</span><span>Spaces: 2</span><span>${dirty?'Saved locally':'Saved'}</span>`;
+}
+$('#files').addEventListener('click', e => {
+  const del = e.target.closest('[data-del]');
+  if (del){
+    const p = del.dataset.del;
+    if (del.dataset.arm){ delete site().files[p]; save(); renderIDE(); run(); toast('Deleted ' + p); }
+    else { del.dataset.arm = 1; del.textContent = 'delete?'; del.style.opacity = 1; del.style.color = 'var(--err)'; setTimeout(() => { if (del.isConnected){ delete del.dataset.arm; del.textContent='×'; del.style.color=''; } }, 2500); }
+    e.stopPropagation(); return;
+  }
+  const f = e.target.closest('[data-f]'); if (f) { openFile(f.dataset.f); if (matchMedia('(max-width:820px)').matches) setPane('code'); }
+});
+$('#files').addEventListener('keydown', e => { if (e.key === 'Enter'){ const f = e.target.closest('[data-f]'); if (f) openFile(f.dataset.f); } });
+$('#tabs').addEventListener('click', e => { const c = e.target.closest('[data-c]'); if (c){ closeTab(c.dataset.c); e.stopPropagation(); return; } const t = e.target.closest('[data-t]'); if (t) openFile(t.dataset.t); });
+$('#addFileBtn').onclick = () => { $('#newFileForm').classList.toggle('show'); $('#newFileName').focus(); };
+$('#newFileForm').onsubmit = e => {
+  e.preventDefault(); const n = $('#newFileName').value.trim().replace(/^\/+/,'');
+  if (!n || !/^[\w.\-\/]+$/.test(n)) return toast('Use letters, numbers, dashes, dots and slashes');
+  const s = site(); if (s.files[n] != null) return toast(n + ' already exists');
+  const tpl = { html:`<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <title>${n}</title>\n  <link rel="stylesheet" href="styles.css">\n</head>\n<body>\n  <a href="index.html">← Home</a>\n  <h1>${n.replace(/\.html$/,'')}</h1>\n</body>\n</html>`, css:'/* ' + n + ' */\n', js:'// ' + n + '\n', json:'{\n  \n}', md:'# ' + n + '\n' }[ext(n)] || '';
+  s.files[n] = tpl; $('#newFileName').value = ''; $('#newFileForm').classList.remove('show'); openFile(n);
+};
+
+function run(){
+  const s = site();
+  const doc = bundle(s.files, curPage);
+  logs.innerHTML = ''; logLine('info', '▸ Built ' + curPage + ' · ' + kb(new Blob([doc]).size));
+  $('#preview').srcdoc = doc;
+  $('#prevAddr').textContent = 'localhost:8888/' + (curPage === 'index.html' ? '' : curPage);
+}
+$('#runBtn').onclick = () => { go('ide'); run(); if (matchMedia('(max-width:820px)').matches) setPane('preview'); };
+$('#reloadBtn').onclick = run;
+function setPane(p){ $('#ide').dataset.pane = p; document.querySelectorAll('#mseg button').forEach(b => b.classList.toggle('on', b.dataset.p === p)); }
+$('#mseg').onclick = e => { const b = e.target.closest('[data-p]'); if (b) setPane(b.dataset.p); };
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter'){ e.preventDefault(); run(); }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){ e.preventDefault(); save(); dirty = false; renderStatus(); toast('Saved'); }
+});
+
+/* ---------- deploy pipeline ---------- */
+let building = null;
+async function deploy(msg){
+  if (building) return toast('A deploy is already running');
+  const s = site();
+  const files = JSON.parse(JSON.stringify(s.files)); const functions = {...s.functions};
+  const d = { id: hash(JSON.stringify(files) + Date.now()).slice(0,8), msg: msg || 'Manual deploy from editor', ts: Date.now(), status:'building', dur:0, files, functions, log:[], size: bytes(files), stage:0 };
+  s.deploys.unshift(d); building = d; save();
+  $('#deployBtn').disabled = true; $('#deployBtn').textContent = 'Deploying…';
+  selDeploy = d.id; go('deploys');
+  const t0 = performance.now();
+  const L = (cls, text) => { d.log.push([((performance.now()-t0)/1000).toFixed(2)+'s', cls, text]); if (selDeploy === d.id) paintLog(d); };
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const stage = i => { d.stage = i; if (selDeploy === d.id) paintSteps(d); };
+  let fail = null;
+  try {
+    stage(0); L('st','Cloning workspace'); await wait(350);
+    const names = Object.keys(files);
+    L('', `Fetched ${names.length} files (${kb(d.size)}) at commit ${d.id}`);
+    stage(1); L('st','Installing dependencies'); await wait(300);
+    if (files['package.json']){ try { const pkg = JSON.parse(files['package.json']); const deps = Object.keys(pkg.dependencies||{}); L('', deps.length ? 'Resolved ' + deps.length + ' packages from lockfile cache' : 'No dependencies declared'); } catch(e){ fail = 'package.json is not valid JSON: ' + e.message; } }
+    else L('', 'No package.json found — static site, nothing to install');
+    if (fail) throw 0;
+    stage(2); L('st','Building'); await wait(400);
+    L('', '$ ' + (s.buildCmd || '(no build command)') + '  →  publish ' + (s.publishDir || '/'));
+    for (const n of names){
+      if (ext(n) === 'js'){ try { new Function(files[n]); L('ok', '✓ ' + n + ' parsed'); } catch(e){ L('er', '✗ ' + n + ': ' + e.message); fail = 'Syntax error in ' + n; } }
+      if (ext(n) === 'json'){ try { JSON.parse(files[n]); L('ok', '✓ ' + n + ' valid'); } catch(e){ L('er', '✗ ' + n + ': ' + e.message); fail = 'Invalid JSON in ' + n; } }
+    }
+    if (!files['index.html']) L('wa', '⚠ No index.html — visitors to / will see a 404');
+    if (fail) throw 0;
+    stage(3); L('st','Optimizing assets'); await wait(350);
+    let before = 0, after = 0;
+    for (const n of names){ const b = new Blob([files[n]]).size; before += b; const min = /^(css|js|html|svg)$/.test(ext(n)) ? files[n].replace(/\/\*[\s\S]*?\*\//g,'').replace(/^\s+|\s+$/gm,'').replace(/\n{2,}/g,'\n') : files[n]; after += new Blob([min]).size; }
+    L('', `Minified ${kb(before)} → ${kb(after)} (−${Math.max(0, Math.round((1-after/before)*100))}%) · brotli ≈ ${kb(after*0.32)}`);
+    stage(4); L('st','Checking links'); await wait(300);
+    let broken = 0;
+    for (const n of names.filter(n => /\.html?$/.test(n))){
+      const refs = [...files[n].matchAll(/(?:href|src)=["']([^"'#?]+)["']/gi)].map(m => m[1]).filter(u => !/^(https?:|mailto:|tel:|data:|\/\/)/.test(u));
+      for (const r of refs){ if (files[r.replace(/^\.?\//,'')] == null){ broken++; L('wa', `⚠ ${n} links to missing file "${r}"`); } }
+    }
+    L(broken ? 'wa' : 'ok', broken ? broken + ' broken reference(s) — deploying anyway' : '✓ All internal links resolve');
+    stage(5); L('st','Packaging functions'); await wait(300);
+    for (const [fn, code] of Object.entries(functions)){
+      try { compileFn(code); L('ok', `✓ ${fn} → /.kiln/functions/${fn}`); } catch(e){ L('er', `✗ function ${fn}: ${e.message}`); fail = 'Function "' + fn + '" failed to compile'; }
+    }
+    if (!Object.keys(functions).length) L('', 'No functions to package');
+    if (fail) throw 0;
+    stage(6); L('st','Uploading to edge network');
+    for (const [code, city] of REGIONS){ await wait(70); L('', `  ${code}  ${city.padEnd(14,' ')} ${(12 + (parseInt(hash(code+d.id).slice(0,4),16)%60))}ms`); }
+    stage(7); L('st','Invalidating CDN cache'); await wait(250);
+    L('', 'Purged ' + names.length + ' paths · atomic swap complete');
+    stage(8); L('ok', '✓ Site is live at ' + liveUrl(s));
+    L('', '  Permalink: https://' + d.id + '--' + s.slug + '.kiln.app');
+    d.status = 'ready'; s.liveId = d.id;
+  } catch(e){
+    d.status = 'failed'; L('er', '✗ Deploy failed: ' + (fail || e && e.message || 'unknown error'));
+    L('', 'The previous deploy stays live. Fix the error and deploy again.');
+  }
+  d.dur = (performance.now() - t0) / 1000; building = null; save();
+  $('#deployBtn').disabled = false; $('#deployBtn').textContent = 'Deploy';
+  renderTop(); if (curView === 'deploys') renderDeploys();
+  toast(d.status === 'ready' ? 'Published to ' + liveUrl(s).replace('https://','') : 'Deploy failed — see log');
+}
+$('#deployBtn').onclick = () => deploy();
+
+/* ---------- deploys view ---------- */
+let selDeploy = null;
+const STEPS = ['Clone','Install','Build','Optimize','Links','Functions','Edge upload','Cache','Live'];
+function paintSteps(d){
+  const el = $('#steps'); if (!el) return;
+  el.innerHTML = STEPS.map((n,i) => { let c = ''; if (d.status === 'ready' || i < d.stage) c = 'done'; else if (i === d.stage) c = d.status === 'failed' ? 'fail' : d.status === 'building' ? 'run' : 'done'; return `<span class="step ${c}">${n}</span>`; }).join('');
+}
+function paintLog(d){
+  const el = $('#term'); if (!el) return;
+  const cls = {st:'st', ok:'ok', wa:'wa', er:'er', '':''};
+  el.innerHTML = d.log.length ? d.log.map(([t,c,x]) => `<div class="ln"><span class="ts">${t}</span><span class="${cls[c]}">${esc(x)}</span></div>`).join('') : '<div class="muted">This example deploy was imported without a build log.</div>';
+  el.scrollTop = el.scrollHeight; paintSteps(d);
+}
+function statusPill(d, s){
+  if (d.status === 'building') return '<span class="pill warn building">Building</span>';
+  if (d.status === 'failed') return '<span class="pill err">Failed</span>';
+  return s.liveId === d.id ? '<span class="pill live">Published</span>' : '<span class="pill idle">Ready</span>';
+}
+function renderDeploys(){
+  const s = site(); const ds = s.deploys;
+  if (!selDeploy || !ds.find(d => d.id === selDeploy)) selDeploy = ds[0] && ds[0].id;
+  const d = ds.find(x => x.id === selDeploy);
+  $('#deploysPage').innerHTML = `
+  <div class="head"><div><div class="eyebrow">${esc(s.name)}</div><h2>Deploys</h2><p class="lede">Every deploy is an immutable snapshot with its own permalink. Publish any earlier one to roll back instantly.</p></div>
+    <form class="row" id="deployForm" style="min-width:min(100%,380px)"><input class="f grow" id="deployMsg" placeholder="Deploy message, e.g. Fix menu prices"><button class="btn pri" type="submit" ${building?'disabled':''}>Deploy now</button></form></div>
+  ${ds.length ? `<div class="dsplit">
+    <div class="box dlist">${ds.map(x => `<button class="ditem ${x.id===selDeploy?'on':''}" data-d="${x.id}"><div class="r1"><span class="msg">${esc(x.msg)}</span>${statusPill(x, s)}</div><div class="r2"><span>${x.id}</span><span>${ago(x.ts)}</span><span>${x.dur?x.dur.toFixed(1)+'s':'—'}</span><span>${kb(x.size)}</span></div></button>`).join('')}</div>
+    <div class="box pad" style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <div class="head" style="align-items:center"><div style="min-width:0"><h3>${esc(d.msg)}</h3><div class="mono muted">https://${d.id}--${s.slug}.kiln.app · ${new Date(d.ts).toLocaleString()}</div></div>
+        <div class="row">${d.status==='ready'?`<button class="btn sm" data-act="open">Open deploy</button>`:''}${d.status==='ready' && s.liveId!==d.id?`<button class="btn sm pri" data-act="publish">Publish this deploy</button>`:''}${d.status!=='building'?`<button class="btn sm" data-act="restore">Restore files to editor</button>`:''}</div></div>
+      <div class="steps" id="steps"></div>
+      <div class="term" id="term"></div>
+    </div></div>` : `<div class="box empty">No deploys yet. Press <b>Deploy</b> to publish ${esc(s.name)} to the edge.</div>`}`;
+  if (d){ paintLog(d); }
+}
+$('#deploysPage').addEventListener('click', e => {
+  const it = e.target.closest('[data-d]'); if (it){ selDeploy = it.dataset.d; renderDeploys(); return; }
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  const s = site(); const d = s.deploys.find(x => x.id === selDeploy);
+  if (a.dataset.act === 'open') openModal(d, 'https://' + d.id + '--' + s.slug + '.kiln.app');
+  if (a.dataset.act === 'publish'){ s.liveId = d.id; save(); renderDeploys(); renderTop(); toast('Rolled back to ' + d.id); }
+  if (a.dataset.act === 'restore'){
+    if (a.dataset.arm){ s.files = JSON.parse(JSON.stringify(d.files)); s.functions = {...d.functions}; save(); toast('Editor files restored from ' + d.id); go('ide'); run(); }
+    else { a.dataset.arm = 1; a.textContent = 'Replace current files?'; a.classList.add('danger'); }
+  }
+});
+$('#deploysPage').addEventListener('submit', e => { e.preventDefault(); deploy($('#deployMsg').value.trim()); });
+
+let modalDeploy = null, modalUrl = '';
+function openModal(d, url){ modalDeploy = d; modalUrl = url; $('#mAddr').textContent = url; $('#mFrame').srcdoc = bundle(d.files); $('#scrim').hidden = false; $('#mClose').focus(); }
+$('#mClose').onclick = () => { $('#scrim').hidden = true; $('#mFrame').srcdoc = ''; modalDeploy = null; };
+$('#scrim').onclick = e => { if (e.target.id === 'scrim') $('#mClose').click(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#scrim').hidden) $('#mClose').click(); });
+
+/* ---------- sites ---------- */
+function renderSites(){
+  $('#sitesPage').innerHTML = `
+  <div class="head"><div><h2>Sites</h2><p class="lede">Each site has its own files, functions, domains and deploy history. Pick one to work on, or start a new one.</p></div></div>
+  <div class="grid3">${state.sites.map(s => { const live = s.deploys.find(d => d.id === s.liveId); return `
+    <button class="site ${s.id===state.cur?'cur':''}" data-s="${s.id}">
+      <div class="thumb">${live ? `<iframe tabindex="-1" sandbox="" title="" srcdoc="${esc(bundle(live.files).replace(new RegExp('<'+SC+'[\\s\\S]*?</'+SC+'>','gi'),''))}"></iframe>` : '<div class="empty">Not deployed yet</div>'}</div>
+      <div class="row" style="justify-content:space-between"><span class="nm">${esc(s.name)}</span>${live ? '<span class="pill live">Live</span>' : '<span class="pill idle">Draft</span>'}</div>
+      <span class="sub">${esc((s.domains.find(d=>d.status==='active')||{}).host || s.slug + '.kiln.app')}</span>
+      <span class="sub">${s.deploys.length} deploys · ${live ? 'published ' + ago(live.ts) : 'never published'}</span>
+    </button>`; }).join('')}
+    <form class="site newsite" id="newSiteForm" style="display:flex;flex-direction:column;gap:10px;justify-content:center">
+      <h3 style="color:var(--fg)">New site</h3>
+      <input class="f" id="nsName" placeholder="Site name" required>
+      <select class="f" id="nsTpl"><option value="landing">Landing page template</option><option value="blank">Blank</option></select>
+      <button class="btn pri" type="submit">Create site</button>
+    </form>
+  </div>`;
+}
+$('#sitesPage').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (b){ state.cur = b.dataset.s; save(); curPage = 'index.html'; renderTop(); go('ide'); run(); } });
+$('#sitesPage').addEventListener('submit', e => {
+  e.preventDefault(); const name = $('#nsName').value.trim(); if (!name) return;
+  let slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'site';
+  while (state.sites.some(s => s.slug === slug)) slug += '-' + Math.floor(Math.random()*90+10);
+  const s = newSite(name, slug, $('#nsTpl').value); state.sites.push(s); state.cur = s.id; save();
+  renderTop(); go('ide'); run(); toast('Created ' + name);
+});
+
+/* ---------- functions ---------- */
+let selFn = null;
+function compileFn(code){
+  const body = code.replace(/export\s+(async\s+)?function\s+handler/, '$1function handler').replace(/export\s+default\s+/, 'const handler = ');
+  return new Function('process', 'fetch', body + '\n;return typeof handler === "function" ? handler : null;');
+}
+function renderFns(){
+  const s = site(); const names = Object.keys(s.functions);
+  if (!selFn || s.functions[selFn] == null) selFn = names[0] || null;
+  $('#fnPage').innerHTML = `
+  <div class="head"><div><div class="eyebrow">${esc(s.name)}</div><h2>Functions</h2><p class="lede">Serverless handlers that run next to your site. Edit, then invoke with a test request. They ship with your next deploy.</p></div></div>
+  <div class="fnwrap">
+    <div class="box" style="padding:8px">
+      ${names.map(n => `<button class="file ${n===selFn?'on':''}" data-fn="${esc(n)}"><span class="dot" style="background:var(--tk-kw)"></span><span class="nm">${esc(n)}</span></button>`).join('') || '<div class="muted" style="padding:8px">No functions yet</div>'}
+      <form class="row" id="fnNew" style="margin-top:8px;padding:0 4px 4px"><input class="f mono grow" id="fnName" placeholder="new-function" style="min-width:0"><button class="btn sm" type="submit">Add</button></form>
+    </div>
+    ${selFn ? `<div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+      <div class="row" style="justify-content:space-between"><span class="mono muted">/.kiln/functions/${esc(selFn)}</span><button class="btn sm danger" id="fnDel">Delete function</button></div>
+      <div class="fnedit"><div class="gutter" id="fgut"></div><div class="surface"><pre id="fhl" aria-hidden="true"></pre><textarea id="fta" spellcheck="false" aria-label="Function code"></textarea></div></div>
+    </div>
+    <form class="box pad" id="invoke" style="display:flex;flex-direction:column;gap:10px">
+      <h3>Test request</h3>
+      <div class="row"><select class="f" id="iMethod" style="width:90px"><option>POST</option><option>GET</option><option>PUT</option><option>DELETE</option></select><input class="f mono grow" id="iQuery" placeholder="name=Ada" value="name=Ada"></div>
+      <textarea class="f mono" id="iBody" rows="4" aria-label="Request body">{"email":"ada@example.com"}</textarea>
+      <button class="btn pri" type="submit">Invoke</button>
+      <div class="row" style="justify-content:space-between"><span class="eyebrow">Response</span><span class="mono muted" id="iMeta"></span></div>
+      <div class="resp" id="iResp">Press Invoke to run the handler with this request.</div>
+    </form>` : ''}
+  </div>`;
+  if (selFn){
+    const fta = $('#fta'); fta.value = s.functions[selFn];
+    const p = bindEditor(fta, $('#fhl'), $('#fgut'), () => 'js', v => { s.functions[selFn] = v; save(); }); p();
+  }
+}
+$('#fnPage').addEventListener('click', e => {
+  const b = e.target.closest('[data-fn]'); if (b){ selFn = b.dataset.fn; renderFns(); return; }
+  if (e.target.id === 'fnDel'){
+    if (e.target.dataset.arm){ delete site().functions[selFn]; selFn = null; save(); renderFns(); toast('Function deleted'); }
+    else { e.target.dataset.arm = 1; e.target.textContent = 'Confirm delete'; }
+  }
+});
+$('#fnPage').addEventListener('submit', async e => {
+  e.preventDefault(); const s = site();
+  if (e.target.id === 'fnNew'){
+    const n = $('#fnName').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-'); if (!n) return;
+    if (s.functions[n] != null) return toast('That name is taken');
+    s.functions[n] = `export async function handler(event) {\n  return {\n    statusCode: 200,\n    body: JSON.stringify({ ok: true, method: event.method })\n  };\n}`;
+    selFn = n; save(); renderFns(); return;
+  }
+  const query = Object.fromEntries(new URLSearchParams($('#iQuery').value));
+  const event = { method: $('#iMethod').value, path: '/.kiln/functions/' + selFn, query, headers: { 'user-agent':'kiln-test', 'x-kiln-region':'ord' }, body: $('#iBody').value };
+  const env = Object.fromEntries(s.env.filter(v => v.scope !== 'Builds').map(v => [v.k, v.v]));
+  const t0 = performance.now(); let out, cls = '';
+  try {
+    const h = compileFn(s.functions[selFn])({ env }, () => Promise.reject(new Error('Outbound fetch is disabled in the test runner')));
+    if (!h) throw new Error('No handler found. Export a function named handler.');
+    const r = await Promise.race([Promise.resolve(h(event)), new Promise((_, rej) => setTimeout(() => rej(new Error('Timed out after 10s')), 10000))]);
+    let body = r && r.body; try { body = JSON.stringify(JSON.parse(body), null, 2); } catch(_){}
+    out = `HTTP ${r && r.statusCode || 200}\n${Object.entries((r && r.headers) || {}).map(([k,v]) => k + ': ' + v).join('\n')}\n\n${body ?? ''}`;
+    cls = (r && r.statusCode >= 400) ? 'var(--warn)' : 'var(--live)';
+  } catch(err){ out = 'Error: ' + err.message; cls = 'var(--err)'; }
+  $('#iResp').textContent = out; $('#iResp').style.color = cls;
+  $('#iMeta').textContent = (performance.now() - t0).toFixed(1) + ' ms · ord';
+});
+
+/* ---------- domains ---------- */
+function renderDomains(){
+  const s = site();
+  $('#domPage').innerHTML = `
+  <div class="head"><div><div class="eyebrow">${esc(s.name)}</div><h2>Domains &amp; SSL</h2><p class="lede">Your site is always reachable at <span class="mono">${s.slug}.kiln.app</span>. Add your own domain, point DNS at Kiln, and a certificate is issued automatically.</p></div></div>
+  <form class="box pad row" id="domForm"><input class="f grow mono" id="domIn" placeholder="www.yourbusiness.com" autocomplete="off"><button class="btn pri" type="submit">Add domain</button></form>
+  <div class="box tw"><table><thead><tr><th>Domain</th><th>DNS</th><th>HTTPS</th><th></th></tr></thead><tbody>
+    <tr><td class="mono">${s.slug}.kiln.app</td><td><span class="pill live">Managed</span></td><td><span class="pill live">Active</span></td><td class="muted">Default</td></tr>
+    ${s.domains.map((d,i) => `<tr><td class="mono">${esc(d.host)}</td><td>${d.status==='active'?'<span class="pill live">Verified</span>':'<span class="pill warn">Awaiting DNS</span>'}</td><td>${d.ssl==='active'?'<span class="pill live">Active · auto-renews</span>':d.ssl==='issuing'?'<span class="pill warn building">Issuing</span>':'<span class="pill idle">Waiting</span>'}</td>
+      <td><div class="row" style="justify-content:flex-end">${d.status!=='active'?`<button class="btn sm" data-verify="${i}">Check DNS</button>`:''}<button class="btn sm danger" data-rm="${i}">Remove</button></div></td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="box tw"><div class="pad" style="padding-bottom:0"><h3>DNS records to add at your registrar</h3></div><table><thead><tr><th>Type</th><th>Name</th><th>Value</th><th>TTL</th></tr></thead><tbody>
+    <tr><td class="mono">A</td><td class="mono">@</td><td class="mono">203.0.113.10</td><td class="mono">3600</td></tr>
+    <tr><td class="mono">CNAME</td><td class="mono">www</td><td class="mono">${s.slug}.kiln.app</td><td class="mono">3600</td></tr>
+    <tr><td class="mono">TXT</td><td class="mono">_kiln-verify</td><td class="mono">kiln-site=${hash(s.id).slice(0,16)}</td><td class="mono">3600</td></tr>
+  </tbody></table></div>`;
+}
+$('#domPage').addEventListener('submit', e => {
+  e.preventDefault(); const h = $('#domIn').value.trim().toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'');
+  if (!/^(?=.{1,253}$)([a-z0-9](-?[a-z0-9])*\.)+[a-z]{2,}$/.test(h)) return toast('Enter a domain like www.example.com');
+  if (state.sites.some(s => s.domains.some(d => d.host === h))) return toast(h + ' is already attached to a site');
+  site().domains.push({ host:h, status:'pending', ssl:'waiting', added:Date.now() }); save(); renderDomains(); toast('Added ' + h + ' — add the DNS records below');
+});
+$('#domPage').addEventListener('click', e => {
+  const s = site(); const v = e.target.closest('[data-verify]'), r = e.target.closest('[data-rm]');
+  if (v){ const d = s.domains[+v.dataset.verify]; v.textContent = 'Checking…'; v.disabled = true;
+    setTimeout(() => { d.status = 'active'; d.ssl = 'issuing'; save(); if (curView==='domains') renderDomains();
+      setTimeout(() => { d.ssl = 'active'; save(); if (curView==='domains') renderDomains(); toast('Certificate issued for ' + d.host); }, 2200); }, 1200); }
+  if (r){ if (r.dataset.arm){ s.domains.splice(+r.dataset.rm, 1); save(); renderDomains(); } else { r.dataset.arm = 1; r.textContent = 'Confirm'; } }
+});
+
+/* ---------- env ---------- */
+function renderEnv(){
+  const s = site();
+  $('#envPage').innerHTML = `
+  <div class="head"><div><div class="eyebrow">${esc(s.name)}</div><h2>Environment variables</h2><p class="lede">Secrets and settings available to builds and functions as <span class="mono">process.env</span>. Values are hidden until you reveal them.</p></div></div>
+  <form class="box pad row" id="envForm"><input class="f mono" id="envK" placeholder="API_KEY" style="flex:1;min-width:140px" autocomplete="off"><input class="f mono" id="envV" placeholder="value" style="flex:2;min-width:160px" autocomplete="off"><select class="f" id="envS" style="width:130px"><option>All</option><option>Builds</option><option>Functions</option></select><button class="btn pri" type="submit">Add variable</button></form>
+  <div class="box tw"><table><thead><tr><th>Key</th><th>Value</th><th>Scope</th><th></th></tr></thead><tbody>
+  ${s.env.length ? s.env.map((v,i) => `<tr><td class="mono">${esc(v.k)}</td><td class="mono" data-val="${i}">••••••••</td><td><span class="pill idle">${v.scope}</span></td><td><div class="row" style="justify-content:flex-end"><button class="btn sm" data-rev="${i}">Reveal</button><button class="btn sm danger" data-erm="${i}">Delete</button></div></td></tr>`).join('') : '<tr><td colspan="4" class="empty">No variables yet</td></tr>'}
+  </tbody></table></div>`;
+}
+$('#envPage').addEventListener('submit', e => {
+  e.preventDefault(); const k = $('#envK').value.trim().toUpperCase(), v = $('#envV').value;
+  if (!/^[A-Z_][A-Z0-9_]*$/.test(k)) return toast('Keys use capital letters, digits and underscores');
+  const s = site(); const ex = s.env.find(x => x.k === k);
+  if (ex){ ex.v = v; ex.scope = $('#envS').value; } else s.env.push({ k, v, scope: $('#envS').value });
+  save(); renderEnv(); toast((ex ? 'Updated ' : 'Added ') + k);
+});
+$('#envPage').addEventListener('click', e => {
+  const s = site(); const rv = e.target.closest('[data-rev]'), rm = e.target.closest('[data-erm]');
+  if (rv){ const cell = $(`[data-val="${rv.dataset.rev}"]`); const on = rv.textContent === 'Reveal'; cell.textContent = on ? s.env[+rv.dataset.rev].v : '••••••••'; rv.textContent = on ? 'Hide' : 'Reveal'; }
+  if (rm){ if (rm.dataset.arm){ s.env.splice(+rm.dataset.erm, 1); save(); renderEnv(); } else { rm.dataset.arm = 1; rm.textContent = 'Confirm'; } }
+});
+
+/* ---------- analytics ---------- */
+function rng(seed){ let x = parseInt(hash(seed).slice(0,8),16) || 1; return () => (x = (x * 1664525 + 1013904223) >>> 0) / 4294967296; }
+function renderAnalytics(){
+  const s = site(); const r = rng(s.id + 'traffic');
+  const days = 14, series = [], base = s.deploys.length ? 1800 : 40;
+  for (let i=0;i<days;i++){ const wk = [1,1.05,1.1,1.08,1.2,0.75,0.7][i%7]; series.push(Math.round(base * wk * (0.8 + r()*0.5) * (1 + i*0.03))); }
+  const total = series.reduce((a,b) => a+b, 0) * 3.4 | 0;
+  const pages = Object.keys(s.files).filter(f => /\.html?$/.test(f));
+  const paths = [['/', 0.62], ...pages.filter(p => p !== 'index.html').map(p => ['/' + p, 0.1 + r()*0.1]), ['/.kiln/functions/' + (Object.keys(s.functions)[0]||'hello'), 0.08], ['/styles.css', 0.05]];
+  const regionSplit = REGIONS.slice(0,6).map(([c,n]) => [n, r()]); const rs = regionSplit.reduce((a,b) => a + b[1], 0);
+  $('#anPage').innerHTML = `
+  <div class="head"><div><div class="eyebrow">${esc(s.name)} · last 14 days</div><h2>Analytics</h2><p class="lede">Edge requests, bandwidth and cache performance across every region.</p></div></div>
+  <div class="note">Sample traffic. This console runs in your browser, so the figures below are generated to show the layout; real numbers appear once the site is served by a live host.</div>
+  <div class="kpis">
+    <div class="box kpi"><div class="eyebrow">Requests</div><div class="v">${total.toLocaleString()}</div><div class="d">▲ ${(8 + r()*12).toFixed(1)}% vs prior</div></div>
+    <div class="box kpi"><div class="eyebrow">Unique visitors</div><div class="v">${Math.round(series.reduce((a,b)=>a+b,0)).toLocaleString()}</div><div class="d">▲ ${(4 + r()*9).toFixed(1)}%</div></div>
+    <div class="box kpi"><div class="eyebrow">Bandwidth</div><div class="v">${(total * bytes(s.files) / 1024 / 1024 / 1024 * 0.35).toFixed(2)} GB</div><div class="d muted" style="color:var(--mute)">of 100 GB included</div></div>
+    <div class="box kpi"><div class="eyebrow">Cache hit rate</div><div class="v">${(94 + r()*5).toFixed(1)}%</div><div class="d">p50 edge latency ${(18 + r()*14)|0} ms</div></div>
+  </div>
+  <div class="box pad"><div class="row" style="justify-content:space-between"><h3>Visitors per day</h3><span class="muted mono" id="chartHover"></span></div><div class="chart"><canvas id="chart"></canvas></div></div>
+  <div class="g2">
+    <div class="box tw"><table><thead><tr><th>Top paths</th><th class="num">Requests</th></tr></thead><tbody>${paths.map(([p,f]) => `<tr><td class="mono">${esc(p)}</td><td class="num mono">${Math.round(total*f).toLocaleString()}</td></tr>`).join('')}</tbody></table></div>
+    <div class="box pad" style="display:flex;flex-direction:column;gap:12px"><h3>Traffic by edge region</h3>${regionSplit.sort((a,b) => b[1]-a[1]).map(([n,v]) => `<div style="display:grid;grid-template-columns:110px 1fr 46px;gap:10px;align-items:center"><span>${n}</span><div class="bar"><i style="width:${(v/rs*100/ (regionSplit[0][1]/rs) ).toFixed(0)}%"></i></div><span class="num mono">${(v/rs*100).toFixed(0)}%</span></div>`).join('')}</div>
+  </div>`;
+  drawChart(series);
+}
+function drawChart(series){
+  const cv = $('#chart'); if (!cv) return;
+  const cs = getComputedStyle(document.documentElement);
+  const draw = (hi) => {
+    const dpr = devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight; cv.width = W*dpr; cv.height = H*dpr;
+    const c = cv.getContext('2d'); c.scale(dpr,dpr);
+    const padL = 44, padR = 12, padT = 12, padB = 26, w = W-padL-padR, h = H-padT-padB;
+    const max = Math.ceil(Math.max(...series) / 500) * 500 || 100;
+    c.font = '11px "JetBrains Mono", monospace'; c.fillStyle = cs.getPropertyValue('--mute'); c.strokeStyle = cs.getPropertyValue('--line'); c.lineWidth = 1;
+    for (let i=0;i<=4;i++){ const y = padT + h - h*i/4; c.beginPath(); c.moveTo(padL,y); c.lineTo(W-padR,y); c.stroke(); c.textAlign='right'; c.fillText(Math.round(max*i/4).toLocaleString(), padL-8, y+4); }
+    const X = i => padL + w * i/(series.length-1), Y = v => padT + h - h*v/max;
+    const now = new Date(); c.textAlign = 'center';
+    series.forEach((_, i) => { if (i % 2 === 0 || i === series.length-1){ const d = new Date(now - (series.length-1-i)*864e5); c.fillText((d.getMonth()+1)+'/'+d.getDate(), X(i), H-8); } });
+    const acc = cs.getPropertyValue('--accent').trim();
+    const g = c.createLinearGradient(0,padT,0,padT+h); g.addColorStop(0, acc + '55'); g.addColorStop(1, acc + '00');
+    c.beginPath(); series.forEach((v,i) => i ? c.lineTo(X(i),Y(v)) : c.moveTo(X(i),Y(v))); c.lineTo(X(series.length-1), padT+h); c.lineTo(X(0), padT+h); c.closePath(); c.fillStyle = g; c.fill();
+    c.beginPath(); series.forEach((v,i) => i ? c.lineTo(X(i),Y(v)) : c.moveTo(X(i),Y(v))); c.strokeStyle = acc; c.lineWidth = 2; c.stroke();
+    const k = hi ?? series.length-1; c.beginPath(); c.arc(X(k), Y(series[k]), 4.5, 0, 7); c.fillStyle = acc; c.fill(); c.strokeStyle = cs.getPropertyValue('--panel'); c.lineWidth = 2; c.stroke();
+    const d = new Date(now - (series.length-1-k)*864e5); $('#chartHover').textContent = d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' · ' + series[k].toLocaleString() + ' visitors';
+    cv._X = X; cv._n = series.length;
+  };
+  draw(); cv.onmousemove = e => { const x = e.offsetX; let best = 0, bd = 1e9; for (let i=0;i<cv._n;i++){ const dd = Math.abs(cv._X(i) - x); if (dd < bd){ bd = dd; best = i; } } draw(best); };
+  cv.onmouseleave = () => draw(); window.onresize = () => { if (curView === 'analytics') draw(); };
+}
+
+/* ---------- settings ---------- */
+function renderSettings(){
+  const s = site();
+  $('#setPage').innerHTML = `
+  <div class="head"><div><div class="eyebrow">${esc(s.name)}</div><h2>Site settings</h2><p class="lede">Name, address and build configuration for this site.</p></div></div>
+  <form class="box pad" id="setForm" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">
+    <label style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Site name</span><input class="f" id="sName" value="${esc(s.name)}"></label>
+    <label style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Subdomain</span><input class="f mono" id="sSlug" value="${esc(s.slug)}"><span class="muted mono" style="font-size:11px">→ ${esc(s.slug)}.kiln.app</span></label>
+    <label style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Framework</span><select class="f" id="sFw">${['Static HTML','Vite','Next.js (static export)','Astro','Eleventy','Hugo'].map(f => `<option ${f===s.framework?'selected':''}>${f}</option>`).join('')}</select></label>
+    <label style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Build command</span><input class="f mono" id="sCmd" value="${esc(s.buildCmd)}" placeholder="npm run build"></label>
+    <label style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Publish directory</span><input class="f mono" id="sDir" value="${esc(s.publishDir)}" placeholder="dist"></label>
+    <div style="display:flex;align-items:flex-end"><button class="btn pri" type="submit">Save settings</button></div>
+  </form>
+  <div class="box pad" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div><h3>Delete this site</h3><p class="lede" style="margin:2px 0 0">Removes its files, functions, domains and every deploy.</p></div>
+    <button class="btn danger" id="delSite" ${state.sites.length < 2 ? 'disabled title="Keep at least one site"' : ''}>Delete ${esc(s.name)}</button>
+  </div>`;
+}
+$('#setPage').addEventListener('submit', e => {
+  e.preventDefault(); const s = site();
+  const slug = $('#sSlug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/^-|-$/g,'');
+  if (!slug) return toast('Subdomain can’t be empty');
+  if (state.sites.some(x => x !== s && x.slug === slug)) return toast(slug + '.kiln.app is taken');
+  Object.assign(s, { name: $('#sName').value.trim() || s.name, slug, framework: $('#sFw').value, buildCmd: $('#sCmd').value.trim(), publishDir: $('#sDir').value.trim() || '/' });
+  save(); renderTop(); renderSettings(); toast('Settings saved');
+});
+$('#setPage').addEventListener('click', e => {
+  if (e.target.id !== 'delSite') return; const b = e.target;
+  if (b.dataset.arm){ state.sites = state.sites.filter(s => s.id !== state.cur); state.cur = state.sites[0].id; save(); renderTop(); go('sites'); toast('Site deleted'); }
+  else { b.dataset.arm = 1; b.textContent = 'Click again to delete permanently'; }
+});
+
+/* ---------- shell ---------- */
+function renderTop(){
+  const s = site();
+  $('#siteSel').innerHTML = state.sites.map(x => `<option value="${x.id}" ${x.id===s.id?'selected':''}>${esc(x.name)}</option>`).join('');
+  const live = s.deploys.find(d => d.id === s.liveId);
+  $('#topUrl').innerHTML = live ? `<b>●</b> ${liveUrl(s)} · ${live.id} published ${ago(live.ts)}` : 'Not deployed yet';
+}
+$('#siteSel').onchange = e => { state.cur = e.target.value; save(); curPage = 'index.html'; renderTop(); go(curView); if (curView === 'ide') run(); };
+$('#topUrl').onclick = () => { const s = site(); const live = s.deploys.find(d => d.id === s.liveId); if (live) openModal(live, liveUrl(s)); };
+$('#topUrl').style.cursor = 'pointer';
+
+let curView = 'ide';
+const RENDER = { ide: renderIDE, sites: renderSites, deploys: renderDeploys, functions: renderFns, domains: renderDomains, env: renderEnv, analytics: renderAnalytics, settings: renderSettings };
+function go(v){
+  if (!RENDER[v]) v = 'ide'; curView = v;
+  document.querySelectorAll('.view').forEach(el => el.hidden = el.id !== 'v-' + v);
+  document.querySelectorAll('.rail [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === v));
+  RENDER[v]();
+  try { history.replaceState(null, '', '#' + v); } catch(e){}
+}
+document.querySelector('.rail').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
+
+load(); renderTop();
+go((location.hash || '#ide').slice(1)); run();
+setInterval(() => { renderTop(); }, 30000);
+})();
+</script>
+</body>
+</html>

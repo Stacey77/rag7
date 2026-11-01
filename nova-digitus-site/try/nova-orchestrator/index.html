@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Nova Orchestrator: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Nova Orchestrator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+
+<style>
+/* ============================================================
+   TOKENS
+   Light is the base palette. Dark is redefined twice:
+   once for system preference, once for the explicit stamp.
+   ============================================================ */
+:root{
+  --bg:#F1F2F7;
+  --surface:#FFFFFF;
+  --surface-2:#E9EAF2;
+  --line:#D6D9E8;
+  --line-soft:#E5E7F1;
+  --ink:#12131C;
+  --ink-2:#3C3F52;
+  --muted:#63677E;
+  --accent:#2438C8;
+  --accent-ink:#1B2B9E;
+  --accent-soft:#E3E6FA;
+  --good:#166B4E;
+  --good-soft:#DCEFE7;
+  --warn:#87540A;
+  --warn-soft:#F6E9D1;
+  --crit:#A32017;
+  --crit-soft:#F7DFDD;
+  --bezel:#C7CADB;
+  --screen:#F7F8FC;
+  --shadow:0 1px 2px rgba(18,19,28,.06), 0 10px 30px -14px rgba(18,19,28,.28);
+  --shadow-lift:0 2px 4px rgba(18,19,28,.08), 0 26px 50px -22px rgba(18,19,28,.42);
+
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --ui:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B0C13;
+    --surface:#14161F;
+    --surface-2:#1C1F2C;
+    --line:#2B2F42;
+    --line-soft:#232636;
+    --ink:#E8E9F2;
+    --ink-2:#C1C4D6;
+    --muted:#8D91A8;
+    --accent:#8B98FF;
+    --accent-ink:#B6BEFF;
+    --accent-soft:#1D2250;
+    --good:#5FCFA6;
+    --good-soft:#10312A;
+    --warn:#E0AC4E;
+    --warn-soft:#33260F;
+    --crit:#F08A80;
+    --crit-soft:#3A1B18;
+    --bezel:#2A2E40;
+    --screen:#0F111A;
+    --shadow:0 1px 2px rgba(0,0,0,.55), 0 14px 34px -16px rgba(0,0,0,.9);
+    --shadow-lift:0 2px 6px rgba(0,0,0,.6), 0 30px 60px -24px rgba(0,0,0,1);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B0C13;
+  --surface:#14161F;
+  --surface-2:#1C1F2C;
+  --line:#2B2F42;
+  --line-soft:#232636;
+  --ink:#E8E9F2;
+  --ink-2:#C1C4D6;
+  --muted:#8D91A8;
+  --accent:#8B98FF;
+  --accent-ink:#B6BEFF;
+  --accent-soft:#1D2250;
+  --good:#5FCFA6;
+  --good-soft:#10312A;
+  --warn:#E0AC4E;
+  --warn-soft:#33260F;
+  --crit:#F08A80;
+  --crit-soft:#3A1B18;
+  --bezel:#2A2E40;
+  --screen:#0F111A;
+  --shadow:0 1px 2px rgba(0,0,0,.55), 0 14px 34px -16px rgba(0,0,0,.9);
+  --shadow-lift:0 2px 6px rgba(0,0,0,.6), 0 30px 60px -24px rgba(0,0,0,1);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent-soft);color:var(--accent-ink)}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1260px;margin:0 auto;padding:0 clamp(18px,4vw,44px) 100px}
+
+/* ---------- masthead ---------- */
+.masthead{padding:clamp(44px,7vw,84px) 0 clamp(26px,4vw,40px);border-bottom:1px solid var(--line)}
+.brandline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:26px}
+.mark{
+  width:26px;height:26px;flex:none;border-radius:7px;
+  background:var(--accent);position:relative;
+}
+.mark::after{
+  content:"";position:absolute;inset:7px;border-radius:2px;
+  background:var(--surface);
+  clip-path:polygon(0 0,100% 0,100% 42%,42% 42%,42% 100%,0 100%);
+}
+.brandname{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:17px}
+.brandmeta{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);border-left:1px solid var(--line);padding-left:12px
+}
+h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2.35rem,6.2vw,4.15rem);
+  line-height:.98;letter-spacing:-.035em;margin:0 0 22px;
+  text-wrap:balance;max-width:16ch;
+}
+h1 .lo{color:var(--muted);font-weight:500}
+.deck{font-size:clamp(1.06rem,1.9vw,1.32rem);line-height:1.5;max-width:60ch;color:var(--ink-2);margin:0}
+.facts{
+  display:flex;flex-wrap:wrap;gap:0;margin-top:34px;
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);
+}
+.fact{flex:1 1 190px;padding:15px 18px;border-right:1px solid var(--line-soft)}
+.fact:last-child{border-right:0}
+.fact dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.fact dd{margin:0;font-family:var(--ui);font-size:14.5px;font-weight:500;line-height:1.35;color:var(--ink)}
+
+/* ---------- split ---------- */
+.split{display:grid;grid-template-columns:minmax(0,1fr) 372px;gap:clamp(32px,4.5vw,64px);align-items:start}
+.rail{position:sticky;top:22px}
+.doc{min-width:0;padding-top:8px}
+
+/* ---------- doc typography ---------- */
+section{padding-top:clamp(44px,6vw,68px)}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--accent-ink);margin:0 0 10px;display:flex;align-items:center;gap:10px;
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h2{
+  font-family:var(--display);font-weight:700;letter-spacing:-.026em;
+  font-size:clamp(1.6rem,3.1vw,2.25rem);line-height:1.06;margin:0 0 14px;text-wrap:balance;
+}
+h3{
+  font-family:var(--display);font-weight:700;letter-spacing:-.016em;
+  font-size:1.13rem;line-height:1.25;margin:30px 0 8px;
+}
+h4{
+  font-family:var(--mono);font-weight:600;font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin:24px 0 8px;
+}
+p{margin:0 0 15px;max-width:66ch}
+.lede{font-size:1.09rem;color:var(--ink-2);max-width:64ch}
+ul,ol{max-width:66ch;padding-left:1.15em;margin:0 0 15px}
+li{margin-bottom:7px}
+li::marker{color:var(--muted)}
+strong{font-weight:600}
+.mono{font-family:var(--mono);font-size:.86em;background:var(--surface-2);padding:1px 5px;border-radius:4px;color:var(--ink-2)}
+
+/* ---------- loop diagram ---------- */
+.loop{
+  display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;
+  margin:22px 0 10px;padding:0;list-style:none;max-width:none;
+}
+.loop li{
+  margin:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:12px 11px 13px;position:relative;
+}
+.loop .n{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--accent-ink);
+  display:block;margin-bottom:6px;
+}
+.loop .t{font-family:var(--display);font-weight:700;font-size:14.5px;letter-spacing:-.01em;display:block;line-height:1.15}
+.loop .d{font-family:var(--ui);font-size:12px;line-height:1.35;color:var(--muted);display:block;margin-top:5px}
+.loop li.gate{border-color:var(--accent);background:var(--accent-soft)}
+.loop li.gate .d{color:var(--accent-ink)}
+.loopnote{
+  font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.02em;
+  border-left:2px solid var(--line);padding-left:10px;margin:0 0 4px;max-width:none;
+}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:18px 0 6px}
+table{border-collapse:collapse;width:100%;min-width:600px;font-family:var(--ui);font-size:13.6px}
+th{
+  text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;padding:11px 14px;border-bottom:1px solid var(--line);
+  background:var(--surface-2);white-space:nowrap;
+}
+td{padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.42;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td.name{font-family:var(--display);font-weight:700;color:var(--ink);white-space:nowrap;font-size:14.5px}
+td .role{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:400;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- pills ---------- */
+.pill{
+  display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;padding:2.5px 7px;border-radius:5px;white-space:nowrap;
+  background:var(--surface-2);color:var(--ink-2);
+}
+.pill.ok{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}
+.pill.acc{background:var(--accent-soft);color:var(--accent-ink)}
+
+/* ---------- callout ---------- */
+.callout{
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
+  background:var(--surface);padding:16px 18px;margin:20px 0;max-width:68ch;
+}
+.callout p{margin:0;font-size:15.5px}
+.callout p + p{margin-top:10px}
+
+/* ---------- code ---------- */
+.code{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  overflow-x:auto;margin:16px 0 6px;
+}
+.code .bar{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:9px 14px;border-bottom:1px solid var(--line);background:var(--surface-2);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  position:sticky;left:0;
+}
+pre{margin:0;padding:16px;font-family:var(--mono);font-size:12.4px;line-height:1.65;color:var(--ink-2);white-space:pre}
+.k{color:var(--accent-ink)}
+.c{color:var(--muted);font-style:italic}
+.s{color:var(--good)}
+
+/* ---------- vertical cards ---------- */
+.verticals{display:grid;gap:16px;margin-top:20px}
+.vcard{
+  border:1px solid var(--line);border-radius:14px;background:var(--surface);
+  padding:20px 22px 22px;box-shadow:var(--shadow);
+}
+.vcard header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.vcard h3{margin:0;font-size:1.32rem}
+.vtag{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.vclaim{font-family:var(--display);font-weight:500;font-size:1.02rem;color:var(--accent-ink);margin:6px 0 14px;letter-spacing:-.01em}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;border-top:1px solid var(--line-soft);padding-top:14px}
+.vgrid h4{margin:0 0 6px}
+.vgrid ul{margin:0;padding-left:1.05em;font-family:var(--ui);font-size:13px;line-height:1.45;color:var(--ink-2)}
+.vgrid li{margin-bottom:4px}
+.vmove{
+  margin-top:16px;padding:14px 16px;border-radius:10px;background:var(--surface-2);
+  font-family:var(--ui);font-size:13.4px;line-height:1.5;color:var(--ink-2);max-width:none;
+}
+.vmove b{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;font-weight:600}
+
+/* ============================================================
+   PHONE PROTOTYPE
+   ============================================================ */
+.railhead{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 12px;display:flex;align-items:center;gap:8px;
+}
+.railhead .dot{width:6px;height:6px;border-radius:50%;background:var(--good);flex:none;animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.phone{
+  width:100%;max-width:352px;margin:0 auto;
+  background:var(--bezel);border-radius:38px;padding:9px;
+  box-shadow:var(--shadow-lift);
+}
+.glass{
+  background:var(--screen);border-radius:30px;overflow:hidden;
+  display:flex;flex-direction:column;height:684px;
+  font-family:var(--ui);color:var(--ink);
+}
+.statusbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:11px 20px 4px;font-family:var(--mono);font-size:11px;color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.statusbar .sig{display:flex;gap:3px;align-items:flex-end}
+.statusbar .sig i{width:3px;background:var(--muted);border-radius:1px;display:block}
+.apphead{
+  padding:6px 18px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  border-bottom:1px solid var(--line-soft);
+}
+.apphead .who{display:flex;align-items:center;gap:9px;min-width:0}
+.avatar{
+  width:30px;height:30px;border-radius:9px;background:var(--accent);flex:none;position:relative;
+}
+.avatar::after{
+  content:"";position:absolute;inset:8px;border-radius:2px;background:var(--screen);
+  clip-path:polygon(0 0,100% 0,100% 42%,42% 42%,42% 100%,0 100%);
+}
+.apphead .nm{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.02em;line-height:1.1}
+.apphead .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.badge{
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;
+  background:var(--accent);color:#fff;border-radius:20px;padding:4px 9px;white-space:nowrap;
+}
+:root[data-theme="dark"] .badge{color:#0B0C13}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .badge{color:#0B0C13}}
+.badge.done{background:var(--good-soft);color:var(--good)}
+
+.screens{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+.screen{display:none;padding:14px 14px 20px;flex-direction:column;gap:10px}
+.screen.is-active{display:flex}
+
+.sechead{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin:6px 2px 0;
+}
+.sechead:first-child{margin-top:0}
+
+/* proposal card */
+.pcard{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:13px 14px;text-align:left;width:100%;cursor:pointer;font:inherit;color:inherit;
+  display:flex;flex-direction:column;gap:7px;transition:transform .16s ease,border-color .16s ease;
+}
+.pcard:hover{border-color:var(--accent);transform:translateY(-1px)}
+.pcard[data-state="approved"],.pcard[data-state="declined"]{opacity:.5;cursor:default}
+.pcard[data-state="approved"]:hover,.pcard[data-state="declined"]:hover{transform:none;border-color:var(--line)}
+.pcard .top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.agentchip{
+  display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;
+  font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--accent-ink);
+}
+.agentchip .sq{width:7px;height:7px;border-radius:2px;background:var(--accent);flex:none}
+.pcard h5{margin:0;font-family:var(--display);font-weight:700;font-size:14.5px;line-height:1.22;letter-spacing:-.015em}
+.pcard .line{margin:0;font-size:12.4px;line-height:1.42;color:var(--muted)}
+.pcard .cta{
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent-ink);display:flex;align-items:center;gap:5px;
+}
+.stamp{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase}
+.stamp.ok{color:var(--good)}
+.stamp.no{color:var(--muted)}
+
+/* detail */
+.back{
+  background:none;border:0;padding:2px 0;font:inherit;cursor:pointer;color:var(--muted);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;align-self:flex-start;
+}
+.back:hover{color:var(--accent-ink)}
+.dtitle{margin:2px 0 0;font-family:var(--display);font-weight:800;font-size:19px;line-height:1.14;letter-spacing:-.025em;text-transform:none;color:var(--ink)}
+.dline{margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 13px}
+.block h6{
+  margin:0 0 7px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;
+}
+.block ul{margin:0;padding-left:1.05em;font-size:12.4px;line-height:1.45;color:var(--ink-2)}
+.block li{margin-bottom:5px}
+.block li:last-child{margin-bottom:0}
+.block p{margin:0;font-size:12.8px;line-height:1.5;color:var(--ink-2);max-width:none}
+.draft{
+  font-family:var(--mono);font-size:11.4px;line-height:1.62;color:var(--ink-2);
+  white-space:pre-wrap;background:var(--surface-2);border-radius:8px;padding:11px;margin:0;
+  max-height:168px;overflow-y:auto;
+}
+.gatebar{
+  display:flex;gap:9px;align-items:flex-start;background:var(--warn-soft);
+  border-radius:10px;padding:10px 12px;font-size:11.8px;line-height:1.42;color:var(--warn);
+}
+.gatebar svg{flex:none;margin-top:1px}
+.actions{display:flex;gap:8px;margin-top:2px}
+.btn{
+  flex:1;font:inherit;font-family:var(--ui);font-weight:600;font-size:13px;
+  border-radius:11px;padding:11px 8px;cursor:pointer;border:1px solid transparent;
+  transition:filter .15s ease;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn.primary{background:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#0B0C13}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#0B0C13}}
+.btn.ghost{background:var(--surface);border-color:var(--line);color:var(--ink-2);flex:0 0 auto;padding:11px 14px}
+
+/* done state */
+.done{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.donemark{
+  width:38px;height:38px;border-radius:11px;background:var(--good-soft);color:var(--good);
+  display:flex;align-items:center;justify-content:center;
+}
+.audit{
+  font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--muted);
+  background:var(--surface-2);border-radius:8px;padding:11px;white-space:pre-wrap;width:100%;
+}
+
+/* team */
+.arow{
+  display:flex;align-items:flex-start;gap:10px;background:var(--surface);
+  border:1px solid var(--line);border-radius:12px;padding:11px 12px;
+}
+.arow .sq{width:9px;height:9px;border-radius:3px;flex:none;margin-top:4px}
+.arow .nm{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:-.015em;line-height:1.2}
+.arow .rl{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.arow .ac{font-size:12px;line-height:1.4;color:var(--ink-2);margin-top:4px}
+.arow .st{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+/* connect */
+.crow{
+  display:flex;align-items:center;gap:11px;background:var(--surface);
+  border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+}
+.crow .ic{
+  width:28px;height:28px;border-radius:8px;background:var(--surface-2);flex:none;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+  font-size:11px;font-weight:600;color:var(--ink-2);
+}
+.crow .nm{font-size:13px;font-weight:500;line-height:1.2}
+.crow .sc{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tgl{
+  margin-left:auto;width:38px;height:22px;border-radius:20px;border:0;cursor:pointer;
+  background:var(--surface-2);position:relative;padding:0;flex:none;transition:background .18s ease;
+}
+.tgl::after{
+  content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;
+  background:var(--muted);transition:transform .18s ease,background .18s ease;
+}
+.tgl[aria-pressed="true"]{background:var(--accent)}
+.tgl[aria-pressed="true"]::after{transform:translateX(16px);background:#fff}
+
+/* tab bar */
+.tabs{
+  display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);
+  background:var(--surface);
+}
+.tab{
+  background:none;border:0;padding:10px 4px 14px;cursor:pointer;font:inherit;
+  display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);
+}
+.tab span{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.tab[aria-selected="true"]{color:var(--accent-ink)}
+.tab svg{display:block}
+
+/* ---------- footer ---------- */
+.foot{
+  margin-top:clamp(50px,7vw,84px);padding-top:24px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:14px 28px;align-items:baseline;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:1000px){
+  .split{grid-template-columns:1fr;gap:38px}
+  .rail{position:static;order:-1}
+  .loop{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .loop{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fact{flex:1 1 100%;border-right:0;border-bottom:1px solid var(--line-soft)}
+  .fact:last-child{border-bottom:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="brandline">
+    <div class="mark" aria-hidden="true"></div>
+    <div class="brandname">Nova Digitus</div>
+    <div class="brandmeta">Platform spec &amp; configuration &middot; v1.0 &middot; Aug 2026</div>
+  </div>
+  <h1>An operations team<br>that <span class="lo">waits for</span><br>your yes.</h1>
+  <p class="deck">Nova is an orchestrator you talk to from your phone. Behind it, nine specialist agents watch your books, your inbox, your calendar and your shop floor — and bring you the work already done, waiting on one tap. Nothing leaves the building without it.</p>
+  <dl class="facts">
+    <div class="fact"><dt>Interaction model</dt><dd>Mobile-first, one orchestrator, nine specialists</dd></div>
+    <div class="fact"><dt>Default autonomy</dt><dd>Propose &amp; hold — never execute-first</dd></div>
+    <div class="fact"><dt>Vertical packs</dt><dd>Retail &middot; Financial Services &middot; Industrial</dd></div>
+    <div class="fact"><dt>Approval latency budget</dt><dd class="num">&lt; 20 seconds per decision</dd></div>
+  </dl>
+</header>
+
+<div class="split">
+
+  <main class="doc">
+
+    <section id="thesis">
+      <p class="eyebrow">The problem</p>
+      <h2>Assistants answer. Operators notice.</h2>
+      <p class="lede">A chatbot is a good employee who never leaves their desk and never speaks first. The owner still has to know what to ask, and knowing what to ask is most of the job.</p>
+      <p>Nova inverts that. The specialists run continuously against your connected systems, looking for the four things that actually move a small business: money that is late, demand that is moving, time that is being wasted, and customers who are going quiet. When one of them finds something, it does the work — drafts the email, builds the schedule, prices the scenario — and then stops at the last inch and hands it to you.</p>
+      <p>The product is that last inch. Everything else is table stakes.</p>
+      <div class="callout">
+        <p><strong>Design constraint that shapes the whole system:</strong> the owner is holding a phone, standing up, with about twenty seconds. If a proposal cannot be understood and decided in twenty seconds, the agent has not finished its work.</p>
+      </div>
+    </section>
+
+    <section id="loop">
+      <p class="eyebrow">Orchestration model</p>
+      <h2>The loop every proposal runs</h2>
+      <p class="lede">This is a real sequence, and the order matters — an agent that proposes before it drafts is just a notification, and a notification is more work, not less.</p>
+      <ol class="loop">
+        <li><span class="n">01</span><span class="t">Sense</span><span class="d">Specialists poll connected systems on their own cadence.</span></li>
+        <li><span class="n">02</span><span class="t">Qualify</span><span class="d">Nova scores signal against your goals and kills the noise.</span></li>
+        <li><span class="n">03</span><span class="t">Draft</span><span class="d">The agent does the work fully — copy, numbers, calendar slots.</span></li>
+        <li class="gate"><span class="n">04</span><span class="t">Propose</span><span class="d">One card. What, why, what changes if you say yes.</span></li>
+        <li class="gate"><span class="n">05</span><span class="t">You decide</span><span class="d">Approve, edit, decline. Nothing moves before this.</span></li>
+        <li><span class="n">06</span><span class="t">Execute &amp; verify</span><span class="d">Agent acts, confirms it landed, writes the audit record.</span></li>
+      </ol>
+      <p class="loopnote">Decline feeds back into step 02. Three declines on the same trigger and Nova stops raising it, then tells you it stopped.</p>
+      <h3>How Nova decides what reaches you</h3>
+      <p>Every candidate is scored on four axes before it becomes a card. A candidate that clears the bar on none of them is logged and never shown.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Axis</th><th>Question</th><th>Kills the card when</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Reversibility</td><td>How expensive is it to undo?</td><td>Irreversible and low-confidence</td></tr>
+            <tr><td class="name">Time value</td><td>Does waiting a week cost anything?</td><td>No decay — batch it into the weekly brief</td></tr>
+            <tr><td class="name">Owner leverage</td><td>Does this need <em>your</em> judgment, or just a hand?</td><td>Neither — route it to another agent instead</td></tr>
+            <tr><td class="name">Confidence</td><td>Is the underlying data clean enough to act on?</td><td>Below threshold — agent asks for data, not a decision</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="team">
+      <p class="eyebrow">Multi-agent team</p>
+      <h2>Nine specialists, one voice</h2>
+      <p class="lede">You never address the agents directly unless you want to. You talk to Nova; Nova routes, sequences, and resolves conflicts between them. Specialists are narrow on purpose — a narrow agent can be evaluated, and an agent that can be evaluated can be trusted with a wider gate later.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Agent</th><th>Watches</th><th>Brings you</th><th>Default tier</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Nova<span class="role">Orchestrator</span></td><td>Every other agent, your goals, your calendar load</td><td>The daily brief, and the one thing that matters most today</td><td><span class="pill acc">Propose</span></td></tr>
+            <tr><td class="name">Echo<span class="role">Marketing</span></td><td>Sales mix, seasonality, search and social signal, your own posting gaps</td><td>Campaign briefs, post and email copy, timing</td><td><span class="pill acc">Propose</span></td></tr>
+            <tr><td class="name">Vortex<span class="role">Sales &amp; client comms</span></td><td>Inbound leads, quote opens, reply latency, deals going quiet</td><td>Ranked call list, follow-ups drafted in your voice</td><td><span class="pill acc">Propose</span></td></tr>
+            <tr><td class="name">Atlas<span class="role">Scheduling &amp; dispatch</span></td><td>Calendar gaps, drive time, crew load, weather, no-show risk</td><td>Filled gaps, rebooked jobs, confirmation texts</td><td><span class="pill acc">Propose</span></td></tr>
+            <tr><td class="name">Sentinel<span class="role">Finance</span></td><td>AR/AP aging, cash runway, payroll dates, uncategorized transactions</td><td>Cash forecasts, invoice chases, month-end close packet</td><td><span class="pill warn">Approve</span></td></tr>
+            <tr><td class="name">Spark<span class="role">Creative</span></td><td>Brand kit, asset library, what performed</td><td>Finished social assets, on-brand and sized per channel</td><td><span class="pill ok">Observe</span></td></tr>
+            <tr><td class="name">Sage<span class="role">Knowledge</span></td><td>Contracts, SOPs, past decisions, customer history</td><td>Answers with citations, and the precedent behind a proposal</td><td><span class="pill ok">Observe</span></td></tr>
+            <tr><td class="name">Cyber<span class="role">Security &amp; compliance</span></td><td>Access, anomalies, data handling, obligations by industry</td><td>Risk flags with the evidence attached</td><td><span class="pill warn">Approve</span></td></tr>
+            <tr><td class="name">Forge<span class="role">Opportunity</span></td><td>Patterns across all of the above, plus outside signal</td><td>The thing nobody asked for that turns out to matter</td><td><span class="pill acc">Propose</span></td></tr>
+            <tr><td class="name">Rig<span class="role">Integrations</span></td><td>Connector health, sync drift, back-office plumbing</td><td>Broken pipes fixed before you notice they broke</td><td><span class="pill acc">Notice</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Conflict resolution</h3>
+      <p>Two agents will eventually want opposite things — Echo wants to discount the slow mover, Sentinel wants the margin. Nova does not average them. It surfaces the disagreement as a single card with both positions and the number that separates them, because that is exactly the decision an owner should be making and an agent should not.</p>
+    </section>
+
+    <section id="hitl">
+      <p class="eyebrow">Human-in-the-loop</p>
+      <h2>The approval contract</h2>
+      <p class="lede">Autonomy is configured per action class, not per agent. An agent you trust with one thing is not automatically trusted with another, and the tier can move in both directions as evidence accumulates.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Tier</th><th>What the agent may do</th><th>Your involvement</th><th>Undo</th></tr></thead>
+          <tbody>
+            <tr><td class="name"><span class="pill ok">Observe</span></td><td>Read and summarize. No writes anywhere.</td><td>None</td><td>N/A</td></tr>
+            <tr><td class="name"><span class="pill acc">Propose</span></td><td>Draft fully, then stop. Default for everything.</td><td>One tap</td><td>N/A — nothing happened</td></tr>
+            <tr><td class="name"><span class="pill acc">Notice</span></td><td>Act, then send you a receipt.</td><td>Read the receipt</td><td class="num">15-minute window</td></tr>
+            <tr><td class="name"><span class="pill warn">Approve</span></td><td>Draft, then stop. Cannot be lowered to Notice.</td><td>Explicit approval, always</td><td>N/A</td></tr>
+            <tr><td class="name"><span class="pill crit">Dual</span></td><td>Draft, then stop. Two named approvers.</td><td>Two people</td><td>N/A</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Hard gates</h3>
+      <p>Six action classes can never be configured below <span class="mono">approve</span>, regardless of tier settings, trust history, or how many times you have approved the same thing. This is a property of the platform, not a preference.</p>
+      <ul>
+        <li><strong>Money out</strong> — any payment, refund, or transfer</li>
+        <li><strong>Price changes</strong> — anything a customer will see</li>
+        <li><strong>Bulk external send</strong> — more than 25 recipients</li>
+        <li><strong>Contract signature</strong> — including e-sign envelopes</li>
+        <li><strong>Data deletion</strong> — in any connected system</li>
+        <li><strong>New commitments to customers</strong> — dates, scopes, promises</li>
+      </ul>
+      <h3>What the audit record holds</h3>
+      <p>Every executed action writes an immutable entry: the triggering signal and its timestamp, the agent, the exact tier that permitted it, the approver, the payload as sent, and the verification result. Ninety days on the base tier, seven years on regulated packs. This is what makes the Financial Services pack possible at all.</p>
+    </section>
+
+    <section id="proactive">
+      <p class="eyebrow">Proactive orchestration</p>
+      <h2>Six ways a card gets born</h2>
+      <p class="lede">"Proactive" is not a personality trait, it is a trigger taxonomy. These six cover nearly everything a small business actually needs caught.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Trigger</th><th>Fires on</th><th>Worked example</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Threshold</td><td>A number crosses a line you set</td><td>Runway drops under 8 weeks</td></tr>
+            <tr><td class="name">Anomaly</td><td>A number leaves its own normal range</td><td>Tuesday refunds triple the trailing median</td></tr>
+            <tr><td class="name">Temporal</td><td>A date approaches</td><td>Quarterly estimate due in 14 days</td></tr>
+            <tr><td class="name">Silence</td><td>An expected event does <em>not</em> happen</td><td>Your best repeat customer hasn't ordered in 40 days</td></tr>
+            <tr><td class="name">Correlation</td><td>Two unrelated systems agree</td><td>Calendar gap + a nine-day-old estimate request</td></tr>
+            <tr><td class="name">External</td><td>Signal from outside your walls</td><td>Heat wave forecast against your patio inventory</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="loopnote">Silence triggers are the ones owners consistently say they'd never have caught. They're also the hardest to tune, because absence has no timestamp.</p>
+    </section>
+
+    <section id="integrations">
+      <p class="eyebrow">Integrations</p>
+      <h2>Connected, not scraped</h2>
+      <p class="lede">Every specialist reads through a scoped connector with its own permission grant. An agent that only needs invoice aging never receives customer payment details, and revoking one connector degrades one agent rather than breaking the platform.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Domain</th><th>Connectors</th><th>Reads</th><th>Writes (gated)</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Money</td><td>QuickBooks, Stripe, Square, PayPal</td><td>AR/AP, settlements, categories, fees</td><td>Invoice reminders, categorization</td></tr>
+            <tr><td class="name">Customers</td><td>HubSpot, Gmail, SMS/iMessage</td><td>Deals, threads, reply latency, sentiment</td><td>Drafts, notes, deal stages</td></tr>
+            <tr><td class="name">Time</td><td>Google Calendar, job boards</td><td>Availability, drive time, crew load</td><td>Holds, confirmations, reschedules</td></tr>
+            <tr><td class="name">Back office</td><td>Drive, Notion, Sheets, DocuSign</td><td>Contracts, SOPs, price lists</td><td>Documents, redlines, envelopes</td></tr>
+            <tr><td class="name">Channels</td><td>Instagram, Facebook, LinkedIn, Canva</td><td>Post performance, brand kit</td><td>Scheduled posts, generated assets</td></tr>
+            <tr><td class="name">Operational</td><td>POS, SCADA/PLC historian, CMMS</td><td>Velocity, tag streams, work orders</td><td>Work orders, replenishment requests</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Anything without a connector arrives as a file. A CSV upload gets the same treatment as a live feed, at lower confidence and with the staleness stated on every card built from it.</p>
+    </section>
+
+    <section id="config">
+      <p class="eyebrow">Configuration</p>
+      <h2>The whole platform in one file</h2>
+      <p class="lede">Configuration is declarative and versioned. The mobile settings screens are a view onto this document — every toggle writes here, and every change is diffable.</p>
+      <div class="code">
+        <div class="bar"><span>nova.config.yaml</span><span>tenant / smb-base</span></div>
+<pre><span class="c"># ── orchestrator ──────────────────────────────────────────────</span>
+<span class="k">orchestrator</span>:
+  <span class="k">name</span>: nova
+  <span class="k">timezone</span>: <span class="s">"America/Chicago"</span>
+  <span class="k">surface</span>: mobile_first
+  <span class="k">cadence</span>:
+    <span class="k">brief</span>: <span class="s">"07:15"</span>            <span class="c"># one card stack, ranked</span>
+    <span class="k">sweep</span>: <span class="s">"*/30 08:00-18:00"</span>  <span class="c"># business-hours signal pass</span>
+    <span class="k">weekly</span>: <span class="s">"FRI 16:00"</span>       <span class="c"># batched, non-decaying items</span>
+  <span class="k">quiet_hours</span>: [<span class="s">"21:00"</span>, <span class="s">"06:30"</span>]   <span class="c"># hard gates still break through</span>
+  <span class="k">max_cards_per_day</span>: 6            <span class="c"># overflow batches to weekly</span>
+
+<span class="c"># ── autonomy ──────────────────────────────────────────────────</span>
+<span class="k">autonomy</span>:
+  <span class="k">default_tier</span>: propose          <span class="c"># observe|propose|notice|approve|dual</span>
+  <span class="k">hard_gates</span>:                    <span class="c"># cannot be lowered, ever</span>
+    - money_out
+    - price_change
+    - external_send: { <span class="k">recipients_over</span>: 25 }
+    - contract_signature
+    - data_deletion
+    - customer_commitment
+  <span class="k">dual_approval</span>:
+    - money_out: { <span class="k">amount_over</span>: 2500 }
+    - vendor_contract
+  <span class="k">undo_window_minutes</span>: 15         <span class="c"># applies to tier: notice only</span>
+  <span class="k">trust_promotion</span>:
+    <span class="k">enabled</span>: true
+    <span class="k">rule</span>: <span class="s">"20 consecutive approvals, zero edits, 30 days"</span>
+    <span class="k">promotes_to</span>: notice           <span class="c"># never past a hard gate</span>
+
+<span class="c"># ── agents ────────────────────────────────────────────────────</span>
+<span class="k">agents</span>:
+  <span class="k">echo</span>:     { <span class="k">domain</span>: marketing,  <span class="k">tier</span>: propose, <span class="k">voice</span>: owner_profile }
+  <span class="k">vortex</span>:   { <span class="k">domain</span>: sales,      <span class="k">tier</span>: propose, <span class="k">rank_by</span>: intent_signal }
+  <span class="k">atlas</span>:    { <span class="k">domain</span>: scheduling, <span class="k">tier</span>: propose, <span class="k">buffer_min</span>: 45 }
+  <span class="k">sentinel</span>: { <span class="k">domain</span>: finance,    <span class="k">tier</span>: approve, <span class="k">runway_alert_weeks</span>: 8 }
+  <span class="k">spark</span>:    { <span class="k">domain</span>: creative,   <span class="k">tier</span>: observe }
+  <span class="k">sage</span>:     { <span class="k">domain</span>: knowledge,  <span class="k">tier</span>: observe, <span class="k">cite</span>: always }
+  <span class="k">cyber</span>:    { <span class="k">domain</span>: security,   <span class="k">tier</span>: approve }
+  <span class="k">forge</span>:    { <span class="k">domain</span>: discovery,  <span class="k">tier</span>: propose, <span class="k">budget</span>: 1_card_per_week }
+  <span class="k">rig</span>:      { <span class="k">domain</span>: integrations, <span class="k">tier</span>: notice }
+
+<span class="c"># ── triggers ──────────────────────────────────────────────────</span>
+<span class="k">triggers</span>:
+  <span class="k">silence</span>:
+    <span class="k">repeat_customer_dormant_days</span>: 40
+    <span class="k">quote_unanswered_days</span>: 5
+  <span class="k">threshold</span>:
+    <span class="k">invoice_age_days</span>: 28
+    <span class="k">cash_runway_weeks</span>: 8
+  <span class="k">anomaly</span>:
+    <span class="k">sensitivity</span>: medium         <span class="c"># low|medium|high — tunes false positives</span>
+  <span class="k">suppression</span>:
+    <span class="k">decline_streak_to_mute</span>: 3   <span class="c"># then Nova tells you it muted it</span>
+
+<span class="c"># ── vertical pack ─────────────────────────────────────────────</span>
+<span class="k">pack</span>: retail                     <span class="c"># retail | financial_services | industrial</span>
+<span class="k">retention</span>:
+  <span class="k">audit_log_days</span>: 90             <span class="c"># 2555 on financial_services</span>
+  <span class="k">decision_rationale</span>: retained   <span class="c"># required for regulated packs</span></pre>
+      </div>
+    </section>
+
+    <section id="verticals">
+      <p class="eyebrow">Vertical packs</p>
+      <h2>Not just AI. Vertical AI, built for real work — and the real world.</h2>
+      <p class="lede">The base platform is the same. A pack changes what gets sensed, which agents come online, what the hard gates cover, and how long the record is kept. Depth beats breadth: a general agent that knows a little about retail is worth less than one that knows what a shelf gap costs on a Saturday.</p>
+
+      <div class="verticals">
+
+        <div class="vcard">
+          <header><h3>Retail</h3><span class="vtag">pack / retail</span></header>
+          <p class="vclaim">Built for retail's full demand chain.</p>
+          <p>High-velocity retailers lose money in three places at once: the wrong price, the missing unit, and the shelf nobody fixed. The pack reads shopper signal, forecasts demand at the store-and-SKU level, and tunes inventory and promotion together instead of one at a time — store by store, not chain-wide.</p>
+          <div class="vgrid">
+            <div><h4>Signals in</h4><ul><li>POS velocity &amp; basket mix</li><li>Shelf photos and planogram drift</li><li>Local weather and event calendars</li><li>Competitor price feeds</li></ul></div>
+            <div><h4>Agents on duty</h4><ul><li>Vortex — demand &amp; pricing</li><li>Rig — inventory sync</li><li>Echo — promotion timing</li><li>Forge — assortment gaps</li></ul></div>
+            <div><h4>Pack gates</h4><ul><li>Price change — always <span class="pill warn">Approve</span></li><li>Markdown depth over 20%</li><li>Cross-store transfers</li></ul></div>
+          </div>
+          <p class="vmove"><b>Example proactive move</b>Store 4 goes out of stock on the 12-pack in three days at current velocity, and the competitor two blocks over is already out. Nova proposes: hold price, pull 40 units from Store 7 where it's slow, feature it in Thursday's email. Margin impact modeled, transfer paperwork drafted. One tap.</p>
+        </div>
+
+        <div class="vcard">
+          <header><h3>Financial Services</h3><span class="vtag">pack / financial_services</span></header>
+          <p class="vclaim">AI that's built for scrutiny.</p>
+          <p>Built for the messy reality of modern compliance, where the cost of missed risk isn't just fines — it's trust. The pack cuts alert volume hard while surfacing risk the old rules never had a shape for, and every surviving alert ships with the reasoning attached: which features fired, which precedent cases it matched, what a reviewer looked at last time.</p>
+          <div class="vgrid">
+            <div><h4>Signals in</h4><ul><li>Transaction streams</li><li>KYC records &amp; adverse media</li><li>Sanctions and watchlists</li><li>Historical case dispositions</li></ul></div>
+            <div><h4>Agents on duty</h4><ul><li>Cyber — risk detection</li><li>Sage — evidence &amp; precedent</li><li>Sentinel — reconciliation</li><li>Atlas — case routing &amp; SLA</li></ul></div>
+            <div><h4>Pack gates</h4><ul><li>Every disposition — <span class="pill crit">Dual</span></li><li>No auto-close, at any tier</li><li>Seven-year rationale retention</li></ul></div>
+          </div>
+          <p class="vmove"><b>Example proactive move</b>Alert volume down, capture up — and when the regulator asks why case 8841 was cleared, the answer is a record, not a reconstruction: the eleven features that fired, the four precedent cases matched, the reviewer who signed, and the model version that scored it.</p>
+        </div>
+
+        <div class="vcard">
+          <header><h3>Industrial</h3><span class="vtag">pack / industrial</span></header>
+          <p class="vclaim">When output drops, our AI knows why.</p>
+          <p>Every minute of downtime hits margin, flow and delivery. The pack correlates across assets, lines and sites to find the actual cause rather than the loudest alarm, then puts the fix in the hands of whoever is closest to it. Real-time root cause, from control room to connected worker.</p>
+          <div class="vgrid">
+            <div><h4>Signals in</h4><ul><li>PLC / SCADA tag streams</li><li>Vibration &amp; current draw</li><li>OEE and throughput by line</li><li>Work orders and shift notes</li></ul></div>
+            <div><h4>Agents on duty</h4><ul><li>Rig — asset telemetry</li><li>Forge — root cause correlation</li><li>Atlas — crew dispatch</li><li>Sentinel — margin impact</li></ul></div>
+            <div><h4>Pack gates</h4><ul><li>Any setpoint write — <span class="pill crit">Dual</span></li><li>Line stop — human only</li><li>Never writes to control systems</li></ul></div>
+          </div>
+          <p class="vmove"><b>Example proactive move</b>Line 2 throughput fell 11% at 04:20. Nova correlates it to infeed motor current drift that started Tuesday afternoon — not the temperature alarm that's been screaming since 03:00. Proposes a work order, a reroute through Line 4 for the shift, and pushes the six repair steps to the connected worker's tablet. Estimated recovery: 40 minutes.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="posture">
+      <p class="eyebrow">Trust posture</p>
+      <h2>How trust is earned, and how it's lost</h2>
+      <p class="lede">Trust promotion is a feature, not a default. An agent can move from <span class="mono">propose</span> to <span class="mono">notice</span> on a specific action class after twenty consecutive approvals with zero edits over at least thirty days — and it moves straight back down on a single decline.</p>
+      <h3>Three things the platform will not do</h3>
+      <ol>
+        <li><strong>Act during quiet hours on anything reversible.</strong> If it can wait until 6:30, it waits.</li>
+        <li><strong>Speak as you without showing you the words.</strong> Every outbound draft is displayed in full before send, not summarized.</li>
+        <li><strong>Hide a decline.</strong> Declined proposals stay in the log with your reason, and the pattern is shown back to you monthly — that's how the system learns your business rather than your clicks.</li>
+      </ol>
+      <h3>Onboarding sequence</h3>
+      <p>Two connectors, one proven recipe, then a business interview. The first week is deliberately narrow: Sentinel on invoice aging and Vortex on quote silence, both on <span class="mono">propose</span>. Those two produce visible money fastest and have the cleanest ground truth, which means trust is built on things the owner can verify with their own eyes before anything harder comes online.</p>
+    </section>
+
+    <footer class="foot">
+      <span>Nova Digitus Designs LLC</span>
+      <span>Platform spec &amp; configuration</span>
+      <span>v1.0 &middot; August 2026</span>
+    </footer>
+
+  </main>
+
+  <aside class="rail">
+    <p class="railhead"><span class="dot" aria-hidden="true"></span>Live prototype &mdash; tap anything</p>
+
+    <div class="phone">
+      <div class="glass">
+
+        <div class="statusbar">
+          <span>7:19</span>
+          <span class="sig" aria-hidden="true"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i></span>
+        </div>
+
+        <div class="apphead">
+          <div class="who">
+            <div class="avatar" aria-hidden="true"></div>
+            <div>
+              <div class="nm">Nova</div>
+              <div class="sub">Orchestrator &middot; 9 agents</div>
+            </div>
+          </div>
+          <div class="badge" id="badge">4 waiting</div>
+        </div>
+
+        <div class="screens" id="screens">
+
+          <!-- TODAY -->
+          <div class="screen is-active" id="s-today" role="tabpanel" aria-label="Today">
+            <p class="sechead">Sunday, August 23 &middot; morning brief</p>
+            <div id="feed"></div>
+            <p class="sechead">Handled overnight</p>
+            <div class="pcard" data-state="approved" style="cursor:default">
+              <div class="top"><span class="agentchip"><span class="sq"></span>Rig</span><span class="stamp ok">&#10003; 04:02</span></div>
+              <h5>Square sync had drifted 6 hours</h5>
+              <p class="line">Re-authorized and backfilled 41 transactions. Tier: notice.</p>
+            </div>
+          </div>
+
+          <!-- DETAIL -->
+          <div class="screen" id="s-detail" role="tabpanel" aria-label="Proposal detail">
+            <button class="back" id="backBtn" type="button">&larr; Today</button>
+            <div id="detailBody"></div>
+          </div>
+
+          <!-- TEAM -->
+          <div class="screen" id="s-team" role="tabpanel" aria-label="Team">
+            <p class="sechead">On duty now</p>
+            <div id="teamList" style="display:flex;flex-direction:column;gap:8px"></div>
+          </div>
+
+          <!-- CONNECT -->
+          <div class="screen" id="s-connect" role="tabpanel" aria-label="Connections">
+            <p class="sechead">Money</p>
+            <div class="crow"><div class="ic">QB</div><div><div class="nm">QuickBooks</div><div class="sc">AR/AP &middot; read + gated write</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="QuickBooks connection"></button></div>
+            <div class="crow"><div class="ic">SQ</div><div><div class="nm">Square</div><div class="sc">Settlements &middot; read</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="Square connection"></button></div>
+            <p class="sechead">Customers</p>
+            <div class="crow"><div class="ic">HS</div><div><div class="nm">HubSpot</div><div class="sc">Deals, contacts &middot; read + write</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="HubSpot connection"></button></div>
+            <div class="crow"><div class="ic">GM</div><div><div class="nm">Gmail</div><div class="sc">Drafts only &middot; never auto-send</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="Gmail connection"></button></div>
+            <p class="sechead">Time</p>
+            <div class="crow"><div class="ic">CAL</div><div><div class="nm">Google Calendar</div><div class="sc">Holds &amp; confirmations</div></div><button class="tgl" type="button" aria-pressed="true" aria-label="Calendar connection"></button></div>
+            <p class="sechead">Not connected</p>
+            <div class="crow"><div class="ic">IG</div><div><div class="nm">Instagram</div><div class="sc">Echo runs at reduced signal</div></div><button class="tgl" type="button" aria-pressed="false" aria-label="Instagram connection"></button></div>
+            <div class="crow"><div class="ic">DS</div><div><div class="nm">DocuSign</div><div class="sc">Required for contract gates</div></div><button class="tgl" type="button" aria-pressed="false" aria-label="DocuSign connection"></button></div>
+          </div>
+
+        </div>
+
+        <div class="tabs" role="tablist">
+          <button class="tab" type="button" data-screen="s-today" role="tab" aria-selected="true">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+            <span>Today</span>
+          </button>
+          <button class="tab" type="button" data-screen="s-detail" role="tab" aria-selected="false">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Approve</span>
+          </button>
+          <button class="tab" type="button" data-screen="s-team" role="tab" aria-selected="false">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>
+            <span>Team</span>
+          </button>
+          <button class="tab" type="button" data-screen="s-connect" role="tab" aria-selected="false">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 15 4.5 19.5a3.5 3.5 0 0 0 5 5L14 20"/><path d="M15 9l4.5-4.5a3.5 3.5 0 0 0-5-5L10 4"/><path d="M9.5 14.5l5-5"/></svg>
+            <span>Connect</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </aside>
+
+</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var PROPOSALS = [
+    {
+      id:"p1", agent:"Sentinel", tier:"Approve", tierClass:"warn",
+      title:"Three invoices cross 30 days on Thursday",
+      line:"$4,180 in receivables. Two are first-time late, one is a repeat.",
+      why:[
+        "Riverbend Cafe — 28 days, first time late, historically pays within 3 days of a nudge",
+        "Hollis Property Group — 31 days, late on 4 of the last 6 invoices",
+        "M. Ortega Landscaping — 29 days, but she always pays on day 33"
+      ],
+      plan:"Send two reminders, tone-matched to each payer's history — gentle for Riverbend, firm and specific for Hollis. Ortega gets nothing. She's inside her own normal pattern and a nudge would only cost goodwill.",
+      draftLabel:"Draft — Riverbend Cafe",
+      draft:"Hi Dana — hope patio season is treating you well.\n\nInvoice #1042 ($1,340) came due last Thursday. No rush if it's already in motion, just flagging it in case it slipped past.\n\nPay link: nova.co/inv/1042\n\n— Stacey",
+      impact:[
+        "2 emails sent from your address",
+        "2 QuickBooks invoices marked “reminded”",
+        "Nothing charged. No invoice amounts change."
+      ],
+      gate:"Hard gate: external_send. Nova cannot write in your voice without this tap."
+    },
+    {
+      id:"p2", agent:"Echo", tier:"Propose", tierClass:"acc",
+      title:"Patio heaters are outselling last August 2.4×",
+      line:"The window closes in about five weeks and nothing is scheduled against it.",
+      why:[
+        "Units up 2.4× vs August 2025 across both channels",
+        "Local search for “patio heater” up 61% week over week",
+        "Your last post about them was eleven months ago",
+        "Forge flagged the same SKU independently on margin"
+      ],
+      plan:"A three-post social run over nine days plus one email to the 1,180 customers who bought outdoor goods in the last 18 months. Spark has the images ready in your brand kit. Nothing sends until you've seen all four pieces.",
+      draftLabel:"Draft — post 1 of 3",
+      draft:"The first cold night always catches people off guard.\n\nWe've got patio heaters in stock now — not in October, when everyone remembers at once.\n\n→ link in bio",
+      impact:[
+        "3 posts scheduled: Aug 26, Aug 29, Sep 3",
+        "1 email queued to 1,180 recipients — second approval required",
+        "Spark generates 3 assets, sized per channel"
+      ],
+      gate:"Hard gate: external_send over 25 recipients. Copy approval and send approval are separate taps."
+    },
+    {
+      id:"p3", agent:"Atlas", tier:"Propose", tierClass:"acc",
+      title:"Tuesday has a 90-minute hole between two jobs",
+      line:"Riverbend wraps 10:40, Hollis starts 12:30. Eleven minutes of drive between them.",
+      why:[
+        "Two estimate requests have been waiting on you for 9+ days",
+        "Both addresses are within 6 minutes of the Riverbend stop",
+        "Tuesday forecast: clear, 71° — no weather risk",
+        "Marisol Vega asked twice about timing"
+      ],
+      plan:"Offer Marisol the 11:00 slot, hold 11:45 as buffer so a long estimate can't push Hollis late. If she declines within 4 hours, the slot goes to the second request automatically — same gate, new card.",
+      draftLabel:"Draft — text to Marisol",
+      draft:"Hi Marisol — Stacey with Fortis. I've got an opening Tuesday at 11:00 and I'll already be four minutes from you. Want me to swing by and walk the job?\n\nTakes about 30 minutes.",
+      impact:[
+        "1 text sent",
+        "Calendar hold 11:00–11:45 Tuesday, marked tentative",
+        "Hollis job untouched",
+        "Hold releases automatically if she doesn't reply by 3pm Monday"
+      ],
+      gate:"Hard gate: customer_commitment. Offering a time is a promise, so it needs you."
+    },
+    {
+      id:"p4", agent:"Vortex", tier:"Propose", tierClass:"acc",
+      title:"Marisol opened your quote four times. Six days of silence.",
+      line:"Highest-intent signal in the pipeline this week, and it's going cold.",
+      why:[
+        "Quote opened 4×, twice after 9pm — she's thinking about it",
+        "No reply in 6 days; your median close is 4",
+        "She asked about timeline twice before the quote went out",
+        "Sage found two comparable jobs that closed after the same question"
+      ],
+      plan:"A short follow-up that answers the two questions people actually stall on at this stage — when you'd start, and what happens if the scope grows. No discount, no pressure. Atlas has a Tuesday slot open if she wants to move.",
+      draftLabel:"Draft — follow-up email",
+      draft:"Marisol — two things I should have put in the quote:\n\nStart: I could begin the week of Sept 8.\n\nScope: if we open it up and find more than we planned for, I stop and re-quote before doing the work. You'd never get a surprise number.\n\nHappy to walk it in person if that's easier.\n\n— Stacey",
+      impact:[
+        "1 email sent from your address",
+        "HubSpot deal moved to “Follow-up sent”",
+        "Re-check scheduled for 4 days out"
+      ],
+      gate:"Hard gate: external_send. Vortex drafts in your voice but never speaks in it unprompted."
+    }
+  ];
+
+  var TEAM = [
+    ["Nova","Orchestrator","Ranking today's four cards","working","acc"],
+    ["Sentinel","Finance","Watching AR aging · 3 items at 28+ days","working","warn"],
+    ["Echo","Marketing","Seasonality pass complete · 1 brief ready","working","acc"],
+    ["Vortex","Sales","Scoring 14 open deals by intent","working","acc"],
+    ["Atlas","Scheduling","Next gap: Tuesday 10:40–12:30","working","acc"],
+    ["Spark","Creative","3 assets staged, awaiting copy approval","idle","muted"],
+    ["Sage","Knowledge","Indexed 2 contracts overnight","watching","muted"],
+    ["Cyber","Security","No anomalies in 14 days","watching","ok"],
+    ["Forge","Opportunity","Weekly budget: 1 card, unspent","watching","muted"],
+    ["Rig","Integrations","2 connectors idle · Square resynced 04:02","working","ok"]
+  ];
+
+  var STATE = {};
+  PROPOSALS.forEach(function(p){ STATE[p.id] = "open"; });
+
+  var feed = document.getElementById("feed");
+  var badge = document.getElementById("badge");
+  var detailBody = document.getElementById("detailBody");
+  var current = PROPOSALS[0];
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];
+    });
+  }
+
+  function renderFeed(){
+    feed.innerHTML = "";
+    feed.style.display = "flex";
+    feed.style.flexDirection = "column";
+    feed.style.gap = "10px";
+    PROPOSALS.forEach(function(p){
+      var st = STATE[p.id];
+      var el = document.createElement("button");
+      el.type = "button";
+      el.className = "pcard";
+      el.setAttribute("data-state", st);
+      var stamp = st === "approved"
+        ? '<span class="stamp ok">&#10003; Approved</span>'
+        : (st === "declined" ? '<span class="stamp no">Declined</span>' : '<span class="pill ' + p.tierClass + '">' + esc(p.tier) + '</span>');
+      el.innerHTML =
+        '<div class="top"><span class="agentchip"><span class="sq"></span>' + esc(p.agent) + '</span>' + stamp + '</div>' +
+        '<h5>' + esc(p.title) + '</h5>' +
+        '<p class="line">' + esc(p.line) + '</p>' +
+        (st === "open" ? '<span class="cta">Review &rarr;</span>' : '');
+      if (st === "open") {
+        el.addEventListener("click", function(){ openDetail(p); });
+      }
+      feed.appendChild(el);
+    });
+    var open = PROPOSALS.filter(function(p){ return STATE[p.id] === "open"; }).length;
+    if (open > 0) {
+      badge.className = "badge";
+      badge.textContent = open + " waiting";
+    } else {
+      badge.className = "badge done";
+      badge.textContent = "All clear";
+    }
+  }
+
+  function renderDetail(p){
+    current = p;
+    var st = STATE[p.id];
+    if (st !== "open") { renderDone(p, st); return; }
+    detailBody.innerHTML =
+      '<div style="display:flex;align-items:center;gap:8px;margin-top:8px">' +
+        '<span class="agentchip"><span class="sq"></span>' + esc(p.agent) + '</span>' +
+        '<span class="pill ' + p.tierClass + '">' + esc(p.tier) + '</span>' +
+      '</div>' +
+      '<div class="dtitle">' + esc(p.title) + '</div>' +
+      '<p class="dline">' + esc(p.line) + '</p>' +
+      '<div class="block"><h6>Why this, now</h6><ul>' +
+        p.why.map(function(w){ return '<li>' + esc(w) + '</li>'; }).join("") +
+      '</ul></div>' +
+      '<div class="block"><h6>What ' + esc(p.agent) + ' proposes</h6><p>' + esc(p.plan) + '</p></div>' +
+      '<div class="block"><h6>' + esc(p.draftLabel) + '</h6><pre class="draft">' + esc(p.draft) + '</pre></div>' +
+      '<div class="block"><h6>If you approve</h6><ul>' +
+        p.impact.map(function(w){ return '<li>' + esc(w) + '</li>'; }).join("") +
+      '</ul></div>' +
+      '<div class="gatebar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>' + esc(p.gate) + '</span></div>' +
+      '<div class="actions">' +
+        '<button class="btn primary" type="button" data-act="approve">Approve &amp; send</button>' +
+        '<button class="btn ghost" type="button" data-act="edit">Edit</button>' +
+        '<button class="btn ghost" type="button" data-act="decline">No</button>' +
+      '</div>';
+  }
+
+  function renderDone(p, st){
+    var now = "07:1" + (9 - PROPOSALS.indexOf(p));
+    if (st === "approved") {
+      detailBody.innerHTML =
+        '<div class="done" style="margin-top:14px">' +
+          '<div class="donemark"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>' +
+          '<div><div style="font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;line-height:1.2">Done, and verified.</div>' +
+          '<p class="dline" style="margin-top:5px">' + esc(p.agent) + ' executed and confirmed delivery. Here is the record.</p></div>' +
+          '<div class="audit">' + esc(
+            "audit/" + p.id + "\n" +
+            "trigger    " + p.agent.toLowerCase() + " · " + now + " CDT\n" +
+            "agent      " + p.agent + "\n" +
+            "tier       " + p.tier.toLowerCase() + " (gated)\n" +
+            "approver   stacey.lee\n" +
+            "payload    retained, hash 4f1c…a09\n" +
+            "verified   delivery confirmed\n" +
+            "retention  90d"
+          ) + '</div>' +
+          '<button class="btn ghost" type="button" data-act="feed" style="flex:0 0 auto">Back to today</button>' +
+        '</div>';
+    } else {
+      detailBody.innerHTML =
+        '<div class="done" style="margin-top:14px">' +
+          '<div class="donemark" style="background:var(--surface-2);color:var(--muted)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>' +
+          '<div><div style="font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;line-height:1.2">Declined. Nothing happened.</div>' +
+          '<p class="dline" style="margin-top:5px">Logged with the trigger that raised it. Two more declines on this trigger and ' + esc(p.agent) + ' stops raising it — and tells you it stopped.</p></div>' +
+          '<button class="btn ghost" type="button" data-act="feed" style="flex:0 0 auto">Back to today</button>' +
+        '</div>';
+    }
+  }
+
+  function openDetail(p){
+    renderDetail(p);
+    show("s-detail");
+  }
+
+  detailBody.addEventListener("click", function(e){
+    var b = e.target.closest("button[data-act]");
+    if (!b) return;
+    var act = b.getAttribute("data-act");
+    if (act === "approve") {
+      STATE[current.id] = "approved";
+      renderFeed();
+      renderDone(current, "approved");
+    } else if (act === "decline") {
+      STATE[current.id] = "declined";
+      renderFeed();
+      renderDone(current, "declined");
+    } else if (act === "edit") {
+      var pre = detailBody.querySelector(".draft");
+      if (pre) {
+        pre.setAttribute("contenteditable", "true");
+        pre.style.outline = "2px solid var(--accent)";
+        pre.focus();
+        b.textContent = "Editing";
+        b.disabled = true;
+      }
+    } else if (act === "feed") {
+      show("s-today");
+    }
+  });
+
+  document.getElementById("backBtn").addEventListener("click", function(){ show("s-today"); });
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  function show(id){
+    if (id === "s-detail") renderDetail(current);
+    Array.prototype.forEach.call(document.querySelectorAll(".screen"), function(s){
+      s.classList.toggle("is-active", s.id === id);
+    });
+    tabs.forEach(function(t){
+      var target = t.getAttribute("data-screen");
+      var on = target === id || (id === "s-detail" && target === "s-detail");
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    document.getElementById("screens").scrollTop = 0;
+  }
+  tabs.forEach(function(t){
+    t.addEventListener("click", function(){ show(t.getAttribute("data-screen")); });
+  });
+
+  // team
+  var teamList = document.getElementById("teamList");
+  TEAM.forEach(function(a){
+    var colors = { acc:"var(--accent)", warn:"var(--warn)", ok:"var(--good)", muted:"var(--muted)" };
+    var d = document.createElement("div");
+    d.className = "arow";
+    d.innerHTML =
+      '<span class="sq" style="background:' + colors[a[4]] + '"></span>' +
+      '<div style="min-width:0"><div class="nm">' + esc(a[0]) + '</div>' +
+      '<div class="rl">' + esc(a[1]) + '</div>' +
+      '<div class="ac">' + esc(a[2]) + '</div></div>' +
+      '<span class="st">' + esc(a[3]) + '</span>';
+    teamList.appendChild(d);
+  });
+
+  // connector toggles
+  Array.prototype.forEach.call(document.querySelectorAll(".tgl"), function(t){
+    t.addEventListener("click", function(){
+      var on = t.getAttribute("aria-pressed") === "true";
+      t.setAttribute("aria-pressed", on ? "false" : "true");
+    });
+  });
+
+  renderFeed();
+})();
+</script>
+</body>
+</html>
