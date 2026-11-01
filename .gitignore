@@ -1,26 +1,56 @@
 # Dependencies
 node_modules/
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.tox/
+htmlcov/
+.coverage
+*.cover
+*.log
+
+# Virtual environments
+venv/
+.venv/
+env/
+
 # Environment variables (never commit secrets!)
 .env
 server/.env
 *.local
 
-# Python cache
-__pycache__/
-*.pyc
+# Model weights / cache
+*.pth
+*.pt
+*.onnx
+*.engine
+*.weights
+models/weights/
+.cache/
 
-# OS artefacts
-.DS_Store
-Thumbs.db
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
 
-# Editor directories
+# IDEs
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# Build output
-dist/
-build/
+# OS
+.DS_Store
+Thumbs.db
 
 # Ingenium platform runtime data
 ingenium_data/

@@ -1,0 +1,9 @@
+model: yolov8n
+confidence_threshold: 0.5
+nms_threshold: 0.45
+device: cuda
+input_size: [640, 640]
+classes: null  # null means all classes
+tracking:
+  enabled: false
+  algorithm: bytetrack
