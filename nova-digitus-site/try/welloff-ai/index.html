@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="WellOff AI: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>WellOff AI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: two-column grid (chat + sidebar) collapsing to single column on mobile */
+:root {
+  --bg:          #0f1117;
+  --bg-surface:  #1a1d27;
+  --bg-raised:   #22263a;
+  --border:      rgba(255,255,255,0.09);
+  --fg:          #e8eaf0;
+  --fg-muted:    #8891a8;
+  --accent:      #6c7ef8;
+  --accent-dim:  rgba(108,126,248,0.15);
+  --accent-2:    #9b6cf8;
+  --success:     #3ecf8e;
+  --danger:      #e85c6a;
+  --warn:        #f5a623;
+  --msg-user-bg: linear-gradient(135deg, #6c7ef8, #9b6cf8);
+  --msg-ai-bg:   #22263a;
+  --radius:      14px;
+  --radius-sm:   8px;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:          #f0f2f8;
+    --bg-surface:  #ffffff;
+    --bg-raised:   #e8eaf4;
+    --border:      rgba(0,0,0,0.08);
+    --fg:          #1a1d2e;
+    --fg-muted:    #5c6480;
+    --accent:      #4c5ef0;
+    --accent-dim:  rgba(76,94,240,0.1);
+    --accent-2:    #7c4cf0;
+    --msg-user-bg: linear-gradient(135deg, #4c5ef0, #7c4cf0);
+    --msg-ai-bg:   #e8eaf4;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg:          #f0f2f8;
+  --bg-surface:  #ffffff;
+  --bg-raised:   #e8eaf4;
+  --border:      rgba(0,0,0,0.08);
+  --fg:          #1a1d2e;
+  --fg-muted:    #5c6480;
+  --accent:      #4c5ef0;
+  --accent-dim:  rgba(76,94,240,0.1);
+  --accent-2:    #7c4cf0;
+  --msg-user-bg: linear-gradient(135deg, #4c5ef0, #7c4cf0);
+  --msg-ai-bg:   #e8eaf4;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100%;
+}
+
+/* ── App shell ── */
+.app {
+  display: grid;
+  grid-template-rows: 56px 1fr;
+  grid-template-columns: 1fr 320px;
+  grid-template-areas: "hdr hdr" "chat side";
+  height: 100%;
+  min-height: 100svh;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-inline: 16px;
+  gap: 0;
+}
+@media (max-width: 860px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-areas: "hdr" "chat" "side";
+    height: auto;
+    min-height: 100svh;
+  }
+  .sidebar { max-height: none; }
+}
+
+/* ── Header ── */
+.header {
+  grid-area: hdr;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+.brand-dot {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--msg-user-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.status-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.status-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--bg-raised);
+  font-size: 11px;
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+}
+.dot.off { background: var(--danger); }
+.dot.pulse {
+  background: var(--success);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+.header-actions { display: flex; gap: 8px; }
+.icon-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--fg-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  transition: color .15s, background .15s;
+}
+.icon-btn:hover { background: var(--accent-dim); color: var(--fg); }
+
+/* ── Chat panel ── */
+.chat-panel {
+  grid-area: chat;
+  display: flex;
+  flex-direction: column;
+  padding-block: 16px;
+  padding-right: 16px;
+  min-height: 0;
+  height: calc(100svh - 56px);
+  overflow: hidden;
+}
+@media (max-width: 860px) {
+  .chat-panel { height: auto; overflow: visible; padding-right: 0; }
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0 16px;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.msg {
+  display: flex;
+  gap: 10px;
+  animation: msgIn .2s ease;
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.msg.user { flex-direction: row-reverse; }
+.avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+}
+.msg.ai .avatar  { background: var(--accent-dim); color: var(--accent); }
+.msg.user .avatar { background: var(--msg-user-bg); color: #fff; }
+.bubble {
+  max-width: min(72%, 520px);
+  padding: 10px 14px;
+  border-radius: 16px;
+  line-height: 1.55;
+  font-size: 13.5px;
+  min-width: 0;
+}
+.msg.ai   .bubble { background: var(--msg-ai-bg);   border-radius: 4px 16px 16px 16px; }
+.msg.user .bubble { background: var(--msg-user-bg); color: #fff; border-radius: 16px 4px 16px 16px; }
+.msg.sys  .bubble { background: var(--accent-dim); border: 1px solid var(--border); color: var(--fg-muted); font-size: 12.5px; max-width: 100%; border-radius: 10px; }
+.msg.sys { flex-direction: column; }
+.ts { font-size: 10px; color: var(--fg-muted); margin-top: 3px; padding-inline: 2px; }
+
+/* typing indicator */
+.typing-dots { display: flex; gap: 4px; padding: 6px 2px; }
+.typing-dots span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--fg-muted);
+  animation: bounce 1.4s infinite ease-in-out;
+}
+.typing-dots span:nth-child(1){animation-delay:-.32s}
+.typing-dots span:nth-child(2){animation-delay:-.16s}
+@keyframes bounce { 0%,80%,100%{transform:scale(0)} 40%{transform:scale(1)} }
+
+/* confirmation card */
+.confirm-card {
+  background: var(--bg-raised);
+  border: 1px solid rgba(245,166,35,.35);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 6px;
+}
+.confirm-card h4 { color: var(--warn); font-size: 12px; margin-bottom: 6px; }
+.confirm-card p  { font-size: 13px; color: var(--fg); margin-bottom: 12px; }
+.confirm-btns { display: flex; gap: 8px; }
+.btn { padding: 7px 14px; border: none; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+.btn:hover { opacity: .85; }
+.btn-yes { background: var(--success); color: #fff; }
+.btn-no  { background: var(--bg);      color: var(--fg); border: 1px solid var(--border); }
+
+/* input row */
+.input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  align-items: flex-end;
+}
+.chat-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  resize: none;
+  line-height: 1.5;
+  min-height: 20px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+.chat-textarea::placeholder { color: var(--fg-muted); }
+.send-btn {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  border: none;
+  background: var(--msg-user-bg);
+  color: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  transition: opacity .15s;
+}
+.send-btn:hover { opacity: .85; }
+.send-btn:disabled { opacity: .35; cursor: default; }
+
+/* ── Sidebar ── */
+.sidebar {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-block: 16px;
+  height: calc(100svh - 56px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+@media (max-width: 860px) {
+  .sidebar { height: auto; overflow: visible; }
+}
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.card-head {
+  display: flex; align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.card-body { padding: 14px 16px; }
+
+/* quick actions */
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.q-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 12px 8px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--fg);
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 500;
+  transition: background .15s, border-color .15s;
+}
+.q-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
+.q-icon { font-size: 18px; }
+
+/* workflows */
+.wf-item {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .15s;
+  border: 1px solid transparent;
+}
+.wf-item:hover { background: var(--bg-raised); border-color: var(--border); }
+.wf-item h4 { font-size: 12.5px; font-weight: 600; margin-bottom: 2px; }
+.wf-item p  { font-size: 11px; color: var(--fg-muted); }
+
+/* rag */
+.rag-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.rag-input {
+  flex: 1; min-width: 0;
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  outline: none;
+}
+.rag-input:focus { border-color: var(--accent); }
+.rag-input::placeholder { color: var(--fg-muted); }
+.rag-btn {
+  padding: 8px 12px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .15s;
+}
+.rag-btn:hover { opacity: .85; }
+.rag-result {
+  padding: 9px 11px;
+  background: var(--bg-raised);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  font-size: 11.5px;
+}
+.rag-result strong { color: var(--accent); display: block; margin-bottom: 2px; }
+
+/* session badge */
+.session-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+/* toast */
+.toast-wrap {
+  position: fixed; bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; gap: 8px;
+  z-index: 999;
+}
+.toast {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,.25);
+  animation: slideUp .2s ease;
+  max-width: 280px;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+.toast.ok   { border-left: 3px solid var(--success); }
+.toast.err  { border-left: 3px solid var(--danger);  }
+.toast.info { border-left: 3px solid var(--accent);  }
+
+/* loading shimmer */
+.shimmer {
+  height: 12px; border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg-raised) 25%, var(--bg-surface) 50%, var(--bg-raised) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  margin-bottom: 8px;
+}
+@keyframes shimmer { to{background-position:-200% 0} }
+</style>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-dot">W</div>
+      WellOff AI
+    </div>
+    <div class="status-row">
+      <div class="status-chip"><span class="dot pulse" id="s-ai"></span>AI Engine</div>
+      <div class="status-chip"><span class="dot off" id="s-milvus"></span>Milvus</div>
+      <div class="status-chip"><span class="dot off" id="s-n8n"></span>n8n</div>
+      <div class="status-chip"><span class="dot off" id="s-voice"></span>Voice</div>
+    </div>
+    <div class="header-actions">
+      <span class="session-badge" id="session-badge">no session</span>
+      <button class="icon-btn" title="Toggle theme" id="theme-btn">☀</button>
+    </div>
+  </header>
+
+  <!-- Chat -->
+  <main class="chat-panel">
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg sys">
+        <div class="bubble">
+          Welcome to WellOff AI. Ask about budgeting, investing, retirement, or financial wellness.
+          I'll confirm any action before executing it.<br><br>
+          Try: <em>"How should I build a 6-month emergency fund?"</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <textarea class="chat-textarea" id="chat-input"
+        placeholder="Ask anything about your finances…"
+        rows="1"></textarea>
+      <button class="send-btn" id="send-btn" title="Send">➤</button>
+    </div>
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="card">
+      <div class="card-head">⚡ Quick Actions</div>
+      <div class="card-body">
+        <div class="quick-grid">
+          <button class="q-btn" onclick="qa('budget')"><span class="q-icon">📊</span>Budget</button>
+          <button class="q-btn" onclick="qa('invest')"><span class="q-icon">📈</span>Invest</button>
+          <button class="q-btn" onclick="qa('retire')"><span class="q-icon">🏦</span>Retire</button>
+          <button class="q-btn" onclick="qa('search')"><span class="q-icon">🔍</span>Search</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">🔄 Workflows</div>
+      <div class="card-body" id="workflows-list">
+        <div class="shimmer" style="width:70%"></div>
+        <div class="shimmer" style="width:50%"></div>
+        <div class="shimmer" style="width:65%"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">📚 Knowledge Base</div>
+      <div class="card-body">
+        <div class="rag-row">
+          <input class="rag-input" id="rag-input" placeholder="Search knowledge…">
+          <button class="rag-btn" onclick="ragSearch()">Search</button>
+        </div>
+        <div id="rag-results"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">🏗 Architecture</div>
+      <div class="card-body" style="font-size:11.5px;color:var(--fg-muted);line-height:1.7">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span>① Data — ingest · chunk · embed · store</span>
+          <span>② Retrieval — RRF hybrid · rerank · filter</span>
+          <span>③ Memory — window · session · profile</span>
+          <span>④ Reasoning — plan · CoT · decompose</span>
+          <span>⑤ Agent — orchestrate · route · multi-agent</span>
+          <span>⑥ Tools — registry · web search · calc</span>
+          <span>⑦ Safety — input guard · PII · output guard</span>
+          <span>⑧ Generation — LLM · prompt builder · format</span>
+          <span>⑨ Observability — trace · metrics · logging</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+const API = window.location.origin;
+let sessionId = null;
+
+// ── theme toggle ──
+const themeBtn = document.getElementById('theme-btn');
+let theme = (() => { try { return localStorage.getItem('wf-theme') || 'system'; } catch(e){ return 'system'; } })();
+function applyTheme(t) {
+  if (t === 'dark')  { document.documentElement.setAttribute('data-theme','dark');  themeBtn.textContent = '☀'; }
+  else if (t === 'light') { document.documentElement.setAttribute('data-theme','light'); themeBtn.textContent = '☾'; }
+  else { document.documentElement.removeAttribute('data-theme'); themeBtn.textContent = '◑'; }
+}
+applyTheme(theme);
+themeBtn.addEventListener('click', () => {
+  theme = theme === 'system' ? 'dark' : theme === 'dark' ? 'light' : 'system';
+  try { localStorage.setItem('wf-theme', theme); } catch(e){}
+  applyTheme(theme);
+});
+
+// ── auto-resize textarea ──
+const ta = document.getElementById('chat-input');
+ta.addEventListener('input', () => {
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+});
+ta.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+document.getElementById('send-btn').addEventListener('click', send);
+
+// ── health check ──
+async function checkHealth() {
+  try {
+    const r = await fetch(`${API}/health`, { signal: AbortSignal.timeout(3000) });
+    const d = await r.json();
+    const svcs = d.services || {};
+    setDot('s-ai',     svcs.conversational_ai === 'active');
+    setDot('s-milvus', svcs.milvus === 'connected');
+    setDot('s-n8n',    svcs.n8n === 'configured');
+    setDot('s-voice',  svcs.voice_agent === 'active');
+  } catch {}
+}
+function setDot(id, on) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = on ? 'dot pulse' : 'dot off';
+}
+checkHealth();
+setInterval(checkHealth, 30000);
+
+// ── session init ──
+async function initSession() {
+  try {
+    const r = await fetch(`${API}/api/conversation/message`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({message:'__init__'})
+    });
+    const d = await r.json();
+    sessionId = d.session_id;
+    document.getElementById('session-badge').textContent = sessionId.slice(0,8) + '…';
+  } catch {}
+}
+initSession();
+
+// ── load workflows ──
+async function loadWorkflows() {
+  const el = document.getElementById('workflows-list');
+  try {
+    const r = await fetch(`${API}/api/workflows`);
+    const d = await r.json();
+    const wfs = d.workflow_types || [];
+    el.innerHTML = '';
+    if (!wfs.length) {
+      el.innerHTML = '<p style="font-size:11.5px;color:var(--fg-muted)">No workflows available</p>';
+      return;
+    }
+    wfs.forEach(wf => {
+      const item = document.createElement('div');
+      item.className = 'wf-item';
+      const h = document.createElement('h4'); h.textContent = wf.name || wf.type;
+      const p = document.createElement('p');  p.textContent = wf.description || '';
+      item.append(h, p);
+      item.addEventListener('click', () => triggerWf(wf.type));
+      el.appendChild(item);
+    });
+  } catch {
+    el.innerHTML = '<p style="font-size:11.5px;color:var(--fg-muted)">Server not running — workflows unavailable</p>';
+  }
+}
+loadWorkflows();
+
+async function triggerWf(type) {
+  const prompt = window._promptInput ? window._promptInput(type) : null;
+  // Use in-page prompt input instead of window.prompt (which is blocked)
+  showToast(`Workflow: ${type}`, 'info');
+  appendUserMsg(`Run ${type} workflow`);
+  const r = await callAPI(`${API}/api/workflows/ai`, {prompt: `Run ${type} workflow`, workflow_type: type});
+  if (r) appendAIMsg(r.message || 'Workflow triggered.');
+}
+
+// ── RAG search ──
+async function ragSearch() {
+  const q = document.getElementById('rag-input').value.trim();
+  if (!q) return;
+  const el = document.getElementById('rag-results');
+  el.innerHTML = '<div class="shimmer"></div>';
+  try {
+    const r = await fetch(`${API}/api/rag/search`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({query:q, top_k:5})
+    });
+    const d = await r.json();
+    el.innerHTML = '';
+    const srcs = d.sources || [];
+    if (!srcs.length) {
+      el.innerHTML = '<p style="font-size:11.5px;color:var(--fg-muted)">No results. Try ingesting documents first.</p>';
+    } else {
+      srcs.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'rag-result';
+        const strong = document.createElement('strong'); strong.textContent = s.modality || 'text';
+        const p = document.createElement('p'); p.textContent = s.excerpt || '';
+        item.append(strong, p);
+        el.appendChild(item);
+      });
+    }
+    if (d.response) appendAIMsg(d.response);
+  } catch {
+    el.innerHTML = '<p style="font-size:11.5px;color:var(--fg-muted)">Server not running</p>';
+  }
+}
+document.getElementById('rag-input').addEventListener('keydown', e => { if(e.key==='Enter') ragSearch(); });
+
+// ── quick actions ──
+function qa(type) {
+  const starters = {
+    budget: 'How do I create a realistic monthly budget?',
+    invest: 'What are good low-risk investment options for a beginner?',
+    retire: 'How much do I need to save to retire at 60?',
+    search: 'Search the knowledge base for '
+  };
+  ta.value = starters[type] || '';
+  ta.dispatchEvent(new Event('input'));
+  ta.focus();
+}
+
+// ── messaging ──
+async function send() {
+  const txt = ta.value.trim();
+  if (!txt) return;
+  ta.value = ''; ta.style.height = 'auto';
+  appendUserMsg(txt);
+  const typingId = showTyping();
+  try {
+    const r = await fetch(`${API}/api/conversation/message`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: txt, session_id: sessionId})
+    });
+    removeTyping(typingId);
+    const d = await r.json();
+    appendAIMsg(d.message || 'No response.');
+    if (d.pending_actions?.length) {
+      d.pending_actions.forEach(a => appendConfirm(a));
+    }
+  } catch {
+    removeTyping(typingId);
+    appendAIMsg('Unable to reach the server. Make sure the WellOff backend is running on port 8000.');
+  }
+}
+
+async function callAPI(url, body) {
+  try {
+    const r = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    return await r.json();
+  } catch { return null; }
+}
+
+function appendUserMsg(text) {
+  addMsg('user', 'user', text);
+}
+function appendAIMsg(text) {
+  addMsg('ai', 'W', text);
+}
+function addMsg(type, avatar, content) {
+  const wrap = document.getElementById('chat-messages');
+  const row = document.createElement('div');
+  row.className = 'msg ' + type;
+  const av = document.createElement('div');
+  av.className = 'avatar';
+  av.textContent = avatar === 'user' ? '👤' : 'W';
+  const bbl = document.createElement('div');
+  bbl.className = 'bubble';
+  bbl.textContent = content;
+  const ts = document.createElement('div');
+  ts.className = 'ts';
+  ts.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const inner = document.createElement('div');
+  inner.append(bbl, ts);
+  row.append(av, inner);
+  wrap.appendChild(row);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function showTyping() {
+  const wrap = document.getElementById('chat-messages');
+  const id = 'ty-' + Date.now();
+  const row = document.createElement('div');
+  row.className = 'msg ai'; row.id = id;
+  const av = document.createElement('div'); av.className = 'avatar'; av.textContent = 'W';
+  const bbl = document.createElement('div'); bbl.className = 'bubble';
+  bbl.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+  row.append(av, bbl);
+  wrap.appendChild(row);
+  wrap.scrollTop = wrap.scrollHeight;
+  return id;
+}
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+function appendConfirm(action) {
+  const wrap = document.getElementById('chat-messages');
+  const card = document.createElement('div');
+  card.className = 'confirm-card';
+  const h = document.createElement('h4'); h.textContent = '⚠ Confirmation Required';
+  const p = document.createElement('p');  p.textContent = action.description || '';
+  const btns = document.createElement('div'); btns.className = 'confirm-btns';
+  const yes = document.createElement('button'); yes.className = 'btn btn-yes'; yes.textContent = '✓ Proceed';
+  const no  = document.createElement('button'); no.className  = 'btn btn-no';  no.textContent  = '✗ Cancel';
+  yes.addEventListener('click', async () => {
+    card.remove();
+    await callAPI(`${API}/api/conversation/confirm`, {session_id: sessionId, action_id: action.id, confirmed: true});
+    appendAIMsg('Action confirmed and executing…');
+    showToast('Action confirmed', 'ok');
+  });
+  no.addEventListener('click', () => {
+    card.remove();
+    appendAIMsg('Action cancelled.');
+    showToast('Action cancelled', 'info');
+  });
+  btns.append(yes, no);
+  card.append(h, p, btns);
+  wrap.appendChild(card);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function showToast(msg, type='info') {
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Unseen Dispatch: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Unseen Dispatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+
+<style>
+/* ==============================================================
+   UNSEEN — a deliberately single-world design. This is a signal
+   coming out of the dark, so the page commits to one dark world
+   and paints every colour explicitly rather than borrowing the
+   host's theme. Colour is not decoration here: it encodes ship
+   status, which is the page's whole organising idea.
+   ============================================================== */
+:root {
+  color-scheme: dark;
+  --void:    #08090C;
+  --panel:   #101218;
+  --panel-2: #171A22;
+  --edge:    #242833;
+  --edge-2:  #323848;
+  --fg:      #EEF0F5;
+  --fg-2:    #A4AAB8;
+  --fg-3:    #6B7382;
+
+  /* status system — shipping / allocated / unseen */
+  --ship:      #3ED9C4;
+  --ship-dim:  #0F2F2C;
+  --alloc:     #F0B429;
+  --alloc-dim: #2F2612;
+  --unseen:    #FF5FA2;
+  --unseen-dim:#33101F;
+
+  --stage-h: clamp(520px, 68vh, 660px);
+}
+
+* { box-sizing: border-box; }
+html, body { background: var(--void); }
+html { overflow-x: hidden; }
+body {
+  margin: 0; color: var(--fg);
+  font-family: Figtree, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 15px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1,h2,h3 { margin: 0; font-family: "Bricolage Grotesque", Figtree, sans-serif; font-weight: 800; letter-spacing: -.02em; text-wrap: balance; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--ship); outline-offset: 3px; border-radius: 3px; }
+.sm { font-family: "Space Mono", ui-monospace, monospace; }
+.lbl { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--fg-3); }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 22px; }
+.skip { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.skip:focus { position: static; width: auto; height: auto; clip-path: none; display: inline-block; padding: 8px 14px; background: var(--panel); }
+
+/* ------------- masthead ------------- */
+header.mast { border-bottom: 1px solid var(--edge); background: var(--void); position: relative; z-index: 5; }
+.mast-in { display: flex; align-items: center; gap: 16px; height: 58px; }
+.mark { display: flex; align-items: baseline; gap: 9px; text-decoration: none; }
+.mark b {
+  font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+  font-size: 21px; letter-spacing: .04em; color: var(--fg);
+}
+.mark span { font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--fg-3); }
+.mast-sp { flex: 1; }
+.mast-note { font-family: "Space Mono", monospace; font-size: 10.5px; color: var(--fg-3); letter-spacing: .06em; }
+@media (max-width: 760px) { .mast-note { display: none; } }
+.installbtn {
+  height: 32px; padding: 0 13px; border-radius: 3px; white-space: nowrap;
+  background: transparent; border: 1px solid var(--edge-2); color: var(--fg-2);
+  font-family: "Space Mono", monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+}
+.installbtn:hover { border-color: var(--ship); color: var(--ship); }
+
+/* ------------- hero ------------- */
+.hero { padding: 46px 0 26px; position: relative; display: grid; grid-template-columns: 1.35fr 1fr; gap: 56px; align-items: start; }
+@media (max-width: 980px) { .hero { grid-template-columns: 1fr; gap: 34px; padding: 36px 0 20px; } }
+.hero h1 {
+  font-size: clamp(38px, 6.4vw, 72px); line-height: .96; max-width: 15ch; margin-top: 12px;
+}
+
+/* status board — teaches the colour system before the deck uses it */
+.board { border: 1px solid var(--edge); border-radius: 6px; background: var(--panel); overflow: hidden; }
+.board-hd { padding: 12px 16px; border-bottom: 1px solid var(--edge); display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.board-hd .a { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-3); }
+.board-hd .b { font-family: "Space Mono", monospace; font-size: 12px; color: var(--fg-2); }
+.brow { display: grid; grid-template-columns: 10px 1fr auto; gap: 12px; align-items: start; padding: 14px 16px; border-bottom: 1px solid var(--edge); }
+.brow:last-child { border-bottom: none; }
+.brow i { width: 9px; height: 9px; border-radius: 50%; margin-top: 6px; }
+.brow .n { font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg); }
+.brow .d { font-size: 12.5px; color: var(--fg-3); line-height: 1.45; margin-top: 3px; }
+.brow .c { font-family: "Space Mono", monospace; font-size: 20px; color: var(--fg); }
+.hero h1 em { font-style: normal; color: var(--unseen); }
+.hero p { max-width: 60ch; color: var(--fg-2); font-size: 16.5px; margin: 20px 0 0; }
+.hero-meta { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 26px; }
+.hm { display: flex; flex-direction: column; gap: 2px; }
+.hm .v { font-family: "Space Mono", monospace; font-size: 21px; color: var(--fg); }
+.hm .k { font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-3); }
+
+/* ------------- track filter ------------- */
+.tracks { display: flex; gap: 7px; flex-wrap: wrap; padding: 4px 0 22px; }
+.tk {
+  height: 34px; padding: 0 15px; border-radius: 3px;
+  background: transparent; border: 1px solid var(--edge); color: var(--fg-3);
+  font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+}
+.tk:hover { border-color: var(--edge-2); color: var(--fg-2); }
+.tk[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: var(--void); }
+
+/* ------------- deck stage ------------- */
+.stage {
+  position: relative; height: var(--stage-h);
+  margin-bottom: 18px; perspective: 1600px;
+  touch-action: pan-y;
+  /* cards fly out sideways; clip them so the page never scrolls
+     horizontally. `clip` keeps a margin for the active card's
+     shadow where supported, `hidden` is the fallback. */
+  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 26px;
+}
+.card {
+  position: absolute; inset: 0;
+  border: 1px solid var(--edge); border-radius: 8px;
+  background: var(--panel); overflow: hidden;
+  display: grid; grid-template-columns: 1fr 1fr;
+  transition: transform .42s cubic-bezier(.22,.8,.28,1), opacity .42s ease, filter .42s ease;
+  will-change: transform, opacity;
+}
+@media (max-width: 800px) { .card { grid-template-columns: 1fr; grid-template-rows: 190px 1fr; } }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+.card[data-pos="0"] { transform: none; opacity: 1; z-index: 4; box-shadow: 0 30px 70px -30px rgba(0,0,0,.95); }
+.card[data-pos="1"] { transform: translate3d(0, 16px, 0) scale(.965); opacity: .55; z-index: 3; filter: saturate(.5); }
+.card[data-pos="2"] { transform: translate3d(0, 30px, 0) scale(.93);  opacity: .28; z-index: 2; filter: saturate(.25); }
+.card[data-pos="3"] { transform: translate3d(0, 42px, 0) scale(.9);   opacity: .12; z-index: 1; filter: saturate(0); }
+.card[data-pos="out"] { transform: translate3d(-64%, 0, 0) rotate(-4deg); opacity: 0; z-index: 0; pointer-events: none; }
+.card[data-pos="back"] { transform: translate3d(64%, 0, 0) rotate(4deg); opacity: 0; z-index: 0; pointer-events: none; }
+.card[data-pos="hide"] { opacity: 0; z-index: 0; pointer-events: none; transform: scale(.88); }
+
+.art { position: relative; background: var(--panel-2); border-right: 1px solid var(--edge); overflow: hidden; }
+@media (max-width: 800px) { .art { border-right: none; border-bottom: 1px solid var(--edge); } }
+.art svg { display: block; width: 100%; height: 100%; }
+.chip {
+  position: absolute; top: 14px; left: 14px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 9px; border-radius: 3px;
+  font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
+}
+.chip i { width: 6px; height: 6px; border-radius: 50%; display: block; }
+.chip.ship   { background: var(--ship-dim);   color: var(--ship);   border: 1px solid color-mix(in srgb, var(--ship) 38%, transparent); }
+.chip.alloc  { background: var(--alloc-dim);  color: var(--alloc);  border: 1px solid color-mix(in srgb, var(--alloc) 38%, transparent); }
+.chip.unseen { background: var(--unseen-dim); color: var(--unseen); border: 1px solid color-mix(in srgb, var(--unseen) 38%, transparent); }
+.chip.ship i { background: var(--ship); } .chip.alloc i { background: var(--alloc); } .chip.unseen i { background: var(--unseen); }
+
+.body { padding: 26px 28px; display: flex; flex-direction: column; gap: 0; overflow-y: auto; }
+@media (max-width: 800px) { .body { padding: 20px 20px 24px; } }
+.body .kick { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.body h2 { font-size: clamp(24px, 2.9vw, 36px); line-height: 1.04; margin: 12px 0 0; }
+.body .maker { font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-3); margin-top: 9px; }
+.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(108px, 1fr)); gap: 1px; background: var(--edge); border: 1px solid var(--edge); border-radius: 4px; margin: 18px 0 0; }
+.sp { background: var(--panel); padding: 10px 12px; }
+.sp .k { font-family: "Space Mono", monospace; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3); }
+.sp .v { font-family: "Space Mono", monospace; font-size: 14px; color: var(--fg); margin-top: 3px; }
+.body p.why { color: var(--fg-2); font-size: 14.5px; line-height: 1.6; margin: 18px 0 0; }
+.body .sig {
+  margin-top: auto; padding-top: 16px; border-top: 1px solid var(--edge);
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.body .sig .bar { width: 3px; align-self: stretch; min-height: 30px; border-radius: 2px; }
+.body .sig p { margin: 0; font-size: 13px; color: var(--fg-2); line-height: 1.5; }
+.body .sig b { color: var(--fg); }
+
+/* deck controls */
+.deckbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.nav { display: flex; gap: 7px; }
+.nav button {
+  width: 40px; height: 40px; border-radius: 3px;
+  background: var(--panel); border: 1px solid var(--edge); color: var(--fg-2);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.nav button:hover:not(:disabled) { border-color: var(--ship); color: var(--ship); }
+.nav button:disabled { opacity: .3; cursor: not-allowed; }
+.nav svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; }
+.rail { flex: 1; display: flex; gap: 3px; min-width: 140px; }
+.rail button { flex: 1; height: 4px; border: none; border-radius: 2px; background: var(--edge); padding: 0; min-width: 4px; }
+.rail button:hover { background: var(--edge-2); }
+.rail button[aria-current="true"] { background: var(--ship); }
+.rail button.seen { background: var(--fg-3); }
+.pos { font-family: "Space Mono", monospace; font-size: 12px; color: var(--fg-3); white-space: nowrap; }
+.pos b { color: var(--fg); }
+.hint { font-family: "Space Mono", monospace; font-size: 10px; color: var(--fg-3); letter-spacing: .08em; }
+@media (max-width: 620px) { .hint { display: none; } }
+
+/* signup card */
+.cta { grid-column: 1 / -1; display: flex; flex-direction: column; justify-content: center; padding: 40px 44px; gap: 0; }
+@media (max-width: 800px) { .cta { padding: 28px 22px; } }
+.cta h2 { font-size: clamp(28px, 4vw, 44px); line-height: 1.02; max-width: 16ch; }
+.cta p { color: var(--fg-2); max-width: 54ch; margin: 16px 0 0; font-size: 15px; }
+.form { display: flex; gap: 8px; margin-top: 24px; max-width: 460px; flex-wrap: wrap; }
+.form input {
+  flex: 1 1 220px; min-width: 0; height: 46px; padding: 0 14px; border-radius: 4px;
+  background: var(--void); border: 1px solid var(--edge-2); color: var(--fg);
+  font: 400 15px Figtree, sans-serif;
+}
+.form input::placeholder { color: var(--fg-3); }
+.form input:focus { border-color: var(--ship); }
+.form button {
+  height: 46px; padding: 0 22px; border-radius: 4px; border: 1px solid var(--ship);
+  background: var(--ship); color: var(--void);
+  font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700;
+}
+.form button:hover { background: #55EBD7; border-color: #55EBD7; }
+.formmsg { margin-top: 12px; font-size: 13px; min-height: 20px; }
+.formmsg.err { color: var(--unseen); }
+.formmsg.ok { color: var(--ship); }
+.fineprint { margin-top: 20px; font-size: 12px; color: var(--fg-3); max-width: 52ch; line-height: 1.5; }
+
+/* index strip */
+.index { border-top: 1px solid var(--edge); margin-top: 46px; padding: 34px 0 0; }
+.igrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(228px, 1fr)); gap: 1px; background: var(--edge); border: 1px solid var(--edge); border-radius: 5px; margin-top: 18px; }
+.ientry { background: var(--panel); border: none; padding: 14px 15px; text-align: left; display: flex; flex-direction: column; gap: 5px; }
+.ientry:hover { background: var(--panel-2); }
+.ientry .t { font-weight: 600; font-size: 14px; line-height: 1.25; color: var(--fg); }
+.ientry .m { font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-3); }
+.ientry .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+
+footer { border-top: 1px solid var(--edge); margin-top: 52px; padding: 32px 0 60px; }
+footer .cols { display: grid; grid-template-columns: 1.7fr 1fr; gap: 34px; }
+@media (max-width: 800px) { footer .cols { grid-template-columns: 1fr; } }
+footer p { font-size: 12.5px; color: var(--fg-3); line-height: 1.6; max-width: 70ch; margin: 0 0 10px; }
+footer strong { color: var(--fg-2); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+.legend span { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-3); display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+</style>
+
+<a class="skip" href="#deck">Skip to the deck</a>
+
+<header class="mast">
+  <div class="wrap mast-in">
+    <a class="mark" href="#top"><b>UNSEEN</b><span>Field dispatch</span></a>
+    <div class="mast-sp"></div>
+    <span class="mast-note" id="stamp"></span>
+    <button class="installbtn" id="install" hidden>Install app</button>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+  <section class="hero">
+    <div>
+    <span class="lbl">Nova Digitus Designs LLC · Dispatch 001</span>
+    <h1>The machines that ship next, and the ones you <em>haven't seen</em>.</h1>
+    <p>Humanoids left the demo reel and went to work this year — an airport, a car plant, a fulfilment centre. Meanwhile the price of one fell from eighty-five thousand dollars to twenty-five. This deck is the field state: what is actually deployed, what is allocated before it is built, and what has only been seen once, on a stage.</p>
+    <div class="hero-meta">
+      <div class="hm"><span class="v" id="mCount">—</span><span class="k">Entries in deck</span></div>
+      <div class="hm"><span class="v">$5,900</span><span class="k">Cheapest humanoid</span></div>
+      <div class="hm"><span class="v">90,000</span><span class="k">Units projected 2026</span></div>
+      <div class="hm"><span class="v">1.2M</span><span class="k">Projected by 2030</span></div>
+    </div>
+    </div>
+    <div class="board" id="board"></div>
+  </section>
+
+  <section id="deck" aria-label="Dispatch deck">
+    <div class="tracks" id="tracks"></div>
+    <div class="stage" id="stage"></div>
+    <div class="deckbar">
+      <div class="nav">
+        <button id="prev" aria-label="Previous entry"><svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg></button>
+        <button id="next" aria-label="Next entry"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="rail" id="rail" role="tablist" aria-label="Jump to entry"></div>
+      <span class="pos" id="pos"></span>
+      <span class="hint">← → to flip · swipe on touch</span>
+    </div>
+  </section>
+
+  <section class="index">
+    <span class="lbl">Full index</span>
+    <div class="igrid" id="index"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap cols">
+    <div>
+      <p><strong>About this dispatch.</strong> Every entry is sourced from public reporting and manufacturer disclosure gathered in September 2026. Specifications for unreleased hardware are as announced or reported and routinely change before shipping; prices for pre-release devices are expectations, not quotes. Where a claim rests on a single demonstration, the card says so.</p>
+      <p><strong>Status is the point.</strong> Most coverage of this field flattens everything into "the future is here". It isn't, evenly. A robot working a real shift at Haneda and a robot that talked on a stage at CES are not the same claim, so this deck colours them differently and never blurs the two.</p>
+      <div class="legend">
+        <span><i style="background:var(--ship)"></i>Deployed / shipping</span>
+        <span><i style="background:var(--alloc)"></i>Allocated / limited</span>
+        <span><i style="background:var(--unseen)"></i>Unseen / announced</span>
+      </div>
+    </div>
+    <div>
+      <span class="lbl">Install</span>
+      <p style="margin-top:10px">This page is a progressive web app. On a phone, use your browser's <em>Add to Home Screen</em>; on desktop, the install control in the address bar. Once installed it opens full-screen and the deck reads offline.</p>
+      <span class="lbl" style="display:block;margin-top:18px">Next</span>
+      <p style="margin-top:10px">Dispatch 002 covers actuator supply — harmonic drives and the component bottleneck that decides how many of these actually get built.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Point this at your form service (Formspree, Buttondown, ConvertKit,
+     a Cloudflare Worker) to make the signup live. Left empty, the form
+     validates and stores locally so the page is honest about it. */
+  var ENDPOINT = "";
+
+  /* ==========================================================
+     THE DECK — every entry sourced from public reporting and
+     manufacturer disclosure gathered September 2026.
+     status: ship | alloc | unseen
+     ========================================================== */
+  var CARDS = [
+    { track: "humanoid", status: "ship",
+      maker: "Unitree Robotics · China",
+      title: "The humanoid that costs less than a used car",
+      specs: [["Entry price","$5,900"],["Model","R1"],["Shipped 2025","5,500+"],["2026 target","20,000"]],
+      why: "Unitree shipped more than five and a half thousand humanoids in 2025 and is targeting twenty thousand for 2026. The entry-level R1 opens at $5,900 — inside the price band of a laptop cluster, not a factory robot.",
+      sig: "Volume, not capability, is what changes a field. At this price humanoids stop being a capital-expenditure decision and start being a procurement one." },
+
+    { track: "humanoid", status: "ship",
+      maker: "Japan Airlines × Unitree · Haneda",
+      title: "Two humanoids clocked in at an international airport",
+      specs: [["Site","Haneda, Tokyo"],["Commitment","3 years"],["Unit cost","~$15,400"],["Units","2"]],
+      why: "Japan Airlines put two Unitree humanoids into service at Haneda on a three-year operational commitment — loading baggage, moving containers, cleaning cabins. Not a pilot with an end date. A contract.",
+      sig: "The three-year term is the story. A pilot can be quietly dropped; an operational commitment has to be budgeted, staffed and defended." },
+
+    { track: "humanoid", status: "ship",
+      maker: "Figure AI × BMW · Spartanburg",
+      title: "1,250 hours on a live automotive line",
+      specs: [["Robot","Figure 02 → 03"],["Hours logged","1,250"],["Vehicles","30,000"],["Figure 03","1.72 m · 61 kg"]],
+      why: "Figure's 02 accumulated 1,250 operational hours at BMW's South Carolina plant across a run of 30,000 vehicles. The successor, Figure 03, carries 20 kg, runs five hours, and sees through a multi-camera stack driving Figure's own Helix model.",
+      sig: "Hours logged is the only humanoid metric that resists marketing. Everything else can be filmed once." },
+
+    { track: "humanoid", status: "alloc",
+      maker: "Boston Dynamics · USA",
+      title: "Electric Atlas is sold out before it is built",
+      specs: [["Height","1.9 m"],["Mass","90 kg"],["Reach","2.3 m"],["Runtime","4 h"]],
+      why: "The all-electric Atlas is aimed at enterprise material handling and order fulfilment — and its 2026 production is reported as fully allocated. You cannot buy one this year; you can only get in line for the next.",
+      sig: "Allocation before production is the clearest demand signal in the category, and the reason actuator supply is now the industry's real constraint." },
+
+    { track: "humanoid", status: "ship",
+      maker: "AgiBot · China",
+      title: "Ten thousand units, and the first at commercial scale",
+      specs: [["Model","A2 Ultra"],["Height","1.69 m"],["Degrees of freedom","40"],["10,000th unit","March 2026"]],
+      why: "AgiBot built its ten-thousandth humanoid by March 2026, up from a thousand the year before, and describes the A2 Ultra as the first full-size humanoid to reach commercial scale with over a thousand units deployed and top-tier safety certification.",
+      sig: "Safety certification is the unglamorous gate. A robot that cannot be certified cannot stand next to a person, whatever it can do." },
+
+    { track: "humanoid", status: "alloc",
+      maker: "1X Technologies · Norway / USA",
+      title: "A household humanoid that starts out teleoperated",
+      specs: [["Model","NEO"],["Height","1.67 m"],["Mass","30 kg"],["Hand DOF","22 per hand"]],
+      why: "NEO is built light and quiet for domestic space — 30 kg against Atlas's 90 — with twenty-two degrees of freedom in each hand. 1X is explicit that it ships teleoperated and becomes autonomous as the data accumulates.",
+      sig: "Honest about the trick: a person is driving it at first. That admission is more useful than a demo reel, and it is how the training data gets made." },
+
+    { track: "humanoid", status: "ship",
+      maker: "Apptronik · USA",
+      title: "Apollo, built for the parts of a plant people hate",
+      specs: [["Height","1.7 m"],["Mass","60 kg"],["Degrees of freedom","28+"],["Runtime","5 h"]],
+      why: "Apollo targets heavy-duty industrial work and precision manufacturing support — the repetitive lifting and positioning that wrecks human shoulders over a career.",
+      sig: "The winning humanoid use cases are all jobs with injury statistics attached. That is where the return on investment is unambiguous." },
+
+    { track: "humanoid", status: "unseen",
+      maker: "Amazon · Agility Robotics · Fauna",
+      title: "Amazon is quietly buying its way into your house",
+      specs: [["Deployed","Digit"],["Acquired","Fauna Robotics"],["Target","Consumer platform"],["Status","Undisclosed"]],
+      why: "Amazon runs Agility's Digit in fulfilment centres and has acquired Fauna Robotics to build consumer humanoid platforms. Nothing consumer-facing has been shown.",
+      sig: "The company with the most warehouse robot-hours on earth is now aiming that experience at the home. Watch this one." },
+
+    /* ---------------- communication ---------------- */
+    { track: "comms", status: "unseen",
+      maker: "Realbotix · CES 2026",
+      title: "Two robots talked to each other for two hours, unscripted",
+      specs: [["Robots","Aria & David"],["Duration","2 h+"],["Languages","EN·ES·FR·DE"],["Compute","On-device"]],
+      why: "At CES 2026, Realbotix ran two humanoids in continuous unscripted dialogue for over two hours with no human intervention and no cloud — all of it on-device. A third robot demonstrated identifying people and reading emotional cues.",
+      sig: "Reported honestly: visible pauses, timing mismatches, mechanical delivery. That candour is the actual news — this is where embodied conversation really is, not where the sizzle reels put it." },
+
+    { track: "comms", status: "unseen",
+      maker: "Physical Intelligence · USA",
+      title: "A model that operated an appliance it had seen twice",
+      specs: [["Model","pi-0.7"],["Class","Vision-Language-Action"],["Skill","Compositional generalisation"],["Training exposure","2 examples"]],
+      why: "Vision-Language-Action models let a robot execute a task from a plain-language instruction with no task-specific programming. Physical Intelligence's pi-0.7 demonstrated operating appliances it had encountered only twice during training.",
+      sig: "This is the layer that makes humanoids general. Before VLA, every task was an engineering project; after it, a task is a sentence." },
+
+    { track: "comms", status: "unseen",
+      maker: "Across the field",
+      title: "World models are replacing the robot fleet",
+      specs: [["Method","Simulated environments"],["Output","Synthetic training data"],["Constraint removed","Hardware fleet size"],["Status","Widely adopted"]],
+      why: "World models simulate physical environments well enough to generate training data at scale, which breaks the link between how much a robot learns and how many physical robots you own.",
+      sig: "The historic bottleneck in robot learning was that experience had to happen in the real world, in real time, one robot at a time. That is no longer true." },
+
+    { track: "comms", status: "ship",
+      maker: "Engineered Arts · United Kingdom",
+      title: "Fifty facial expressions, and a conversation to hang them on",
+      specs: [["Model","Ameca"],["Degrees of freedom","20+"],["Expressions","50+"],["Role","Social / public"]],
+      why: "Ameca pairs an unusually expressive face — over fifty distinct expressions across twenty-plus degrees of freedom — with conversational AI, aimed at customer-facing and educational roles rather than industrial ones.",
+      sig: "Expression is bandwidth. A robot that can look confused communicates a failure state faster than any error message." },
+
+    { track: "comms", status: "alloc",
+      maker: "Sanctuary AI · Canada",
+      title: "Phoenix is built to read the room",
+      specs: [["Height","1.65 m"],["Mass","55 kg"],["Degrees of freedom","30+"],["Runtime","4 h"]],
+      why: "Sanctuary positions Phoenix around cognitive AI for natural human interaction — reading human cues rather than only executing instructions.",
+      sig: "Understanding intent that was never spoken is the hard half of human-robot communication, and the half nobody has solved." },
+
+    /* ---------------- gadgets ---------------- */
+    { track: "gadget", status: "unseen",
+      maker: "Snap · Fall 2026",
+      title: "Snap Specs put a real AR display on your face",
+      specs: [["Price","$2,195"],["Field of view","51°"],["OS","Snap OS"],["Battery","4 h"]],
+      why: "A 51-degree field of view is a genuine augmented-reality display, not a heads-up notification strip. The price and the four-hour battery say developer kit, not consumer product.",
+      sig: "Every AR generation so far has traded field of view against wearability. Snap picked field of view. We are about to find out whether that was right." },
+
+    { track: "gadget", status: "unseen",
+      maker: "Xreal · Fall 2026",
+      title: "Xreal Aura goes wider and moves the compute off your head",
+      specs: [["Price","≤ $1,500"],["Field of view","70°"],["Platform","Android XR"],["Compute","Tethered"]],
+      why: "Seventy degrees is the widest in this wave, achieved by tethering the processing to a separate unit instead of carrying it on the frame.",
+      sig: "The tether is the honest engineering answer to a thermal problem nobody has solved. Whether buyers accept a wire is the whole bet." },
+
+    { track: "gadget", status: "unseen",
+      maker: "Samsung · Q3 2026",
+      title: "Galaxy Glasses bring Android XR to a normal price",
+      specs: [["Price","~$400"],["Platform","Android XR"],["Assistant","Gemini"],["Camera","12 MP"]],
+      why: "Revealed in July with Q3 availability expected, at roughly a fifth of what the display-bearing headsets cost. Gentle Monster and Warby Parker are shipping audio-first Android XR frames on the same platform this autumn.",
+      sig: "Android XR arriving at $400 through eyewear brands is how this category stops being a gadget and starts being glasses." },
+
+    { track: "gadget", status: "ship",
+      maker: "Even Realities",
+      title: "A HUD with no camera pointed at anyone",
+      specs: [["Price","$599+"],["Display","Monochrome HUD"],["Camera","None"],["Translation","13 languages"]],
+      why: "Even Realities left the camera out entirely and kept a monochromatic heads-up display with live translation across thirteen languages.",
+      sig: "The camera is what makes smart glasses socially radioactive. Removing it is a product decision, and increasingly a competitive one." },
+
+    { track: "gadget", status: "unseen",
+      maker: "Apple · reported late 2027",
+      title: "Apple's N50 skips the display entirely",
+      specs: [["Codename","N50"],["Display","None"],["Sensors","Cameras · speakers"],["Expected","Late 2027"]],
+      why: "The reported Apple design has no display at all — cameras, speakers and Visual Intelligence, in the $299–$499 band. Every rival in this deck is racing toward a bigger field of view; Apple is reported to be going the other way.",
+      sig: "When the company with the best display supply chain in the world reportedly ships glasses without one, the bet is that the interface is audio and context, not pixels." },
+
+    { track: "humanoid", status: "ship",
+      maker: "Market-wide",
+      title: "The price of a humanoid fell 70% in two years",
+      specs: [["2023 average","~$85,000"],["2025 average","~$25,000"],["Gross margin","~60%"],["2030 forecast","1.2M units"]],
+      why: "Average humanoid prices dropped from roughly $85,000 in 2023 to $25,000 in 2025 while makers held about 60% gross margins. Bank of America projects ninety thousand shipments in 2026, reaching 1.2 million by 2030.",
+      sig: "Falling price with intact margin means the cost drop is manufacturing scale, not discounting. That is the pattern that precedes a category going mainstream." },
+
+    { track: "humanoid", status: "alloc",
+      maker: "Schaeffler · Bosch · Qualcomm",
+      title: "The bottleneck is not intelligence. It's gearboxes.",
+      specs: [["Constraint","Actuators"],["Also","Harmonic drives"],["Response","Platform partnerships"],["Effect","Allocation, not shortage of demand"]],
+      why: "The reported limit on humanoid production is not AI capability but the supply of actuators and harmonic drives. Tier-one suppliers are forming platform partnerships now rather than letting robot makers adapt off-the-shelf parts.",
+      sig: "Every hype cycle eventually meets a machine shop. This one just did — and it is why Atlas is allocated." }
+  ];
+
+  var TRACKS = [
+    { k: "all",      n: "Everything" },
+    { k: "humanoid", n: "Humanoids" },
+    { k: "comms",    n: "Communication" },
+    { k: "gadget",   n: "Gadgets & wearables" }
+  ];
+  var STATUS = {
+    ship:   { n: "Deployed", c: "var(--ship)" },
+    alloc:  { n: "Allocated", c: "var(--alloc)" },
+    unseen: { n: "Unseen", c: "var(--unseen)" }
+  };
+
+  var state = { track: "all", i: 0, seen: {} };
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+
+  function deck() {
+    var d = CARDS.filter(function (c) { return state.track === "all" || c.track === state.track; });
+    return d.concat([{ cta: true }]);
+  }
+
+  /* ================= generated card art ================= */
+  function rng(s) { var x = s >>> 0; return function () { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
+
+  function art(c, idx) {
+    var r = rng(idx * 7919 + 13);
+    var col = STATUS[c.status].c;
+    var W = 400, H = 520, g = "";
+
+    if (c.track === "humanoid") {
+      /* gait trace — a walking figure abstracted to joints and stride arcs */
+      for (var s = 0; s < 7; s++) {
+        var ox = 40 + s * 52, sway = Math.sin(s * 0.9) * 16;
+        var hip = 250 + sway * 0.5, sh = 160 + sway * 0.4;
+        var op = (0.18 + s * 0.12).toFixed(2);
+        g += '<g opacity="' + op + '" stroke="' + (s === 6 ? col : "#8892A6") + '" fill="none" stroke-width="' + (s === 6 ? 2.6 : 1.6) + '" stroke-linecap="round">' +
+          '<line x1="' + ox + '" y1="' + sh + '" x2="' + ox + '" y2="' + hip + '"/>' +
+          '<circle cx="' + ox + '" cy="' + (sh - 26) + '" r="12"/>' +
+          '<line x1="' + (ox - 22 + s * 2) + '" y1="' + (sh + 46) + '" x2="' + ox + '" y2="' + (sh + 6) + '"/>' +
+          '<line x1="' + (ox + 24 - s * 2) + '" y1="' + (sh + 42) + '" x2="' + ox + '" y2="' + (sh + 6) + '"/>' +
+          '<line x1="' + ox + '" y1="' + hip + '" x2="' + (ox - 20 + s * 5) + '" y2="' + (hip + 62) + '"/>' +
+          '<line x1="' + (ox - 20 + s * 5) + '" y1="' + (hip + 62) + '" x2="' + (ox - 26 + s * 6) + '" y2="' + (hip + 124) + '"/>' +
+          '<line x1="' + ox + '" y1="' + hip + '" x2="' + (ox + 22 - s * 4) + '" y2="' + (hip + 60) + '"/>' +
+          '<line x1="' + (ox + 22 - s * 4) + '" y1="' + (hip + 60) + '" x2="' + (ox + 30 - s * 5) + '" y2="' + (hip + 122) + '"/>' +
+          '</g>';
+      }
+      g += '<line x1="0" y1="436" x2="' + W + '" y2="436" stroke="#2A3040" stroke-width="1"/>';
+    } else if (c.track === "comms") {
+      /* two waveforms answering each other */
+      [0, 1].forEach(function (side) {
+        var base = side ? 330 : 190;
+        var d = "M0 " + base;
+        for (var x = 0; x <= W; x += 4) {
+          var env = Math.exp(-Math.pow((x - (side ? 150 : 250)) / 190, 2));
+          var amp = env * (34 + r() * 26) * (side ? -1 : 1);
+          d += " L" + x + " " + (base + Math.sin(x / (side ? 9 : 11) + side * 2) * amp).toFixed(1);
+        }
+        g += '<path d="' + d + '" fill="none" stroke="' + (side ? "#8892A6" : col) + '" stroke-width="' + (side ? 1.5 : 2.2) + '" opacity="' + (side ? .5 : .95) + '"/>';
+      });
+      for (var b = 0; b < 30; b++) {
+        var bx = r() * W, by = 60 + r() * 400;
+        g += '<rect x="' + bx.toFixed(1) + '" y="' + by.toFixed(1) + '" width="2" height="' + (3 + r() * 14).toFixed(1) + '" fill="' + col + '" opacity="' + (0.12 + r() * 0.3).toFixed(2) + '"/>';
+      }
+      g += '<circle cx="70" cy="190" r="7" fill="' + col + '"/><circle cx="330" cy="330" r="7" fill="#8892A6"/>';
+    } else {
+      /* lens rings and a HUD frame */
+      var cx2 = 200, cy2 = 240;
+      for (var k = 0; k < 8; k++) {
+        g += '<circle cx="' + cx2 + '" cy="' + cy2 + '" r="' + (26 + k * 17) + '" fill="none" stroke="' + (k === 2 ? col : "#2E3547") + '" stroke-width="' + (k === 2 ? 2.4 : 1.1) + '" opacity="' + (1 - k * 0.09).toFixed(2) + '"/>';
+      }
+      g += '<circle cx="' + cx2 + '" cy="' + cy2 + '" r="14" fill="' + col + '" opacity=".9"/>';
+      /* corner brackets */
+      [[46, 86, 1, 1], [354, 86, -1, 1], [46, 394, 1, -1], [354, 394, -1, -1]].forEach(function (p) {
+        g += '<path d="M' + p[0] + ' ' + (p[1] + 26 * p[3]) + ' L' + p[0] + ' ' + p[1] + ' L' + (p[0] + 26 * p[2]) + ' ' + p[1] + '" fill="none" stroke="' + col + '" stroke-width="2" opacity=".75"/>';
+      });
+      for (var t = 0; t < 5; t++) {
+        var ty = 120 + t * 60;
+        g += '<line x1="60" y1="' + ty + '" x2="' + (60 + 20 + r() * 46).toFixed(0) + '" y2="' + ty + '" stroke="#3A4256" stroke-width="1.4"/>';
+      }
+    }
+
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+      '<rect width="' + W + '" height="' + H + '" fill="#171A22"/>' + g + '</svg>';
+  }
+
+  /* ================= render ================= */
+  function renderTracks() {
+    $("#tracks").innerHTML = TRACKS.map(function (t) {
+      var n = t.k === "all" ? CARDS.length : CARDS.filter(function (c) { return c.track === t.k; }).length;
+      return '<button class="tk" data-track="' + t.k + '" aria-pressed="' + (state.track === t.k) + '">' + esc(t.n) + ' · ' + n + '</button>';
+    }).join("");
+  }
+
+  function cardHTML(c, idx) {
+    if (c.cta) {
+      return '<article class="card" data-pos="hide"><div class="cta">' +
+        '<span class="lbl">End of dispatch 001</span>' +
+        '<h2>Get 002 before it is anywhere else.</h2>' +
+        '<p>One dispatch a month. What shipped, what got allocated, and what was only ever seen once on a stage — with the specification sheet and the honest caveat attached.</p>' +
+        '<form class="form" id="signup" novalidate>' +
+          '<input type="email" name="email" placeholder="you@domain.com" aria-label="Email address" autocomplete="email">' +
+          '<button type="submit">Send me 002</button>' +
+        '</form>' +
+        '<div class="formmsg" id="formmsg" role="status"></div>' +
+        '<p class="fineprint">No list rental, no daily mail, one-click unsubscribe. This prototype stores the address in your own browser only — wire the form to your mail provider before you run traffic at it.</p>' +
+      '</div></article>';
+    }
+    var st = STATUS[c.status];
+    return '<article class="card" data-pos="hide" aria-label="' + esc(c.title) + '">' +
+      '<div class="art"><span class="chip ' + c.status + '"><i></i>' + esc(st.n) + '</span>' + art(c, idx) + '</div>' +
+      '<div class="body">' +
+        '<div class="kick"><span class="lbl">' + String(idx + 1).padStart(2, "0") + ' · ' + esc(TRACKS.filter(function (t) { return t.k === c.track; })[0].n) + '</span></div>' +
+        '<h2>' + esc(c.title) + '</h2>' +
+        '<div class="maker">' + esc(c.maker) + '</div>' +
+        '<div class="specs">' + c.specs.map(function (s) {
+          return '<div class="sp"><div class="k">' + esc(s[0]) + '</div><div class="v">' + esc(s[1]) + '</div></div>';
+        }).join("") + '</div>' +
+        '<p class="why">' + esc(c.why) + '</p>' +
+        '<div class="sig"><span class="bar" style="background:' + st.c + '"></span><p><b>Why it matters.</b> ' + esc(c.sig) + '</p></div>' +
+      '</div></article>';
+  }
+
+  function renderDeck() {
+    var d = deck();
+    if (state.i >= d.length) state.i = d.length - 1;
+    if (state.i < 0) state.i = 0;
+    $("#stage").innerHTML = d.map(cardHTML).join("");
+    positionCards();
+    renderRail();
+  }
+
+  function positionCards() {
+    var d = deck();
+    var els = $("#stage").children;
+    for (var i = 0; i < els.length; i++) {
+      var rel = i - state.i, pos;
+      if (rel < 0) pos = "out";
+      else if (rel === 0) pos = "0";
+      else if (rel <= 3) pos = String(rel);
+      else pos = "back";
+      els[i].setAttribute("data-pos", pos);
+      els[i].setAttribute("aria-hidden", rel === 0 ? "false" : "true");
+      var f = els[i].querySelectorAll("input,button,a");
+      for (var j = 0; j < f.length; j++) {
+        if (rel === 0) f[j].removeAttribute("tabindex"); else f[j].setAttribute("tabindex", "-1");
+      }
+    }
+    state.seen[state.track + ":" + state.i] = true;
+    $("#pos").innerHTML = "<b>" + String(state.i + 1).padStart(2, "0") + "</b> / " + String(d.length).padStart(2, "0");
+    $("#prev").disabled = state.i === 0;
+    $("#next").disabled = state.i === d.length - 1;
+    var rail = $("#rail").children;
+    for (var k = 0; k < rail.length; k++) {
+      rail[k].setAttribute("aria-current", String(k === state.i));
+      if (state.seen[state.track + ":" + k]) rail[k].classList.add("seen"); else rail[k].classList.remove("seen");
+      if (k === state.i) rail[k].classList.remove("seen");
+    }
+  }
+
+  function renderRail() {
+    var d = deck();
+    $("#rail").innerHTML = d.map(function (c, i) {
+      return '<button role="tab" data-jump="' + i + '" aria-current="' + (i === state.i) + '" aria-label="Entry ' + (i + 1) + ' of ' + d.length + '"></button>';
+    }).join("");
+  }
+
+  function renderBoard() {
+    var defs = [
+      ["ship", "Working a real shift somewhere, on a contract with a term."],
+      ["alloc", "Real, but you cannot get one — production spoken for, or invite-only."],
+      ["unseen", "Announced, demonstrated once, or acquired quietly. Not yet in anyone's hands."]
+    ];
+    $("#board").innerHTML =
+      '<div class="board-hd"><span class="a">Status board</span><span class="b">' + CARDS.length + ' entries</span></div>' +
+      defs.map(function (d) {
+        var n = CARDS.filter(function (c) { return c.status === d[0]; }).length;
+        return '<div class="brow"><i style="background:' + STATUS[d[0]].c + '"></i>' +
+          '<div><div class="n">' + esc(STATUS[d[0]].n) + '</div><div class="d">' + esc(d[1]) + '</div></div>' +
+          '<span class="c">' + n + '</span></div>';
+      }).join("");
+  }
+
+  function renderIndex() {
+    $("#index").innerHTML = CARDS.map(function (c, i) {
+      return '<button class="ientry" data-index="' + i + '">' +
+        '<span class="m"><i class="dot" style="background:' + STATUS[c.status].c + '"></i>' + esc(c.maker.split(" · ")[0]) + '</span>' +
+        '<span class="t">' + esc(c.title) + '</span></button>';
+    }).join("");
+  }
+
+  function go(n) {
+    var d = deck();
+    state.i = Math.max(0, Math.min(d.length - 1, n));
+    positionCards();
+  }
+
+  /* ================= events ================= */
+  document.addEventListener("click", function (e) {
+    var el;
+    if ((el = e.target.closest(".tk"))) {
+      state.track = el.getAttribute("data-track");
+      state.i = 0;
+      renderTracks(); renderDeck();
+      return;
+    }
+    if ((el = e.target.closest("[data-jump]"))) { go(+el.getAttribute("data-jump")); return; }
+    if (e.target.closest("#next")) { go(state.i + 1); return; }
+    if (e.target.closest("#prev")) { go(state.i - 1); return; }
+    if ((el = e.target.closest("[data-index]"))) {
+      var gi = +el.getAttribute("data-index");
+      var c = CARDS[gi];
+      state.track = "all";
+      renderTracks();
+      renderDeck();
+      go(CARDS.indexOf(c));
+      document.getElementById("deck").scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    /* flip by clicking the outer thirds of the active card's art */
+    var card = e.target.closest('.card[data-pos="0"]');
+    if (card && !e.target.closest("input,button,a,form")) {
+      var box = card.getBoundingClientRect();
+      var x = e.clientX - box.left;
+      if (x > box.width * 0.66) go(state.i + 1);
+      else if (x < box.width * 0.34) go(state.i - 1);
+    }
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); go(state.i + 1); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); go(state.i - 1); }
+    else if (e.key === "Home") { e.preventDefault(); go(0); }
+    else if (e.key === "End") { e.preventDefault(); go(deck().length - 1); }
+  });
+
+  /* swipe */
+  (function () {
+    var x0 = null, y0 = null, t0 = 0;
+    var st = $("#stage");
+    st.addEventListener("touchstart", function (e) {
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
+    }, { passive: true });
+    st.addEventListener("touchend", function (e) {
+      if (x0 == null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      var dy = e.changedTouches[0].clientY - y0;
+      var dt = Date.now() - t0;
+      if (Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy) * 1.4 && dt < 900) {
+        go(state.i + (dx < 0 ? 1 : -1));
+      }
+      x0 = y0 = null;
+    }, { passive: true });
+  })();
+
+  /* signup */
+  document.addEventListener("submit", function (e) {
+    if (e.target.id !== "signup") return;
+    e.preventDefault();
+    var input = e.target.elements.email;
+    var msg = document.getElementById("formmsg");
+    var v = input.value.trim();
+    if (!v) { msg.className = "formmsg err"; msg.textContent = "Enter an email address and I'll send 002."; input.focus(); return; }
+    if (v.indexOf("@") < 1 || v.indexOf(".", v.indexOf("@")) < 0) {
+      msg.className = "formmsg err"; msg.textContent = "That address is missing an @ or a domain."; input.focus(); return;
+    }
+    if (ENDPOINT) {
+      msg.className = "formmsg"; msg.textContent = "Sending…";
+      fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: v, source: "unseen-dispatch-001" })
+      }).then(function (r) {
+        if (!r.ok) throw new Error("bad status");
+        msg.className = "formmsg ok"; msg.textContent = "You're on the list. 002 lands next month.";
+        e.target.reset();
+      }).catch(function () {
+        msg.className = "formmsg err"; msg.textContent = "That didn't send. Try again in a moment.";
+      });
+      return;
+    }
+    try {
+      var list = JSON.parse(localStorage.getItem("unseen.list") || "[]");
+      if (list.indexOf(v) === -1) list.push(v);
+      localStorage.setItem("unseen.list", JSON.stringify(list));
+    } catch (err) { /* private mode, blocked storage — the message below is still honest */ }
+    msg.className = "formmsg ok";
+    msg.textContent = "Saved in this browser only — no mail provider is wired up yet.";
+    e.target.reset();
+  });
+
+  /* PWA install prompt */
+  var deferred = null;
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault(); deferred = e;
+    var b = $("#install"); b.hidden = false;
+    b.onclick = function () {
+      b.hidden = true;
+      deferred.prompt();
+      deferred = null;
+    };
+  });
+
+  /* ================= boot ================= */
+  /* ?track=humanoid|comms|gadget — used by the PWA manifest shortcuts
+     and shareable as a deep link into one track */
+  try {
+    var qt = new URLSearchParams(location.search).get("track");
+    if (qt && TRACKS.some(function (t) { return t.k === qt; })) state.track = qt;
+  } catch (e) { /* no URLSearchParams, or an opaque location — keep the default */ }
+
+  $("#mCount").textContent = CARDS.length;
+  $("#stamp").textContent = "Dispatch 001 · compiled " + new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" }).toUpperCase();
+  renderTracks(); renderDeck(); renderBoard(); renderIndex();
+})();
+</script>
+</body>
+</html>

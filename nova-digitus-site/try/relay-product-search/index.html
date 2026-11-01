@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Relay Product Search: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Relay Product Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+/* =============================================================
+   RELAY — a relay is both an electronic component and the act of
+   passing something along. Palette is instrument-panel: cool
+   graphite neutrals biased toward the signal violet, with a
+   single teal reserved for semantic state (best landed price).
+   ============================================================= */
+:root {
+  --bg:        #F4F4F7;
+  --surface:   #FFFFFF;
+  --surface-2: #ECECF2;
+  --line:      #D8D8E2;
+  --line-soft: #E6E6EE;
+  --fg:        #14141F;
+  --fg-2:      #464659;
+  --fg-3:      #767689;
+  --signal:    #4B39D8;
+  --signal-2:  #33249F;
+  --signal-wash:#E7E4FB;
+  --best:      #0C7C6E;
+  --best-wash: #DCF0EC;
+  --warn:      #9A6410;
+  --warn-wash: #F6ECD8;
+  --shadow: 0 1px 2px rgba(20,20,31,.05), 0 14px 34px -22px rgba(20,20,31,.5);
+  --r: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0E0E15;
+    --surface:   #16161F;
+    --surface-2: #1E1E2A;
+    --line:      #2C2C3B;
+    --line-soft: #242433;
+    --fg:        #EBEBF2;
+    --fg-2:      #B6B6C6;
+    --fg-3:      #82829A;
+    --signal:    #9B8CFF;
+    --signal-2:  #C0B6FF;
+    --signal-wash:#211E3D;
+    --best:      #5FCFBC;
+    --best-wash: #102A28;
+    --warn:      #E0B564;
+    --warn-wash: #2B2415;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 16px 36px -24px rgba(0,0,0,.95);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0E0E15; --surface:#16161F; --surface-2:#1E1E2A;
+  --line:#2C2C3B; --line-soft:#242433;
+  --fg:#EBEBF2; --fg-2:#B6B6C6; --fg-3:#82829A;
+  --signal:#9B8CFF; --signal-2:#C0B6FF; --signal-wash:#211E3D;
+  --best:#5FCFBC; --best-wash:#102A28;
+  --warn:#E0B564; --warn-wash:#2B2415;
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 16px 36px -24px rgba(0,0,0,.95);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: Archivo, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14.5px; line-height: 1.5;
+  font-variation-settings: "wdth" 100;
+  -webkit-font-smoothing: antialiased;
+}
+h1,h2,h3,h4 { margin: 0; font-weight: 700; letter-spacing: -.02em; text-wrap: balance; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; border-radius: 2px; }
+.m { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.lbl {
+  font-family: "JetBrains Mono", monospace; font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-3);
+}
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 22px; }
+
+/* ---------------- notice ---------------- */
+.notice {
+  background: var(--warn-wash); border-bottom: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+  color: var(--warn); font-size: 12px; padding: 7px 0;
+}
+.notice .wrap { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.notice b { font-weight: 700; }
+
+/* ---------------- header ---------------- */
+header.top {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: saturate(150%) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.top-in { display: flex; align-items: center; gap: 14px; height: 60px; min-width: 0; }
+.mark { display: flex; align-items: center; gap: 9px; text-decoration: none; flex: 0 0 auto; }
+.mark .glyph { width: 22px; height: 22px; display: block; }
+.mark b {
+  font-size: 20px; font-weight: 800; letter-spacing: .12em;
+  font-variation-settings: "wdth" 112;
+}
+.q {
+  flex: 1 1 0; min-width: 0; position: relative; max-width: 620px;
+}
+.q input {
+  width: 100%; min-width: 0; height: 38px; padding: 0 34px 0 36px;
+  background: var(--surface); color: var(--fg);
+  border: 1px solid var(--line); border-radius: var(--r);
+  font: 400 14px Archivo, sans-serif;
+}
+.q input:focus { border-color: var(--signal); }
+.q .ico { position: absolute; left: 11px; top: 11px; width: 16px; height: 16px; stroke: var(--fg-3); fill: none; stroke-width: 1.7; }
+.q .clr { position: absolute; right: 8px; top: 8px; width: 22px; height: 22px; border: none; background: none; color: var(--fg-3); border-radius: 3px; line-height: 1; }
+.q .clr:hover { color: var(--fg); background: var(--surface-2); }
+.top-sp { flex: 1 1 auto; }
+.sel {
+  height: 34px; padding: 0 8px; border-radius: var(--r);
+  background: var(--surface); color: var(--fg); border: 1px solid var(--line);
+  font: 400 12.5px "JetBrains Mono", monospace; max-width: 190px;
+}
+.opbtn {
+  height: 34px; padding: 0 13px; border-radius: var(--r); white-space: nowrap;
+  border: 1px solid var(--line); background: var(--surface); color: var(--fg-2);
+  font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .09em; text-transform: uppercase;
+}
+.opbtn[aria-pressed="true"] { background: var(--signal); border-color: var(--signal); color: #fff; }
+:root[data-theme="dark"] .opbtn[aria-pressed="true"] { color: #0E0E15; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .opbtn[aria-pressed="true"] { color: #0E0E15; } }
+@media (max-width: 860px) {
+  .top-in { flex-wrap: wrap; height: auto; padding: 10px 0; row-gap: 10px; }
+  .q { order: 5; flex: 1 0 100%; max-width: none; }
+  .top-sp { display: none; }
+}
+
+/* ---------------- hero ---------------- */
+.hero { border-bottom: 1px solid var(--line); background: var(--surface); }
+.hero-in { padding: 52px 22px 44px; max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 56px; align-items: start; }
+@media (max-width: 1000px) { .hero-in { grid-template-columns: 1fr; gap: 34px; padding: 40px 22px 36px; } }
+
+/* hero specimen — the thesis as one object */
+.spec-panel { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); overflow: hidden; box-shadow: var(--shadow); }
+.spec-hd { padding: 12px 15px; background: var(--fg); color: var(--bg); display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.spec-hd .a { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.spec-hd .b { font-family: "JetBrains Mono", monospace; font-size: 15px; }
+.spec-sub { padding: 11px 15px 4px; font-size: 12.5px; color: var(--fg-3); line-height: 1.4; }
+.srow {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: baseline;
+  padding: 9px 15px; border-top: 1px solid var(--line-soft);
+  font-family: "JetBrains Mono", monospace; font-size: 12.5px;
+}
+.srow .cty { color: var(--fg-2); }
+.srow .add { color: var(--fg-3); font-size: 11px; text-align: right; }
+.srow .tot { text-align: right; min-width: 76px; }
+.srow.here { background: var(--signal-wash); }
+.srow.here .cty { color: var(--signal); font-weight: 700; }
+.spec-ft { padding: 11px 15px 14px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--fg-3); line-height: 1.45; }
+.hero h1 {
+  font-size: clamp(34px, 5.4vw, 58px); line-height: 1.02; max-width: 17ch;
+  font-variation-settings: "wdth" 108; margin-top: 12px;
+}
+.hero h1 span { color: var(--signal); }
+.hero p { max-width: 60ch; color: var(--fg-2); font-size: 16px; margin: 18px 0 0; }
+.tracks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 26px; }
+.track {
+  display: flex; flex-direction: column; gap: 3px; align-items: flex-start;
+  padding: 13px 17px; border-radius: var(--r);
+  border: 1px solid var(--line); background: var(--bg); text-align: left;
+}
+.track:hover { border-color: var(--signal); }
+.track[aria-pressed="true"] { border-color: var(--signal); background: var(--signal-wash); }
+.track .t { font-weight: 700; font-size: 15px; }
+.track .s { font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: var(--fg-3); letter-spacing: .06em; }
+.track[data-phase="2"] .s { color: var(--warn); }
+
+/* ---------------- layout ---------------- */
+.work { display: grid; grid-template-columns: 232px 1fr; gap: 26px; padding: 24px 0 70px; align-items: start; }
+@media (max-width: 1000px) { .work { grid-template-columns: 1fr; } aside.facets { position: static; } }
+
+aside.facets { position: sticky; top: 76px; display: flex; flex-direction: column; gap: 20px; }
+.fgroup { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.fgroup > .lbl { display: block; padding: 11px 13px 8px; border-bottom: 1px solid var(--line-soft); }
+.fbody { padding: 10px 13px 13px; display: flex; flex-direction: column; gap: 7px; }
+.fitem {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  background: none; border: none; padding: 4px 0; text-align: left;
+  font-size: 13.5px; color: var(--fg-2);
+}
+.fitem:hover { color: var(--fg); }
+.fitem[aria-pressed="true"] { color: var(--signal); font-weight: 600; }
+.fitem .n { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--fg-3); }
+.fitem[aria-pressed="true"] .n { color: var(--signal); }
+input[type="range"] { width: 100%; accent-color: var(--signal); }
+.rangeval { font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: var(--fg-2); }
+
+/* ---------------- results ---------------- */
+.rhead { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.rhead .count { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--fg-3); }
+.rhead .sp { flex: 1; }
+
+.card {
+  border: 1px solid var(--line); border-radius: var(--r); background: var(--surface);
+  margin-bottom: 10px; overflow: hidden;
+}
+.card.open { border-color: var(--signal); box-shadow: var(--shadow); }
+.crow {
+  display: grid; grid-template-columns: 84px 1fr 152px 128px; gap: 16px;
+  padding: 14px 16px; align-items: center; width: 100%;
+  background: none; border: none; text-align: left;
+}
+@media (max-width: 820px) { .crow { grid-template-columns: 60px 1fr; row-gap: 10px; } .crow .price, .crow .cta { grid-column: 2; } }
+.thumb { aspect-ratio: 1; border-radius: 3px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line-soft); }
+.thumb svg { display: block; width: 100%; height: 100%; }
+.cmain h3 { font-size: 16.5px; line-height: 1.25; }
+.cmeta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
+.cmeta span { font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: var(--fg-3); letter-spacing: .05em; }
+.cspec { font-size: 13px; color: var(--fg-2); margin-top: 5px; line-height: 1.4; }
+.price { text-align: right; }
+.price .big { font-family: "JetBrains Mono", monospace; font-size: 19px; font-weight: 500; }
+.price .sub { font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: var(--fg-3); margin-top: 2px; }
+.price .from { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3); font-family: "JetBrains Mono", monospace; }
+.cta { display: flex; flex-direction: column; gap: 5px; align-items: stretch; }
+.expand {
+  height: 34px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+  font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .07em; text-transform: uppercase;
+}
+.expand:hover { border-color: var(--fg-3); }
+.card.open .expand { background: var(--signal); border-color: var(--signal); color: #fff; }
+:root[data-theme="dark"] .card.open .expand { color: #0E0E15; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card.open .expand { color: #0E0E15; } }
+.opsum {
+  font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+  color: var(--best); text-align: center; letter-spacing: .04em;
+}
+
+/* offer table */
+.offers { border-top: 1px solid var(--line-soft); background: var(--bg); padding: 4px 16px 16px; }
+.otable { width: 100%; border-collapse: collapse; min-width: 660px; }
+.oscroll { overflow-x: auto; }
+.otable th, .otable td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; white-space: nowrap; }
+.otable thead th {
+  font-family: "JetBrains Mono", monospace; font-size: 9.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--fg-3); font-weight: 500; border-bottom-color: var(--line);
+}
+.otable tbody tr:last-child td { border-bottom: none; }
+.otable td.n { font-family: "JetBrains Mono", monospace; }
+.otable tr.best td { background: var(--best-wash); }
+.otable tr.best td:first-child { box-shadow: inset 2px 0 0 var(--best); }
+.tag {
+  display: inline-block; padding: 2px 6px; border-radius: 2px;
+  font-family: "JetBrains Mono", monospace; font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase;
+  border: 1px solid var(--line); color: var(--fg-3);
+}
+.tag.best { background: var(--best-wash); color: var(--best); border-color: color-mix(in srgb, var(--best) 38%, transparent); }
+.tag.paid { background: var(--surface-2); color: var(--fg-2); }
+.go {
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px;
+  border-radius: 3px; border: 1px solid var(--signal); background: var(--signal); color: #fff;
+  font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase;
+}
+:root[data-theme="dark"] .go { color: #0E0E15; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .go { color: #0E0E15; } }
+.go:hover { background: var(--signal-2); border-color: var(--signal-2); }
+.olegend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 11px; }
+.olegend span { font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--fg-3); letter-spacing: .04em; }
+
+/* operator strip */
+.opstrip {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1px;
+  background: var(--line-soft); border: 1px solid var(--line-soft); border-radius: var(--r);
+  margin: 0 0 18px;
+}
+.opcell { background: var(--surface); padding: 13px 15px; }
+.opcell .v { font-family: "JetBrains Mono", monospace; font-size: 21px; font-weight: 500; margin-top: 3px; }
+.opcell .h { font-family: "JetBrains Mono", monospace; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3); }
+.opcell .d { font-size: 11.5px; color: var(--fg-3); margin-top: 3px; line-height: 1.35; }
+.opnote { font-size: 12px; color: var(--fg-3); margin: -8px 0 18px; max-width: 78ch; }
+.cvr { display: inline-flex; align-items: center; gap: 8px; }
+.cvr input { width: 120px; }
+
+.empty { border: 1px dashed var(--line); border-radius: var(--r); padding: 56px 24px; text-align: center; background: var(--surface); }
+.empty h3 { font-size: 22px; margin-bottom: 6px; }
+.empty p { color: var(--fg-3); margin: 0 0 16px; }
+.btn {
+  height: 36px; padding: 0 16px; border-radius: var(--r);
+  border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+  font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+}
+.btn:hover { border-color: var(--fg-3); }
+.btn.solid { background: var(--signal); border-color: var(--signal); color: #fff; }
+:root[data-theme="dark"] .btn.solid { color: #0E0E15; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.solid { color: #0E0E15; } }
+
+/* phase 2 banner */
+.phase2 {
+  border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent); background: var(--warn-wash);
+  border-radius: var(--r); padding: 14px 16px; margin-bottom: 16px; font-size: 13.5px; color: var(--fg-2);
+}
+.phase2 b { color: var(--fg); }
+
+footer { border-top: 1px solid var(--line); background: var(--surface); padding: 34px 0 54px; }
+footer .cols { display: grid; grid-template-columns: 1.6fr 1fr; gap: 34px; }
+@media (max-width: 800px) { footer .cols { grid-template-columns: 1fr; } }
+footer p { font-size: 12.5px; color: var(--fg-3); line-height: 1.6; max-width: 70ch; margin: 0 0 10px; }
+footer strong { color: var(--fg-2); }
+.disc {
+  border-left: 3px solid var(--signal); background: var(--signal-wash);
+  padding: 12px 15px; border-radius: 0 var(--r) var(--r) 0; margin-bottom: 14px;
+}
+.disc p { color: var(--fg-2); margin: 0; }
+</style>
+
+<div class="notice">
+  <div class="wrap">
+    <b>Prototype.</b>
+    <span>Products, merchants and prices below are sample data built to demonstrate the engine — no live feeds are connected. Landed-cost figures are planning estimates, not quotes.</span>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="mark" href="#top" aria-label="Relay home">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="1.5" y="6.5" width="21" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6 12h4l2-3 2 6 2-3h2" stroke="var(--signal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <b>RELAY</b>
+    </a>
+    <div class="q">
+      <svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+      <input id="q" type="search" placeholder="Search robot arms, drones, dev boards, audio…" aria-label="Search products" autocomplete="off">
+      <button class="clr" id="clrq" aria-label="Clear search" hidden>&times;</button>
+    </div>
+    <div class="top-sp"></div>
+    <select class="sel" id="dest" aria-label="Deliver to"></select>
+    <button class="opbtn" id="opToggle" aria-pressed="false">Operator view</button>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-in">
+    <div>
+    <span class="lbl">Nova Digitus Designs LLC · Affiliate search platform</span>
+    <h1>Search the world's merchants. See the <span>landed</span> price.</h1>
+    <p>Relay indexes the same product across every merchant that will ship it to you, then adds the freight, the import duty and the tax for your country — because since de minimis ended, the sticker price stopped being the price. We take a commission from the merchant, never from you, and we print which link pays us.</p>
+      <div class="tracks" id="tracks"></div>
+    </div>
+    <div class="spec-panel" id="specPanel"></div>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="work">
+    <aside class="facets" id="facets"></aside>
+    <div>
+      <div id="opstrip"></div>
+      <div id="phase2note"></div>
+      <div class="rhead">
+        <span class="count" id="count"></span>
+        <span class="sp"></span>
+        <select class="sel" id="sort" aria-label="Sort results">
+          <option value="rel">Sort · Relevance</option>
+          <option value="landed">Sort · Landed price, low</option>
+          <option value="high">Sort · Landed price, high</option>
+          <option value="payout">Sort · Payout per sale</option>
+          <option value="rate">Sort · Commission rate</option>
+        </select>
+        <button class="btn" id="reset">Reset</button>
+      </div>
+      <div id="results"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap cols">
+    <div>
+      <div class="disc">
+        <p><strong>How Relay makes money.</strong> When you use one of our links to buy from a merchant, that merchant pays us a commission. It costs you nothing extra and it never changes the price you pay. Every outbound link on this site is a paid link and is marked as one. Ranking is by landed price, not by what pays us most — switch on Operator view to see exactly what each link earns.</p>
+      </div>
+      <p><strong>Sample data.</strong> Product names describe generic categories rather than specific branded models, and merchant names are placeholders. Prices, shipping and commission figures are illustrative. Commission rates and cookie windows shown by network reflect published ranges researched in September 2026 and change frequently — confirm current terms in each network's dashboard.</p>
+      <p><strong>Landed-cost estimates.</strong> Duty and tax figures are rough planning rates by destination, not classifications. Actual duty depends on the item's HTS heading and its origin. The United States suspended its $800 de minimis exemption in 2025, so low-value parcels into the US now carry duty and a formal or informal entry.</p>
+    </div>
+    <div>
+      <span class="lbl">Phase plan</span>
+      <p style="margin-top:10px"><strong>Phase 1 — Tech, robotics, electronics.</strong> High order values, dense specification data, buyers who compare. The categories where a comparison engine is worth using.</p>
+      <p><strong>Phase 2 — Men's fashion accessories.</strong> Watches, leather goods, eyewear. Lower order values but roughly double the commission rate and far longer cookie windows.</p>
+      <p><strong>Never.</strong> Ranking merchants by what they pay us. The moment that happens the engine is worthless and so is the traffic.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     DESTINATIONS — illustrative planning rates, not
+     classifications. Duty depends on HTS heading and origin.
+     ========================================================= */
+  var DEST = [
+    { c: "US", n: "United States", duty: 0.055, tax: 0.0750, tn: "Sales tax", note: "No de minimis since 2025 — duty applies at any value." },
+    { c: "CA", n: "Canada",        duty: 0.050, tax: 0.1300, tn: "GST/HST", note: "CAD 20 de minimis for most postal imports." },
+    { c: "GB", n: "United Kingdom",duty: 0.040, tax: 0.2000, tn: "VAT", note: "VAT applies from the first pound on imports." },
+    { c: "DE", n: "Germany",       duty: 0.040, tax: 0.1900, tn: "VAT", note: "EU IOSS applies to consignments under EUR 150." },
+    { c: "AU", n: "Australia",     duty: 0.050, tax: 0.1000, tn: "GST", note: "GST on all imported goods regardless of value." },
+    { c: "JP", n: "Japan",         duty: 0.030, tax: 0.1000, tn: "Consumption tax", note: "" },
+    { c: "SG", n: "Singapore",     duty: 0.000, tax: 0.0900, tn: "GST", note: "Low duty environment; GST on all imports." },
+    { c: "AE", n: "UAE",           duty: 0.050, tax: 0.0500, tn: "VAT", note: "" },
+    { c: "MX", n: "Mexico",        duty: 0.070, tax: 0.1600, tn: "IVA", note: "" },
+    { c: "IN", n: "India",         duty: 0.200, tax: 0.1800, tn: "GST", note: "High duty on consumer electronics." },
+    { c: "BR", n: "Brazil",        duty: 0.200, tax: 0.1700, tn: "ICMS", note: "High duty plus state tax; model conservatively." },
+    { c: "ZA", n: "South Africa",  duty: 0.150, tax: 0.1500, tn: "VAT", note: "" }
+  ];
+
+  /* =========================================================
+     NETWORKS — commission ranges and cookie windows reflect
+     published terms researched Sept 2026. Verify in-dashboard.
+     ========================================================= */
+  var NET = {
+    cj:      { n: "CJ Affiliate",          cookie: 30, note: "Deepest catalogue of brand-direct electronics programs. Rates 3-12%." },
+    impact:  { n: "Impact",                cookie: 30, note: "Where most modern DTC hardware brands run their program." },
+    sas:     { n: "ShareASale",            cookie: 30, note: "Strong for components, tools and mid-market brands." },
+    awin:    { n: "Awin",                  cookie: 30, note: "Best European and UK merchant coverage." },
+    rakuten: { n: "Rakuten Advertising",   cookie: 30, note: "Large-brand relationships; slower approvals." },
+    ebay:    { n: "eBay Partner Network",  cookie: 24, note: "Open to new publishers with no sales threshold. Good day-one inventory." },
+    aliex:   { n: "AliExpress Affiliate",  cookie: 3,  note: "Global long-tail coverage, low rates, fast approval." },
+    amazon:  { n: "Amazon Associates",     cookie: 1,  note: "24-hour cookie, 1-2.5% on electronics. Creators API needs 10 sales in 30 days." },
+    house:   { n: "Brand direct",          cookie: 45, note: "Best rates and longest cookies. One relationship at a time." }
+  };
+
+  /* =========================================================
+     SAMPLE CATALOG
+     [phase, category, title, spec, offers]
+     offer = [merchantLabel, network, price, shipUSD, rate, shipsWorldwide]
+     ========================================================= */
+  var P = [
+    // ---------- PHASE 1: robotics ----------
+    [1,"Robotics","6-Axis Collaborative Robot Arm, 5 kg","850 mm reach, ±0.03 mm repeatability, ROS 2 driver, 24 V",
+      [["Automation Depot","cj",11480,0,0.05,0],["Northgate Industrial","impact",11940,180,0.06,1],["RoboSupply EU","awin",12250,340,0.055,1]]],
+    [1,"Robotics","Desktop Robot Arm, 4-Axis Educational","320 mm reach, Python and Blockly SDK, suction and gripper heads",
+      [["MakerStation","sas",729,18,0.09,1],["EduTech Direct","house",699,25,0.12,1],["Global Marketplace","ebay",755,0,0.03,1],["Cross-Border Bazaar","aliex",648,42,0.04,1]]],
+    [1,"Robotics","Autonomous Mobile Robot Base, 50 kg payload","LiDAR SLAM, 8 h runtime, differential drive, ROS 2",
+      [["Northgate Industrial","impact",4380,0,0.06,0],["Automation Depot","cj",4520,120,0.05,1]]],
+    [1,"Robotics","Robot Vacuum, LiDAR + Self-Empty Base","Multi-floor mapping, 5,500 Pa suction, 60-day dust bag",
+      [["HomeRobot Store","cj",899,0,0.04,0],["Everything Retailer","amazon",869,0,0.025,0],["Global Marketplace","ebay",915,0,0.03,1]]],
+    [1,"Robotics","Quadruped Robot Dev Platform","12 DoF, 3 kg payload, depth camera, open SDK",
+      [["Northgate Industrial","impact",3290,0,0.07,1],["MakerStation","sas",3450,95,0.06,1]]],
+
+    // ---------- drones ----------
+    [1,"Drones","4K Cinema Drone, 43-min Flight","1-inch CMOS, 10 km transmission, omnidirectional sensing",
+      [["AerialPro","impact",1899,0,0.055,1],["PhotoGear Direct","cj",1949,0,0.04,0],["Everything Retailer","amazon",1879,0,0.03,0],["Global Marketplace","ebay",1830,45,0.03,1]]],
+    [1,"Drones","Sub-250 g Travel Drone","4K/60, 34-min flight, no registration in most jurisdictions",
+      [["AerialPro","impact",759,0,0.06,1],["Cross-Border Bazaar","aliex",698,38,0.04,1],["Everything Retailer","amazon",749,0,0.03,0]]],
+    [1,"Drones","Agricultural Spray Drone, 30 L","RTK positioning, terrain-following radar, 12 ha/hour",
+      [["AgriTech Supply","house",18400,0,0.04,1],["Northgate Industrial","impact",19200,0,0.045,1]]],
+    [1,"Drones","FPV Racing Kit, 5-inch Freestyle","Analog and digital VTX options, 6S, spare-parts bundle",
+      [["MakerStation","sas",489,16,0.08,1],["FPV Workshop","house",469,22,0.10,1],["Cross-Border Bazaar","aliex",412,31,0.04,1]]],
+
+    // ---------- components ----------
+    [1,"Components","Single-Board Computer, 8 GB, ARM64","Quad-core, dual 4K out, PCIe, 40-pin GPIO",
+      [["MakerStation","sas",94,9,0.08,1],["Component Warehouse","cj",89,12,0.05,1],["Cross-Border Bazaar","aliex",81,14,0.04,1]]],
+    [1,"Components","32-Bit MCU Dev Board, Wi-Fi + BLE","Dual-core, 16 MB flash, USB-C, castellated edges",
+      [["MakerStation","sas",17,7,0.09,1],["Component Warehouse","cj",15,9,0.06,1],["Cross-Border Bazaar","aliex",11,6,0.04,1]]],
+    [1,"Components","Brushless Servo + Driver Set, 200 W","24 V, CANopen, absolute encoder, 3,000 rpm",
+      [["Automation Depot","cj",348,24,0.05,1],["Northgate Industrial","impact",372,0,0.06,1]]],
+    [1,"Components","Depth Camera, Global Shutter Stereo","0.2-10 m range, IMU, USB-C, ROS 2 wrapper",
+      [["Component Warehouse","cj",389,15,0.055,1],["Northgate Industrial","impact",405,0,0.06,1],["Global Marketplace","ebay",362,28,0.03,1]]],
+    [1,"Components","Benchtop Oscilloscope, 200 MHz, 4-Ch","2 GSa/s, 25 Mpts memory, built-in AWG",
+      [["TestGear Supply","cj",1049,0,0.05,1],["Component Warehouse","cj",1120,45,0.05,1],["Global Marketplace","ebay",985,60,0.03,1]]],
+
+    // ---------- computing ----------
+    [1,"Computing","Workstation GPU, 48 GB","Blower cooling, 4x DisplayPort, ECC memory",
+      [["Server Outfitters","impact",4790,0,0.035,1],["Everything Retailer","amazon",4849,0,0.025,0],["Global Marketplace","ebay",4550,85,0.03,1]]],
+    [1,"Computing","Mini PC, 32 GB / 2 TB, Ryzen-class","Dual 2.5 GbE, Wi-Fi 6E, VESA mount, fanless option",
+      [["TechOutlet Direct","cj",729,0,0.05,1],["Everything Retailer","amazon",699,0,0.025,0],["Cross-Border Bazaar","aliex",658,34,0.04,1]]],
+    [1,"Computing","NAS Enclosure, 6-Bay","10 GbE, NVMe cache slots, ZFS-capable, diskless",
+      [["Server Outfitters","impact",1189,0,0.04,1],["TechOutlet Direct","cj",1229,0,0.05,1]]],
+    [1,"Computing","Portable 4K OLED Monitor, 16 in","USB-C single cable, 400 nits, VESA-ready stand",
+      [["TechOutlet Direct","cj",549,0,0.06,1],["Global Marketplace","ebay",512,32,0.03,1],["Cross-Border Bazaar","aliex",478,29,0.04,1]]],
+
+    // ---------- audio / imaging / power ----------
+    [1,"Audio","Studio Monitor Pair, 6.5-inch","Bi-amped, 110 W, room-correction DSP, XLR and TRS",
+      [["SoundRoom","cj",1099,0,0.08,1],["ProAudio Direct","impact",1149,0,0.07,1],["Everything Retailer","amazon",1079,0,0.03,0]]],
+    [1,"Audio","ANC Over-Ear Headphones, LDAC","40 h battery, multipoint, USB-C DAC mode",
+      [["SoundRoom","cj",349,0,0.07,1],["Everything Retailer","amazon",329,0,0.03,0],["Global Marketplace","ebay",318,14,0.03,1]]],
+    [1,"Imaging","Thermal Imaging Camera, 384x288","-20 to 550 °C, 25 Hz, USB-C phone module",
+      [["TestGear Supply","cj",699,0,0.06,1],["Component Warehouse","cj",739,18,0.05,1]]],
+    [1,"Imaging","Industrial Machine Vision Camera, 12 MP","GigE, global shutter, C-mount, SDK included",
+      [["Automation Depot","cj",1240,0,0.05,1],["Northgate Industrial","impact",1299,0,0.06,1]]],
+    [1,"Power","Portable Power Station, 2 kWh","LiFePO4, 2,400 W inverter, 1,200 W solar input",
+      [["PowerHouse Direct","impact",1499,0,0.08,1],["TechOutlet Direct","cj",1579,0,0.05,1],["Everything Retailer","amazon",1449,0,0.03,0]]],
+    [1,"Power","Bench Power Supply, 30 V / 10 A","Programmable, 4-wire sense, USB and LAN control",
+      [["TestGear Supply","cj",329,0,0.06,1],["Component Warehouse","cj",345,16,0.05,1],["Cross-Border Bazaar","aliex",289,24,0.04,1]]],
+
+    // ---------- PHASE 2: men's accessories ----------
+    [2,"Watches","Automatic Dive Watch, 300 m","Sapphire crystal, ceramic bezel, in-house 70 h movement",
+      [["Chronos Marketplace","cj",1290,0,0.06,1],["Timepiece Outlet","cj",1180,0,0.05,1],["Heritage Watch Co.","house",1350,0,0.10,1]]],
+    [2,"Watches","Field Watch, 38 mm Titanium","Solar movement, sapphire, 100 m, NATO strap",
+      [["Chronos Marketplace","cj",489,0,0.07,1],["Timepiece Outlet","cj",449,0,0.05,1],["Global Marketplace","ebay",428,12,0.03,1]]],
+    [2,"Watches","Chronograph, Steel Bracelet","Panda dial, 42 mm, 100 m, quick-release bracelet",
+      [["Chronos Marketplace","cj",715,0,0.06,1],["Heritage Watch Co.","house",769,0,0.10,1]]],
+    [2,"Leather","Full-Grain Bifold Wallet, RFID","Vegetable-tanned, 8 card slots, edge-painted",
+      [["Grain & Hide","sas",119,8,0.12,1],["Leatherworks Direct","impact",129,0,0.10,1]]],
+    [2,"Leather","Leather Weekender Duffel, 40 L","Full-grain, brass hardware, suede lining, luggage sleeve",
+      [["Grain & Hide","sas",389,0,0.12,1],["Leatherworks Direct","impact",425,0,0.10,1],["Zenith Department","rakuten",449,0,0.07,1]]],
+    [2,"Leather","Minimalist Card Holder","Shell cordovan, 4 pockets, hand-stitched",
+      [["Grain & Hide","sas",95,8,0.12,1],["Artisan Goods Co.","house",89,10,0.15,1]]],
+    [2,"Eyewear","Polarized Titanium Sunglasses","Beta-titanium frame, CR-39 polarized, 8 g",
+      [["Optic Row","impact",229,0,0.10,1],["Zenith Department","rakuten",249,0,0.07,1]]],
+    [2,"Eyewear","Acetate Frames, Blue-Light Filter","Italian acetate, spring hinges, prescription-ready",
+      [["Optic Row","impact",149,0,0.12,1],["Vision Direct Global","awin",139,9,0.09,1]]],
+    [2,"Jewelry","Signet Ring, Solid Sterling","Hand-engraved face, 14 g, sizes 8-13",
+      [["Atelier Metal","sas",245,0,0.10,1],["Zenith Department","rakuten",279,0,0.072,1]]],
+    [2,"Bags","Ballistic Nylon Briefcase, 15 in","1680D shell, leather trim, waterproof zips",
+      [["Grain & Hide","sas",279,0,0.12,1],["Carry Systems","impact",299,0,0.09,1],["Zenith Department","rakuten",315,0,0.07,1]]]
+  ];
+
+  var CATALOG = P.map(function (r, i) {
+    return {
+      id: "R" + (1000 + i * 3),
+      phase: r[0], cat: r[1], title: r[2], spec: r[3],
+      offers: r[4].map(function (o) {
+        return { m: o[0], net: o[1], price: o[2], ship: o[3], rate: o[4], ww: !!o[5] };
+      }),
+      seed: (i * 2654435761) % 99991
+    };
+  });
+
+  /* ================= state ================= */
+  var state = {
+    q: "", phase: 1, cat: null, dest: "US", sort: "rel",
+    maxPrice: null, net: null, op: false, cvr: 0.028, open: {}
+  };
+
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+  var usd = function (n) { return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 }); };
+  var usd2 = function (n) { return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  var dest = function () { return DEST.filter(function (d) { return d.c === state.dest; })[0]; };
+
+  /* landed = price + shipping + duty on (price+ship) + destination tax on the lot */
+  function landed(o) {
+    var d = dest();
+    var goods = o.price + o.ship;
+    var duty = goods * d.duty;
+    var tax = (goods + duty) * d.tax;
+    return { goods: goods, duty: duty, tax: tax, total: goods + duty + tax };
+  }
+  function payout(o) { return o.price * o.rate; }
+
+  function offersFor(p) {
+    var d = dest();
+    return p.offers.filter(function (o) { return o.ww || d.c === "US"; });
+  }
+  function bestOffer(p) {
+    var list = offersFor(p);
+    if (!list.length) return null;
+    return list.slice().sort(function (a, b) { return landed(a).total - landed(b).total; })[0];
+  }
+  function topPayout(p) {
+    var list = offersFor(p);
+    if (!list.length) return 0;
+    return Math.max.apply(null, list.map(payout));
+  }
+
+  /* ================= product glyphs ================= */
+  function rng(s) { var x = s >>> 0; return function () { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
+  var GLYPH = {
+    Robotics: function (r) {
+      var arm = "";
+      var x = 22, y = 74, ang = -60 - r() * 30;
+      for (var i = 0; i < 3; i++) {
+        var len = 24 - i * 4;
+        var nx = x + Math.cos(ang * Math.PI / 180) * len, ny = y + Math.sin(ang * Math.PI / 180) * len;
+        arm += '<line x1="' + x + '" y1="' + y + '" x2="' + nx.toFixed(1) + '" y2="' + ny.toFixed(1) + '" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>';
+        arm += '<circle cx="' + x + '" cy="' + y + '" r="3.4" fill="var(--sig)"/>';
+        x = nx; y = ny; ang += 42 + r() * 30;
+      }
+      return '<rect x="12" y="74" width="20" height="9" rx="2" fill="currentColor"/>' + arm +
+        '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4.6" fill="none" stroke="var(--sig)" stroke-width="3"/>';
+    },
+    Drones: function (r) {
+      var g = '<rect x="38" y="42" width="24" height="16" rx="4" fill="currentColor"/>';
+      [[26, 30], [74, 30], [26, 70], [74, 70]].forEach(function (p, i) {
+        g += '<line x1="50" y1="50" x2="' + p[0] + '" y2="' + p[1] + '" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>';
+        g += '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="' + (13 + r() * 3).toFixed(1) + '" ry="2.6" fill="var(--sig)" opacity=".85"/>';
+        g += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3" fill="currentColor"/>';
+      });
+      return g + '<circle cx="50" cy="62" r="4.5" fill="var(--sig)"/>';
+    },
+    Components: function (r) {
+      var g = '<rect x="30" y="34" width="40" height="32" rx="3" fill="currentColor"/>';
+      for (var i = 0; i < 6; i++) {
+        var yy = 39 + i * 5;
+        g += '<line x1="20" y1="' + yy + '" x2="30" y2="' + yy + '" stroke="var(--sig)" stroke-width="2.4"/>';
+        g += '<line x1="70" y1="' + yy + '" x2="80" y2="' + yy + '" stroke="var(--sig)" stroke-width="2.4"/>';
+      }
+      for (var k = 0; k < 4; k++) {
+        g += '<rect x="' + (36 + k * 8) + '" y="' + (42 + Math.floor(r() * 3) * 6) + '" width="5" height="5" rx="1" fill="var(--bg2)"/>';
+      }
+      return g;
+    },
+    Computing: function () {
+      return '<rect x="18" y="28" width="64" height="40" rx="3" fill="currentColor"/>' +
+        '<rect x="24" y="34" width="52" height="28" rx="2" fill="var(--bg2)"/>' +
+        '<rect x="34" y="72" width="32" height="5" rx="2.5" fill="var(--sig)"/>' +
+        '<line x1="30" y1="41" x2="58" y2="41" stroke="var(--sig)" stroke-width="2.4"/>' +
+        '<line x1="30" y1="48" x2="50" y2="48" stroke="currentColor" stroke-width="2.4" opacity=".45"/>';
+    },
+    Audio: function (r) {
+      var g = '<rect x="30" y="20" width="40" height="60" rx="4" fill="currentColor"/>' +
+        '<circle cx="50" cy="58" r="13" fill="var(--bg2)"/><circle cx="50" cy="58" r="5.5" fill="var(--sig)"/>' +
+        '<circle cx="50" cy="33" r="6.5" fill="var(--bg2)"/>';
+      for (var i = 0; i < 3; i++) {
+        g += '<path d="M74 ' + (46 + i * 4) + ' q ' + (6 + i * 4) + ' ' + (12 - i * 2) + ' 0 ' + (24 - i * 4) + '" fill="none" stroke="var(--sig)" stroke-width="2" opacity="' + (0.8 - i * 0.2).toFixed(2) + '"/>';
+      }
+      return g;
+    },
+    Imaging: function () {
+      return '<rect x="16" y="32" width="68" height="42" rx="5" fill="currentColor"/>' +
+        '<rect x="40" y="24" width="20" height="9" rx="2" fill="currentColor"/>' +
+        '<circle cx="50" cy="53" r="16" fill="var(--bg2)"/>' +
+        '<circle cx="50" cy="53" r="10" fill="none" stroke="var(--sig)" stroke-width="3"/>' +
+        '<circle cx="72" cy="40" r="3" fill="var(--sig)"/>';
+    },
+    Power: function (r) {
+      var g = '<rect x="20" y="30" width="60" height="46" rx="5" fill="currentColor"/>' +
+        '<rect x="27" y="37" width="26" height="18" rx="2" fill="var(--bg2)"/>';
+      for (var i = 0; i < 3; i++) g += '<rect x="' + (30 + i * 7) + '" y="41" width="4" height="10" rx="1" fill="var(--sig)"/>';
+      g += '<path d="M64 38 l-7 12 h6 l-4 12 10 -14 h-6 z" fill="var(--sig)"/>';
+      g += '<circle cx="33" cy="66" r="4" fill="none" stroke="var(--bg2)" stroke-width="2.4"/><circle cx="47" cy="66" r="4" fill="none" stroke="var(--bg2)" stroke-width="2.4"/>';
+      return g;
+    },
+    Watches: function () {
+      return '<rect x="38" y="12" width="24" height="18" rx="4" fill="currentColor" opacity=".55"/>' +
+        '<rect x="38" y="70" width="24" height="18" rx="4" fill="currentColor" opacity=".55"/>' +
+        '<circle cx="50" cy="50" r="22" fill="currentColor"/><circle cx="50" cy="50" r="16" fill="var(--bg2)"/>' +
+        '<line x1="50" y1="50" x2="50" y2="40" stroke="var(--sig)" stroke-width="2.6" stroke-linecap="round"/>' +
+        '<line x1="50" y1="50" x2="58" y2="54" stroke="var(--sig)" stroke-width="2.6" stroke-linecap="round"/>' +
+        '<rect x="71" y="47" width="5" height="6" rx="1.5" fill="currentColor"/>';
+    },
+    Leather: function () {
+      return '<path d="M20 34 h60 a4 4 0 0 1 4 4 v26 a4 4 0 0 1 -4 4 h-60 a4 4 0 0 1 -4 -4 v-26 a4 4 0 0 1 4 -4 z" fill="currentColor"/>' +
+        '<rect x="24" y="42" width="30" height="18" rx="2" fill="var(--bg2)"/>' +
+        '<line x1="16" y1="51" x2="84" y2="51" stroke="var(--sig)" stroke-width="2" stroke-dasharray="4 3"/>';
+    },
+    Eyewear: function () {
+      return '<circle cx="30" cy="52" r="15" fill="none" stroke="currentColor" stroke-width="5"/>' +
+        '<circle cx="70" cy="52" r="15" fill="none" stroke="currentColor" stroke-width="5"/>' +
+        '<path d="M45 50 q5 -5 10 0" fill="none" stroke="var(--sig)" stroke-width="4" stroke-linecap="round"/>' +
+        '<line x1="15" y1="47" x2="6" y2="42" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
+        '<line x1="85" y1="47" x2="94" y2="42" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>';
+    },
+    Jewelry: function () {
+      return '<circle cx="50" cy="58" r="22" fill="none" stroke="currentColor" stroke-width="7"/>' +
+        '<rect x="38" y="20" width="24" height="18" rx="4" fill="currentColor"/>' +
+        '<path d="M44 29 h12 M50 24 v10" stroke="var(--sig)" stroke-width="2.4" stroke-linecap="round"/>';
+    },
+    Bags: function () {
+      return '<rect x="18" y="38" width="64" height="40" rx="4" fill="currentColor"/>' +
+        '<path d="M38 38 v-8 a12 12 0 0 1 24 0 v8" fill="none" stroke="currentColor" stroke-width="4.5"/>' +
+        '<rect x="18" y="52" width="64" height="6" fill="var(--bg2)"/>' +
+        '<rect x="44" y="49" width="12" height="12" rx="2" fill="var(--sig)"/>';
+    }
+  };
+  function glyph(p, size) {
+    var fn = GLYPH[p.cat] || GLYPH.Components;
+    var body = fn(rng(p.seed + 11));
+    return '<svg viewBox="0 0 100 100" role="img" aria-label="' + esc(p.cat) + '" style="--sig:var(--signal);--bg2:var(--surface)">' +
+      '<rect width="100" height="100" fill="var(--surface-2)"/>' +
+      '<g color="var(--fg-3)" opacity=".92">' + body + '</g></svg>';
+  }
+
+  /* ================= filtering ================= */
+  function visible() {
+    var q = state.q.trim().toLowerCase();
+    var list = CATALOG.filter(function (p) {
+      if (p.phase !== state.phase) return false;
+      if (state.cat && p.cat !== state.cat) return false;
+      if (!offersFor(p).length) return false;
+      if (state.maxPrice != null) {
+        var b = bestOffer(p);
+        if (!b || landed(b).total > state.maxPrice) return false;
+      }
+      if (state.net && !offersFor(p).some(function (o) { return o.net === state.net; })) return false;
+      if (q) {
+        var hay = (p.title + " " + p.spec + " " + p.cat + " " + p.offers.map(function (o) { return o.m + " " + NET[o.net].n; }).join(" ")).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+    var s = state.sort;
+    if (s === "landed") list.sort(function (a, b) { return landed(bestOffer(a)).total - landed(bestOffer(b)).total; });
+    else if (s === "high") list.sort(function (a, b) { return landed(bestOffer(b)).total - landed(bestOffer(a)).total; });
+    else if (s === "payout") list.sort(function (a, b) { return topPayout(b) - topPayout(a); });
+    else if (s === "rate") list.sort(function (a, b) {
+      var ra = Math.max.apply(null, offersFor(a).map(function (o) { return o.rate; }));
+      var rb = Math.max.apply(null, offersFor(b).map(function (o) { return o.rate; }));
+      return rb - ra;
+    });
+    return list;
+  }
+
+  /* ================= render: tracks ================= */
+  function renderTracks() {
+    var p1 = CATALOG.filter(function (p) { return p.phase === 1; }).length;
+    var p2 = CATALOG.filter(function (p) { return p.phase === 2; }).length;
+    $("#tracks").innerHTML =
+      '<button class="track" data-phase="1" aria-pressed="' + (state.phase === 1) + '">' +
+        '<span class="t">Tech, robotics &amp; electronics</span><span class="s">Phase 1 · live · ' + p1 + ' listings</span></button>' +
+      '<button class="track" data-phase="2" aria-pressed="' + (state.phase === 2) + '">' +
+        '<span class="t">Men’s fashion accessories</span><span class="s">Phase 2 · staged · ' + p2 + ' listings</span></button>';
+  }
+
+  /* ================= render: hero specimen ================= */
+  function renderSpec() {
+    var p = CATALOG.filter(function (x) { return x.title.indexOf("4K Cinema Drone") === 0; })[0];
+    var o = p.offers[0];
+    var show = ["US", "GB", "DE", "AU", "IN", "BR"];
+    var rows = show.map(function (code) {
+      var d = DEST.filter(function (x) { return x.c === code; })[0];
+      var goods = o.price + o.ship;
+      var duty = goods * d.duty;
+      var tax = (goods + duty) * d.tax;
+      var total = goods + duty + tax;
+      var add = total - o.price;
+      return '<div class="srow' + (code === state.dest ? " here" : "") + '">' +
+        '<span class="cty">' + esc(d.n) + '</span>' +
+        '<span class="add">+' + usd(add) + '</span>' +
+        '<span class="tot">' + usd(total) + '</span></div>';
+    }).join("");
+
+    $("#specPanel").innerHTML =
+      '<div class="spec-hd"><span class="a">Same drone · six countries</span><span class="b">' + usd(o.price) + '</span></div>' +
+      '<div class="spec-sub">' + esc(p.title) + ' &mdash; one merchant, one sticker price, six very different totals once duty and tax land.</div>' +
+      rows +
+      '<div class="spec-ft">The spread between the cheapest and dearest destination here is <strong style="color:var(--fg)">' +
+      usd((function () {
+        var totals = show.map(function (code) {
+          var d = DEST.filter(function (x) { return x.c === code; })[0];
+          var goods = o.price + o.ship;
+          var duty = goods * d.duty;
+          return goods + duty + (goods + duty) * d.tax;
+        });
+        return Math.max.apply(null, totals) - Math.min.apply(null, totals);
+      })()) + '</strong> on a ' + usd(o.price) + ' item. No merchant shows you that. Change the destination in the header to re-rank every result.</div>';
+  }
+
+  /* ================= render: facets ================= */
+  function renderFacets() {
+    var pool = CATALOG.filter(function (p) { return p.phase === state.phase; });
+    var cats = [];
+    pool.forEach(function (p) { if (cats.indexOf(p.cat) === -1) cats.push(p.cat); });
+
+    var maxLanded = 0;
+    pool.forEach(function (p) { var b = bestOffer(p); if (b) maxLanded = Math.max(maxLanded, landed(b).total); });
+    maxLanded = Math.ceil(maxLanded / 500) * 500;
+    if (state.maxPrice == null) state.maxPrice = maxLanded;
+    if (state.maxPrice > maxLanded) state.maxPrice = maxLanded;
+
+    var nets = [];
+    pool.forEach(function (p) { p.offers.forEach(function (o) { if (nets.indexOf(o.net) === -1) nets.push(o.net); }); });
+
+    var d = dest();
+
+    $("#facets").innerHTML =
+      '<div class="fgroup"><span class="lbl">Category</span><div class="fbody">' +
+        '<button class="fitem" data-cat="" aria-pressed="' + (!state.cat) + '"><span>All categories</span><span class="n">' + pool.length + '</span></button>' +
+        cats.map(function (c) {
+          var n = pool.filter(function (p) { return p.cat === c; }).length;
+          return '<button class="fitem" data-cat="' + esc(c) + '" aria-pressed="' + (state.cat === c) + '"><span>' + esc(c) + '</span><span class="n">' + n + '</span></button>';
+        }).join("") +
+      '</div></div>' +
+
+      '<div class="fgroup"><span class="lbl">Max landed price</span><div class="fbody">' +
+        '<input type="range" id="priceRange" min="100" max="' + maxLanded + '" step="100" value="' + Math.round(state.maxPrice) + '" aria-label="Maximum landed price">' +
+        '<span class="rangeval">Up to ' + usd(state.maxPrice) + ' delivered to ' + d.c + '</span>' +
+      '</div></div>' +
+
+      '<div class="fgroup"><span class="lbl">Affiliate network</span><div class="fbody">' +
+        '<button class="fitem" data-net="" aria-pressed="' + (!state.net) + '"><span>Any network</span><span class="n">' + nets.length + '</span></button>' +
+        nets.map(function (k) {
+          var n = pool.filter(function (p) { return p.offers.some(function (o) { return o.net === k; }); }).length;
+          return '<button class="fitem" data-net="' + k + '" aria-pressed="' + (state.net === k) + '"><span>' + esc(NET[k].n) + '</span><span class="n">' + n + '</span></button>';
+        }).join("") +
+      '</div></div>' +
+
+      '<div class="fgroup"><span class="lbl">Destination · ' + esc(d.n) + '</span><div class="fbody">' +
+        '<span class="rangeval">Duty est. ' + (d.duty * 100).toFixed(1) + '% · ' + esc(d.tn) + ' ' + (d.tax * 100).toFixed(1) + '%</span>' +
+        (d.note ? '<span style="font-size:11.5px;color:var(--fg-3);line-height:1.4">' + esc(d.note) + '</span>' : '') +
+      '</div></div>';
+  }
+
+  /* ================= render: operator strip ================= */
+  function renderOp() {
+    if (!state.op) { $("#opstrip").innerHTML = ""; return; }
+    var list = visible();
+    if (!list.length) { $("#opstrip").innerHTML = ""; return; }
+
+    var payouts = list.map(function (p) { return topPayout(p); });
+    var avgPayout = payouts.reduce(function (a, b) { return a + b; }, 0) / payouts.length;
+    var best = list.slice().sort(function (a, b) { return topPayout(b) - topPayout(a); })[0];
+    var rates = [];
+    list.forEach(function (p) { offersFor(p).forEach(function (o) { rates.push(o.rate); }); });
+    var avgRate = rates.reduce(function (a, b) { return a + b; }, 0) / rates.length;
+    var epc = avgPayout * state.cvr;
+    var cookies = [];
+    list.forEach(function (p) { offersFor(p).forEach(function (o) { cookies.push(NET[o.net].cookie); }); });
+    var avgCookie = cookies.reduce(function (a, b) { return a + b; }, 0) / cookies.length;
+
+    $("#opstrip").innerHTML =
+      '<div class="opstrip">' +
+        '<div class="opcell"><div class="h">Avg payout / sale</div><div class="v">' + usd2(avgPayout) + '</div><div class="d">Best-paying offer on each listing shown</div></div>' +
+        '<div class="opcell"><div class="h">Avg commission rate</div><div class="v">' + (avgRate * 100).toFixed(1) + '%</div><div class="d">Across every offer in view</div></div>' +
+        '<div class="opcell"><div class="h">Est. earnings / 100 clicks</div><div class="v">' + usd2(epc * 100) + '</div><div class="d">At ' + (state.cvr * 100).toFixed(1) + '% conversion</div></div>' +
+        '<div class="opcell"><div class="h">Avg cookie window</div><div class="v">' + avgCookie.toFixed(0) + 'd</div><div class="d">Longer cookie, more attributed sales</div></div>' +
+        '<div class="opcell"><div class="h">Top earner in view</div><div class="v">' + usd2(topPayout(best)) + '</div><div class="d">' + esc(best.title) + '</div></div>' +
+      '</div>' +
+      '<p class="opnote"><span class="cvr"><span class="lbl">Assumed conversion</span>' +
+      '<input type="range" id="cvr" min="5" max="80" step="1" value="' + Math.round(state.cvr * 1000) + '" aria-label="Assumed conversion rate">' +
+      '<span class="rangeval">' + (state.cvr * 100).toFixed(1) + '%</span></span> — ' +
+      'Operator view is internal. It is never shown to shoppers, and it never reorders results: ranking stays on landed price.</p>';
+  }
+
+  /* ================= render: results ================= */
+  function renderResults() {
+    var list = visible();
+    var d = dest();
+    $("#count").textContent = list.length + (list.length === 1 ? " listing" : " listings") + " · delivered to " + d.n;
+
+    $("#phase2note").innerHTML = state.phase === 2
+      ? '<div class="phase2"><b>Phase 2 is staged, not launched.</b> These categories carry roughly double the commission rate of electronics and much longer cookie windows &mdash; but lower order values, so the payout per sale is smaller. Open this track once phase 1 has enough traffic to test against, not before.</div>'
+      : "";
+
+    if (!list.length) {
+      $("#results").innerHTML = '<div class="empty"><h3>Nothing indexed matches that.</h3>' +
+        '<p>Try a broader term, raise the price ceiling, or clear the network filter.</p>' +
+        '<button class="btn solid" id="resetEmpty">Clear all filters</button></div>';
+      return;
+    }
+
+    $("#results").innerHTML = list.map(function (p) {
+      var offers = offersFor(p).slice().sort(function (a, b) { return landed(a).total - landed(b).total; });
+      var b = offers[0];
+      var lb = landed(b);
+      var isOpen = !!state.open[p.id];
+      var spread = offers.length > 1 ? landed(offers[offers.length - 1]).total - lb.total : 0;
+
+      var rows = offers.map(function (o, i) {
+        var L = landed(o);
+        return '<tr class="' + (i === 0 ? "best" : "") + '">' +
+          '<td>' + esc(o.m) + (i === 0 ? ' <span class="tag best">Best landed</span>' : '') + '</td>' +
+          '<td>' + esc(NET[o.net].n) + '</td>' +
+          '<td class="n">' + usd(o.price) + '</td>' +
+          '<td class="n">' + (o.ship ? usd(o.ship) : "Free") + '</td>' +
+          '<td class="n">' + usd(L.duty) + '</td>' +
+          '<td class="n">' + usd(L.tax) + '</td>' +
+          '<td class="n"><b>' + usd(L.total) + '</b></td>' +
+          (state.op ? '<td class="n">' + (o.rate * 100).toFixed(1) + '%</td><td class="n">' + NET[o.net].cookie + 'd</td><td class="n">' + usd2(payout(o)) + '</td>' : '') +
+          '<td><a class="go" href="#" data-out="' + esc(o.m) + '">Go <span aria-hidden="true">&rarr;</span></a> <span class="tag paid">Paid link</span></td>' +
+          '</tr>';
+      }).join("");
+
+      return '<article class="card' + (isOpen ? " open" : "") + '">' +
+        '<button class="crow" data-toggle="' + p.id + '" aria-expanded="' + isOpen + '">' +
+          '<div class="thumb">' + glyph(p) + '</div>' +
+          '<div class="cmain"><h3>' + esc(p.title) + '</h3>' +
+            '<div class="cspec">' + esc(p.spec) + '</div>' +
+            '<div class="cmeta"><span>' + esc(p.cat) + '</span><span>' + p.id + '</span><span>' + offers.length + ' merchant' + (offers.length === 1 ? "" : "s") + '</span>' +
+            (spread > 0 ? '<span style="color:var(--best)">Save ' + usd(spread) + ' vs highest</span>' : '') + '</div></div>' +
+          '<div class="price"><span class="from">From</span><div class="big">' + usd(lb.total) + '</div>' +
+            '<div class="sub">' + usd(b.price) + ' + ' + usd(lb.duty + lb.tax + b.ship) + ' landed</div></div>' +
+          '<div class="cta"><span class="expand">' + (isOpen ? "Hide offers" : "Compare " + offers.length) + '</span>' +
+            (state.op ? '<span class="opsum">pays ' + usd2(topPayout(p)) + '</span>' : '') + '</div>' +
+        '</button>' +
+        (isOpen ?
+          '<div class="offers"><div class="oscroll"><table class="otable"><thead><tr>' +
+            '<th>Merchant</th><th>Network</th><th>Price</th><th>Ship</th><th>Duty est.</th><th>' + esc(d.tn) + ' est.</th><th>Landed</th>' +
+            (state.op ? '<th>Rate</th><th>Cookie</th><th>Pays us</th>' : '') +
+            '<th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+            '<div class="olegend"><span>Ranked by landed price to ' + esc(d.n) + '</span><span>Duty and tax are planning estimates</span><span>Every outbound link is a paid link</span></div>' +
+          '</div>' : '') +
+        '</article>';
+    }).join("");
+  }
+
+  function renderAll() { renderTracks(); renderSpec(); renderFacets(); renderOp(); renderResults(); }
+
+  /* ================= events ================= */
+  document.addEventListener("click", function (e) {
+    var el;
+    if ((el = e.target.closest(".track"))) {
+      state.phase = +el.getAttribute("data-phase");
+      state.cat = null; state.net = null; state.maxPrice = null; state.open = {};
+      renderAll();
+      return;
+    }
+    if ((el = e.target.closest("[data-cat]"))) {
+      state.cat = el.getAttribute("data-cat") || null;
+      renderFacets(); renderOp(); renderResults(); return;
+    }
+    if ((el = e.target.closest("[data-net]"))) {
+      state.net = el.getAttribute("data-net") || null;
+      renderFacets(); renderOp(); renderResults(); return;
+    }
+    if ((el = e.target.closest("[data-toggle]"))) {
+      var id = el.getAttribute("data-toggle");
+      state.open[id] = !state.open[id];
+      renderResults(); return;
+    }
+    if ((el = e.target.closest("[data-out]"))) {
+      e.preventDefault();
+      var was = el.innerHTML;
+      el.innerHTML = "Prototype";
+      setTimeout(function () { el.innerHTML = was; }, 1200);
+      return;
+    }
+    if (e.target.closest("#opToggle")) {
+      state.op = !state.op;
+      $("#opToggle").setAttribute("aria-pressed", String(state.op));
+      renderOp(); renderResults(); return;
+    }
+    if (e.target.closest("#reset") || e.target.closest("#resetEmpty")) {
+      state.q = ""; state.cat = null; state.net = null; state.maxPrice = null; state.sort = "rel"; state.open = {};
+      $("#q").value = ""; $("#sort").value = "rel"; $("#clrq").hidden = true;
+      renderAll(); return;
+    }
+    if (e.target.closest("#clrq")) {
+      state.q = ""; $("#q").value = ""; $("#clrq").hidden = true;
+      renderFacets(); renderOp(); renderResults(); return;
+    }
+  });
+
+  document.addEventListener("input", function (e) {
+    if (e.target.id === "priceRange") {
+      state.maxPrice = +e.target.value;
+      var d = dest();
+      var rv = e.target.parentNode.querySelector(".rangeval");
+      if (rv) rv.textContent = "Up to " + usd(state.maxPrice) + " delivered to " + d.c;
+      renderOp(); renderResults();
+      return;
+    }
+    if (e.target.id === "cvr") {
+      state.cvr = (+e.target.value) / 1000;
+      renderOp(); renderResults();
+      var el = document.getElementById("cvr");
+      if (el) { el.focus(); }
+      return;
+    }
+    if (e.target.id === "q") {
+      state.q = e.target.value;
+      $("#clrq").hidden = !state.q;
+      renderOp(); renderResults();
+      return;
+    }
+  });
+
+  $("#sort").addEventListener("change", function (e) { state.sort = e.target.value; renderResults(); });
+
+  /* destination select */
+  $("#dest").innerHTML = DEST.map(function (d) {
+    return '<option value="' + d.c + '">Deliver to ' + esc(d.n) + '</option>';
+  }).join("");
+  $("#dest").value = state.dest;
+  $("#dest").addEventListener("change", function (e) {
+    state.dest = e.target.value;
+    state.maxPrice = null;
+    renderAll();
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

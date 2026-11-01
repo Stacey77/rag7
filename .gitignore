@@ -1,3 +1,6 @@
+# Dependencies
+node_modules/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -20,7 +23,11 @@ htmlcov/
 venv/
 .venv/
 env/
-.env/
+
+# Environment variables (never commit secrets!)
+.env
+server/.env
+*.local
 
 # Model weights / cache
 *.pth
@@ -44,3 +51,6 @@ models/weights/
 # OS
 .DS_Store
 Thumbs.db
+
+# Ingenium platform runtime data
+ingenium_data/

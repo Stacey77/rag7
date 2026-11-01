@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Day One Store Builder: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Day One Store Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Familjen+Grotesk:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+
+<style>
+/* =============================================================
+   DAY ONE — the vernacular is shop signage: an OPEN sign, a
+   price tag, a paper receipt. Two accents carry meaning rather
+   than decorate: green is money and the shop, orange is reach
+   and promotion. Neutrals are warmed slightly toward paper.
+   ============================================================= */
+:root {
+  --paper:   #F6F5F2;
+  --card:    #FFFFFF;
+  --card-2:  #EEEDE8;
+  --line:    #DDDBD3;
+  --line-2:  #E9E7E1;
+  --ink:     #191713;
+  --ink-2:   #4A473F;
+  --ink-3:   #7C786E;
+
+  --open:      #14664C;   /* shop, money, live */
+  --open-deep: #0C4735;
+  --open-wash: #DCEDE6;
+  --reach:     #DB6427;   /* ads, promotion, spend */
+  --reach-deep:#A8471A;
+  --reach-wash:#FAE7DA;
+  --alert:     #A32E24;
+  --alert-wash:#F7E1DE;
+
+  --r: 12px;
+  --shadow: 0 1px 2px rgba(25,23,19,.05), 0 18px 40px -26px rgba(25,23,19,.45);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#121310; --card:#1B1C18; --card-2:#232520;
+    --line:#33352E; --line-2:#2A2C26;
+    --ink:#F0EFEA; --ink-2:#BAB8AF; --ink-3:#87857C;
+    --open:#5FC7A2; --open-deep:#8FDCC0; --open-wash:#123027;
+    --reach:#F0915C; --reach-deep:#F7B58B; --reach-wash:#2E1C11;
+    --alert:#EE8A7E; --alert-wash:#2E1714;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 20px 44px -28px rgba(0,0,0,.95);
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#121310; --card:#1B1C18; --card-2:#232520;
+  --line:#33352E; --line-2:#2A2C26;
+  --ink:#F0EFEA; --ink-2:#BAB8AF; --ink-3:#87857C;
+  --open:#5FC7A2; --open-deep:#8FDCC0; --open-wash:#123027;
+  --reach:#F0915C; --reach-deep:#F7B58B; --reach-wash:#2E1C11;
+  --alert:#EE8A7E; --alert-wash:#2E1714;
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 20px 44px -28px rgba(0,0,0,.95);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+}
+h1,h2,h3,h4 { margin: 0; font-family: "Familjen Grotesk", "Plus Jakarta Sans", sans-serif; font-weight: 700; letter-spacing: -.02em; text-wrap: balance; }
+button { font: inherit; color: inherit; cursor: pointer; }
+input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--open); outline-offset: 2px; border-radius: 4px; }
+.mono { font-family: "DM Mono", ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.lbl { font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 22px; }
+
+/* ---------------- notice ---------------- */
+.notice { background: var(--reach-wash); border-bottom: 1px solid color-mix(in srgb, var(--reach) 35%, transparent); color: var(--reach-deep); font-size: 12.5px; padding: 8px 0; }
+.notice .wrap { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.notice b { font-weight: 700; }
+
+/* ---------------- hero + device ---------------- */
+.top { display: grid; grid-template-columns: 1fr 430px; gap: 56px; padding: 46px 0 60px; align-items: start; }
+@media (max-width: 1040px) { .top { grid-template-columns: 1fr; gap: 38px; padding: 34px 0 44px; } }
+.top h1 { font-size: clamp(36px, 5.6vw, 60px); line-height: 1.0; max-width: 15ch; margin-top: 12px; }
+.top h1 em { font-style: normal; color: var(--open); }
+.top .sub { font-size: 17.5px; color: var(--ink-2); max-width: 54ch; margin: 20px 0 0; }
+
+.feats { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--line-2); border: 1px solid var(--line-2); border-radius: var(--r); margin-top: 30px; overflow: hidden; }
+.feat { background: var(--card); padding: 18px 18px 20px; }
+.feat .ic { font-size: 21px; line-height: 1; }
+.feat h3 { font-size: 16.5px; margin: 10px 0 5px; }
+.feat p { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+.feat .tag { display: inline-block; margin-top: 9px; font-family: "DM Mono", monospace; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--open); background: var(--open-wash); padding: 2px 7px; border-radius: 3px; }
+.feat .tag.r { color: var(--reach); background: var(--reach-wash); }
+
+/* the phone */
+.device {
+  position: sticky; top: 24px;
+  width: 100%; max-width: 396px; margin: 0 auto;
+  background: var(--ink); border-radius: 38px; padding: 11px;
+  box-shadow: var(--shadow);
+}
+@media (max-width: 1040px) { .device { position: static; } }
+.screen {
+  background: var(--paper); border-radius: 28px; overflow: hidden;
+  height: 748px; display: flex; flex-direction: column; position: relative;
+}
+@media (max-width: 480px) {
+  .device { padding: 0; border-radius: 0; background: none; max-width: none; }
+  .screen { border-radius: 0; height: 640px; border: 1px solid var(--line); }
+}
+.statusbar {
+  height: 26px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px; background: var(--card); border-bottom: 1px solid var(--line-2);
+  font-family: "DM Mono", monospace; font-size: 10px; color: var(--ink-3);
+}
+.apphead {
+  padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 10px; min-height: 54px;
+}
+.apphead .logo {
+  width: 30px; height: 30px; border-radius: 8px; flex: 0 0 auto;
+  display: grid; place-items: center; color: #fff;
+  font-family: "Familjen Grotesk", sans-serif; font-weight: 700; font-size: 14px;
+}
+.apphead .nm { font-family: "Familjen Grotesk", sans-serif; font-weight: 700; font-size: 16px; line-height: 1.1; }
+.apphead .st { font-family: "DM Mono", monospace; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--open); display: flex; align-items: center; gap: 5px; }
+.apphead .st i { width: 6px; height: 6px; border-radius: 50%; background: var(--open); display: block; }
+.apphead .sp { flex: 1; }
+.iconbtn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); display: grid; place-items: center; font-size: 14px; }
+.iconbtn:hover { border-color: var(--ink-3); }
+
+.view { flex: 1; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.pad { padding: 16px; }
+
+.tabbar {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid var(--line); background: var(--card);
+}
+.tab {
+  background: none; border: none; padding: 9px 2px 11px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: var(--ink-3); font-size: 10px; font-weight: 600;
+}
+.tab .g { font-size: 17px; line-height: 1; filter: grayscale(1) opacity(.55); }
+.tab[aria-selected="true"] { color: var(--open); }
+.tab[aria-selected="true"] .g { filter: none; }
+
+/* ---------------- app primitives ---------------- */
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 12px; }
+.panel h4 { font-size: 15px; margin-bottom: 8px; }
+.row { display: flex; align-items: center; gap: 10px; }
+.sp { flex: 1; }
+.btn {
+  height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--open);
+  background: var(--open); color: #fff; font-weight: 700; font-size: 14.5px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+:root[data-theme="dark"] .btn, :root:not([data-theme="light"]) .btn { color: #121310; }
+.btn:hover { background: var(--open-deep); border-color: var(--open-deep); }
+.btn.full { width: 100%; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); font-weight: 600; }
+.btn.ghost:hover { background: var(--card-2); border-color: var(--ink-3); }
+.btn.reach { background: var(--reach); border-color: var(--reach); color: #fff; }
+:root[data-theme="dark"] .btn.reach, :root:not([data-theme="light"]) .btn.reach { color: #121310; }
+.btn.reach:hover { background: var(--reach-deep); border-color: var(--reach-deep); }
+.btn.sm { height: 34px; padding: 0 13px; font-size: 13px; border-radius: 8px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.field { display: block; margin-bottom: 12px; }
+.field > span { display: block; font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+.field input, .field select, .field textarea {
+  width: 100%; height: 46px; padding: 0 13px; border-radius: 10px;
+  background: var(--paper); border: 1px solid var(--line); color: var(--ink); font-size: 15px;
+}
+.field textarea { height: auto; padding: 11px 13px; resize: vertical; min-height: 76px; line-height: 1.5; }
+.field input:focus, .field select:focus { border-color: var(--open); }
+.hint { font-size: 12px; color: var(--ink-3); margin-top: 6px; line-height: 1.45; }
+.err { color: var(--alert); font-size: 12.5px; margin-top: 6px; }
+
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.sw { width: 40px; height: 40px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; }
+.sw[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 2px var(--card) inset; }
+
+.pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; }
+.pill.open { background: var(--open-wash); color: var(--open); }
+.pill.reach { background: var(--reach-wash); color: var(--reach); }
+.pill.mute { background: var(--card-2); color: var(--ink-3); }
+
+/* product cards */
+.plist { display: flex; flex-direction: column; gap: 10px; }
+.pcard { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.pcard .top2 { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 12px; align-items: start; }
+.cover { aspect-ratio: 3/4; border-radius: 7px; overflow: hidden; background: var(--card-2); border: 1px solid var(--line-2); }
+.cover svg { display: block; width: 100%; height: 100%; }
+.pcard h4 { font-size: 14.5px; line-height: 1.25; }
+.pcard .meta { font-family: "DM Mono", monospace; font-size: 9.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); margin-top: 4px; }
+.pcard .blurb { font-size: 12.5px; color: var(--ink-2); margin-top: 6px; line-height: 1.45; }
+.pcard .foot { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line-2); background: var(--card-2); }
+.price { font-family: "DM Mono", monospace; font-weight: 500; font-size: 16px; }
+.cut { font-family: "DM Mono", monospace; font-size: 11px; color: var(--open); }
+
+/* money */
+.big { display: flex; flex-direction: column; gap: 2px; }
+.big .v { font-family: "DM Mono", monospace; font-size: 30px; font-weight: 500; letter-spacing: -.01em; }
+.big .k { font-family: "DM Mono", monospace; font-size: 9.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line-2); border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden; margin-top: 12px; }
+.split > div { background: var(--card); padding: 11px 13px; }
+.feedrow { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line-2); align-items: center; }
+.feedrow:last-child { border-bottom: none; }
+.feedrow .av { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--open-wash); color: var(--open); font-weight: 700; font-size: 13px; }
+.feedrow .t { font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+.feedrow .s { font-family: "DM Mono", monospace; font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+.feedrow .amt { font-family: "DM Mono", monospace; font-size: 14px; color: var(--open); }
+
+/* ads */
+.bar { height: 8px; border-radius: 4px; background: var(--card-2); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--reach); }
+.creative { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 10px; background: var(--card); }
+.creative.sel { border-color: var(--reach); box-shadow: 0 0 0 2px var(--reach-wash); }
+.creative .cbody { padding: 11px 13px; }
+.creative h5 { margin: 0 0 5px; font-size: 14px; font-weight: 700; line-height: 1.3; }
+.creative p { margin: 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.45; }
+.creative .cfoot { display: flex; align-items: center; gap: 8px; padding: 8px 13px; border-top: 1px solid var(--line-2); background: var(--card-2); font-family: "DM Mono", monospace; font-size: 10px; color: var(--ink-3); }
+input[type="range"] { width: 100%; accent-color: var(--reach); }
+
+/* manager chat */
+.thread { display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 84%; padding: 10px 13px; border-radius: 15px; font-size: 14px; line-height: 1.45; }
+.msg.them { background: var(--card); border: 1px solid var(--line); border-bottom-left-radius: 5px; align-self: flex-start; }
+.msg.me { background: var(--open); color: #fff; border-bottom-right-radius: 5px; align-self: flex-end; }
+:root[data-theme="dark"] .msg.me, :root:not([data-theme="light"]) .msg.me { color: #121310; }
+.msg .who { display: block; font-family: "DM Mono", monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; opacity: .65; margin-bottom: 3px; }
+.composer { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--card); }
+.composer input { flex: 1; height: 40px; border-radius: 20px; border: 1px solid var(--line); background: var(--paper); padding: 0 14px; font-size: 14px; }
+
+/* customer sheet */
+.sheet { position: absolute; inset: 0; background: var(--paper); z-index: 20; display: flex; flex-direction: column; transform: translateY(100%); transition: transform .3s cubic-bezier(.3,.8,.3,1); }
+.sheet.open { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .sheet { transition: none; } }
+.sheet-hd { padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--card); display: flex; align-items: center; gap: 10px; }
+.sheet-body { flex: 1; overflow-y: auto; padding: 16px; }
+.bigcover { aspect-ratio: 3/4; max-width: 170px; margin: 0 auto 16px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.bigcover svg { display: block; width: 100%; height: 100%; }
+.toc { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 12px; }
+.toc div { padding: 9px 13px; border-bottom: 1px solid var(--line-2); font-size: 13.5px; display: flex; gap: 10px; }
+.toc div:last-child { border-bottom: none; }
+.toc .n { font-family: "DM Mono", monospace; color: var(--ink-3); font-size: 12px; min-width: 20px; }
+.delivered { text-align: center; padding: 22px 6px 8px; }
+.delivered .tick { width: 60px; height: 60px; border-radius: 50%; background: var(--open-wash); color: var(--open); display: grid; place-items: center; margin: 0 auto 14px; font-size: 28px; }
+
+/* marketing sections below */
+.mkt { border-top: 1px solid var(--line); padding: 54px 0 0; }
+.mkt h2 { font-size: clamp(26px, 3.4vw, 36px); line-height: 1.08; max-width: 22ch; }
+.mkt p.s { color: var(--ink-2); max-width: 64ch; margin: 16px 0 0; font-size: 16px; }
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); margin: 26px 0; background: var(--card); }
+table { width: 100%; border-collapse: collapse; min-width: 620px; }
+th, td { padding: 13px 15px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line-2); font-size: 13.5px; line-height: 1.5; }
+thead th { background: var(--card-2); font-family: "DM Mono", monospace; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; color: var(--ink-2); white-space: nowrap; }
+tbody th { font-weight: 700; color: var(--ink); font-family: "Familjen Grotesk", sans-serif; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
+.box { border-left: 3px solid var(--reach); background: var(--reach-wash); padding: 15px 18px; margin: 24px 0; border-radius: 0 6px 6px 0; max-width: 68ch; }
+.box p { margin: 0; font-size: 14.5px; color: var(--ink-2); }
+.box p + p { margin-top: 9px; }
+.box .lbl { display: block; margin-bottom: 6px; }
+.box strong { color: var(--ink); }
+
+footer { border-top: 1px solid var(--line); margin-top: 54px; padding: 32px 0 58px; }
+footer p { font-size: 12.5px; color: var(--ink-3); max-width: 78ch; line-height: 1.6; margin: 0 0 10px; }
+footer strong { color: var(--ink-2); }
+</style>
+
+<div class="notice">
+  <div class="wrap"><b>Working prototype.</b><span>No payments are taken and no real ads are placed. Products, sales and campaign results below are sample data that demonstrate the flows.</span></div>
+</div>
+
+<main class="wrap">
+  <section class="top">
+    <div>
+      <span class="lbl">Nova Digitus Designs LLC</span>
+      <h1>A complete online business, <em>open today</em>.</h1>
+      <p class="sub">Pick a name, pick a look, and your store is live with products already in it. Promote it with one tap. Get paid from your phone. Everything on the right is running — set it up and sell something.</p>
+
+      <div class="feats">
+        <div class="feat"><div class="ic">🏪</div><h3>Ready-made store</h3><p>Professional storefront under your brand name — designed, built and live in minutes. Works on any phone or computer.</p><span class="tag">Try it →</span></div>
+        <div class="feat"><div class="ic">📦</div><h3>Digital products to sell</h3><p>Guides, courses, checklists and tools, already made. Your share of every sale is printed on each one.</p><span class="tag">50–70% to you</span></div>
+        <div class="feat"><div class="ic">📣</div><h3>One-click ads</h3><p>Pick a product, pick who should see it, tap launch. Copy and creative written for you.</p><span class="tag r">Credit to start</span></div>
+        <div class="feat"><div class="ic">🤝</div><h3>Growth manager</h3><p>A named person you can text. They look at your numbers and tell you what to change.</p><span class="tag">Real human</span></div>
+        <div class="feat"><div class="ic">📱</div><h3>Runs from your phone</h3><p>The whole business — store, products, ads, payouts — in one app. No computer needed.</p><span class="tag">Mobile first</span></div>
+        <div class="feat"><div class="ic">⚡</div><h3>Instant delivery</h3><p>Digital means no inventory and no shipping. Someone buys at 2am, they have it at 2am.</p><span class="tag">Zero handling</span></div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="screen" id="screen">
+        <div class="statusbar"><span id="clock">9:41</span><span>Day One</span><span>▮▮▮</span></div>
+        <div class="apphead" id="apphead"></div>
+        <div class="view" id="view"></div>
+        <div class="tabbar" id="tabbar"></div>
+        <div class="sheet" id="sheet" aria-hidden="true"></div>
+      </div>
+      <div style="text-align:center;padding:12px 0 0">
+        <button id="resetDemo" style="background:none;border:none;padding:6px 10px;font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-decoration:underline">Start the demo over</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="mkt">
+    <span class="lbl">How the money works</span>
+    <h2>Every number a seller needs, printed before they sign.</h2>
+    <p class="s">The single fastest way to lose a first-time seller is a surprise. Every product in the catalogue shows its price and the seller's share on the card itself, and the Money tab reconciles what actually landed. Nothing is folded into "handling".</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Line</th><th>Who sets it</th><th>What the seller sees</th></tr></thead>
+        <tbody>
+          <tr><th>Product price</th><td>Seller, within a floor and ceiling</td><td>Editable on the product card. Changing it updates the projected share instantly.</td></tr>
+          <tr><th>Seller share</th><td>You, per product</td><td>Printed as a percentage and a dollar figure on every card. Ranges 50–70% depending on the product.</td></tr>
+          <tr><th>Payment processing</th><td>The processor</td><td>Shown as its own line on the Money tab, not silently absorbed.</td></tr>
+          <tr><th>Ad spend</th><td>Seller</td><td>Tracked against the starting credit and then against their own card. Never auto-charged without a confirmation.</td></tr>
+          <tr><th>Payout timing</th><td>You</td><td>Stated on the Money tab in days, and held to.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <span class="lbl">Five things to settle before this takes a real payment</span>
+      <p><strong>1 · Ad credits.</strong> "$40 free to start" is a promotional credit from an ad platform, and those come with conditions — usually a matching spend requirement, an eligibility window, and new-account-only rules. Print the actual terms next to the offer or it becomes a complaint. This prototype shows a generic starting credit for that reason.</p>
+      <p><strong>2 · Income claims.</strong> Never show an earnings figure a seller has not made. In the US, income and business-opportunity claims are regulated territory, and "sellers earn $3,000/month" needs substantiation you almost certainly do not have. The Money tab here shows real activity only, and says so when it is empty.</p>
+      <p><strong>3 · Resale rights.</strong> Every digital product you supply needs a written licence permitting resale under the seller's brand. Get it in writing from whoever produces them, and keep it on file.</p>
+      <p><strong>4 · The growth manager is a payroll line.</strong> "A real person available by text" is a staffing commitment, not a feature flag. Decide the ratio of managers to sellers and the response-time promise before you advertise it — and if it is ever AI-assisted, say so.</p>
+      <p><strong>5 · Refunds on instant delivery.</strong> Digital goods delivered immediately still need a refund policy, and card networks will enforce one whether you have written it or not. Write it first.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Day One — working prototype, September 2026.</strong> This is a functioning demonstration of the seller experience: store setup, catalogue, storefront, purchase and instant delivery, campaign composer, earnings and the manager thread. It takes no payments, places no advertising and stores nothing outside your own browser.</p>
+    <p>Product titles, sales activity and campaign results are sample data. Before this handles real money it needs a payment processor, an ad-platform integration, licensed product inventory, a refund policy, and the disclosures listed above.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+  var money = function (n) { return "$" + n.toFixed(2); };
+  var money0 = function (n) { return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 0 }); };
+
+  /* ================= catalogue ================= */
+  /* price is the suggested retail; cut is the seller's share */
+  var CATALOG = [
+    { id: "P01", t: "The 30-Day Freelance Start", cat: "Guide", fmt: "PDF · 68 pages", price: 27, cut: 0.60,
+      blurb: "A day-by-day plan for landing a first paying client without a portfolio or a network.",
+      toc: ["Deciding what you actually sell", "Your first ten conversations", "Pricing when you have no track record", "Writing the proposal", "Getting paid and staying paid"] },
+    { id: "P02", t: "Small Business Bookkeeping Kit", cat: "Tool", fmt: "Spreadsheet + guide", price: 39, cut: 0.65,
+      blurb: "Income, expenses, mileage and quarterly tax set-aside in one workbook that adds itself up.",
+      toc: ["Set-up in ten minutes", "Categorising without an accountant", "The quarterly set-aside sheet", "What your accountant will ask for", "Year-end checklist"] },
+    { id: "P03", t: "Instagram Content for Service Businesses", cat: "Course", fmt: "Video · 2h 40m", price: 79, cut: 0.55,
+      blurb: "Six modules on posting consistently when you are the whole business and have no time.",
+      toc: ["The one-hour-a-week system", "Thirty post shapes that work", "Filming on a phone", "Captions that get replies", "Reading the numbers", "When to boost"] },
+    { id: "P04", t: "Cold Email That Gets Answered", cat: "Guide", fmt: "PDF · 44 pages", price: 24, cut: 0.65,
+      blurb: "Templates and the reasoning behind them, for people who hate sending cold email.",
+      toc: ["Why most cold email fails", "Finding the right person", "The four-line email", "Following up without nagging", "Twenty worked examples"] },
+    { id: "P05", t: "Home Organisation Checklists", cat: "Checklist", fmt: "PDF · 22 printables", price: 14, cut: 0.70,
+      blurb: "Room-by-room checklists you can print, tick and hand to someone else.",
+      toc: ["Kitchen", "Bedrooms and closets", "Garage and storage", "Seasonal reset", "Moving house"] },
+    { id: "P06", t: "Meal Prep for Shift Workers", cat: "Guide", fmt: "PDF · 56 pages", price: 19, cut: 0.70,
+      blurb: "Eating properly on nights and rotating shifts, with shopping lists that reuse ingredients.",
+      toc: ["Planning around a rotating roster", "Twelve base recipes", "Batch cooking on one day off", "Shopping lists", "Storage and reheating"] },
+    { id: "P07", t: "Etsy Shop Launch Playbook", cat: "Course", fmt: "Video · 1h 50m", price: 59, cut: 0.55,
+      blurb: "Listing, photography, pricing and the first hundred sales, for handmade sellers.",
+      toc: ["Choosing what to list first", "Photographing on a windowsill", "Pricing for profit not for fear", "Titles and tags", "Reviews and repeat buyers"] },
+    { id: "P08", t: "Resume and Interview Pack", cat: "Tool", fmt: "Templates + guide", price: 22, cut: 0.65,
+      blurb: "Six resume templates that survive automated screening, plus an interview answer framework.",
+      toc: ["Formats that parse cleanly", "Writing bullets that show results", "The cover letter nobody dreads", "Forty interview questions", "Salary conversations"] },
+    { id: "P09", t: "Beginner Strength Training Plan", cat: "Guide", fmt: "PDF · 40 pages", price: 17, cut: 0.70,
+      blurb: "Twelve weeks, three sessions a week, equipment you will find in any gym.",
+      toc: ["Before you start", "Weeks 1–4", "Weeks 5–8", "Weeks 9–12", "Progressing after"] },
+    { id: "P10", t: "Client Contract Templates", cat: "Tool", fmt: "6 editable documents", price: 44, cut: 0.60,
+      blurb: "Plain-language agreements for freelance work — scope, payment terms, revisions and exit.",
+      toc: ["Service agreement", "Statement of work", "Payment terms", "Revision policy", "Termination", "How to fill each one in"] },
+    { id: "P11", t: "Budget Reset Workbook", cat: "Checklist", fmt: "PDF · 30 pages", price: 15, cut: 0.70,
+      blurb: "A four-week workbook for getting a household budget under control without an app.",
+      toc: ["Week 1 — see everything", "Week 2 — cut the leaks", "Week 3 — build the buffer", "Week 4 — set the rhythm"] },
+    { id: "P12", t: "Local SEO for One-Person Businesses", cat: "Course", fmt: "Video · 1h 20m", price: 49, cut: 0.55,
+      blurb: "Getting found by people three miles away, without hiring an agency.",
+      toc: ["Your listing, properly filled in", "Reviews without begging", "Pages that rank locally", "Photos that convert", "Measuring it"] }
+  ];
+
+  var AUDIENCES = [
+    { k: "local",   n: "People near me",        d: "Within 25 miles of your area", cpc: 0.62 },
+    { k: "side",    n: "Side-hustle starters",  d: "Interested in extra income and small business", cpc: 0.74 },
+    { k: "parents", n: "Busy parents",          d: "Household, budgeting and time-saving interests", cpc: 0.55 },
+    { k: "career",  n: "Job seekers",           d: "Actively looking or recently changed roles", cpc: 0.81 },
+    { k: "fitness", n: "Health and fitness",    d: "Training, nutrition and wellbeing interests", cpc: 0.58 },
+    { k: "broad",   n: "Let the system decide", d: "Widest reach, cheapest clicks, least precision", cpc: 0.41 }
+  ];
+
+  var LOOKS = [
+    { k: "pine",   n: "Pine",   c: "#14664C" },
+    { k: "ink",    n: "Ink",    c: "#1E3A6E" },
+    { k: "plum",   n: "Plum",   c: "#6A2C5B" },
+    { k: "clay",   n: "Clay",   c: "#A8552C" },
+    { k: "slate",  n: "Slate",  c: "#3C4650" },
+    { k: "forest", n: "Forest", c: "#2C5530" }
+  ];
+
+  var START_CREDIT = 40;
+
+  /* ================= state ================= */
+  var S = {
+    setup: false, name: "", look: "pine",
+    listed: ["P01", "P02", "P05", "P08"],
+    prices: {},
+    tab: "store",
+    credit: START_CREDIT, spent: 0,
+    campaigns: [],
+    sales: [],
+    thread: [
+      { who: "them", t: "Hi — I'm Dana, your growth manager. I've got your store on my list. Text me here any time; I answer within a couple of hours on weekdays." },
+      { who: "them", t: "First thing I'd do: get four products listed and run one small campaign. Tell me when the store's set up and I'll look at it." }
+    ],
+    adDraft: { product: null, audience: "side", budget: 10, creative: 0 },
+    sheet: null
+  };
+
+  function save() { try { localStorage.setItem("dayone.state", JSON.stringify(S)); } catch (e) {} }
+  function load() {
+    try {
+      var raw = localStorage.getItem("dayone.state");
+      if (raw) { var p = JSON.parse(raw); Object.keys(p).forEach(function (k) { S[k] = p[k]; }); }
+    } catch (e) {}
+  }
+
+  function look() { return LOOKS.filter(function (l) { return l.k === S.look; })[0] || LOOKS[0]; }
+  function prod(id) { return CATALOG.filter(function (p) { return p.id === id; })[0]; }
+  function priceOf(p) { return S.prices[p.id] != null ? S.prices[p.id] : p.price; }
+  function shareOf(p) { return priceOf(p) * p.cut; }
+
+  /* ================= generated covers ================= */
+  function rng(s) { var x = s >>> 0; return function () { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
+  function cover(p, brandColor) {
+    var seed = 0; for (var i = 0; i < p.id.length; i++) seed += p.id.charCodeAt(i) * (i + 7);
+    var r = rng(seed * 977);
+    var c = brandColor || look().c;
+    var W = 150, H = 200, g = "";
+    var kind = p.cat;
+    if (kind === "Course") {
+      for (var k = 0; k < 5; k++) {
+        var rr = 18 + k * 15;
+        g += '<circle cx="75" cy="112" r="' + rr + '" fill="none" stroke="#fff" stroke-width="' + (k === 1 ? 3 : 1.2) + '" opacity="' + (0.5 - k * 0.07).toFixed(2) + '"/>';
+      }
+      g += '<path d="M67 100 L92 112 L67 124 Z" fill="#fff" opacity=".95"/>';
+    } else if (kind === "Checklist") {
+      for (var j = 0; j < 6; j++) {
+        var y = 74 + j * 19;
+        g += '<rect x="30" y="' + y + '" width="13" height="13" rx="3" fill="none" stroke="#fff" stroke-width="1.6" opacity=".8"/>';
+        if (r() > 0.35) g += '<path d="M33 ' + (y + 7) + ' l3 4 l6 -8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+        g += '<rect x="50" y="' + (y + 4) + '" width="' + (36 + r() * 34).toFixed(0) + '" height="5" rx="2.5" fill="#fff" opacity=".55"/>';
+      }
+    } else if (kind === "Tool") {
+      for (var row = 0; row < 7; row++) {
+        for (var col = 0; col < 4; col++) {
+          g += '<rect x="' + (26 + col * 26) + '" y="' + (72 + row * 17) + '" width="22" height="13" rx="2" fill="#fff" opacity="' + (row === 0 ? .55 : (0.1 + r() * 0.18)).toFixed(2) + '"/>';
+        }
+      }
+    } else {
+      for (var l = 0; l < 9; l++) {
+        g += '<rect x="28" y="' + (78 + l * 13) + '" width="' + (l === 0 ? 66 : 40 + r() * 54).toFixed(0) + '" height="' + (l === 0 ? 8 : 5) + '" rx="3" fill="#fff" opacity="' + (l === 0 ? .85 : 0.28 + r() * 0.22).toFixed(2) + '"/>';
+      }
+    }
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + esc(p.t) + '">' +
+      '<rect width="' + W + '" height="' + H + '" fill="' + c + '"/>' +
+      '<rect x="0" y="0" width="' + W + '" height="46" fill="#000" opacity=".14"/>' +
+      '<text x="14" y="21" fill="#fff" font-family="DM Mono, monospace" font-size="8" letter-spacing="1.6" opacity=".85">' + esc(p.cat.toUpperCase()) + '</text>' +
+      '<text x="14" y="35" fill="#fff" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700">' + esc(p.t.split(" ").slice(0, 3).join(" ")) + '</text>' +
+      g + '</svg>';
+  }
+
+  /* ================= ad creative generator ================= */
+  function creatives(p) {
+    var price = priceOf(p);
+    return [
+      { h: p.t, b: p.blurb + " " + money0(price) + ", instant download.", angle: "Straight" },
+      { h: "Still putting this off?", b: p.t + " — " + p.blurb.charAt(0).toLowerCase() + p.blurb.slice(1) + " Get it in the next minute for " + money0(price) + ".", angle: "Problem-first" },
+      { h: money0(price) + " and you have it tonight", b: p.t + ". " + p.fmt + ". No shipping, no waiting — it lands in your inbox the moment you buy.", angle: "Instant delivery" }
+    ];
+  }
+
+  /* ================= views ================= */
+  function head() {
+    var L = look();
+    if (!S.setup) {
+      return '<div class="logo" style="background:var(--ink)">D1</div>' +
+        '<div><div class="nm">Day One</div><div class="st" style="color:var(--ink-3)">Set up your store</div></div>';
+    }
+    return '<div class="logo" style="background:' + L.c + '">' + esc(S.name.trim().charAt(0).toUpperCase() || "S") + '</div>' +
+      '<div><div class="nm">' + esc(S.name) + '</div><div class="st"><i></i>Open · ' + S.listed.length + ' listed</div></div>' +
+      '<div class="sp"></div>' +
+      '<button class="iconbtn" data-act="share" aria-label="Share store link">↗</button>';
+  }
+
+  function tabs() {
+    if (!S.setup) return "";
+    var T = [["store", "🏪", "Store"], ["products", "📦", "Products"], ["ads", "📣", "Ads"], ["money", "💵", "Money"], ["manager", "🤝", "Manager"]];
+    return T.map(function (t) {
+      return '<button class="tab" data-tab="' + t[0] + '" aria-selected="' + (S.tab === t[0]) + '">' +
+        '<span class="g">' + t[1] + '</span>' + t[2] + '</button>';
+    }).join("");
+  }
+
+  function vSetup() {
+    return '<div class="pad">' +
+      '<h2 style="font-size:26px;line-height:1.1">Name your store.</h2>' +
+      '<p style="color:var(--ink-2);font-size:14.5px;margin:10px 0 20px">Two answers and you are open. You can change both later.</p>' +
+      '<label class="field"><span>Store name</span><input id="setupName" type="text" placeholder="e.g. Corner Shelf Co." value="' + esc(S.name) + '" autocomplete="off" maxlength="28"></label>' +
+      '<div class="field"><span>Pick a look</span><div class="swatches">' +
+        LOOKS.map(function (l) {
+          return '<button class="sw" data-look="' + l.k + '" style="background:' + l.c + '" aria-pressed="' + (S.look === l.k) + '" aria-label="' + l.n + '"></button>';
+        }).join("") +
+      '</div></div>' +
+      '<div class="err" id="setupErr" hidden></div>' +
+      '<button class="btn full" data-act="open">Open my store</button>' +
+      '<p class="hint">Four products are added automatically so the store is not empty on day one. Swap them for anything in the catalogue.</p>' +
+    '</div>';
+  }
+
+  function vStore() {
+    var L = look();
+    var listed = S.listed.map(prod).filter(Boolean);
+    return '<div class="pad">' +
+      '<div class="panel" style="background:' + L.c + ';border-color:' + L.c + ';color:#fff">' +
+        '<div class="lbl" style="color:rgba(255,255,255,.7)">Your storefront</div>' +
+        '<h3 style="font-size:22px;margin:6px 0 4px;color:#fff">' + esc(S.name) + '</h3>' +
+        '<p style="margin:0;font-size:13.5px;color:rgba(255,255,255,.85)">' + listed.length + ' product' + (listed.length === 1 ? "" : "s") + ' · instant delivery · open 24 hours</p>' +
+        '<div class="row" style="margin-top:14px;gap:8px">' +
+          '<span class="mono" style="font-size:11.5px;color:rgba(255,255,255,.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">dayone.shop/' + esc(slug(S.name)) + '</span>' +
+          '<button class="btn sm ghost" data-act="share" style="border-color:rgba(255,255,255,.45);color:#fff;background:transparent">Copy</button>' +
+        '</div>' +
+      '</div>' +
+      (listed.length ? '' : '<div class="panel"><h4>Nothing listed yet</h4><p style="margin:0;font-size:13.5px;color:var(--ink-2)">Open the Products tab and add a few. Customers cannot buy an empty shelf.</p></div>') +
+      '<div class="lbl" style="margin:16px 0 10px;display:block">What customers see — tap to buy</div>' +
+      '<div class="plist">' + listed.map(function (p) {
+        return '<article class="pcard"><div class="top2">' +
+          '<div class="cover">' + cover(p) + '</div>' +
+          '<div><h4>' + esc(p.t) + '</h4><div class="meta">' + esc(p.fmt) + '</div>' +
+          '<div class="blurb">' + esc(p.blurb) + '</div></div></div>' +
+          '<div class="foot"><span class="price">' + money0(priceOf(p)) + '</span><span class="sp"></span>' +
+          '<button class="btn sm" data-buy="' + p.id + '">Buy now</button></div></article>';
+      }).join("") + '</div>' +
+    '</div>';
+  }
+
+  function vProducts() {
+    return '<div class="pad">' +
+      '<h3 style="font-size:19px">Catalogue</h3>' +
+      '<p style="font-size:13.5px;color:var(--ink-2);margin:6px 0 14px">Your share is printed on every card. Tap a price to change it — your share updates with it.</p>' +
+      '<div class="plist">' + CATALOG.map(function (p) {
+        var on = S.listed.indexOf(p.id) !== -1;
+        return '<article class="pcard"><div class="top2">' +
+          '<div class="cover">' + cover(p) + '</div>' +
+          '<div><h4>' + esc(p.t) + '</h4><div class="meta">' + esc(p.cat) + ' · ' + esc(p.fmt) + '</div>' +
+          '<div class="blurb">' + esc(p.blurb) + '</div></div></div>' +
+          '<div class="foot">' +
+            '<label style="display:flex;align-items:center;gap:4px" title="Price"><span class="price">$</span>' +
+            '<input class="mono" data-price="' + p.id + '" type="number" min="5" max="299" step="1" value="' + priceOf(p) + '" ' +
+            'style="width:52px;height:30px;border:1px solid var(--line);border-radius:7px;background:var(--paper);padding:0 6px;font-size:14px" aria-label="Price for ' + esc(p.t) + '"></label>' +
+            '<span class="cut">you keep ' + money(shareOf(p)) + ' · ' + Math.round(p.cut * 100) + '%</span>' +
+            '<span class="sp"></span>' +
+            '<button class="btn sm ' + (on ? "ghost" : "") + '" data-list="' + p.id + '">' + (on ? "Listed ✓" : "Add") + '</button>' +
+          '</div></article>';
+      }).join("") + '</div>' +
+    '</div>';
+  }
+
+  function vAds() {
+    var d = S.adDraft;
+    var p = d.product ? prod(d.product) : null;
+    var aud = AUDIENCES.filter(function (a) { return a.k === d.audience; })[0];
+    var remaining = Math.max(0, S.credit - S.spent);
+    var clicks = Math.round(d.budget / aud.cpc);
+
+    var live = S.campaigns.length ? '<div class="lbl" style="display:block;margin:18px 0 10px">Running</div>' +
+      S.campaigns.map(function (c) {
+        var cp = prod(c.product);
+        return '<div class="panel"><div class="row"><div><h4 style="margin:0">' + esc(cp ? cp.t : c.product) + '</h4>' +
+          '<div class="mono" style="font-size:10.5px;color:var(--ink-3);margin-top:3px">' + esc(c.audienceName) + ' · ' + money0(c.budget) + ' budget</div></div>' +
+          '<div class="sp"></div><span class="pill reach">Live</span></div>' +
+          '<div class="split" style="margin-top:12px">' +
+            '<div><div class="lbl">Clicks</div><div class="mono" style="font-size:17px">' + c.clicks + '</div></div>' +
+            '<div><div class="lbl">Sales</div><div class="mono" style="font-size:17px">' + c.sales + '</div></div>' +
+          '</div>' +
+          '<div class="bar" style="margin-top:10px"><i style="width:' + Math.min(100, (c.spent / c.budget) * 100).toFixed(0) + '%"></i></div>' +
+          '<div class="mono" style="font-size:10.5px;color:var(--ink-3);margin-top:6px">' + money(c.spent) + ' of ' + money0(c.budget) + ' spent</div>' +
+        '</div>';
+      }).join("") : "";
+
+    return '<div class="pad">' +
+      '<div class="panel" style="border-color:var(--reach)">' +
+        '<div class="row"><div><div class="lbl">Starting ad credit</div>' +
+        '<div class="mono" style="font-size:24px;color:var(--reach);margin-top:2px">' + money(remaining) + '</div></div>' +
+        '<div class="sp"></div><span class="pill reach">' + money(S.spent) + ' used</span></div>' +
+        '<p class="hint" style="margin-top:10px">A starting credit is a promotional offer from the ad platform and carries its own conditions. The real terms belong right here, next to the number.</p>' +
+      '</div>' +
+
+      '<h3 style="font-size:19px;margin-top:6px">Promote a product</h3>' +
+      '<div class="field" style="margin-top:12px"><span>1 · What are you selling?</span>' +
+        '<select id="adProduct">' + (S.listed.length ? "" : '<option value="">List a product first</option>') +
+        S.listed.map(function (id) {
+          var pp = prod(id);
+          return '<option value="' + id + '"' + (d.product === id ? " selected" : "") + '>' + esc(pp.t) + ' — ' + money0(priceOf(pp)) + '</option>';
+        }).join("") + '</select></div>' +
+
+      '<div class="field"><span>2 · Who should see it?</span><select id="adAudience">' +
+        AUDIENCES.map(function (a) {
+          return '<option value="' + a.k + '"' + (d.audience === a.k ? " selected" : "") + '>' + esc(a.n) + ' — ' + esc(a.d) + '</option>';
+        }).join("") + '</select></div>' +
+
+      '<div class="field"><span>3 · How much?</span>' +
+        '<input type="range" id="adBudget" min="5" max="60" step="5" value="' + d.budget + '">' +
+        '<div class="row" style="margin-top:6px"><span class="mono" style="font-size:16px">' + money0(d.budget) + '</span>' +
+        '<span class="sp"></span><span class="mono" style="font-size:11.5px;color:var(--ink-3)">≈ ' + clicks + ' visits at ' + money(aud.cpc) + ' each</span></div>' +
+        (d.budget > remaining ? '<p class="hint" style="color:var(--alert)">' + money(d.budget - remaining) + ' of this comes off your own card. Nothing is charged without a confirmation.</p>' : '<p class="hint">Covered by your starting credit.</p>') +
+      '</div>' +
+
+      (p ? '<div class="lbl" style="display:block;margin:16px 0 9px">4 · Pick the ad — written for you</div>' +
+        creatives(p).map(function (c, i) {
+          return '<div class="creative' + (d.creative === i ? " sel" : "") + '" data-creative="' + i + '" role="button" tabindex="0">' +
+            '<div class="cbody"><h5>' + esc(c.h) + '</h5><p>' + esc(c.b) + '</p></div>' +
+            '<div class="cfoot"><span>' + esc(c.angle) + '</span><span class="sp" style="flex:1"></span>' +
+            '<span>' + (d.creative === i ? "SELECTED" : "TAP TO USE") + '</span></div></div>';
+        }).join("") : '<p class="hint">Choose a product to see the ad copy.</p>') +
+
+      '<button class="btn reach full" data-act="launch" style="margin-top:8px"' + (p ? "" : " disabled") + '>Launch campaign</button>' +
+      '<p class="hint">One tap. The system builds the audience, places the ad and points it at your store.</p>' +
+      live +
+    '</div>';
+  }
+
+  function vMoney() {
+    var gross = S.sales.reduce(function (a, s) { return a + s.price; }, 0);
+    var yours = S.sales.reduce(function (a, s) { return a + s.share; }, 0);
+    var fees = S.sales.reduce(function (a, s) { return a + s.fee; }, 0);
+    return '<div class="pad">' +
+      '<div class="panel">' +
+        '<div class="big"><span class="k">Your earnings</span><span class="v" style="color:var(--open)">' + money(yours) + '</span></div>' +
+        '<div class="split">' +
+          '<div><div class="lbl">Sales</div><div class="mono" style="font-size:17px">' + S.sales.length + '</div></div>' +
+          '<div><div class="lbl">Gross</div><div class="mono" style="font-size:17px">' + money(gross) + '</div></div>' +
+        '</div>' +
+        '<div class="split">' +
+          '<div><div class="lbl">Processing</div><div class="mono" style="font-size:17px">' + money(fees) + '</div></div>' +
+          '<div><div class="lbl">Ad spend</div><div class="mono" style="font-size:17px">' + money(S.spent) + '</div></div>' +
+        '</div>' +
+        '<p class="hint">Every line shown separately. Payouts land in your bank 3 business days after a sale clears.</p>' +
+      '</div>' +
+      '<div class="panel">' +
+        '<h4>Recent sales</h4>' +
+        (S.sales.length
+          ? S.sales.slice(0, 12).map(function (s) {
+              return '<div class="feedrow"><span class="av">' + esc(s.who.charAt(0)) + '</span>' +
+                '<div><div class="t">' + esc(s.title) + '</div><div class="s">' + esc(s.who) + ' · ' + esc(s.when) + '</div></div>' +
+                '<span class="amt">+' + money(s.share) + '</span></div>';
+            }).join("")
+          : '<p style="margin:0;font-size:13.5px;color:var(--ink-2)">No sales yet. This stays empty until something actually sells — you will never see a made-up number here.</p>') +
+      '</div>' +
+    '</div>';
+  }
+
+  function vManager() {
+    return '<div style="display:flex;flex-direction:column;height:100%">' +
+      '<div style="flex:1;overflow-y:auto;padding:16px">' +
+        '<div class="panel" style="margin-bottom:14px"><div class="row">' +
+          '<span class="av feedrow" style="width:38px;height:38px;border-radius:50%;background:var(--open-wash);color:var(--open);display:grid;place-items:center;font-weight:700;padding:0;border:none">D</span>' +
+          '<div style="margin-left:10px"><div style="font-weight:700;font-size:15px">Dana Whitfield</div>' +
+          '<div class="mono" style="font-size:10px;color:var(--ink-3)">Your growth manager · replies in ~2h</div></div>' +
+        '</div></div>' +
+        '<div class="thread" id="thread">' + S.thread.map(function (m) {
+          return '<div class="msg ' + m.who + '">' + (m.who === "them" ? '<span class="who">Dana</span>' : '') + esc(m.t) + '</div>';
+        }).join("") + '</div>' +
+      '</div>' +
+      '<form class="composer" id="msgForm"><input id="msgInput" placeholder="Text Dana…" autocomplete="off" aria-label="Message Dana">' +
+      '<button class="btn sm" type="submit" style="border-radius:20px;padding:0 16px">Send</button></form>' +
+    '</div>';
+  }
+
+  /* ================= product sheet (customer side) ================= */
+  function openSheet(id, stage) {
+    var p = prod(id);
+    if (!p) return;
+    S.sheet = { id: id, stage: stage || "buy" };
+    var sh = $("#sheet");
+    if (S.sheet.stage === "buy") {
+      sh.innerHTML =
+        '<div class="sheet-hd"><button class="iconbtn" data-act="closesheet" aria-label="Close">←</button>' +
+        '<strong style="font-size:15px">' + esc(S.name) + '</strong></div>' +
+        '<div class="sheet-body">' +
+          '<div class="bigcover">' + cover(p) + '</div>' +
+          '<h3 style="font-size:21px;text-align:center">' + esc(p.t) + '</h3>' +
+          '<p style="text-align:center;color:var(--ink-3);font-size:12.5px;margin:6px 0 0" class="mono">' + esc(p.fmt) + '</p>' +
+          '<p style="color:var(--ink-2);font-size:14px;margin:14px 0 0">' + esc(p.blurb) + '</p>' +
+          '<div class="lbl" style="display:block;margin:18px 0 8px">Inside</div>' +
+          '<div class="toc">' + p.toc.map(function (t, i) {
+            return '<div><span class="n">' + String(i + 1).padStart(2, "0") + '</span><span>' + esc(t) + '</span></div>';
+          }).join("") + '</div>' +
+          '<div class="panel" style="margin-top:16px;background:var(--open-wash);border-color:color-mix(in srgb,var(--open) 30%,transparent)">' +
+            '<div class="row"><span style="font-size:20px">⚡</span><p style="margin:0 0 0 10px;font-size:13.5px;color:var(--ink-2)"><strong>Instant delivery.</strong> You get it the second you pay — no shipping, no waiting.</p></div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="padding:12px 14px;border-top:1px solid var(--line);background:var(--card)">' +
+          '<button class="btn full" data-act="pay">Buy for ' + money0(priceOf(p)) + '</button>' +
+          '<p class="hint" style="text-align:center;margin-top:8px">Prototype — no payment is taken.</p>' +
+        '</div>';
+    } else {
+      sh.innerHTML =
+        '<div class="sheet-hd"><button class="iconbtn" data-act="closesheet" aria-label="Close">←</button>' +
+        '<strong style="font-size:15px">Order complete</strong></div>' +
+        '<div class="sheet-body">' +
+          '<div class="delivered"><div class="tick">✓</div>' +
+          '<h3 style="font-size:22px">It is already yours.</h3>' +
+          '<p style="color:var(--ink-2);font-size:14px;margin:8px 0 0">' + esc(p.t) + ' has been sent to the buyer and unlocked below. Delivery took no time because there was nothing to ship.</p></div>' +
+          '<div class="panel" style="margin-top:18px"><h4>Unlocked — ' + esc(p.fmt) + '</h4>' +
+          '<div class="toc" style="margin-top:8px">' + p.toc.map(function (t, i) {
+            return '<div><span class="n">' + String(i + 1).padStart(2, "0") + '</span><span>' + esc(t) + '</span></div>';
+          }).join("") + '</div>' +
+          '<p class="hint">In production this is a signed download link that expires, plus a permanent copy in the buyer\'s account.</p></div>' +
+          '<div class="panel" style="background:var(--open-wash);border-color:color-mix(in srgb,var(--open) 30%,transparent)">' +
+            '<div class="row"><div class="big"><span class="k">Your share of this sale</span><span class="v" style="font-size:24px;color:var(--open)">' + money(shareOf(p)) + '</span></div></div>' +
+            '<p class="hint" style="margin-top:8px">' + Math.round(p.cut * 100) + '% of ' + money0(priceOf(p)) + '. In the Money tab within seconds.</p>' +
+          '</div>' +
+        '</div>' +
+        '<div style="padding:12px 14px;border-top:1px solid var(--line);background:var(--card)">' +
+          '<button class="btn ghost full" data-act="closesheet">Back to the store</button></div>';
+    }
+    sh.classList.add("open");
+    sh.setAttribute("aria-hidden", "false");
+  }
+  function closeSheet() {
+    S.sheet = null;
+    $("#sheet").classList.remove("open");
+    $("#sheet").setAttribute("aria-hidden", "true");
+  }
+
+  /* ================= helpers ================= */
+  function slug(s) {
+    return (s || "your-store").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 24) || "your-store";
+  }
+  function nameFor() {
+    var first = ["Marcus", "Priya", "Dee", "Alonso", "Kim", "Rachel", "Tomas", "Nia", "Grant", "Bea", "Hollis", "Sam"];
+    var last = ["R.", "T.", "M.", "K.", "L.", "B.", "W.", "N."];
+    return first[Math.floor(Math.random() * first.length)] + " " + last[Math.floor(Math.random() * last.length)];
+  }
+  function recordSale(p, src) {
+    var price = priceOf(p);
+    var fee = Math.round((price * 0.029 + 0.3) * 100) / 100;
+    S.sales.unshift({
+      title: p.t, who: nameFor(), when: src === "ad" ? "from a campaign" : "just now",
+      price: price, share: Math.round(price * p.cut * 100) / 100, fee: fee
+    });
+  }
+
+  /* ================= render ================= */
+  function render() {
+    $("#apphead").innerHTML = head();
+    $("#tabbar").innerHTML = tabs();
+    var v = $("#view");
+    if (!S.setup) { v.innerHTML = vSetup(); }
+    else if (S.tab === "store") v.innerHTML = vStore();
+    else if (S.tab === "products") v.innerHTML = vProducts();
+    else if (S.tab === "ads") v.innerHTML = vAds();
+    else if (S.tab === "money") v.innerHTML = vMoney();
+    else v.innerHTML = vManager();
+    if (S.tab === "manager" && S.setup) {
+      var t = $("#thread");
+      if (t) t.parentNode.scrollTop = t.parentNode.scrollHeight;
+    }
+    save();
+  }
+
+  function toast(el, text) {
+    var old = el.textContent;
+    el.textContent = text;
+    setTimeout(function () { el.textContent = old; }, 1300);
+  }
+
+  /* ================= events ================= */
+  document.addEventListener("click", function (e) {
+    var el;
+
+    if ((el = e.target.closest(".sw"))) {
+      S.look = el.getAttribute("data-look");
+      var nameEl = $("#setupName"); if (nameEl) S.name = nameEl.value;
+      render();
+      var n2 = $("#setupName"); if (n2) { n2.focus(); n2.setSelectionRange(n2.value.length, n2.value.length); }
+      return;
+    }
+    if (e.target.closest('[data-act="open"]')) {
+      var nm = $("#setupName").value.trim();
+      var err = $("#setupErr");
+      if (nm.length < 2) { err.hidden = false; err.textContent = "Give the store a name — two characters is enough to start."; $("#setupName").focus(); return; }
+      S.name = nm; S.setup = true; S.tab = "store";
+      S.thread.push({ who: "them", t: "Just looked at " + nm + " — nice name. You've got " + S.listed.length + " products listed. Run a $10 campaign at the side-hustle audience and text me what happens." });
+      render(); return;
+    }
+    if ((el = e.target.closest(".tab"))) { S.tab = el.getAttribute("data-tab"); render(); return; }
+
+    if ((el = e.target.closest("[data-list]"))) {
+      var id = el.getAttribute("data-list");
+      var i = S.listed.indexOf(id);
+      if (i === -1) S.listed.push(id); else S.listed.splice(i, 1);
+      render(); return;
+    }
+    if ((el = e.target.closest("[data-buy]"))) { openSheet(el.getAttribute("data-buy"), "buy"); return; }
+    if (e.target.closest('[data-act="closesheet"]')) { closeSheet(); render(); return; }
+    if (e.target.closest('[data-act="pay"]')) {
+      var pid = S.sheet && S.sheet.id;
+      if (pid) { recordSale(prod(pid), "direct"); openSheet(pid, "done"); save(); }
+      return;
+    }
+    if ((el = e.target.closest('[data-act="share"]'))) {
+      var link = "dayone.shop/" + slug(S.name);
+      var btn = el;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText("https://" + link).then(function () { toast(btn, "Copied"); }, function () { toast(btn, link); });
+      } else { toast(btn, link); }
+      return;
+    }
+    if ((el = e.target.closest("[data-creative]"))) {
+      S.adDraft.creative = +el.getAttribute("data-creative"); render(); return;
+    }
+    if (e.target.closest("#resetDemo")) {
+      try { localStorage.removeItem("dayone.state"); } catch (err) {}
+      S.setup = false; S.name = ""; S.look = "pine";
+      S.listed = ["P01", "P02", "P05", "P08"]; S.prices = {}; S.tab = "store";
+      S.credit = START_CREDIT; S.spent = 0; S.campaigns = []; S.sales = [];
+      S.adDraft = { product: "P01", audience: "side", budget: 10, creative: 0 };
+      S.thread = [
+        { who: "them", t: "Hi — I'm Dana, your growth manager. I've got your store on my list. Text me here any time; I answer within a couple of hours on weekdays." },
+        { who: "them", t: "First thing I'd do: get four products listed and run one small campaign. Tell me when the store's set up and I'll look at it." }
+      ];
+      closeSheet(); render(); return;
+    }
+    if (e.target.closest('[data-act="launch"]')) {
+      var d = S.adDraft;
+      if (!d.product) return;
+      var aud = AUDIENCES.filter(function (a) { return a.k === d.audience; })[0];
+      var clicks = Math.max(1, Math.round(d.budget / aud.cpc));
+      var p = prod(d.product);
+      var sales = Math.max(0, Math.round(clicks * (0.02 + Math.random() * 0.05)));
+      for (var s = 0; s < sales; s++) recordSale(p, "ad");
+      S.campaigns.unshift({
+        product: d.product, audienceName: aud.n, budget: d.budget,
+        spent: Math.round(d.budget * (0.55 + Math.random() * 0.4) * 100) / 100,
+        clicks: clicks, sales: sales
+      });
+      S.spent = Math.round((S.spent + S.campaigns[0].spent) * 100) / 100;
+      S.thread.push({ who: "them", t: "Saw the campaign go live on " + p.t + ". " + (sales ? sales + " sale" + (sales === 1 ? "" : "s") + " already — that audience is working, put the next $10 behind the same one." : "No sales yet, which is normal this early. Give it a day before you judge it.") });
+      render(); return;
+    }
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if ((e.key === "Enter" || e.key === " ")) {
+      var c = e.target.closest("[data-creative]");
+      if (c) { e.preventDefault(); S.adDraft.creative = +c.getAttribute("data-creative"); render(); }
+    }
+    if (e.key === "Escape" && S.sheet) { closeSheet(); render(); }
+  });
+
+  document.addEventListener("input", function (e) {
+    if (e.target.id === "setupName") { S.name = e.target.value; return; }
+    if (e.target.id === "adBudget") {
+      S.adDraft.budget = +e.target.value;
+      var scroll = $("#view").scrollTop;
+      render();
+      $("#view").scrollTop = scroll;
+      var r = $("#adBudget"); if (r) r.focus();
+      return;
+    }
+    if (e.target.hasAttribute && e.target.hasAttribute("data-price")) {
+      var pid2 = e.target.getAttribute("data-price");
+      var val = Math.max(5, Math.min(299, +e.target.value || 5));
+      S.prices[pid2] = val;
+      var card = e.target.closest(".pcard");
+      var cut = card && card.querySelector(".cut");
+      var pp = prod(pid2);
+      if (cut) cut.textContent = "you keep " + money(val * pp.cut) + " · " + Math.round(pp.cut * 100) + "%";
+      save();
+      return;
+    }
+  });
+
+  document.addEventListener("change", function (e) {
+    if (e.target.id === "adProduct") { S.adDraft.product = e.target.value || null; S.adDraft.creative = 0; render(); }
+    if (e.target.id === "adAudience") { S.adDraft.audience = e.target.value; render(); }
+  });
+
+  document.addEventListener("submit", function (e) {
+    if (e.target.id !== "msgForm") return;
+    e.preventDefault();
+    var inp = $("#msgInput");
+    var t = inp.value.trim();
+    if (!t) return;
+    S.thread.push({ who: "me", t: t });
+    var low = t.toLowerCase();
+    var reply;
+    if (/sale|sold|sales|money|earn/.test(low)) reply = "Let me look. " + (S.sales.length ? S.sales.length + " sale" + (S.sales.length === 1 ? "" : "s") + " so far — the pattern I'd chase is more of whatever the last one was. Put $10 behind that product." : "Nothing through yet. That's normal on day one; the fix is traffic, not the store. Run a small campaign and text me tomorrow.");
+    else if (/ad|campaign|promote|advert/.test(low)) reply = "Start at $10, one product, one audience. Two campaigns at $5 tells you less than one at $10. Come back when it's spent and we'll read it together.";
+    else if (/price|pricing|charge|cost/.test(low)) reply = "Don't drop the price to get the first sale — it teaches you nothing and you can't put it back up easily. Change the audience before you change the price.";
+    else if (/product|add|list|catalog/.test(low)) reply = "Four to six listed is the sweet spot. More than that and nobody chooses. Pick ones you'd actually recommend to a friend — it shows in how you talk about them.";
+    else if (/help|stuck|start|how/.test(low)) reply = "Three things, in order: get four products listed, share the link with ten people you know, then run one $10 campaign. Text me after each and I'll tell you what's next.";
+    else reply = "Got it. Give me a couple of hours and I'll come back with something specific — I want to look at your numbers first rather than guess.";
+    S.thread.push({ who: "them", t: reply });
+    render(); return;
+  });
+
+  /* ================= boot ================= */
+  load();
+  (function clock() {
+    var d = new Date();
+    var h = d.getHours() % 12 || 12;
+    $("#clock").textContent = h + ":" + String(d.getMinutes()).padStart(2, "0");
+  })();
+  if (!S.adDraft.product && S.listed.length) S.adDraft.product = S.listed[0];
+  render();
+})();
+</script>
+</body>
+</html>

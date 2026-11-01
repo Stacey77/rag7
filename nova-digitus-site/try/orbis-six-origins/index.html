@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex"><meta name="description" content="Orbis Six Origins: live preview by Nova Digitus Designs."><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Orbis Six Origins</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Public+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+/* ============================================================
+   ORBIS — palette derived from indigo, the one dye shared by
+   all six origins: Chinese qinghua, Japanese aizome, Malian
+   bogolan resist, Mexican rebozo, Thai mudmee, Canadian woad.
+   Neutrals are biased toward that indigo, never pure grey.
+   ============================================================ */
+:root {
+  --ground:      #EBECE6;
+  --paper:       #F7F7F3;
+  --paper-2:     #E2E4DC;
+  --rule:        #C9CCC2;
+  --rule-soft:   #D9DBD2;
+  --ink:         #131826;
+  --ink-2:       #3A4256;
+  --ink-3:       #6A7185;
+  --indigo:      #21408C;
+  --indigo-deep: #16295C;
+  --indigo-wash: #DCE1EE;
+  --clear:       #2F6B4F;   /* semantic: duty prepaid / cleared */
+  --clear-wash:  #DDE8E1;
+  --flag:        #8A6A1E;   /* semantic: preference expiring */
+  --flag-wash:   #EDE6D2;
+  --shadow:      0 1px 0 rgba(19,24,38,.06), 0 12px 32px -20px rgba(19,24,38,.45);
+  --maxw: 1240px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:      #0D111A;
+    --paper:       #141926;
+    --paper-2:     #1C2231;
+    --rule:        #2C3446;
+    --rule-soft:   #232A3A;
+    --ink:         #E6E8EF;
+    --ink-2:       #B4BACB;
+    --ink-3:       #7F8798;
+    --indigo:      #8AA6EE;
+    --indigo-deep: #B7C7F5;
+    --indigo-wash: #1E2740;
+    --clear:       #7CC59C;
+    --clear-wash:  #16281F;
+    --flag:        #D6B45C;
+    --flag-wash:   #2A2415;
+    --shadow:      0 1px 0 rgba(0,0,0,.4), 0 14px 34px -20px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"] {
+  --ground:      #0D111A;
+  --paper:       #141926;
+  --paper-2:     #1C2231;
+  --rule:        #2C3446;
+  --rule-soft:   #232A3A;
+  --ink:         #E6E8EF;
+  --ink-2:       #B4BACB;
+  --ink-3:       #7F8798;
+  --indigo:      #8AA6EE;
+  --indigo-deep: #B7C7F5;
+  --indigo-wash: #1E2740;
+  --clear:       #7CC59C;
+  --clear-wash:  #16281F;
+  --flag:        #D6B45C;
+  --flag-wash:   #2A2415;
+  --shadow:      0 1px 0 rgba(0,0,0,.4), 0 14px 34px -20px rgba(0,0,0,.9);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: "Instrument Serif", "Iowan Old Style", Georgia, serif; font-weight: 400; margin: 0; text-wrap: balance; letter-spacing: -.005em; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 2px; }
+.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+.eyebrow {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ---------- top rail ---------- */
+.rail {
+  position: sticky; top: 0; z-index: 60;
+  background: color-mix(in srgb, var(--ground) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+.rail-in { display: flex; align-items: center; gap: 20px; height: 62px; min-width: 0; }
+.skip { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip:focus { position: static; width: auto; height: auto; clip-path: none; padding: 8px 14px; display: inline-block; }
+.mark { display: flex; align-items: baseline; gap: 9px; text-decoration: none; margin-right: 4px; }
+.mark b {
+  font-family: "Instrument Serif", Georgia, serif; font-weight: 400;
+  font-size: 27px; letter-spacing: .1em; line-height: 1;
+}
+.mark span { font-family: "IBM Plex Mono", monospace; font-size: 9.5px; letter-spacing: .2em; color: var(--ink-3); text-transform: uppercase; }
+.search {
+  flex: 1 1 0; min-width: 0; max-width: 340px; position: relative;
+}
+.search input {
+  width: 100%; min-width: 0; height: 36px; padding: 0 12px 0 32px;
+  background: var(--paper); color: var(--ink);
+  border: 1px solid var(--rule); border-radius: 2px;
+  font: 400 13px/1 "IBM Plex Mono", monospace;
+}
+.search input::placeholder { color: var(--ink-3); }
+.search svg { position: absolute; left: 10px; top: 10px; width: 15px; height: 15px; stroke: var(--ink-3); fill: none; stroke-width: 1.6; }
+.rail-spacer { flex: 1; }
+.rail-note { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--ink-3); letter-spacing: .05em; }
+@media (max-width: 900px) { .rail-note { display: none; } }
+@media (max-width: 620px) {
+  .rail-in { height: auto; flex-wrap: wrap; padding: 10px 0; row-gap: 10px; gap: 12px; }
+  .mark { margin-right: auto; }
+  .rail-spacer { display: none; }
+  .search { order: 3; flex: 1 0 100%; max-width: none; }
+}
+.cart-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px; padding: 0 14px;
+  background: var(--ink); color: var(--ground);
+  border: none; border-radius: 2px;
+  font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase;
+}
+.cart-btn .n {
+  min-width: 19px; height: 19px; padding: 0 5px; border-radius: 10px;
+  background: var(--ground); color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; letter-spacing: 0;
+}
+
+/* ---------- hero ---------- */
+.hero { border-bottom: 1px solid var(--rule); background: var(--paper); }
+.hero-in { display: grid; grid-template-columns: 1.35fr 1fr; gap: 56px; padding: 64px 24px 56px; align-items: start; }
+@media (max-width: 940px) { .hero-in { grid-template-columns: 1fr; gap: 36px; padding: 44px 24px 40px; } }
+.hero h1 { font-size: clamp(40px, 6.2vw, 74px); line-height: .98; margin: 14px 0 0; }
+.hero h1 em { font-style: italic; color: var(--indigo); }
+.hero p.lede { font-size: 17px; line-height: 1.6; color: var(--ink-2); max-width: 52ch; margin: 22px 0 0; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 42px; padding: 0 20px; border-radius: 2px;
+  border: 1px solid var(--ink); background: var(--ink); color: var(--ground);
+  font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .09em; text-transform: uppercase;
+  text-decoration: none;
+}
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.ghost:hover { border-color: var(--ink); }
+
+/* the manifest card — the thesis object */
+.manifest {
+  background: var(--ground); border: 1px solid var(--ink); border-radius: 2px;
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.manifest-hd {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 11px 16px; background: var(--ink); color: var(--ground);
+  font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+}
+.manifest-body { padding: 6px 16px 16px; }
+.mrow {
+  display: grid; grid-template-columns: 1fr auto; gap: 10px;
+  padding: 9px 0; border-bottom: 1px dotted var(--rule);
+  font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+}
+.mrow:last-child { border-bottom: none; }
+.mrow .lbl { color: var(--ink-2); }
+.mrow .lbl small { display: block; font-size: 10.5px; color: var(--ink-3); letter-spacing: .02em; margin-top: 2px; }
+.mrow .val { text-align: right; }
+.mrow.total { border-top: 1.5px solid var(--ink); border-bottom: none; margin-top: 4px; padding-top: 11px; font-weight: 600; font-size: 14px; }
+.mrow.total .lbl { color: var(--ink); }
+
+/* ---------- origin stamps ---------- */
+.origins { border-bottom: 1px solid var(--rule); background: var(--ground); }
+.origin-row { display: flex; gap: 0; overflow-x: auto; scrollbar-width: thin; }
+.stamp {
+  flex: 1 0 auto; min-width: 148px;
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-start;
+  padding: 18px 18px 20px; text-align: left;
+  background: transparent; border: none; border-right: 1px solid var(--rule-soft);
+  border-bottom: 3px solid transparent;
+  transition: background .15s ease, border-color .15s ease;
+}
+.stamp:last-child { border-right: none; }
+.stamp:hover { background: var(--paper); }
+.stamp[aria-pressed="true"] { background: var(--paper); border-bottom-color: var(--indigo); }
+.stamp .code {
+  font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .16em;
+  color: var(--ink-3);
+}
+.stamp[aria-pressed="true"] .code { color: var(--indigo); }
+.stamp .nm { font-family: "Instrument Serif", Georgia, serif; font-size: 22px; line-height: 1; }
+.stamp .duty { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--ink-3); }
+
+/* ---------- toolbar ---------- */
+.toolbar {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 20px 0 18px;
+}
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  height: 30px; padding: 0 13px; border-radius: 2px;
+  background: transparent; border: 1px solid var(--rule); color: var(--ink-2);
+  font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .07em; text-transform: uppercase;
+}
+.chip:hover { border-color: var(--ink-3); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+.tool-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.count { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink-3); }
+select.sort {
+  height: 30px; padding: 0 8px; border-radius: 2px;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--rule);
+  font: 400 11.5px "IBM Plex Mono", monospace;
+}
+
+/* ---------- product grid ---------- */
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr));
+  gap: 1px; background: var(--rule-soft);
+  border: 1px solid var(--rule-soft); border-radius: 2px;
+  margin-bottom: 56px;
+}
+.card {
+  background: var(--paper); border: none; padding: 0; text-align: left;
+  display: flex; flex-direction: column; position: relative;
+  transition: background .15s ease;
+}
+.card:hover { background: var(--ground); }
+.thumb { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--paper-2); }
+.thumb svg { display: block; width: 100%; height: 100%; }
+.tag {
+  position: absolute; top: 9px; left: 9px;
+  padding: 3px 7px; border-radius: 2px;
+  font-family: "IBM Plex Mono", monospace; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--clear-wash); color: var(--clear); border: 1px solid color-mix(in srgb, var(--clear) 35%, transparent);
+}
+.tag.flagged { background: var(--flag-wash); color: var(--flag); border-color: color-mix(in srgb, var(--flag) 40%, transparent); }
+.card-body { padding: 14px 15px 16px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+.card-org { display: flex; justify-content: space-between; gap: 8px; font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); }
+.card h3 { font-size: 20px; line-height: 1.15; }
+.card .mat { font-size: 12.5px; color: var(--ink-3); line-height: 1.4; }
+.card-foot { margin-top: auto; padding-top: 10px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; border-top: 1px dotted var(--rule); }
+.price { font-family: "IBM Plex Mono", monospace; font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.price small { display: block; font-size: 9.5px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: 2px; }
+.add {
+  height: 30px; padding: 0 12px; border-radius: 2px;
+  border: 1px solid var(--ink); background: transparent; color: var(--ink);
+  font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+}
+.add:hover { background: var(--ink); color: var(--ground); }
+.add.done { background: var(--clear); border-color: var(--clear); color: var(--ground); }
+.empty { grid-column: 1 / -1; padding: 64px 24px; text-align: center; background: var(--paper); }
+.empty h3 { font-size: 26px; margin-bottom: 6px; }
+.empty p { color: var(--ink-3); margin: 0 0 18px; }
+
+/* ---------- model section ---------- */
+.model { border-top: 1px solid var(--rule); background: var(--paper); padding: 64px 0 70px; }
+.model h2 { font-size: clamp(30px, 4vw, 44px); line-height: 1.04; max-width: 18ch; margin: 12px 0 0; }
+.model .sub { color: var(--ink-2); max-width: 62ch; margin: 18px 0 0; font-size: 16px; }
+.pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--rule-soft); border: 1px solid var(--rule-soft); margin-top: 40px; }
+.pillar { background: var(--paper); padding: 24px 22px 26px; display: flex; flex-direction: column; gap: 9px; }
+.pillar .k { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--indigo); }
+.pillar h3 { font-size: 23px; line-height: 1.1; }
+.pillar p { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+
+.compare { margin-top: 44px; border: 1px solid var(--rule); border-radius: 2px; overflow-x: auto; background: var(--ground); }
+table.cmp { width: 100%; border-collapse: collapse; min-width: 640px; }
+table.cmp th, table.cmp td { padding: 13px 16px; text-align: left; border-bottom: 1px solid var(--rule-soft); font-size: 13.5px; vertical-align: top; }
+table.cmp thead th { background: var(--paper-2); font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-2); font-weight: 500; }
+table.cmp tbody th { font-weight: 600; color: var(--ink); width: 25%; }
+table.cmp td.us { color: var(--ink); background: color-mix(in srgb, var(--indigo-wash) 55%, transparent); }
+table.cmp td.them { color: var(--ink-3); }
+table.cmp tr:last-child th, table.cmp tr:last-child td { border-bottom: none; }
+
+/* ---------- footer ---------- */
+footer { border-top: 1px solid var(--rule); background: var(--ground); padding: 40px 0 56px; }
+.foot-in { display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between; align-items: flex-start; }
+footer p { margin: 0; font-size: 12.5px; color: var(--ink-3); max-width: 58ch; line-height: 1.6; }
+
+/* ---------- drawers ---------- */
+.scrim {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(9, 12, 20, .5); backdrop-filter: blur(2px);
+  opacity: 0; pointer-events: none; transition: opacity .22s ease;
+}
+.scrim.open { opacity: 1; pointer-events: auto; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 100;
+  width: min(520px, 100vw);
+  background: var(--ground); border-left: 1px solid var(--rule);
+  display: flex; flex-direction: column;
+  transform: translateX(101%); transition: transform .28s cubic-bezier(.4,.14,.3,1);
+  box-shadow: -18px 0 50px -30px rgba(9,12,20,.8);
+}
+.drawer.open { transform: translateX(0); }
+.drawer-hd {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 16px 20px; border-bottom: 1px solid var(--rule); background: var(--paper);
+}
+.drawer-hd .t { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-2); }
+.x { width: 30px; height: 30px; border: 1px solid var(--rule); background: transparent; border-radius: 2px; line-height: 1; font-size: 15px; }
+.x:hover { border-color: var(--ink); }
+.drawer-body { overflow-y: auto; flex: 1; }
+.drawer-foot { border-top: 1px solid var(--rule); padding: 16px 20px 20px; background: var(--paper); }
+@media (prefers-reduced-motion: reduce) {
+  .drawer { transition: none; } .scrim { transition: none; }
+}
+
+/* product passport */
+.pp-hero { aspect-ratio: 16 / 9; background: var(--paper-2); }
+.pp-hero svg { display: block; width: 100%; height: 100%; }
+.pp-main { padding: 22px 20px 6px; }
+.pp-main h2 { font-size: 32px; line-height: 1.08; margin: 8px 0 0; }
+.pp-story { color: var(--ink-2); font-size: 14.5px; line-height: 1.6; margin: 14px 0 0; }
+.pp-sec { padding: 20px; border-top: 1px solid var(--rule-soft); }
+.pp-sec > .eyebrow { display: block; margin-bottom: 12px; }
+.spec { display: grid; grid-template-columns: 34% 1fr; gap: 8px 14px; font-size: 13px; }
+.spec dt { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); padding-top: 2px; }
+.spec dd { margin: 0; color: var(--ink); }
+.ledger { border: 1px solid var(--rule); border-radius: 2px; background: var(--paper); }
+.ledger .mrow { padding: 9px 14px; }
+.bar { display: flex; height: 8px; border-radius: 2px; overflow: hidden; margin: 12px 0 8px; border: 1px solid var(--rule); }
+.bar i { display: block; height: 100%; }
+.key { display: flex; flex-wrap: wrap; gap: 10px 16px; font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.key span { display: inline-flex; align-items: center; gap: 6px; }
+.key i { width: 9px; height: 9px; border-radius: 1px; display: inline-block; }
+.note {
+  margin-top: 14px; padding: 11px 13px; border-radius: 2px;
+  background: var(--indigo-wash); border: 1px solid color-mix(in srgb, var(--indigo) 25%, transparent);
+  font-size: 12.5px; color: var(--ink-2); line-height: 1.5;
+}
+.note.warn { background: var(--flag-wash); border-color: color-mix(in srgb, var(--flag) 32%, transparent); }
+
+/* cart / docket */
+.docket-line { display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--rule-soft); align-items: start; }
+.docket-line .th { aspect-ratio: 1; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; background: var(--paper-2); }
+.docket-line .th svg { display: block; width: 100%; height: 100%; }
+.docket-line h4 { margin: 0; font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 18px; line-height: 1.15; }
+.docket-line .meta { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: 4px; }
+.qty { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: 2px; margin-top: 9px; }
+.qty button { width: 26px; height: 26px; background: transparent; border: none; font-size: 14px; line-height: 1; color: var(--ink-2); }
+.qty button:hover { color: var(--ink); }
+.qty span { min-width: 26px; text-align: center; font-family: "IBM Plex Mono", monospace; font-size: 12.5px; }
+.docket-line .rt { text-align: right; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.rm { background: none; border: none; padding: 0; font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); text-decoration: underline; }
+.rm:hover { color: var(--ink); }
+.blank { padding: 70px 30px; text-align: center; color: var(--ink-3); }
+.blank h3 { font-size: 26px; color: var(--ink); margin-bottom: 8px; }
+.btn.full { width: 100%; justify-content: center; height: 46px; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* checkout / receipt */
+.receipt { padding: 26px 22px 30px; }
+.stampmark {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+  border: 2px solid var(--clear); color: var(--clear); border-radius: 3px;
+  padding: 8px 16px; transform: rotate(-3deg);
+  font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+}
+.field { display: block; margin-bottom: 12px; }
+.field span { display: block; font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 5px; }
+.field input {
+  width: 100%; height: 38px; padding: 0 11px; border-radius: 2px;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--rule);
+  font: 400 13.5px "Public Sans", sans-serif;
+}
+.field input:focus { border-color: var(--indigo); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.err { color: #B0392F; font-size: 12px; margin: -6px 0 12px; }
+:root[data-theme="dark"] .err, :root:not([data-theme="light"]) .err { }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .err { color: #F09188; } }
+:root[data-theme="dark"] .err { color: #F09188; }
+</style>
+
+<a class="skip" href="#catalog">Skip to catalog</a>
+
+<header class="rail">
+  <div class="wrap rail-in">
+    <a class="mark" href="#top"><b>ORBIS</b><span>Six Origins</span></a>
+    <div class="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5 21 21"></path></svg>
+      <input id="q" type="search" placeholder="search the catalog" aria-label="Search the catalog">
+    </div>
+    <div class="rail-spacer"></div>
+    <div class="rail-note">Duty prepaid · US-warehoused · Ships in 2 days</div>
+    <button class="cart-btn" id="openCart">Docket <span class="n" id="cartN">0</span></button>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap hero-in">
+    <div>
+      <div class="eyebrow">Curated import house · Est. 2026 · Nova Digitus Designs LLC</div>
+      <h1>Six origins.<br>Every duty <em>on the label</em>.</h1>
+      <p class="lede">Since the $800 de minimis exemption was suspended, every parcel entering the United States carries duty — and most sellers have simply buried it in the price. We print it. Each ORBIS product ships with an Origin Passport that names the maker, the tariff line, the freight, the royalty, and our margin, to the cent.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#catalog">Browse the catalog</a>
+        <a class="btn ghost" href="#model">How the ledger works</a>
+      </div>
+    </div>
+    <div class="manifest">
+      <div class="manifest-hd"><span>Specimen · Landed cost</span><span id="specName">JP-0207</span></div>
+      <div class="manifest-body" id="specBody"></div>
+    </div>
+  </div>
+</section>
+
+<section class="origins">
+  <div class="origin-row" id="originRow"></div>
+</section>
+
+<main class="wrap" id="catalog">
+  <div class="toolbar">
+    <div class="chips" id="catChips"></div>
+    <div class="tool-right">
+      <span class="count" id="count"></span>
+      <select class="sort" id="sort" aria-label="Sort catalog">
+        <option value="feat">Sort · Curated</option>
+        <option value="low">Sort · Price low to high</option>
+        <option value="high">Sort · Price high to low</option>
+        <option value="duty">Sort · Duty burden</option>
+        <option value="royalty">Sort · Maker royalty</option>
+      </select>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<section class="model" id="model">
+  <div class="wrap">
+    <div class="eyebrow">The twist</div>
+    <h2>A supplier network that shows its arithmetic.</h2>
+    <p class="sub">Sellvia and the platforms like it sell access to an anonymous catalog and take their cut in layers you find out about later. ORBIS runs the opposite way: one price, one printed ledger, one named maker per line, and a fee schedule you can read in a sentence.</p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <span class="k">01 · Sourcing</span>
+        <h3>Six origins, not one warehouse</h3>
+        <p>Each origin is a standing relationship with two to four cooperatives or small workshops. We buy in container lots, clear customs once, and hold inventory in a US 3PL — so the customer's parcel is a domestic parcel.</p>
+      </div>
+      <div class="pillar">
+        <span class="k">02 · Pricing</span>
+        <h3>The Origin Passport</h3>
+        <p>Every product page prints the full landed-cost ledger: maker price, tariff line with its HTS basis, ocean and last-mile freight, the maker royalty, and ORBIS margin. Nothing is folded into "handling".</p>
+      </div>
+      <div class="pillar">
+        <span class="k">03 · Maker terms</span>
+        <h3>Six percent, paid on sale</h3>
+        <p>Beyond the wholesale price, 6% of every retail sale returns to the originating cooperative as a royalty. It is a line item on the receipt, remitted quarterly, and the reason a maker will hold capacity for you.</p>
+      </div>
+      <div class="pillar">
+        <span class="k">04 · Reseller layer</span>
+        <h3>Flat, not stacked</h3>
+        <p>Resellers who sell the ORBIS catalog under their own storefront pay one subscription and one wholesale price. No reserve hold, no referral percentage, no top-up surcharge, no payout fee.</p>
+      </div>
+    </div>
+
+    <div class="compare">
+      <table class="cmp">
+        <thead>
+          <tr><th scope="col">Where the models diverge</th><th scope="col">The marketplace default</th><th scope="col">ORBIS</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Fee structure</th><td class="them">Subscription plus referral %, processing %, top-up surcharge and payout fee, disclosed at different points</td><td class="us">One subscription, one wholesale price, published fee schedule</td></tr>
+          <tr><th scope="row">Cash flow</th><td class="them">A share of sales held in reserve for months; sellers front their own cash to fulfil</td><td class="us">Settlement on ship date, no reserve hold</td></tr>
+          <tr><th scope="row">Duty after de minimis</th><td class="them">Absorbed silently into the unit price or surfaced as a surprise at delivery</td><td class="us">Prepaid on the bulk entry and printed as its own line on every product</td></tr>
+          <tr><th scope="row">Product story</th><td class="them">Generic catalog copy, no origin, no maker</td><td class="us">Named cooperative, region, materials and technique on every SKU</td></tr>
+          <tr><th scope="row">Delivery</th><td class="them">5&ndash;20 business days from a mixed-origin queue</td><td class="us">2&ndash;5 days from US inventory; origin-direct items labelled as such</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <div>
+      <div class="mark" style="margin-bottom:10px"><b>ORBIS</b><span>Six Origins</span></div>
+      <p><strong>Working prototype.</strong> The catalog below is a sample assortment built to demonstrate the model and the Origin Passport format. Cooperative names, lot numbers and cost figures are illustrative placeholders — replace them with your verified suppliers and your broker's actual duty determinations before this goes live. Duty rates shown reflect the post&ndash;de&nbsp;minimis landscape as of September 2026 and change frequently.</p>
+    </div>
+    <div class="mono" style="font-size:11px;color:var(--ink-3);letter-spacing:.1em;line-height:2;text-transform:uppercase">
+      CN · Jiangxi &amp; Fujian<br>
+      JP · Iwate, Gifu &amp; Kyoto<br>
+      AF · Ghana, Mali &amp; Kenya<br>
+      CA · Quebec &amp; British Columbia<br>
+      MX · Puebla, Oaxaca &amp; Michoacán<br>
+      TH · Sukhothai &amp; Chiang Mai
+    </div>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="drawer" id="ppDrawer" aria-hidden="true" aria-label="Origin Passport">
+  <div class="drawer-hd">
+    <span class="t">Origin Passport</span>
+    <button class="x" data-close aria-label="Close">&times;</button>
+  </div>
+  <div class="drawer-body" id="ppBody"></div>
+  <div class="drawer-foot" id="ppFoot"></div>
+</aside>
+
+<aside class="drawer" id="cartDrawer" aria-hidden="true" aria-label="Docket">
+  <div class="drawer-hd">
+    <span class="t" id="cartTitle">Docket</span>
+    <button class="x" data-close aria-label="Close">&times;</button>
+  </div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-foot" id="cartFoot"></div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==========================================================
+     ORIGINS
+     Duty rates reflect the post-de-minimis landscape as of
+     Sept 2026 and are illustrative. Confirm every line with a
+     licensed customs broker before pricing real inventory.
+     ========================================================== */
+  var ORIGINS = {
+    CN: { name: "China",    code: "CN", region: "Jiangxi & Fujian",            duty: 0.375, basis: "Sec. 301 stack + MPF", note: "Highest duty burden in the book. Reserved for pieces where the craft tradition has no substitute — Jingdezhen porcelain, Yixing zisha clay, mulberry silk." },
+    JP: { name: "Japan",    code: "JP", region: "Iwate, Gifu & Kyoto",         duty: 0.15,  basis: "Reciprocal rate + MPF", note: "Mid-band duty. Highest unit values in the catalog, so the duty line is a small share of retail." },
+    AF: { name: "Africa",   code: "AF", region: "Ghana, Mali & Kenya",         duty: 0.00,  basis: "AGOA preference claim", note: "Duty-free under AGOA, which lapsed 30 Sep 2025 and was extended by proclamation in May 2026. The current extension is short. Price a fallback rate into any purchase order that lands after it.", flagged: true },
+    CA: { name: "Canada",   code: "CA", region: "Quebec & British Columbia",   duty: 0.00,  basis: "USMCA certification", note: "Duty-free where rules of origin are met and a certification of origin travels with the entry. Keep bills of materials on file for five years." },
+    MX: { name: "Mexico",   code: "MX", region: "Puebla, Oaxaca & Michoacán",  duty: 0.00,  basis: "USMCA certification", note: "Duty-free under USMCA. Watch regional value content on anything assembled from non-USMCA components." },
+    TH: { name: "Thailand", code: "TH", region: "Sukhothai & Chiang Mai",      duty: 0.19,  basis: "Reciprocal rate + MPF", note: "Mid-band duty with strong margins — the ceramics and teak lines carry the best unit economics in the book." }
+  };
+
+  var ROYALTY = 0.06;   // share of retail returned to the originating cooperative
+  var TAX = 0.0825;     // illustrative destination sales tax
+
+  /* ==========================================================
+     SAMPLE CATALOG — 30 SKUs
+     retail: shelf price · fob: maker price · frt: landed freight
+     ========================================================== */
+  var P = [
+    // ---------- CHINA ----------
+    ["CN","Jingde Blue-Rim Bowl Set","Tableware",88,21,3.2,"Set of four, 5.5 in · hand-painted underglaze cobalt on porcelain","Jingde Kiln No.7 Cooperative","6912.25.10",2,"Painted by hand in the town that has fired porcelain for a thousand years. The rim line is drawn in a single unbroken stroke — the reason no two sets stack identically."],
+    ["CN","Yixing Zisha Teapot, 180ml","Kitchen",124,31,3.6,"Unglazed purple clay, hand-thrown, single-hole filter","Dingshu Workshop Collective","6912.00.44",2,"Zisha clay is porous. The pot seasons to the tea you brew in it, which is why a working potter keeps one for each leaf and never washes any of them with soap."],
+    ["CN","Mulberry Silk Sleep Mask","Care",46,9.5,1.4,"22-momme grade-6A mulberry silk, both faces","Wujiang Filature Cooperative","6307.90.98",2,"Twenty-two momme is the weight where silk stops sliding and starts holding. Filled with the same silk it is faced in, not polyester."],
+    ["CN","Ink-Wash Porcelain Vase, 9 in","Decor",156,38,5.4,"Hand-thrown porcelain, brushed cobalt, clear glaze","Jingde Kiln No.7 Cooperative","6913.10.20",2,"The wash is applied wet-on-wet before the glaze, so the pigment bleeds a half millimetre. That bleed is the tell of a hand and not a transfer."],
+    ["CN","Pu-erh Cake, 2019 Harvest","Pantry",72,17,2.6,"357 g compressed sheng cake, Menghai county leaf","Menghai Growers Association","0902.40.00",2,"Pressed in 2019 and aging since. Sheng pu-erh gets better in your cupboard, which makes it the only thing in this catalog that appreciates."],
+    // ---------- JAPAN ----------
+    ["JP","Seigaiha Indigo Noren","Textiles",138,46,5.2,"Cotton, natural aizome indigo, 33 x 59 in, two panels","Kyoto Aizome Atelier","6303.99.00",2,"Seigaiha — blue sea waves. Dyed in fermented indigo vats and dipped a dozen times; the fabric darkens for the first year of use, then holds."],
+    ["JP","Nambu Cast Iron Kettle, 1.2 L","Kitchen",264,96,11,"Sand-cast iron, urushi-finished interior, arare hobnail","Morioka Nambu Foundry Guild","7323.91.10",2,"Cast in Iwate since the seventeenth century. Water boiled in it carries trace iron and a rounder mouthfeel — the reason it never got replaced by steel."],
+    ["JP","Mino-yaki Tea Cup Pair","Tableware",74,24,3.1,"Two cups, 6 oz, ash glaze over stoneware","Toki Mino-yaki Kiln","6912.00.48",2,"Ash glaze pools where the wheel left a ridge, so the colour is deepest exactly where the potter's finger was."],
+    ["JP","Hinoki Bath Mat","Home",118,40,6.4,"Slatted hinoki cypress, 27 x 16 in, unfinished","Kiso Valley Timber Co-op","4421.99.97",2,"Hinoki dries itself and smells like a cedar bath house when wet. Unfinished on purpose — oil it and you lose the scent."],
+    ["JP","Sakura Charcoal Face Bar","Care",28,8,1.2,"Binchotan charcoal, camellia oil, cherry blossom, 100 g","Wakayama Binchotan Soapworks","3401.11.50",2,"Binchotan is fired at 1,000 degrees until it rings like glass. Ground fine, it does the scrubbing without the scratching."],
+    // ---------- AFRICA ----------
+    ["AF","Bolgatanga Market Basket, Large","Home",96,27,4.8,"Hand-woven elephant grass, leather-wrapped handle, 16 in","Bolgatanga Weavers Union, Ghana","4602.19.29",2,"Woven from veta vera grass that is split, dyed and twisted by hand before a single row is laid. The handle is wrapped in goat leather by a second artisan."],
+    ["AF","Kente Strip Table Runner","Textiles",184,58,6.2,"Hand-loomed cotton and rayon strips, 14 x 72 in","Bonwire Loom Collective, Ghana","6302.51.40",2,"Kente is woven in four-inch strips on a narrow loom, then sewn edge to edge. Every colour block is a word — this pattern reads as 'gathering'."],
+    ["AF","Raw Shea Butter, Unrefined","Care",34,8.5,1.6,"500 g, cold-pressed, single-origin Northern Region nuts","Tamale Women's Shea Union, Ghana","1515.90.80",2,"Unrefined means it still smells faintly of smoke and nut, because nothing was stripped out to make it smell like nothing."],
+    ["AF","Bogolan Mudcloth Cushion Cover","Textiles",68,19,2.8,"Hand-spun cotton, fermented-mud resist dye, 20 in","Ségou Bogolan Atelier, Mali","6304.92.00",2,"The black is river mud fermented for a year, painted on and washed off. What stays is the pattern the mud bit into the cloth."],
+    ["AF","Nyeri AA Coffee, Single Lot","Pantry",26,7.4,1.1,"340 g whole bean, washed SL-28, 1,750 m altitude","Nyeri Hills Grower Society, Kenya","0901.21.00",2,"SL-28 grown high enough that the cherries ripen slowly. Blackcurrant on the front, dry and clean at the back."],
+    // ---------- CANADA ----------
+    ["CA","Amber Maple Syrup, Grade A","Pantry",32,11,1.8,"500 ml, single-sugarbush, amber rich taste","Beauce Sugarbush Co-op, Quebec","1702.20.28",2,"One sugarbush, one boil, no blending across farms — which is why the colour shifts a shade between seasons."],
+    ["CA","Hudson Wool Throw, Undyed","Textiles",218,82,9.6,"100% undyed Canadian wool, 50 x 70 in, fringed","Eastern Townships Woollen Mill","6301.20.00",2,"The greys and creams are the sheep's own colours, sorted at the mill rather than dyed. Heavy enough to sit flat on a bed."],
+    ["CA","Birch Bark Serving Board","Kitchen",78,26,4.2,"Yellow birch, food-safe oil finish, 18 x 9 in","Laurentides Woodshop","4419.90.91",2,"Cut across the grain so the growth rings run edge to edge. Oiled, never sealed — it will patina and it is meant to."],
+    ["CA","Cedar & Balsam Candle","Home",42,13,2.2,"8 oz soy-coconut wax, cotton wick, 55 hr burn","Kootenay Small Batch, BC","3406.00.00",2,"Poured in the Kootenays from western red cedar and balsam fir. It smells like the treeline in February and nothing like a candle shop."],
+    ["CA","Bison Leather Valet Tray","Decor",96,34,4.6,"Vegetable-tanned bison hide, brass snaps, 7 in square","Prairie Hide Works, Alberta","4205.00.80",2,"Bison hide is thicker and more open-grained than cattle. Snapped at the corners so it lies flat when you want it to travel."],
+    // ---------- MEXICO ----------
+    ["MX","Talavera Dinner Plate, Puebla","Tableware",58,17,2.4,"11 in, hand-painted tin-glazed earthenware, DO4 certified","Taller Talavera de Puebla","6912.00.48",2,"Talavera is a protected designation — the clay, the glaze and the six mineral pigments are all specified. Painted freehand, fired twice."],
+    ["MX","Hammered Copper Mug Pair","Kitchen",92,29,3.9,"Two mugs, 12 oz, hand-hammered copper, tin lining","Santa Clara del Cobre Guild","7418.10.00",2,"Santa Clara has hammered copper since the sixteenth century. Each mug takes several thousand blows and no two dimple patterns repeat."],
+    ["MX","Oaxacan Wool Rug, 2 x 3 ft","Textiles",340,122,14,"Churro wool, cochineal and indigo natural dye, pedal loom","Teotitlán del Valle Weavers","5702.91.30",2,"Cochineal red comes from an insect farmed on nopal cactus. The dye is fixed with lime juice, which is why the red stays red."],
+    ["MX","Blown Glass Tumbler Set","Tableware",84,25,4.4,"Set of six, 12 oz, recycled glass, cobalt rim","Vidrio Soplado de Tonalá","7013.37.20",2,"Blown from recycled bottle glass, so the body carries a faint green cast and the occasional bubble. Both are the material telling on itself."],
+    ["MX","Cacao & Canela Table Chocolate","Pantry",24,6.8,1.2,"400 g stone-ground drinking chocolate discs, 60% cacao","Oaxaca Cacao Molino","1806.20.20",2,"Stone-ground on a metate, so the sugar stays crystalline and the drink has grit. Meant for a molinillo and hot milk, not a bar."],
+    // ---------- THAILAND ----------
+    ["TH","Celadon Crackle Bowl","Tableware",66,18,2.6,"8 in, jade celadon glaze, reduction-fired stoneware","Sawankhalok Celadon Kiln","6912.00.48",2,"The crackle is deliberate — glaze and clay shrink at different rates in the cooling, and the kiln master controls the pace to set the web."],
+    ["TH","Teak Serving Tongs, Pair","Kitchen",34,8.4,1.4,"Two pairs, reclaimed teak, 11 in, oil finish","Chiang Mai Reclaimed Teak Works","4419.90.91",2,"Cut from teak reclaimed out of old house beams, which is why the grain is tighter than anything you can buy new."],
+    ["TH","Mudmee Silk Cushion Cover","Textiles",112,32,4.1,"Hand-woven Thai silk, ikat mudmee weave, 18 in","Isan Silk Weavers Group","6304.99.60",2,"Mudmee is ikat — the thread is tied and dyed before it is woven, so the pattern arrives already inside the yarn and blurs at every edge."],
+    ["TH","Benjarong Espresso Cup Set","Tableware",148,43,5.6,"Four cups and saucers, five-colour enamel over porcelain","Benjarong Atelier, Samut Songkhram","6911.10.80",2,"Benjarong means five colours. The enamel is applied and fired one colour at a time, so a single cup goes through the kiln five times."],
+    ["TH","Lemongrass & Kaffir Soap Trio","Care",30,7.6,1.3,"Three 110 g bars, cold-process coconut oil base","Chiang Rai Herbal Soapworks","3401.11.50",2,"Cold-pressed so the essential oils survive the process. Lemongrass, kaffir lime and a third bar of Thai holy basil."]
+  ];
+
+  /* build product objects with derived economics */
+  var CATALOG = P.map(function (r, i) {
+    var o = ORIGINS[r[0]];
+    var retail = r[3], fob = r[4], frt = r[5];
+    var duty = Math.round(fob * o.duty * 100) / 100;
+    var royalty = Math.round(retail * ROYALTY * 100) / 100;
+    var margin = Math.round((retail - fob - duty - frt - royalty) * 100) / 100;
+    return {
+      id: r[0] + "-" + String(1000 + i * 7).slice(1),
+      origin: r[0], name: r[1], cat: r[2],
+      retail: retail, fob: fob, frt: frt, duty: duty, royalty: royalty, margin: margin,
+      mat: r[6], maker: r[7], hts: r[8], lead: r[9], story: r[10],
+      seed: i * 2654435761 % 100000
+    };
+  });
+
+  /* the workshop's own town, not the origin's whole sourcing region */
+  var PLACE = {
+    "Jingde Kiln No.7 Cooperative": "Jingdezhen, Jiangxi",
+    "Dingshu Workshop Collective": "Yixing, Jiangsu",
+    "Wujiang Filature Cooperative": "Wujiang, Jiangsu",
+    "Menghai Growers Association": "Menghai, Yunnan",
+    "Kyoto Aizome Atelier": "Kyoto",
+    "Morioka Nambu Foundry Guild": "Morioka, Iwate",
+    "Toki Mino-yaki Kiln": "Toki, Gifu",
+    "Kiso Valley Timber Co-op": "Kiso Valley, Nagano",
+    "Wakayama Binchotan Soapworks": "Wakayama",
+    "Bolgatanga Weavers Union, Ghana": "Bolgatanga, Upper East, Ghana",
+    "Bonwire Loom Collective, Ghana": "Bonwire, Ashanti, Ghana",
+    "Tamale Women's Shea Union, Ghana": "Tamale, Northern Region, Ghana",
+    "Ségou Bogolan Atelier, Mali": "Ségou, Mali",
+    "Nyeri Hills Grower Society, Kenya": "Nyeri County, Kenya",
+    "Beauce Sugarbush Co-op, Quebec": "Beauce, Québec",
+    "Eastern Townships Woollen Mill": "Eastern Townships, Québec",
+    "Laurentides Woodshop": "Laurentides, Québec",
+    "Kootenay Small Batch, BC": "Kootenays, British Columbia",
+    "Prairie Hide Works, Alberta": "Alberta",
+    "Taller Talavera de Puebla": "Puebla",
+    "Santa Clara del Cobre Guild": "Santa Clara del Cobre, Michoacán",
+    "Teotitlán del Valle Weavers": "Teotitlán del Valle, Oaxaca",
+    "Vidrio Soplado de Tonalá": "Tonalá, Jalisco",
+    "Oaxaca Cacao Molino": "Oaxaca de Juárez, Oaxaca",
+    "Sawankhalok Celadon Kiln": "Sawankhalok, Sukhothai",
+    "Chiang Mai Reclaimed Teak Works": "Chiang Mai",
+    "Isan Silk Weavers Group": "Khon Kaen, Isan",
+    "Benjarong Atelier, Samut Songkhram": "Samut Songkhram",
+    "Chiang Rai Herbal Soapworks": "Chiang Rai"
+  };
+
+  /* curated order round-robins the six origins so the book never
+     reads as six blocks of one country */
+  (function interleave() {
+    var buckets = Object.keys(ORIGINS).map(function (k) {
+      return CATALOG.filter(function (p) { return p.origin === k; });
+    });
+    var out = [], added = true, i = 0;
+    while (added) {
+      added = false;
+      for (var b = 0; b < buckets.length; b++) {
+        if (buckets[b][i]) { out.push(buckets[b][i]); added = true; }
+      }
+      i++;
+    }
+    out.forEach(function (p, n) { p.rank = n; });
+  })();
+
+  var CATS = ["All"].concat(CATALOG.map(function (p) { return p.cat; })
+    .filter(function (v, i, a) { return a.indexOf(v) === i; }).sort());
+
+  /* ==========================================================
+     MOTIFS — each origin's pattern is drawn from its own craft
+     vocabulary. No stock imagery; everything is generated.
+     ========================================================== */
+  function rng(seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+
+  var PAL = {
+    CN: { bg: "#F4F5F0", a: "#1D3F8F", b: "#7A93C9" },
+    JP: { bg: "#E9EAE4", a: "#1B3358", b: "#4E6D96" },
+    AF: { bg: "#EDE7DC", a: "#2A2620", b: "#9C5F2E" },
+    CA: { bg: "#EBEDE7", a: "#2E4636", b: "#7E6A4C" },
+    MX: { bg: "#F2F0E9", a: "#17479B", b: "#C58A20" },
+    TH: { bg: "#E6ECE7", a: "#2E6459", b: "#8FB3A4" }
+  };
+
+  /* nudge a hex toward light or dark so no two pieces from one
+     origin fire at exactly the same colour */
+  function shift(hex, amt) {
+    var n = parseInt(hex.slice(1), 16);
+    var r = (n >> 16) & 255, g = (n >> 8) & 255, b2 = n & 255;
+    function c(v) { return Math.max(0, Math.min(255, Math.round(v + amt))); }
+    return "#" + ((1 << 24) + (c(r) << 16) + (c(g) << 8) + c(b2)).toString(16).slice(1);
+  }
+
+  function motif(p, w, h) {
+    var base = PAL[p.origin], rnd = rng(p.seed + 7);
+    var drift = Math.round((rnd() - 0.5) * 46);
+    var pal = { bg: shift(base.bg, Math.round(drift / 5)), a: shift(base.a, drift), b: shift(base.b, -drift) };
+    var body = "";
+    var W = w || 400, H = h || 300;
+    var tilt = (rnd() - 0.5) * 15;          // per-piece rotation
+    var zoom = 0.92 + rnd() * 0.5;          // per-piece scale
+    var ox0 = (rnd() - 0.5) * W * 0.3, oy0 = (rnd() - 0.5) * H * 0.3;
+
+    if (p.origin === "CN") {
+      // blue-and-white: scattered brush florets
+      for (var i = 0; i < 40; i++) {
+        var cx = -W * 0.3 + rnd() * W * 1.6, cy = -H * 0.3 + rnd() * H * 1.6, r = 7 + rnd() * 16, n = 5 + Math.floor(rnd() * 3), rot = rnd() * 360;
+        var pet = "";
+        for (var k = 0; k < n; k++) {
+          var ang = (k / n) * 360;
+          pet += '<ellipse cx="0" cy="' + (-r * 0.55) + '" rx="' + (r * 0.26) + '" ry="' + (r * 0.5) + '" transform="rotate(' + ang + ')"/>';
+        }
+        body += '<g transform="translate(' + cx.toFixed(1) + ',' + cy.toFixed(1) + ') rotate(' + rot.toFixed(0) + ')" fill="' + (rnd() > .45 ? pal.a : pal.b) + '" opacity="' + (0.35 + rnd() * 0.5).toFixed(2) + '">' + pet + '<circle r="' + (r * 0.17).toFixed(1) + '" fill="' + pal.a + '"/></g>';
+      }
+    } else if (p.origin === "JP") {
+      // seigaiha: overlapping arcs
+      var s = 26 + Math.round(rnd() * 22), rows = Math.ceil(H * 1.6 / (s * 0.5)) + 2, cols = Math.ceil(W * 1.6 / s) + 2;
+      for (var y = 0; y < rows; y++) {
+        for (var x = 0; x < cols; x++) {
+          var ox = x * s + (y % 2 ? s / 2 : 0), oy = y * s * 0.5;
+          for (var q = 3; q >= 1; q--) {
+            body += '<path d="M' + (ox - s / 2) + ' ' + oy + ' a ' + (s / 2 * q / 3) + ' ' + (s / 2 * q / 3) + ' 0 0 1 ' + (s * q / 3) + ' 0" fill="none" stroke="' + (q === 2 ? pal.b : pal.a) + '" stroke-width="1.5" opacity="' + (q === 2 ? .35 : .6) + '" transform="translate(' + (s / 2 - s * q / 6) + ',0)"/>';
+          }
+        }
+      }
+    } else if (p.origin === "AF") {
+      // kente / bogolan: strip bands with geometric fill
+      var bx = -W * 0.3;
+      while (bx < W * 1.3) {
+        var bw = 18 + rnd() * 34;
+        var col = rnd() > .55 ? pal.a : pal.b;
+        body += '<rect x="' + bx.toFixed(1) + '" y="' + (-H * 0.3) + '" width="' + bw.toFixed(1) + '" height="' + (H * 1.6) + '" fill="' + col + '" opacity="' + (0.14 + rnd() * 0.3).toFixed(2) + '"/>';
+        var by = -H * 0.3;
+        while (by < H * 1.3) {
+          var bh = 12 + rnd() * 26;
+          if (rnd() > .45) {
+            body += '<rect x="' + (bx + 3).toFixed(1) + '" y="' + (by + 3).toFixed(1) + '" width="' + Math.max(2, bw - 6).toFixed(1) + '" height="' + Math.max(2, bh - 6).toFixed(1) + '" fill="none" stroke="' + pal.a + '" stroke-width="1.4" opacity=".65"/>';
+          } else if (rnd() > .5) {
+            body += '<path d="M' + (bx + 3) + ' ' + (by + bh - 3) + ' L' + (bx + bw / 2) + ' ' + (by + 3) + ' L' + (bx + bw - 3) + ' ' + (by + bh - 3) + '" fill="none" stroke="' + pal.b + '" stroke-width="1.6" opacity=".8"/>';
+          }
+          by += bh;
+        }
+        bx += bw;
+      }
+    } else if (p.origin === "CA") {
+      // wood grain / growth rings
+      var lines = 34 + Math.round(rnd() * 26), amp = 8 + rnd() * 20, knot = 3 + Math.floor(rnd() * 4);
+      for (var g = 0; g < lines; g++) {
+        var yy = (g / lines) * H * 1.6 - H * 0.3 + rnd() * 4;
+        var d = "M" + (-W * 0.3) + " " + yy.toFixed(1);
+        for (var xx = -W * 0.3; xx <= W * 1.3; xx += 40) {
+          d += " Q " + (xx + 20) + " " + (yy + (rnd() - .5) * amp).toFixed(1) + " " + (xx + 40) + " " + (yy + (rnd() - .5) * 6).toFixed(1);
+        }
+        body += '<path d="' + d + '" fill="none" stroke="' + (g % knot === 0 ? pal.a : pal.b) + '" stroke-width="' + (g % knot === 0 ? 1.9 : 1.0) + '" opacity="' + (0.4 + rnd() * 0.45).toFixed(2) + '"/>';
+      }
+    } else if (p.origin === "MX") {
+      // talavera: eight-point star grid
+      var st = 38 + Math.round(rnd() * 30);
+      for (var ry = -2; ry * st < H * 1.5 + st; ry++) {
+        for (var rx2 = -2; rx2 * st < W * 1.5 + st; rx2++) {
+          var px = rx2 * st + st / 2, py = ry * st + st / 2;
+          var pts = "";
+          for (var t = 0; t < 16; t++) {
+            var rr = t % 2 ? st * 0.15 : st * 0.36, aa = (t / 16) * Math.PI * 2 - Math.PI / 2;
+            pts += (px + Math.cos(aa) * rr).toFixed(1) + "," + (py + Math.sin(aa) * rr).toFixed(1) + " ";
+          }
+          body += '<polygon points="' + pts.trim() + '" fill="' + ((rx2 + ry) % 2 ? pal.a : pal.b) + '" opacity="' + (0.3 + rnd() * 0.35).toFixed(2) + '"/>';
+          body += '<circle cx="' + px + '" cy="' + py + '" r="' + (st * 0.07) + '" fill="' + pal.bg + '"/>';
+        }
+      }
+    } else {
+      // TH — celadon crackle
+      var pts2 = [];
+      var nPts = 150 + Math.floor(rnd() * 90);
+      for (var c = 0; c < nPts; c++) pts2.push([-W * 0.3 + rnd() * W * 1.6, -H * 0.3 + rnd() * H * 1.6]);
+      var seen = {};
+      pts2.forEach(function (a, ai) {
+        var near = pts2.map(function (b, bi) { return { b: b, bi: bi, d: Math.hypot(a[0] - b[0], a[1] - b[1]) }; })
+          .filter(function (o2) { return o2.bi !== ai; })
+          .sort(function (m, n2) { return m.d - n2.d; }).slice(0, 3);
+        near.forEach(function (o3) {
+          var key = Math.min(ai, o3.bi) + ":" + Math.max(ai, o3.bi);
+          if (seen[key]) return;
+          seen[key] = 1;
+          body += '<line x1="' + a[0].toFixed(1) + '" y1="' + a[1].toFixed(1) + '" x2="' + o3.b[0].toFixed(1) + '" y2="' + o3.b[1].toFixed(1) +
+            '" stroke="' + pal.a + '" stroke-width="' + (0.6 + rnd() * 0.9).toFixed(2) + '" opacity="' + (0.3 + rnd() * 0.4).toFixed(2) + '"/>';
+        });
+      });
+      body = '<rect x="' + (-W * 0.3) + '" y="' + (-H * 0.3) + '" width="' + (W * 1.6) + '" height="' + (H * 1.6) + '" fill="' + pal.b + '" opacity=".26"/>' + body;
+    }
+
+    var xform = "translate(" + (W / 2 + ox0).toFixed(1) + "," + (H / 2 + oy0).toFixed(1) + ") rotate(" + tilt.toFixed(1) + ") scale(" + zoom.toFixed(3) + ") translate(" + (-W / 2) + "," + (-H / 2) + ")";
+
+    /* the SVG viewport clips on its own — no clipPath, so no id
+       collisions when a piece renders in the grid, the passport
+       and the docket at the same time */
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + esc(p.name) + ', ' + esc(ORIGINS[p.origin].name) + '">' +
+      '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' +
+      '<g transform="' + xform + '">' + body + '</g></svg>';
+  }
+
+  /* ========================== state ========================== */
+  var state = { origin: null, cat: "All", q: "", sort: "feat" };
+  var cart = {};   // id -> qty
+
+  var $ = function (s) { return document.querySelector(s); };
+  var money = function (n) { return "$" + n.toFixed(2); };
+  var money0 = function (n) { return "$" + n.toFixed(n % 1 ? 2 : 0); };
+
+  /* ==================== specimen manifest ==================== */
+  function renderSpec() {
+    var p = CATALOG.filter(function (x) { return x.origin === "JP"; })[1]; // the kettle
+    $("#specName").textContent = p.id;
+    var rows = [
+      ["Maker price", p.maker, p.fob],
+      ["Import duty", ORIGINS[p.origin].basis + " · " + Math.round(ORIGINS[p.origin].duty * 100) + "%", p.duty],
+      ["Ocean &amp; last mile", "Container lot, apportioned", p.frt],
+      ["Maker royalty", "6% of retail, remitted quarterly", p.royalty],
+      ["ORBIS margin", "Curation, warehousing, service", p.margin]
+    ];
+    var html = rows.map(function (r) {
+      return '<div class="mrow"><div class="lbl">' + r[0] + '<small>' + esc(r[1]) + '</small></div><div class="val">' + money(r[2]) + '</div></div>';
+    }).join("");
+    html += '<div class="mrow total"><div class="lbl">Shelf price — ' + esc(p.name) + '</div><div class="val">' + money(p.retail) + '</div></div>';
+    $("#specBody").innerHTML = html;
+  }
+
+  /* ====================== origin stamps ====================== */
+  function renderOrigins() {
+    var html = Object.keys(ORIGINS).map(function (k) {
+      var o = ORIGINS[k];
+      var n = CATALOG.filter(function (p) { return p.origin === k; }).length;
+      return '<button class="stamp" data-origin="' + k + '" aria-pressed="' + (state.origin === k) + '">' +
+        '<span class="code">' + o.code + ' · ' + n + ' SKU</span>' +
+        '<span class="nm">' + esc(o.name) + '</span>' +
+        '<span class="duty">Duty ' + Math.round(o.duty * 100) + '% · ' + esc(o.region.split(/[,&]/)[0].trim()) + '</span>' +
+        '</button>';
+    }).join("");
+    $("#originRow").innerHTML = html;
+  }
+
+  function renderChips() {
+    $("#catChips").innerHTML = CATS.map(function (c) {
+      return '<button class="chip" data-cat="' + esc(c) + '" aria-pressed="' + (state.cat === c) + '">' + esc(c) + '</button>';
+    }).join("");
+  }
+
+  /* ========================== catalog ========================= */
+  function visible() {
+    var q = state.q.trim().toLowerCase();
+    var list = CATALOG.filter(function (p) {
+      if (state.origin && p.origin !== state.origin) return false;
+      if (state.cat !== "All" && p.cat !== state.cat) return false;
+      if (q) {
+        var hay = (p.name + " " + p.mat + " " + p.maker + " " + p.cat + " " + ORIGINS[p.origin].name + " " + p.story).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+    var s = state.sort;
+    if (s === "low") list.sort(function (a, b) { return a.retail - b.retail; });
+    else if (s === "high") list.sort(function (a, b) { return b.retail - a.retail; });
+    else if (s === "duty") list.sort(function (a, b) { return (b.duty / b.retail) - (a.duty / a.retail); });
+    else if (s === "royalty") list.sort(function (a, b) { return b.royalty - a.royalty; });
+    else list.sort(function (a, b) { return a.rank - b.rank; });
+    return list;
+  }
+
+  function renderGrid() {
+    var list = visible();
+    $("#count").textContent = list.length + " of " + CATALOG.length + " listed";
+    if (!list.length) {
+      $("#grid").innerHTML = '<div class="empty"><h3>Nothing in the book matches that.</h3>' +
+        '<p>Try a broader term, or clear the origin and category filters.</p>' +
+        '<button class="btn ghost" data-reset>Clear all filters</button></div>';
+      return;
+    }
+    $("#grid").innerHTML = list.map(function (p) {
+      var o = ORIGINS[p.origin];
+      var tag = o.duty === 0
+        ? '<span class="tag' + (o.flagged ? " flagged" : "") + '">' + (o.flagged ? "AGOA · verify" : "Duty free · USMCA") + '</span>'
+        : '<span class="tag">Duty prepaid · ' + Math.round(o.duty * 100) + '%</span>';
+      return '<article class="card" data-id="' + p.id + '">' +
+        '<div class="thumb" data-open="' + p.id + '" role="button" tabindex="0" aria-label="Open Origin Passport for ' + esc(p.name) + '">' + motif(p, 400, 300) + tag + '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-org"><span>' + o.code + ' · ' + esc(p.cat) + '</span><span class="mono">' + p.id + '</span></div>' +
+          '<h3><button style="all:unset;cursor:pointer" data-open="' + p.id + '">' + esc(p.name) + '</button></h3>' +
+          '<div class="mat">' + esc(p.mat) + '</div>' +
+          '<div class="card-foot">' +
+            '<div class="price">' + money0(p.retail) + '<small>incl. ' + money(p.duty) + ' duty</small></div>' +
+            '<button class="add" data-add="' + p.id + '">Add</button>' +
+          '</div>' +
+        '</div></article>';
+    }).join("");
+  }
+
+  /* ==================== origin passport ====================== */
+  function openPassport(id) {
+    var p = CATALOG.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    var o = ORIGINS[p.origin];
+    var parts = [
+      { k: "Maker price", v: p.fob, c: "var(--indigo-deep)" },
+      { k: "Duty", v: p.duty, c: "var(--flag)" },
+      { k: "Freight", v: p.frt, c: "var(--ink-3)" },
+      { k: "Royalty", v: p.royalty, c: "var(--clear)" },
+      { k: "ORBIS margin", v: p.margin, c: "var(--indigo)" }
+    ];
+    var bar = parts.map(function (x) {
+      return '<i style="width:' + ((x.v / p.retail) * 100).toFixed(2) + '%;background:' + x.c + '"></i>';
+    }).join("");
+    var key = parts.map(function (x) {
+      return '<span><i style="background:' + x.c + '"></i>' + x.k + ' ' + money(x.v) + '</span>';
+    }).join("");
+    var ledger = parts.map(function (x) {
+      return '<div class="mrow"><div class="lbl">' + x.k + '</div><div class="val">' + money(x.v) + ' <span style="color:var(--ink-3)">· ' + ((x.v / p.retail) * 100).toFixed(1) + '%</span></div></div>';
+    }).join("") + '<div class="mrow total" style="padding-left:14px;padding-right:14px"><div class="lbl">Shelf price</div><div class="val">' + money(p.retail) + '</div></div>';
+
+    $("#ppBody").innerHTML =
+      '<div class="pp-hero">' + motif(p, 480, 270) + '</div>' +
+      '<div class="pp-main">' +
+        '<div class="eyebrow">' + o.code + ' · ' + esc(o.name) + ' · ' + esc(p.cat) + ' · ' + p.id + '</div>' +
+        '<h2>' + esc(p.name) + '</h2>' +
+        '<p class="pp-story">' + esc(p.story) + '</p>' +
+      '</div>' +
+      '<div class="pp-sec">' +
+        '<span class="eyebrow">Provenance</span>' +
+        '<dl class="spec">' +
+          '<dt>Maker</dt><dd>' + esc(p.maker) + '</dd>' +
+          '<dt>Workshop</dt><dd>' + esc(PLACE[p.maker] || o.region) + ' — ' + esc(o.name) + '</dd>' +
+          '<dt>Materials</dt><dd>' + esc(p.mat) + '</dd>' +
+          '<dt>HTS heading</dt><dd class="mono">' + esc(p.hts) + '</dd>' +
+          '<dt>Duty basis</dt><dd>' + esc(o.basis) + ' — ' + Math.round(o.duty * 100) + '%</dd>' +
+          '<dt>Fulfilment</dt><dd>US warehouse · ships in ' + p.lead + ' business days</dd>' +
+        '</dl>' +
+        '<div class="note' + (o.flagged ? " warn" : "") + '">' + esc(o.note) + '</div>' +
+      '</div>' +
+      '<div class="pp-sec">' +
+        '<span class="eyebrow">Landed cost ledger</span>' +
+        '<div class="bar">' + bar + '</div>' +
+        '<div class="key">' + key + '</div>' +
+        '<div class="ledger" style="margin-top:14px">' + ledger + '</div>' +
+      '</div>';
+
+    $("#ppFoot").innerHTML =
+      '<button class="btn full" data-add="' + p.id + '">Add to docket — ' + money0(p.retail) + '</button>';
+    open($("#ppDrawer"));
+  }
+
+  /* ========================== docket ========================= */
+  function cartLines() {
+    return Object.keys(cart).map(function (id) {
+      var p = CATALOG.filter(function (x) { return x.id === id; })[0];
+      return { p: p, q: cart[id] };
+    }).filter(function (l) { return l.p && l.q > 0; });
+  }
+  function totals() {
+    var lines = cartLines();
+    var goods = 0, duty = 0, roy = 0;
+    lines.forEach(function (l) { goods += l.p.retail * l.q; duty += l.p.duty * l.q; roy += l.p.royalty * l.q; });
+    var ship = goods === 0 ? 0 : (goods >= 150 ? 0 : 9);
+    var tax = Math.round(goods * TAX * 100) / 100;
+    return { lines: lines, goods: goods, duty: duty, roy: roy, ship: ship, tax: tax, total: Math.round((goods + ship + tax) * 100) / 100 };
+  }
+  function cartCount() { return cartLines().reduce(function (a, l) { return a + l.q; }, 0); }
+
+  function renderCart() {
+    var n = cartCount();
+    $("#cartN").textContent = n;
+    var t = totals();
+    $("#cartTitle").textContent = "Docket · " + n + (n === 1 ? " item" : " items");
+
+    if (!t.lines.length) {
+      $("#cartBody").innerHTML = '<div class="blank"><h3>The docket is empty.</h3><p>Nothing has been entered against this manifest yet.</p></div>';
+      $("#cartFoot").innerHTML = '<button class="btn full" disabled>Proceed to checkout</button>';
+      return;
+    }
+
+    $("#cartBody").innerHTML = t.lines.map(function (l) {
+      var p = l.p;
+      return '<div class="docket-line">' +
+        '<div class="th">' + motif(p, 120, 120) + '</div>' +
+        '<div><h4>' + esc(p.name) + '</h4>' +
+          '<div class="meta">' + ORIGINS[p.origin].code + ' · ' + p.id + ' · duty ' + money(p.duty) + ' ea</div>' +
+          '<div class="qty"><button data-dec="' + p.id + '" aria-label="Decrease quantity">&minus;</button><span>' + l.q + '</span><button data-inc="' + p.id + '" aria-label="Increase quantity">+</button></div>' +
+        '</div>' +
+        '<div class="rt"><span class="mono" style="font-size:14px">' + money(p.retail * l.q) + '</span>' +
+          '<button class="rm" data-rm="' + p.id + '">Remove</button></div>' +
+        '</div>';
+    }).join("") +
+    '<div class="pp-sec"><span class="eyebrow">Manifest summary</span><div class="ledger">' +
+      '<div class="mrow"><div class="lbl">Goods</div><div class="val">' + money(t.goods) + '</div></div>' +
+      '<div class="mrow"><div class="lbl">of which import duty<small>Prepaid on the bulk entry — not billed again on delivery</small></div><div class="val">' + money(t.duty) + '</div></div>' +
+      '<div class="mrow"><div class="lbl">of which maker royalty<small>Remitted to the originating cooperatives</small></div><div class="val">' + money(t.roy) + '</div></div>' +
+      '<div class="mrow"><div class="lbl">Domestic shipping</div><div class="val">' + (t.ship ? money(t.ship) : "Free") + '</div></div>' +
+      '<div class="mrow"><div class="lbl">Estimated sales tax</div><div class="val">' + money(t.tax) + '</div></div>' +
+      '<div class="mrow total"><div class="lbl">Total</div><div class="val">' + money(t.total) + '</div></div>' +
+    '</div>' + (t.goods < 150 && t.goods > 0 ? '<div class="note">Add ' + money(150 - t.goods) + ' to clear the free-shipping threshold.</div>' : '') + '</div>';
+
+    $("#cartFoot").innerHTML = '<button class="btn full" data-checkout>Proceed to checkout — ' + money(t.total) + '</button>';
+  }
+
+  /* ========================= checkout ======================== */
+  function renderCheckout() {
+    var t = totals();
+    $("#cartTitle").textContent = "Checkout";
+    $("#cartBody").innerHTML =
+      '<div class="receipt">' +
+        '<div class="eyebrow" style="margin-bottom:14px">Delivery — ' + t.lines.length + ' line' + (t.lines.length === 1 ? "" : "s") + ' · ' + money(t.total) + '</div>' +
+        '<form id="coForm" novalidate>' +
+          '<label class="field"><span>Full name</span><input name="name" autocomplete="name" required></label>' +
+          '<label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" required></label>' +
+          '<label class="field"><span>Street address</span><input name="addr" autocomplete="street-address" required></label>' +
+          '<div class="two">' +
+            '<label class="field"><span>City</span><input name="city" autocomplete="address-level2" required></label>' +
+            '<label class="field"><span>ZIP</span><input name="zip" autocomplete="postal-code" inputmode="numeric" required></label>' +
+          '</div>' +
+          '<div class="err" id="coErr" hidden></div>' +
+        '</form>' +
+        '<div class="note">This prototype takes no payment and stores nothing. Wiring a real processor is step four of the launch playbook.</div>' +
+      '</div>';
+    $("#cartFoot").innerHTML =
+      '<div style="display:flex;gap:10px">' +
+        '<button class="btn ghost" data-backcart style="flex:0 0 auto">Back</button>' +
+        '<button class="btn full" data-place style="flex:1">Place order — ' + money(t.total) + '</button>' +
+      '</div>';
+  }
+
+  function placeOrder() {
+    var f = $("#coForm"), err = $("#coErr");
+    var missing = ["name", "email", "addr", "city", "zip"].filter(function (k) { return !f.elements[k].value.trim(); });
+    if (missing.length) {
+      err.hidden = false;
+      err.textContent = "Still needed: " + missing.map(function (m) {
+        return { name: "full name", email: "email", addr: "street address", city: "city", zip: "ZIP" }[m];
+      }).join(", ") + ".";
+      f.elements[missing[0]].focus();
+      return;
+    }
+    var email = f.elements.email.value.trim();
+    if (email.indexOf("@") < 1 || email.indexOf(".", email.indexOf("@")) < 0) {
+      err.hidden = false; err.textContent = "That email address is missing an @ or a domain.";
+      f.elements.email.focus(); return;
+    }
+
+    var t = totals();
+    var origins = t.lines.map(function (l) { return l.p.origin; })
+      .filter(function (v, i, a) { return a.indexOf(v) === i; });
+    var no = "ORB-" + new Date().getFullYear() + "-" + Math.floor(100000 + Math.random() * 899999);
+    var name = f.elements.name.value.trim().split(" ")[0];
+
+    $("#cartTitle").textContent = "Order placed";
+    $("#cartBody").innerHTML =
+      '<div class="receipt">' +
+        '<div class="stampmark"><span>Cleared</span><span style="font-size:9px;letter-spacing:.1em">Duty prepaid</span></div>' +
+        '<h2 style="font-family:\'Instrument Serif\',Georgia,serif;font-weight:400;font-size:34px;line-height:1.1;margin:20px 0 0">Thank you, ' + esc(name) + '.</h2>' +
+        '<p style="color:var(--ink-2);margin:12px 0 0">Manifest <span class="mono">' + no + '</span> is entered. ' + t.lines.length + ' line' + (t.lines.length === 1 ? "" : "s") + ' from ' + origins.length + ' origin' + (origins.length === 1 ? "" : "s") + ' — ' + origins.join(", ") + ' — leaving the US warehouse within two business days.</p>' +
+        '<div class="ledger" style="margin-top:22px">' +
+          '<div class="mrow"><div class="lbl">Goods</div><div class="val">' + money(t.goods) + '</div></div>' +
+          '<div class="mrow"><div class="lbl">Shipping</div><div class="val">' + (t.ship ? money(t.ship) : "Free") + '</div></div>' +
+          '<div class="mrow"><div class="lbl">Sales tax</div><div class="val">' + money(t.tax) + '</div></div>' +
+          '<div class="mrow total"><div class="lbl">Charged</div><div class="val">' + money(t.total) + '</div></div>' +
+        '</div>' +
+        '<div class="note" style="margin-top:18px"><strong>' + money(t.duty) + '</strong> of that total is import duty, already paid to CBP on the bulk entry. Nothing further is owed on delivery. <strong>' + money(t.roy) + '</strong> goes back to the makers as royalty.</div>' +
+      '</div>';
+    $("#cartFoot").innerHTML = '<button class="btn full" data-newcart>Keep shopping</button>';
+    cart = {};
+    $("#cartN").textContent = "0";
+    renderGrid();
+  }
+
+  /* ========================== drawers ======================== */
+  var lastFocus = null;
+  function open(d) {
+    lastFocus = document.activeElement;
+    d.classList.add("open"); d.setAttribute("aria-hidden", "false");
+    $("#scrim").classList.add("open");
+    document.body.style.overflow = "hidden";
+    var b = d.querySelector("[data-close]"); if (b) b.focus();
+  }
+  function closeAll() {
+    ["#ppDrawer", "#cartDrawer"].forEach(function (s) {
+      var d = $(s); d.classList.remove("open"); d.setAttribute("aria-hidden", "true");
+    });
+    $("#scrim").classList.remove("open");
+    document.body.style.overflow = "";
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  /* ========================== events ========================= */
+  document.addEventListener("click", function (e) {
+    var el;
+
+    if ((el = e.target.closest("[data-close]")) || e.target === $("#scrim")) { closeAll(); return; }
+
+    if ((el = e.target.closest(".stamp"))) {
+      var k = el.getAttribute("data-origin");
+      state.origin = state.origin === k ? null : k;
+      renderOrigins(); renderGrid();
+      document.getElementById("catalog").scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    if ((el = e.target.closest(".chip"))) {
+      state.cat = el.getAttribute("data-cat"); renderChips(); renderGrid(); return;
+    }
+    if (e.target.closest("[data-reset]")) {
+      state = { origin: null, cat: "All", q: "", sort: state.sort };
+      $("#q").value = ""; renderOrigins(); renderChips(); renderGrid(); return;
+    }
+    if ((el = e.target.closest("[data-open]"))) { openPassport(el.getAttribute("data-open")); return; }
+
+    if ((el = e.target.closest("[data-add]"))) {
+      var id = el.getAttribute("data-add");
+      cart[id] = (cart[id] || 0) + 1;
+      renderCart();
+      if (el.classList.contains("add")) {
+        el.textContent = "Added"; el.classList.add("done");
+        setTimeout(function () { el.textContent = "Add"; el.classList.remove("done"); }, 1100);
+      } else {
+        closeAll(); renderCart(); open($("#cartDrawer"));
+      }
+      return;
+    }
+    if ((el = e.target.closest("[data-inc]"))) { cart[el.getAttribute("data-inc")]++; renderCart(); return; }
+    if ((el = e.target.closest("[data-dec]"))) {
+      var d2 = el.getAttribute("data-dec");
+      cart[d2] = Math.max(0, cart[d2] - 1); if (!cart[d2]) delete cart[d2];
+      renderCart(); return;
+    }
+    if ((el = e.target.closest("[data-rm]"))) { delete cart[el.getAttribute("data-rm")]; renderCart(); return; }
+
+    if (e.target.closest("#openCart")) { renderCart(); open($("#cartDrawer")); return; }
+    if (e.target.closest("[data-checkout]")) { renderCheckout(); return; }
+    if (e.target.closest("[data-backcart]")) { renderCart(); return; }
+    if (e.target.closest("[data-place]")) { placeOrder(); return; }
+    if (e.target.closest("[data-newcart]")) { closeAll(); renderCart(); return; }
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeAll();
+    if (e.key === "Enter" || e.key === " ") {
+      var t = e.target.closest(".thumb[data-open]");
+      if (t) { e.preventDefault(); openPassport(t.getAttribute("data-open")); }
+    }
+  });
+
+  $("#q").addEventListener("input", function (e) { state.q = e.target.value; renderGrid(); });
+  $("#sort").addEventListener("change", function (e) { state.sort = e.target.value; renderGrid(); });
+
+  /* ========================== boot =========================== */
+  renderSpec(); renderOrigins(); renderChips(); renderGrid(); renderCart();
+})();
+</script>
+</body>
+</html>

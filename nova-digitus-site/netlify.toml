@@ -1,0 +1,16 @@
+# Nova Digitus Designs public site (static HTML, no build step).
+# In Netlify: Site configuration > Build & deploy > Base directory = nova-digitus-site
+[build]
+  publish = "."
+  command = ""
+
+[[headers]]
+  for = "/apps/catalog.css"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
