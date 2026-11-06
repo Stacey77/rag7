@@ -4,6 +4,7 @@ PUBLIC_URLS = {
     "Engineering Orchestrator": "https://nova-digitus-engineering-orchestrator.ai.studio",
     "Wealth in Health: Sound Healing": "https://stacey77.github.io/rag7/nova-digitus-site/try/wealth-in-health-sound-healing/",
     "Singular Companion": "https://stacey77.github.io/rag7/nova-digitus-site/try/singular-companion/",
+    "Eve: Multimodal Companion": "https://stacey77.github.io/rag7/nova-digitus-site/try/eve-multimodal-companion/",
     "Robot Fleet Interface": "https://stacey77.github.io/rag7/nova-digitus-site/try/robot-fleet-interface/",
     "AI Governance & Guardrails Platform": "https://stacey77.github.io/rag7/nova-digitus-site/try/ai-governance-guardrails-platform/",
     "Autonomous Quant Trading Desk": "https://stacey77.github.io/rag7/nova-digitus-site/try/autonomous-quant-trading-desk/",

@@ -278,6 +278,18 @@ REVIEW_JS = """<script>
 })();
 </script>"""
 
+# Apps whose live preview is embedded right on their review page (the preview lives in nova-digitus-site/try/<slug>/).
+LIVE_EMBED = {"Eve: Multimodal Companion"}
+
+def live_block(name, slug):
+    if name not in LIVE_EMBED or not os.path.isfile(os.path.join(SITE, "try", slug, "index.html")):
+        return ""
+    src = f"../../try/{slug}/"
+    return (f'<section class="rv-live"><div class="rv-live-head"><h2>Try it live</h2>'
+            f'<a class="btn line" href="{src}" target="_blank" rel="noopener">Open full screen</a></div>'
+            f'<p>Turn on the camera and talk to it. Everything runs in your browser; nothing is uploaded.</p>'
+            f'<iframe src="{src}" title="{e(name)} live preview" allow="camera; microphone; autoplay" loading="lazy"></iframe></section>')
+
 _groups = {g[0]: g for g in GROUPS}
 _rv_root = os.path.join(SITE, "review")
 import shutil as _sh
@@ -299,13 +311,16 @@ for name, gid, desc, featured in APPS:
 <style>.rv-banner{{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:0 0 28px;font-size:.95rem}}
 .rv-grid{{display:grid;grid-template-columns:1.2fr .8fr;gap:28px}}@media (max-width:820px){{.rv-grid{{grid-template-columns:1fr}}}}
 .rv-card{{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px}}.rv-card h2{{font-size:1.3rem}}
-.rv-card ol,.rv-card ul{{padding-left:20px;margin:10px 0 0}}.rv-card li{{margin-bottom:8px}}.rv-next{{margin-top:22px}}.rv-acts{{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}}</style>
+.rv-card ol,.rv-card ul{{padding-left:20px;margin:10px 0 0}}.rv-card li{{margin-bottom:8px}}.rv-next{{margin-top:22px}}.rv-acts{{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}}
+.rv-live{{margin:0 0 28px}}.rv-live-head{{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}}.rv-live h2{{font-size:1.3rem;margin:0}}
+.rv-live iframe{{width:100%;height:860px;border:1px solid var(--line);border-radius:14px;background:#0B1020;display:block;margin-top:12px}}@media (max-width:820px){{.rv-live iframe{{height:1250px}}}}</style>
 </head><body><div class="wrap">
 <header class="nav"><a class="logo" href="../../">Nova Digitus Designs</a><nav><a class="btn" href="{e(book_url(name))}" target="_blank" rel="noopener">Book a follow-up</a></nav></header>
 <main>
 <div id="rv-ok" hidden>
 <div class="rv-banner"><span id="rv-who"></span>This private review link works until <b id="rv-until"></b>.</div>
 <div class="hero"><p class="crumb">{e(g[1])}</p><h1>{e(name)}</h1><p class="lede">{e(desc)}</p></div>
+{live_block(name, slug)}
 <section><div class="rv-grid">
 <div class="rv-card"><h2>Who it's for</h2><p>{e(g[2])}</p>
 <h2 class="rv-next">What happens next</h2><ol><li><b>Review</b> this page and note where it fits your work.</li><li><b>Follow-up call:</b> 30 minutes on your use case, with the app configured on sample data like yours.</li><li><b>Pilot:</b> one app on your data, measured against a goal we agree on. Keep it, license it, or walk away.</li></ol>
