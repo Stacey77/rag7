@@ -287,7 +287,7 @@ def live_block(name, slug):
     src = f"../../try/{slug}/"
     return (f'<section class="rv-live"><div class="rv-live-head"><h2>Try it live</h2>'
             f'<a class="btn line" href="{src}" target="_blank" rel="noopener">Open full screen</a></div>'
-            f'<p>Turn on the camera and talk to it. Everything runs in your browser; nothing is uploaded.</p>'
+            f'<p>Turn on the camera and talk to it. When you ask something, Eve sends your words and the current camera frame to her AI to answer. Nothing is stored.</p>'
             f'<iframe src="{src}" title="{e(name)} live preview" allow="camera; microphone; autoplay" loading="lazy"></iframe></section>')
 
 _groups = {g[0]: g for g in GROUPS}

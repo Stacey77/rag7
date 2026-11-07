@@ -82,7 +82,7 @@ details input{background:#0A1022;border:1px solid var(--line);border-radius:8px;
       <div class="state" id="state">Status: <b>ready</b></div></div>
     </div>
     <div class="eyes" id="eyes">
-      <div class="off" id="eyesOff">👁️ Eve's eyes are closed.<br>Turn on the camera so she can see what you see.<br><small>Everything runs on this device. Nothing is uploaded.</small></div>
+      <div class="off" id="eyesOff">👁️ Eve's eyes are closed.<br>Turn on the camera so she can see what you see.<br><small>Object detection runs on this device. When you ask a question, the current frame goes to Eve's AI to answer. Nothing is stored.</small></div>
       <video id="video" playsinline muted hidden></video>
       <canvas id="overlay" hidden></canvas>
     </div>
@@ -93,7 +93,7 @@ details input{background:#0A1022;border:1px solid var(--line);border-radius:8px;
       <button class="btn" id="voiceBtn">🔊 Voice replies: on</button>
     </div>
     <div class="team" id="team"></div>
-    <p class="note">Preview mode: Eve's senses (camera, object detection, speech) are real and run in your browser. The specialists are lightweight stand-ins here. In a pilot they connect to your own models and data.</p>
+    <p class="note" id="modeNote">Connecting to Eve's brain…</p>
     <details><summary>Advanced: connect my own model (Ollama)</summary>
       <p>If you run Ollama on this computer (started with <code>OLLAMA_ORIGINS=*</code>), Eve sends the routed request plus what she sees to it for the final answer.</p>
       <input id="ollamaUrl" placeholder="http://localhost:11434"><input id="ollamaModel" placeholder="model, e.g. llama3.2">
@@ -305,6 +305,19 @@ async function ollama(t,r){
   if(!res.ok)return null;var j=await res.json();return j.message&&j.message.content?j.message.content.trim():null}catch(e){return null}
 }
 
+/* live brain (Netlify AI Gateway) */
+var BRAIN_URL="https://eve-companion.netlify.app/api/eve",brainLive=false,history=[];
+function modeNote(){$("modeNote").textContent=brainLive?"Live: Eve's camera, voice and object detection run in your browser. Her answers and routing come from her AI model. Each question sends your words and the current camera frame; nothing is stored.":"Preview mode: Eve's senses (camera, object detection, speech) are real and run in your browser. Her brain is offline right now, so the specialists answer with built-in stand-ins."}
+(function(){var c=new AbortController();setTimeout(function(){c.abort()},6000);fetch(BRAIN_URL,{signal:c.signal}).then(function(r){return r.json()}).then(function(j){brainLive=!!(j&&j.live)}).catch(function(){brainLive=false}).then(modeNote)})();
+function frame(){if(!stream||video.readyState<2)return null;var c=document.createElement("canvas"),w=512;c.width=w;c.height=Math.round(w*video.videoHeight/video.videoWidth);c.getContext("2d").drawImage(video,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.7)}
+async function liveBrain(t){
+ if(!brainLive)return null;
+ var c=new AbortController(),tm=setTimeout(function(){c.abort()},25000);
+ try{var r=await fetch(BRAIN_URL,{method:"POST",headers:{"Content-Type":"application/json"},signal:c.signal,body:JSON.stringify({text:t,scene:sceneText(),image:frame(),history:history.slice(-6)})});
+  clearTimeout(tm);if(!r.ok)return null;var j=await r.json();if(!j||!j.answer||!byId[j.lead])return null;return j}catch(e){clearTimeout(tm);return null}
+}
+var byId={};TEAM.forEach(function(s){byId[s.id]=s});
+
 /* ---------------- conversation ---------------- */
 var log=$("log");
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -323,15 +336,19 @@ async function ask(text){
  var r=route(text),img=(r.vision&&stream)?snapshot():null;
  addMe(text,img);
  orb("think");setState("routing");showRouting(r);
- var routeLine="Routing → "+r.lead.s.nm+" ("+r.lead.p+"%)"+(r.assist?" + "+r.assist.s.nm+" ("+r.assist.p+"%)":"");
+ var routeLine=(brainLive?"First guess → ":"Routing → ")+r.lead.s.nm+" ("+r.lead.p+"%)"+(r.assist?" + "+r.assist.s.nm+" ("+r.assist.p+"%)":"");
  if(stream)routeLine+=" · vision: "+(scene.objects.length?seen().slice(0,3).join(", "):scene.color+" scene");
  addRoute(routeLine);
  var tp=typing();await wait(650);
  setState(r.lead.s.nm+" is thinking");
- var answer=await ollama(text,r);var viaModel=!!answer;
+ var answer=await ollama(text,r);var viaModel=!!answer,live=null;
+ if(!answer){live=await liveBrain(text);if(live){answer=live.answer;
+   r.lead={s:byId[live.lead],p:live.assist?70:100};r.assist=live.assist&&byId[live.assist]?{s:byId[live.assist],p:30}:null;
+   r.all=TEAM.map(function(s){return {s:s,p:s.id===live.lead?r.lead.p:(r.assist&&s.id===live.assist?30:0)}});showRouting(r);addRoute("Eve's AI routed → "+r.lead.s.nm+(r.assist?" + "+r.assist.s.nm:""));}}
  if(!answer){await wait(400);answer=blend(r,text)}
+ history.push({role:"user",text:text},{role:"eve",text:answer});
  tp.remove();
- var tags=[{nm:r.lead.s.ic+" "+r.lead.s.nm,c:r.lead.s.c}];if(r.assist)tags.push({nm:r.assist.s.ic+" "+r.assist.s.nm,c:r.assist.s.c});if(viaModel)tags.push({nm:"your model",c:"#EEF2FF"});
+ var tags=[{nm:r.lead.s.ic+" "+r.lead.s.nm,c:r.lead.s.c}];if(r.assist)tags.push({nm:r.assist.s.ic+" "+r.assist.s.nm,c:r.assist.s.c});if(viaModel)tags.push({nm:"your model",c:"#EEF2FF"});else if(live)tags.push({nm:"live AI",c:"#EEF2FF"});
  addEve(answer,{tags:tags});orb("");setState("ready");say(answer);
  busy=false;$("sendBtn").disabled=false;
 }

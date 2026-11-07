@@ -1,0 +1,8 @@
+# Eve's brain (Netlify project: eve-companion). One function at /api/eve.
+# The model is called through Netlify AI Gateway: credentials are injected at runtime, nothing is stored here.
+[build]
+  publish = "public"
+  command = ""
+
+[functions]
+  node_bundler = "esbuild"

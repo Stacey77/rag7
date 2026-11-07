@@ -1,0 +1,9 @@
+{
+  "name": "eve-brain",
+  "private": true,
+  "type": "module",
+  "description": "Eve's live brain: routes each request to Sage, Spark, Cyber, Echo or Vertex and answers with what she sees. Runs on Netlify AI Gateway, so no API key lives in this repo.",
+  "dependencies": {
+    "@google/genai": "^1.0.0"
+  }
+}
