@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+package agi;
+
+option go_package = "github.com/rag7/trading/proto/agi";
+option java_multiple_files = true;
+option java_package = "com.rag7.trading.proto.agi";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// ---------------------------------------------------------------------------
+// Enumerations
+// ---------------------------------------------------------------------------
+
+enum SignalDirection {
+  SIGNAL_DIRECTION_UNSPECIFIED = 0;
+  SIGNAL_DIRECTION_LONG = 1;
+  SIGNAL_DIRECTION_SHORT = 2;
+  SIGNAL_DIRECTION_NEUTRAL = 3;
+  SIGNAL_DIRECTION_EXIT_LONG = 4;
+  SIGNAL_DIRECTION_EXIT_SHORT = 5;
+}
+
+enum SignalStrength {
+  SIGNAL_STRENGTH_UNSPECIFIED = 0;
+  SIGNAL_STRENGTH_VERY_WEAK = 1;
+  SIGNAL_STRENGTH_WEAK = 2;
+  SIGNAL_STRENGTH_MODERATE = 3;
+  SIGNAL_STRENGTH_STRONG = 4;
+  SIGNAL_STRENGTH_VERY_STRONG = 5;
+}
+
+enum DecisionAction {
+  DECISION_ACTION_UNSPECIFIED = 0;
+  DECISION_ACTION_OPEN_LONG = 1;
+  DECISION_ACTION_OPEN_SHORT = 2;
+  DECISION_ACTION_CLOSE_LONG = 3;
+  DECISION_ACTION_CLOSE_SHORT = 4;
+  DECISION_ACTION_REDUCE_LONG = 5;
+  DECISION_ACTION_REDUCE_SHORT = 6;
+  DECISION_ACTION_HOLD = 7;
+  DECISION_ACTION_HALT = 8;
+}
+
+// ---------------------------------------------------------------------------
+// Core messages
+// ---------------------------------------------------------------------------
+
+// Raw signal emitted by a strategy or sub-model.
+message TradingSignal {
+  string signal_id = 1;
+  string symbol = 2;
+  SignalDirection direction = 3;
+  double confidence = 4;
+  SignalStrength strength = 5;
+  string price_target = 6;   // String-encoded decimal.
+  string stop_loss = 7;
+  string take_profit = 8;
+  int32 horizon_seconds = 9;
+  string model_id = 10;
+  // Arbitrary feature key-value pairs for traceability.
+  google.protobuf.Struct features = 11;
+  google.protobuf.Timestamp timestamp = 12;
+  google.protobuf.Timestamp expires_at = 13;
+}
+
+// Prediction output from a single ML model.
+message ModelPrediction {
+  string prediction_id = 1;
+  string model_id = 2;
+  string model_version = 3;
+  string symbol = 4;
+  double predicted_return = 5;
+  double predicted_volatility = 6;
+  double confidence = 7;
+  // Full model output for auditability.
+  google.protobuf.Struct raw_output = 8;
+  // Feature importance scores.
+  map<string, double> feature_importance = 9;
+  double latency_ms = 10;
+  int32 horizon_seconds = 11;
+  google.protobuf.Timestamp timestamp = 12;
+}
+
+// Risk evaluation for a proposed trade.
+message RiskAssessment {
+  string assessment_id = 1;
+  string symbol = 2;
+  string proposed_quantity = 3;       // String-encoded decimal.
+  string proposed_notional_usd = 4;
+  double current_drawdown_pct = 5;
+  double position_concentration_pct = 6;
+  double var_1d_pct = 7;
+  double sharpe_estimate = 8;
+  bool is_approved = 9;
+  repeated string rejection_reasons = 10;
+  double risk_score = 11;
+  google.protobuf.Timestamp timestamp = 12;
+}
+
+// Final decision from the AGI orchestration layer.
+message AGIDecision {
+  string decision_id = 1;
+  string symbol = 2;
+  DecisionAction action = 3;
+  double confidence = 4;
+  string suggested_quantity = 5;  // String-encoded decimal.
+  string suggested_price = 6;
+  repeated TradingSignal signals = 7;
+  repeated ModelPrediction predictions = 8;
+  RiskAssessment risk_assessment = 9;
+  string reasoning = 10;
+  // Arbitrary metadata map for traceability.
+  google.protobuf.Struct metadata = 11;
+  google.protobuf.Timestamp timestamp = 12;
+  bool executed = 13;
+  string execution_order_id = 14;
+}
+
+// ---------------------------------------------------------------------------
+// Request / response messages
+// ---------------------------------------------------------------------------
+
+message GenerateSignalRequest {
+  string symbol = 1;
+  // Serialised market snapshot passed to the model (JSON blob).
+  string market_snapshot_json = 2;
+  // Model parameters override (optional).
+  google.protobuf.Struct params = 3;
+}
+
+message GenerateSignalResponse {
+  TradingSignal signal = 1;
+  string error_message = 2;
+}
+
+message RunInferenceRequest {
+  string model_id = 1;
+  string symbol = 2;
+  // Feature vector as key-value pairs.
+  google.protobuf.Struct features = 3;
+}
+
+message RunInferenceResponse {
+  ModelPrediction prediction = 1;
+  string error_message = 2;
+}
+
+message EvaluateRiskRequest {
+  string symbol = 1;
+  string proposed_quantity = 2;
+  string proposed_notional_usd = 3;
+  // Current portfolio state (JSON blob).
+  string portfolio_json = 4;
+}
+
+message EvaluateRiskResponse {
+  RiskAssessment assessment = 1;
+  string error_message = 2;
+}
+
+message MakeDecisionRequest {
+  string symbol = 1;
+  string market_snapshot_json = 2;
+  string portfolio_json = 3;
+  // Optional caller-supplied signals to merge with AGI signals.
+  repeated TradingSignal override_signals = 4;
+}
+
+message MakeDecisionResponse {
+  AGIDecision decision = 1;
+  string error_message = 2;
+}
+
+message GetModelStatusRequest {
+  string model_id = 1;
+}
+
+message ModelStatus {
+  string model_id = 1;
+  string model_version = 2;
+  bool is_loaded = 3;
+  bool is_healthy = 4;
+  double average_latency_ms = 5;
+  int64 total_inferences = 6;
+  google.protobuf.Timestamp last_inference_at = 7;
+}
+
+message GetModelStatusResponse {
+  repeated ModelStatus models = 1;
+}
+
+// Request for the StreamSignals RPC with optional per-symbol filter.
+message StreamSignalsRequest {
+  // Optional list of symbols to subscribe to. Empty = all symbols.
+  repeated string symbols = 1;
+  // Minimum confidence threshold; signals below this are suppressed.
+  double min_confidence = 2;
+}
+
+// Streamed signal feed pushed to subscribers.
+message SignalStreamUpdate {
+  TradingSignal signal = 1;
+  google.protobuf.Timestamp event_time = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Service definition
+// ---------------------------------------------------------------------------
+
+service AGIService {
+  // Generate a trading signal for a symbol using the AGI signal pipeline.
+  rpc GenerateSignal(GenerateSignalRequest) returns (GenerateSignalResponse);
+
+  // Run a specific model inference.
+  rpc RunInference(RunInferenceRequest) returns (RunInferenceResponse);
+
+  // Evaluate risk for a proposed trade.
+  rpc EvaluateRisk(EvaluateRiskRequest) returns (EvaluateRiskResponse);
+
+  // Produce a full AGI decision combining signals, predictions and risk.
+  rpc MakeDecision(MakeDecisionRequest) returns (MakeDecisionResponse);
+
+  // Query the health and status of loaded models.
+  rpc GetModelStatus(GetModelStatusRequest) returns (GetModelStatusResponse);
+
+  // Server-streaming: subscribe to real-time signal updates for all symbols.
+  rpc StreamSignals(StreamSignalsRequest) returns (stream SignalStreamUpdate);
+}

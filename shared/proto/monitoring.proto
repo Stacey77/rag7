@@ -1,0 +1,245 @@
+syntax = "proto3";
+
+package monitoring;
+
+option go_package = "github.com/rag7/trading/proto/monitoring";
+option java_multiple_files = true;
+option java_package = "com.rag7.trading.proto.monitoring";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
+
+// ---------------------------------------------------------------------------
+// Enumerations
+// ---------------------------------------------------------------------------
+
+enum HealthStatus {
+  HEALTH_STATUS_UNSPECIFIED = 0;
+  HEALTH_STATUS_HEALTHY = 1;
+  HEALTH_STATUS_DEGRADED = 2;
+  HEALTH_STATUS_UNHEALTHY = 3;
+}
+
+enum AlertSeverity {
+  ALERT_SEVERITY_UNSPECIFIED = 0;
+  ALERT_SEVERITY_INFO = 1;
+  ALERT_SEVERITY_WARNING = 2;
+  ALERT_SEVERITY_ERROR = 3;
+  ALERT_SEVERITY_CRITICAL = 4;
+}
+
+enum MetricType {
+  METRIC_TYPE_UNSPECIFIED = 0;
+  METRIC_TYPE_COUNTER = 1;
+  METRIC_TYPE_GAUGE = 2;
+  METRIC_TYPE_HISTOGRAM = 3;
+  METRIC_TYPE_SUMMARY = 4;
+}
+
+// ---------------------------------------------------------------------------
+// Metric messages
+// ---------------------------------------------------------------------------
+
+// A single time-series sample for a named metric.
+message MetricSample {
+  string name = 1;
+  double value = 2;
+  map<string, string> labels = 3;
+  MetricType type = 4;
+  string unit = 5;
+  google.protobuf.Timestamp timestamp = 6;
+}
+
+// Histogram bucket definition.
+message HistogramBucket {
+  double upper_bound = 1;
+  uint64 count = 2;
+}
+
+// Rich histogram metric with full distribution.
+message HistogramMetric {
+  string name = 1;
+  map<string, string> labels = 2;
+  repeated HistogramBucket buckets = 3;
+  uint64 count = 4;
+  double sum = 5;
+  double mean = 6;
+  double p50 = 7;
+  double p95 = 8;
+  double p99 = 9;
+  google.protobuf.Timestamp timestamp = 10;
+}
+
+// ---------------------------------------------------------------------------
+// Health messages
+// ---------------------------------------------------------------------------
+
+// Health of a single service component.
+message ComponentHealth {
+  string component_name = 1;
+  HealthStatus status = 2;
+  string message = 3;
+  double latency_ms = 4;
+  google.protobuf.Timestamp checked_at = 5;
+  // Arbitrary diagnostic key-value pairs.
+  google.protobuf.Struct details = 6;
+}
+
+// Aggregated health report for a service.
+message ServiceHealth {
+  string service_name = 1;
+  string service_version = 2;
+  HealthStatus overall_status = 3;
+  repeated ComponentHealth components = 4;
+  google.protobuf.Timestamp report_time = 5;
+  // Uptime in seconds since last restart.
+  int64 uptime_seconds = 6;
+}
+
+// ---------------------------------------------------------------------------
+// Alert messages
+// ---------------------------------------------------------------------------
+
+message Alert {
+  string alert_id = 1;
+  string name = 2;
+  AlertSeverity severity = 3;
+  string source_service = 4;
+  string message = 5;
+  // Contextual data associated with the alert.
+  google.protobuf.Struct context = 6;
+  bool is_firing = 7;         // True = active, False = resolved.
+  google.protobuf.Timestamp fired_at = 8;
+  google.protobuf.Timestamp resolved_at = 9;
+  repeated string labels = 10;
+  string runbook_url = 11;
+}
+
+// ---------------------------------------------------------------------------
+// Performance / trading metrics
+// ---------------------------------------------------------------------------
+
+// Snapshot of trading-engine performance metrics.
+message TradingMetrics {
+  string service_name = 1;
+  // Order metrics.
+  int64 orders_submitted_total = 2;
+  int64 orders_filled_total = 3;
+  int64 orders_rejected_total = 4;
+  int64 orders_cancelled_total = 5;
+  // Latency metrics.
+  double order_submission_latency_p50_ms = 6;
+  double order_submission_latency_p99_ms = 7;
+  double fill_latency_p50_ms = 8;
+  double fill_latency_p99_ms = 9;
+  // P&L metrics.
+  double total_realised_pnl_usd = 10;
+  double total_unrealised_pnl_usd = 11;
+  double current_drawdown_pct = 12;
+  double daily_pnl_usd = 13;
+  // Position metrics.
+  int32 open_positions_count = 14;
+  double total_notional_usd = 15;
+  // Throughput.
+  double orders_per_second = 16;
+  double fills_per_second = 17;
+  google.protobuf.Timestamp snapshot_time = 18;
+}
+
+// ---------------------------------------------------------------------------
+// Request / response messages
+// ---------------------------------------------------------------------------
+
+message CheckHealthRequest {
+  // Empty = check all services; populated = check specific service.
+  string service_name = 1;
+}
+
+message CheckHealthResponse {
+  repeated ServiceHealth services = 1;
+  HealthStatus overall_status = 2;
+}
+
+message GetMetricsRequest {
+  string service_name = 1;
+  repeated string metric_names = 2;    // Empty = return all.
+  map<string, string> label_filter = 3;
+  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Timestamp end_time = 5;
+}
+
+message GetMetricsResponse {
+  repeated MetricSample samples = 1;
+  repeated HistogramMetric histograms = 2;
+  string error_message = 3;
+}
+
+message GetTradingMetricsRequest {
+  string service_name = 1;
+}
+
+message GetTradingMetricsResponse {
+  TradingMetrics metrics = 1;
+  string error_message = 2;
+}
+
+message ListAlertsRequest {
+  bool active_only = 1;          // When true, return only firing alerts.
+  AlertSeverity min_severity = 2;
+  string source_service = 3;     // Optional service filter.
+  int32 limit = 4;
+  string page_token = 5;
+}
+
+message ListAlertsResponse {
+  repeated Alert alerts = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message AcknowledgeAlertRequest {
+  string alert_id = 1;
+  string acknowledged_by = 2;
+  string note = 3;
+}
+
+message AcknowledgeAlertResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+// Pushed event on the live metrics stream.
+message MetricsStreamEvent {
+  oneof payload {
+    MetricSample sample = 1;
+    Alert alert = 2;
+    ServiceHealth health = 3;
+    TradingMetrics trading_metrics = 4;
+  }
+  google.protobuf.Timestamp event_time = 5;
+}
+
+// ---------------------------------------------------------------------------
+// Service definition
+// ---------------------------------------------------------------------------
+
+service MonitoringService {
+  // Check the health of one or all services.
+  rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse);
+
+  // Retrieve time-series metric samples.
+  rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse);
+
+  // Retrieve trading-specific performance metrics.
+  rpc GetTradingMetrics(GetTradingMetricsRequest) returns (GetTradingMetricsResponse);
+
+  // List active or historical alerts.
+  rpc ListAlerts(ListAlertsRequest) returns (ListAlertsResponse);
+
+  // Acknowledge a firing alert.
+  rpc AcknowledgeAlert(AcknowledgeAlertRequest) returns (AcknowledgeAlertResponse);
+
+  // Server-streaming: subscribe to a live feed of metrics, alerts and health events.
+  rpc StreamMetrics(google.protobuf.Empty) returns (stream MetricsStreamEvent);
+}
