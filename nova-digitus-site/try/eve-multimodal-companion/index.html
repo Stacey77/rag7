@@ -79,6 +79,26 @@ details input{background:#0A1022;border:1px solid var(--line);border-radius:8px;
 .top{flex-wrap:wrap}
 .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);margin-right:3px;animation:blink 1s infinite}
 .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}@keyframes blink{50%{opacity:.2}}
+
+/* ---- epic polish ---- */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%)}
+.app,.card{position:relative;z-index:1}
+.card{box-shadow:0 30px 80px -40px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.04)}
+h1{background:linear-gradient(90deg,#F4F6FF,#A9BDFF 55%,#86F0E2);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;letter-spacing:.02em;background:rgba(47,214,195,.12);border:1px solid rgba(47,214,195,.35);color:#9FF5E8;border-radius:999px;padding:3px 10px;margin-left:10px;vertical-align:middle}
+.pill.warn{background:rgba(242,176,74,.12);border-color:rgba(242,176,74,.35);color:#FFD899}
+.chathead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 2px 8px}
+.chathead .sub{margin:0}
+.btn.sm{padding:6px 11px;font-size:.82rem}
+.stats{font-size:.78rem;color:var(--muted);margin-top:10px;text-align:center}
+.copy{background:none;border:0;color:var(--muted);cursor:pointer;font-size:.74rem;margin-top:8px;padding:0}.copy:hover{color:var(--ink)}
+.msg{animation:rise .3s ease-out both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sp{transition:transform .25s,border-color .25s,box-shadow .25s,background .25s}
+.sp:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.18)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.compose input:focus-visible{outline:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
@@ -87,7 +107,7 @@ details input{background:#0A1022;border:1px solid var(--line);border-radius:8px;
   <div class="card">
     <div class="top">
       <div class="orb" id="orb"></div>
-      <div><h1>Eve</h1><p class="sub">Sees, listens, and routes each request to the right specialist.</p>
+      <div><h1>Eve</h1><span class="pill" id="pill">● Connecting…</span><p class="sub">Sees, listens, and routes each request to the right specialist.</p>
       <div class="state" id="state">Status: <b>ready</b></div></div>
       <button class="btn primary install" id="installBtn">Install Eve</button>
     </div>
@@ -98,11 +118,12 @@ details input{background:#0A1022;border:1px solid var(--line);border-radius:8px;
     </div>
     <div class="chips" id="sceneChips"></div>
     <div class="row">
-      <button class="btn" id="camBtn">📷 Turn on camera</button>
+      <button class="btn" id="camBtn" aria-label="Turn camera on or off">📷 Turn on camera</button>
       <button class="btn" id="flipBtn" hidden>🔄 Flip</button>
       <button class="btn" id="voiceBtn">🔊 Voice replies: on</button>
     </div>
     <div class="team" id="team"></div>
+    <div class="stats" id="stats">0 questions this visit</div>
     <p class="note" id="modeNote">Connecting to Eve's brain…</p>
     <details><summary>Advanced: connect my own model (Ollama)</summary>
       <p>If you run Ollama on this computer (started with <code>OLLAMA_ORIGINS=*</code>), Eve sends the routed request plus what she sees to it for the final answer.</p>
@@ -113,12 +134,13 @@ details input{background:#0A1022;border:1px solid var(--line);border-radius:8px;
 
   <!-- RIGHT: conversation -->
   <div class="card chat">
-    <div class="log" id="log"></div>
+    <div class="chathead"><p class="sub">Ask anything. Eve picks the specialist.</p><button class="btn sm" id="clearBtn" aria-label="Clear chat">Clear</button></div>
+    <div class="log" id="log" role="log" aria-live="polite"></div>
     <div class="sugs" id="sugs"></div>
     <div class="compose">
-      <button class="btn mic" id="micBtn" title="Talk to Eve">🎙️</button>
-      <input id="input" placeholder="Talk or type to Eve…" autocomplete="off">
-      <button class="btn primary" id="sendBtn">Send</button>
+      <button class="btn mic" id="micBtn" title="Talk to Eve" aria-label="Talk to Eve">🎙️</button>
+      <input id="input" placeholder="Talk or type to Eve…" autocomplete="off" aria-label="Message Eve">
+      <button class="btn primary" id="sendBtn" aria-label="Send message">Send</button>
     </div>
   </div>
 </div>
@@ -324,9 +346,15 @@ window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();def
 installBtn.onclick=function(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.finally(function(){deferredPrompt=null;installBtn.classList.remove("show")})};
 window.addEventListener("appinstalled",function(){installBtn.remove()});
 
+/* polish: status pill, clear chat, question counter */
+var qCount=0,INTRO="Hi, I'm Eve. Turn on the camera and I'll see what you see. Tap the mic or type, and I'll send your request to the right specialist: Sage, Spark, Cyber, Echo or Vertex.";
+function pillSet(){var p=$("pill");if(!p)return;p.textContent=(typeof brainLive!=="undefined"&&brainLive)?"● Live AI":"● Preview mode";p.className="pill"+((typeof brainLive!=="undefined"&&brainLive)?"":" warn")}
+function clearChat(){$("log").innerHTML="";history=[];qCount=0;$("stats").textContent="0 questions this visit";addEve(INTRO,{tags:[{nm:"Eve",c:"#9AA6C3"}]});$("input").focus()}
+$("clearBtn").onclick=clearChat;
+
 /* live brain (Netlify AI Gateway) */
 var BRAIN_URL="https://eve-companion.netlify.app/api/eve",brainLive=false,history=[];
-function modeNote(){$("modeNote").textContent=brainLive?"Live: Eve's camera, voice and object detection run in your browser. Her answers and routing come from her AI model. Each question sends your words and the current camera frame; nothing is stored.":"Preview mode: Eve's senses (camera, object detection, speech) are real and run in your browser. Her brain is offline right now, so the specialists answer with built-in stand-ins."}
+function modeNote(){pillSet();$("modeNote").textContent=brainLive?"Live: Eve's camera, voice and object detection run in your browser. Her answers and routing come from her AI model. Each question sends your words and the current camera frame; nothing is stored.":"Preview mode: Eve's senses (camera, object detection, speech) are real and run in your browser. Her brain is offline right now, so the specialists answer with built-in stand-ins."}
 (function(){var c=new AbortController();setTimeout(function(){c.abort()},6000);fetch(BRAIN_URL,{signal:c.signal}).then(function(r){return r.json()}).then(function(j){brainLive=!!(j&&j.live)}).catch(function(){brainLive=false}).then(modeNote)})();
 function frame(){if(!stream||video.readyState<2)return null;var c=document.createElement("canvas"),w=512;c.width=w;c.height=Math.round(w*video.videoHeight/video.videoWidth);c.getContext("2d").drawImage(video,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.7)}
 async function liveBrain(t){
@@ -342,7 +370,7 @@ var log=$("log");
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function scroll(){log.scrollTop=log.scrollHeight}
 function addMe(t,img){var d=document.createElement("div");d.className="msg me";d.innerHTML=(img?'<img alt="What Eve saw" src="'+img+'">':"")+esc(t);log.appendChild(d);scroll()}
-function addEve(t,o){var d=document.createElement("div");d.className="msg eve";var tags=(o&&o.tags||[]).map(function(x){return '<span class="tag" style="background:'+x.c+'">'+esc(x.nm)+'</span>'}).join("");d.innerHTML='<div class="who">'+tags+'</div>'+esc(t);log.appendChild(d);scroll();return d}
+function addEve(t,o){var d=document.createElement("div");d.className="msg eve";var tags=(o&&o.tags||[]).map(function(x){return '<span class="tag" style="background:'+x.c+'">'+esc(x.nm)+'</span>'}).join("");d.innerHTML='<div class="who">'+tags+'</div>'+esc(t);var cp=document.createElement("button");cp.className="copy";cp.textContent="Copy";cp.setAttribute("aria-label","Copy this answer");cp.onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){cp.textContent="Copied ✓"},function(){})};d.appendChild(cp);log.appendChild(d);scroll();return d}
 function addRoute(t){var d=document.createElement("div");d.className="route";d.textContent=t;log.appendChild(d);scroll()}
 function typing(){var d=document.createElement("div");d.className="msg eve";d.innerHTML='<span class="dot"></span><span class="dot"></span><span class="dot"></span>';log.appendChild(d);scroll();return d}
 function orb(s){$("orb").className="orb"+(s?" "+s:"")}
@@ -368,7 +396,7 @@ async function ask(text){
  history.push({role:"user",text:text},{role:"eve",text:answer});
  tp.remove();
  var tags=[{nm:r.lead.s.ic+" "+r.lead.s.nm,c:r.lead.s.c}];if(r.assist)tags.push({nm:r.assist.s.ic+" "+r.assist.s.nm,c:r.assist.s.c});if(viaModel)tags.push({nm:"your model",c:"#EEF2FF"});else if(live)tags.push({nm:"live AI",c:"#EEF2FF"});
- addEve(answer,{tags:tags});orb("");setState("ready");say(answer);
+ addEve(answer,{tags:tags});qCount++;$("stats").textContent=qCount+(qCount===1?" question":" questions")+" this visit";orb("");setState("ready");say(answer);
  busy=false;$("sendBtn").disabled=false;
 }
 $("sendBtn").onclick=function(){var t=$("input").value.trim();$("input").value="";ask(t)};
