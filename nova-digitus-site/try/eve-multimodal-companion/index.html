@@ -6,6 +6,13 @@
 <meta name="robots" content="noindex">
 <meta name="description" content="Eve: Multimodal Companion. Live preview by Nova Digitus Designs.">
 <title>Eve · Multimodal Companion</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0B1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Eve">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -68,6 +75,8 @@ h1{font:800 1.5rem/1.1 var(--display);margin:0;letter-spacing:-.01em}
 .note{font-size:.75rem;color:var(--muted);margin-top:10px}
 details{margin-top:10px;font-size:.82rem;color:var(--muted)}summary{cursor:pointer}
 details input{background:#0A1022;border:1px solid var(--line);border-radius:8px;padding:6px 8px;width:100%;margin-top:6px}
+.install{display:none;margin-left:auto}.install.show{display:inline-flex}
+.top{flex-wrap:wrap}
 .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);margin-right:3px;animation:blink 1s infinite}
 .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}@keyframes blink{50%{opacity:.2}}
 </style>
@@ -80,6 +89,7 @@ details input{background:#0A1022;border:1px solid var(--line);border-radius:8px;
       <div class="orb" id="orb"></div>
       <div><h1>Eve</h1><p class="sub">Sees, listens, and routes each request to the right specialist.</p>
       <div class="state" id="state">Status: <b>ready</b></div></div>
+      <button class="btn primary install" id="installBtn">Install Eve</button>
     </div>
     <div class="eyes" id="eyes">
       <div class="off" id="eyesOff">👁️ Eve's eyes are closed.<br>Turn on the camera so she can see what you see.<br><small>Object detection runs on this device. When you ask a question, the current frame goes to Eve's AI to answer. Nothing is stored.</small></div>
@@ -304,6 +314,15 @@ async function ollama(t,r){
  try{var res=await fetch(u.replace(/\/$/,"")+"/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:m,stream:false,messages:[{role:"system",content:sys},{role:"user",content:t}]})});
   if(!res.ok)return null;var j=await res.json();return j.message&&j.message.content?j.message.content.trim():null}catch(e){return null}
 }
+
+/* PWA: service worker + install prompt */
+if("serviceWorker" in navigator&&location.protocol!=="file:"){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+var deferredPrompt=null,installBtn=$("installBtn");
+function isStandalone(){return window.matchMedia&&matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}
+if(isStandalone())installBtn.remove();
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;if(!isStandalone())installBtn.classList.add("show")});
+installBtn.onclick=function(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.finally(function(){deferredPrompt=null;installBtn.classList.remove("show")})};
+window.addEventListener("appinstalled",function(){installBtn.remove()});
 
 /* live brain (Netlify AI Gateway) */
 var BRAIN_URL="https://eve-companion.netlify.app/api/eve",brainLive=false,history=[];
