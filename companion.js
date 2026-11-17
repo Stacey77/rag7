@@ -1,13 +1,13 @@
 /**
  * companion.js — ARIA Floating Companion Agent
- * Singular AI core · MCP-backed live data · Proactive assistance
+ * Singular AI core · UTCP direct-tool live data · A2A Agent Card · Proactive assistance
  */
 (function () {
   'use strict';
 
   /* ─── Config ─────────────────────────────────────────────────────────────── */
-  const CHAT_URL    = '/api/chat';
-  const CONTEXT_URL = '/api/context';
+  const CHAT_URL    = '/api/aria/chat';
+  const CONTEXT_URL = '/api/aria/context';
   const STORAGE_KEY = 'aria_state';
   const MAX_HISTORY = 40;
 
@@ -22,7 +22,7 @@
       online:       navigator.onLine,
     },
     _history: JSON.parse(localStorage.getItem(STORAGE_KEY + '_hist') || '[]'),
-    _live:    null, /* filled from MCP via /api/context */
+    _live:    null, /* filled via UTCP direct tool calls → /api/aria/context */
 
     init() {
       window.addEventListener('scroll', () => {
@@ -154,7 +154,7 @@
         const res = await fetch(CHAT_URL, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ messages: Memory.get(), context: data }),
+          body:    JSON.stringify({ messages: Memory.get(), context: data, liveData: DataFeed._live || {} }),
           signal:  AbortSignal.timeout(30000),
         });
 
