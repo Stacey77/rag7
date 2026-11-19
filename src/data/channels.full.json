@@ -1,0 +1,1682 @@
+[
+  {
+    "id": 1,
+    "name": "CNN",
+    "category": "News",
+    "logo": "https://example.com/logos/cnn.png",
+    "stream": "https://streams.example.com/cnn.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 2,
+    "name": "BBC World",
+    "category": "News",
+    "logo": "https://example.com/logos/bbcworld.png",
+    "stream": "https://streams.example.com/bbcworld.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 3,
+    "name": "ESPN",
+    "category": "Sports",
+    "logo": "https://example.com/logos/espn.png",
+    "stream": "https://streams.example.com/espn.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 4,
+    "name": "Discovery",
+    "category": "Documentary",
+    "logo": "https://example.com/logos/discovery.png",
+    "stream": "https://streams.example.com/discovery.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 5,
+    "name": "National Geographic",
+    "category": "Documentary",
+    "logo": "https://example.com/logos/nationalgeographic.png",
+    "stream": "https://streams.example.com/nationalgeographic.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 6,
+    "name": "HBO",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/hbo.png",
+    "stream": "https://streams.example.com/hbo.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 7,
+    "name": "Netflix Channel",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/netflixchannel.png",
+    "stream": "https://streams.example.com/netflixchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 8,
+    "name": "Comedy Central",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/comedycentral.png",
+    "stream": "https://streams.example.com/comedycentral.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 9,
+    "name": "MTV",
+    "category": "Music",
+    "logo": "https://example.com/logos/mtv.png",
+    "stream": "https://streams.example.com/mtv.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 10,
+    "name": "Food Network",
+    "category": "Lifestyle",
+    "logo": "https://example.com/logos/foodnetwork.png",
+    "stream": "https://streams.example.com/foodnetwork.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 11,
+    "name": "HGTV",
+    "category": "Lifestyle",
+    "logo": "https://example.com/logos/hgtv.png",
+    "stream": "https://streams.example.com/hgtv.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 12,
+    "name": "Disney Channel",
+    "category": "Kids",
+    "logo": "https://example.com/logos/disneychannel.png",
+    "stream": "https://streams.example.com/disneychannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 13,
+    "name": "Nickelodeon",
+    "category": "Kids",
+    "logo": "https://example.com/logos/nickelodeon.png",
+    "stream": "https://streams.example.com/nickelodeon.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 14,
+    "name": "Cartoon Network",
+    "category": "Kids",
+    "logo": "https://example.com/logos/cartoonnetwork.png",
+    "stream": "https://streams.example.com/cartoonnetwork.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 15,
+    "name": "History Channel",
+    "category": "Documentary",
+    "logo": "https://example.com/logos/historychannel.png",
+    "stream": "https://streams.example.com/historychannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 16,
+    "name": "TLC",
+    "category": "Lifestyle",
+    "logo": "https://example.com/logos/tlc.png",
+    "stream": "https://streams.example.com/tlc.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 17,
+    "name": "Animal Planet",
+    "category": "Documentary",
+    "logo": "https://example.com/logos/animalplanet.png",
+    "stream": "https://streams.example.com/animalplanet.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 18,
+    "name": "Travel Channel",
+    "category": "Lifestyle",
+    "logo": "https://example.com/logos/travelchannel.png",
+    "stream": "https://streams.example.com/travelchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 19,
+    "name": "Syfy",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/syfy.png",
+    "stream": "https://streams.example.com/syfy.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 20,
+    "name": "FX",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/fx.png",
+    "stream": "https://streams.example.com/fx.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 21,
+    "name": "AMC",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/amc.png",
+    "stream": "https://streams.example.com/amc.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 22,
+    "name": "TNT",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/tnt.png",
+    "stream": "https://streams.example.com/tnt.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 23,
+    "name": "USA Network",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/usanetwork.png",
+    "stream": "https://streams.example.com/usanetwork.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 24,
+    "name": "Bravo",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/bravo.png",
+    "stream": "https://streams.example.com/bravo.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 25,
+    "name": "Channel 25",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel25.png",
+    "stream": "https://placeholder.streams.example.com/channel25.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 26,
+    "name": "Channel 26",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel26.png",
+    "stream": "https://placeholder.streams.example.com/channel26.m3u8",
+    "tier": "gold"
+  },
+  {
+    "id": 27,
+    "name": "Channel 27",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel27.png",
+    "stream": "https://placeholder.streams.example.com/channel27.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 28,
+    "name": "Channel 28",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel28.png",
+    "stream": "https://placeholder.streams.example.com/channel28.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 29,
+    "name": "Channel 29",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel29.png",
+    "stream": "https://placeholder.streams.example.com/channel29.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 30,
+    "name": "Channel 30",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel30.png",
+    "stream": "https://placeholder.streams.example.com/channel30.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 31,
+    "name": "Channel 31",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel31.png",
+    "stream": "https://placeholder.streams.example.com/channel31.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 32,
+    "name": "Channel 32",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel32.png",
+    "stream": "https://placeholder.streams.example.com/channel32.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 33,
+    "name": "Channel 33",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel33.png",
+    "stream": "https://placeholder.streams.example.com/channel33.m3u8",
+    "tier": "gold"
+  },
+  {
+    "id": 34,
+    "name": "Channel 34",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel34.png",
+    "stream": "https://placeholder.streams.example.com/channel34.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 35,
+    "name": "Channel 35",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel35.png",
+    "stream": "https://placeholder.streams.example.com/channel35.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 36,
+    "name": "Channel 36",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel36.png",
+    "stream": "https://placeholder.streams.example.com/channel36.m3u8",
+    "tier": "gold"
+  },
+  {
+    "id": 37,
+    "name": "Channel 37",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel37.png",
+    "stream": "https://placeholder.streams.example.com/channel37.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 38,
+    "name": "Channel 38",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel38.png",
+    "stream": "https://placeholder.streams.example.com/channel38.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 39,
+    "name": "Channel 39",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel39.png",
+    "stream": "https://placeholder.streams.example.com/channel39.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 40,
+    "name": "Channel 40",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel40.png",
+    "stream": "https://placeholder.streams.example.com/channel40.m3u8",
+    "tier": "gold"
+  },
+  {
+    "id": 41,
+    "name": "Channel 41",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel41.png",
+    "stream": "https://placeholder.streams.example.com/channel41.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 42,
+    "name": "Channel 42",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel42.png",
+    "stream": "https://placeholder.streams.example.com/channel42.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 43,
+    "name": "Channel 43",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel43.png",
+    "stream": "https://placeholder.streams.example.com/channel43.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 44,
+    "name": "Channel 44",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel44.png",
+    "stream": "https://placeholder.streams.example.com/channel44.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 45,
+    "name": "Channel 45",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel45.png",
+    "stream": "https://placeholder.streams.example.com/channel45.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 46,
+    "name": "Channel 46",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel46.png",
+    "stream": "https://placeholder.streams.example.com/channel46.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 47,
+    "name": "Channel 47",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel47.png",
+    "stream": "https://placeholder.streams.example.com/channel47.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 48,
+    "name": "Channel 48",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel48.png",
+    "stream": "https://placeholder.streams.example.com/channel48.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 49,
+    "name": "Channel 49",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel49.png",
+    "stream": "https://placeholder.streams.example.com/channel49.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 50,
+    "name": "Channel 50",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel50.png",
+    "stream": "https://placeholder.streams.example.com/channel50.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 51,
+    "name": "Channel 51",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel51.png",
+    "stream": "https://placeholder.streams.example.com/channel51.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 52,
+    "name": "Channel 52",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel52.png",
+    "stream": "https://placeholder.streams.example.com/channel52.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 53,
+    "name": "Channel 53",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel53.png",
+    "stream": "https://placeholder.streams.example.com/channel53.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 54,
+    "name": "Channel 54",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel54.png",
+    "stream": "https://placeholder.streams.example.com/channel54.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 55,
+    "name": "Channel 55",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel55.png",
+    "stream": "https://placeholder.streams.example.com/channel55.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 56,
+    "name": "Channel 56",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel56.png",
+    "stream": "https://placeholder.streams.example.com/channel56.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 57,
+    "name": "Channel 57",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel57.png",
+    "stream": "https://placeholder.streams.example.com/channel57.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 58,
+    "name": "Channel 58",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel58.png",
+    "stream": "https://placeholder.streams.example.com/channel58.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 59,
+    "name": "Channel 59",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel59.png",
+    "stream": "https://placeholder.streams.example.com/channel59.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 60,
+    "name": "Channel 60",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel60.png",
+    "stream": "https://placeholder.streams.example.com/channel60.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 61,
+    "name": "E! Entertainment",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/eentertainment.png",
+    "stream": "https://streams.example.com/eentertainment.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 62,
+    "name": "Lifetime",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/lifetime.png",
+    "stream": "https://streams.example.com/lifetime.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 63,
+    "name": "A&E",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/ae.png",
+    "stream": "https://streams.example.com/ae.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 64,
+    "name": "VH1",
+    "category": "Music",
+    "logo": "https://example.com/logos/vh1.png",
+    "stream": "https://streams.example.com/vh1.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 65,
+    "name": "BET",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/bet.png",
+    "stream": "https://streams.example.com/bet.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 66,
+    "name": "CMT",
+    "category": "Music",
+    "logo": "https://example.com/logos/cmt.png",
+    "stream": "https://streams.example.com/cmt.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 67,
+    "name": "Fox News",
+    "category": "News",
+    "logo": "https://example.com/logos/foxnews.png",
+    "stream": "https://streams.example.com/foxnews.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 68,
+    "name": "MSNBC",
+    "category": "News",
+    "logo": "https://example.com/logos/msnbc.png",
+    "stream": "https://streams.example.com/msnbc.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 69,
+    "name": "CNBC",
+    "category": "News",
+    "logo": "https://example.com/logos/cnbc.png",
+    "stream": "https://streams.example.com/cnbc.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 70,
+    "name": "Bloomberg",
+    "category": "News",
+    "logo": "https://example.com/logos/bloomberg.png",
+    "stream": "https://streams.example.com/bloomberg.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 71,
+    "name": "Fox Sports",
+    "category": "Sports",
+    "logo": "https://example.com/logos/foxsports.png",
+    "stream": "https://streams.example.com/foxsports.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 72,
+    "name": "NBC Sports",
+    "category": "Sports",
+    "logo": "https://example.com/logos/nbcsports.png",
+    "stream": "https://streams.example.com/nbcsports.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 73,
+    "name": "CBS Sports",
+    "category": "Sports",
+    "logo": "https://example.com/logos/cbssports.png",
+    "stream": "https://streams.example.com/cbssports.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 74,
+    "name": "NFL Network",
+    "category": "Sports",
+    "logo": "https://example.com/logos/nflnetwork.png",
+    "stream": "https://streams.example.com/nflnetwork.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 75,
+    "name": "NBA TV",
+    "category": "Sports",
+    "logo": "https://example.com/logos/nbatv.png",
+    "stream": "https://streams.example.com/nbatv.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 76,
+    "name": "MLB Network",
+    "category": "Sports",
+    "logo": "https://example.com/logos/mlbnetwork.png",
+    "stream": "https://streams.example.com/mlbnetwork.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 77,
+    "name": "Golf Channel",
+    "category": "Sports",
+    "logo": "https://example.com/logos/golfchannel.png",
+    "stream": "https://streams.example.com/golfchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 78,
+    "name": "Tennis Channel",
+    "category": "Sports",
+    "logo": "https://example.com/logos/tennischannel.png",
+    "stream": "https://streams.example.com/tennischannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 79,
+    "name": "Outdoor Channel",
+    "category": "Sports",
+    "logo": "https://example.com/logos/outdoorchannel.png",
+    "stream": "https://streams.example.com/outdoorchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 80,
+    "name": "Weather Channel",
+    "category": "News",
+    "logo": "https://example.com/logos/weatherchannel.png",
+    "stream": "https://streams.example.com/weatherchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 81,
+    "name": "Science Channel",
+    "category": "Documentary",
+    "logo": "https://example.com/logos/sciencechannel.png",
+    "stream": "https://streams.example.com/sciencechannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 82,
+    "name": "Smithsonian Channel",
+    "category": "Documentary",
+    "logo": "https://example.com/logos/smithsonianchannel.png",
+    "stream": "https://streams.example.com/smithsonianchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 83,
+    "name": "PBS",
+    "category": "Documentary",
+    "logo": "https://example.com/logos/pbs.png",
+    "stream": "https://streams.example.com/pbs.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 84,
+    "name": "IFC",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/ifc.png",
+    "stream": "https://streams.example.com/ifc.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 85,
+    "name": "Freeform",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/freeform.png",
+    "stream": "https://streams.example.com/freeform.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 86,
+    "name": "Hallmark Channel",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/hallmarkchannel.png",
+    "stream": "https://streams.example.com/hallmarkchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 87,
+    "name": "Oxygen",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/oxygen.png",
+    "stream": "https://streams.example.com/oxygen.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 88,
+    "name": "truTV",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/trutv.png",
+    "stream": "https://streams.example.com/trutv.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 89,
+    "name": "WE tv",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/wetv.png",
+    "stream": "https://streams.example.com/wetv.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 90,
+    "name": "OWN",
+    "category": "Lifestyle",
+    "logo": "https://example.com/logos/own.png",
+    "stream": "https://streams.example.com/own.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 91,
+    "name": "DIY Network",
+    "category": "Lifestyle",
+    "logo": "https://example.com/logos/diynetwork.png",
+    "stream": "https://streams.example.com/diynetwork.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 92,
+    "name": "Cooking Channel",
+    "category": "Lifestyle",
+    "logo": "https://example.com/logos/cookingchannel.png",
+    "stream": "https://streams.example.com/cookingchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 93,
+    "name": "ID Channel",
+    "category": "Documentary",
+    "logo": "https://example.com/logos/idchannel.png",
+    "stream": "https://streams.example.com/idchannel.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 94,
+    "name": "Univision",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/univision.png",
+    "stream": "https://streams.example.com/univision.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 95,
+    "name": "Telemundo",
+    "category": "Entertainment",
+    "logo": "https://example.com/logos/telemundo.png",
+    "stream": "https://streams.example.com/telemundo.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 96,
+    "name": "Disney Junior",
+    "category": "Kids",
+    "logo": "https://example.com/logos/disneyjunior.png",
+    "stream": "https://streams.example.com/disneyjunior.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 97,
+    "name": "Channel 97",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel97.png",
+    "stream": "https://placeholder.streams.example.com/channel97.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 98,
+    "name": "Channel 98",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel98.png",
+    "stream": "https://placeholder.streams.example.com/channel98.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 99,
+    "name": "Channel 99",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel99.png",
+    "stream": "https://placeholder.streams.example.com/channel99.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 100,
+    "name": "Channel 100",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel100.png",
+    "stream": "https://placeholder.streams.example.com/channel100.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 101,
+    "name": "Channel 101",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel101.png",
+    "stream": "https://placeholder.streams.example.com/channel101.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 102,
+    "name": "Channel 102",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel102.png",
+    "stream": "https://placeholder.streams.example.com/channel102.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 103,
+    "name": "Channel 103",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel103.png",
+    "stream": "https://placeholder.streams.example.com/channel103.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 104,
+    "name": "Channel 104",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel104.png",
+    "stream": "https://placeholder.streams.example.com/channel104.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 105,
+    "name": "Channel 105",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel105.png",
+    "stream": "https://placeholder.streams.example.com/channel105.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 106,
+    "name": "Channel 106",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel106.png",
+    "stream": "https://placeholder.streams.example.com/channel106.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 107,
+    "name": "Channel 107",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel107.png",
+    "stream": "https://placeholder.streams.example.com/channel107.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 108,
+    "name": "Channel 108",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel108.png",
+    "stream": "https://placeholder.streams.example.com/channel108.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 109,
+    "name": "Channel 109",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel109.png",
+    "stream": "https://placeholder.streams.example.com/channel109.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 110,
+    "name": "Channel 110",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel110.png",
+    "stream": "https://placeholder.streams.example.com/channel110.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 111,
+    "name": "Channel 111",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel111.png",
+    "stream": "https://placeholder.streams.example.com/channel111.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 112,
+    "name": "Channel 112",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel112.png",
+    "stream": "https://placeholder.streams.example.com/channel112.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 113,
+    "name": "Channel 113",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel113.png",
+    "stream": "https://placeholder.streams.example.com/channel113.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 114,
+    "name": "Channel 114",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel114.png",
+    "stream": "https://placeholder.streams.example.com/channel114.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 115,
+    "name": "Channel 115",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel115.png",
+    "stream": "https://placeholder.streams.example.com/channel115.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 116,
+    "name": "Channel 116",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel116.png",
+    "stream": "https://placeholder.streams.example.com/channel116.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 117,
+    "name": "Channel 117",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel117.png",
+    "stream": "https://placeholder.streams.example.com/channel117.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 118,
+    "name": "Channel 118",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel118.png",
+    "stream": "https://placeholder.streams.example.com/channel118.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 119,
+    "name": "Channel 119",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel119.png",
+    "stream": "https://placeholder.streams.example.com/channel119.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 120,
+    "name": "Channel 120",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel120.png",
+    "stream": "https://placeholder.streams.example.com/channel120.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 121,
+    "name": "Channel 121",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel121.png",
+    "stream": "https://placeholder.streams.example.com/channel121.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 122,
+    "name": "Channel 122",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel122.png",
+    "stream": "https://placeholder.streams.example.com/channel122.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 123,
+    "name": "Channel 123",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel123.png",
+    "stream": "https://placeholder.streams.example.com/channel123.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 124,
+    "name": "Channel 124",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel124.png",
+    "stream": "https://placeholder.streams.example.com/channel124.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 125,
+    "name": "Channel 125",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel125.png",
+    "stream": "https://placeholder.streams.example.com/channel125.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 126,
+    "name": "Channel 126",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel126.png",
+    "stream": "https://placeholder.streams.example.com/channel126.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 127,
+    "name": "Channel 127",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel127.png",
+    "stream": "https://placeholder.streams.example.com/channel127.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 128,
+    "name": "Channel 128",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel128.png",
+    "stream": "https://placeholder.streams.example.com/channel128.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 129,
+    "name": "Channel 129",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel129.png",
+    "stream": "https://placeholder.streams.example.com/channel129.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 130,
+    "name": "Channel 130",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel130.png",
+    "stream": "https://placeholder.streams.example.com/channel130.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 131,
+    "name": "Channel 131",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel131.png",
+    "stream": "https://placeholder.streams.example.com/channel131.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 132,
+    "name": "Channel 132",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel132.png",
+    "stream": "https://placeholder.streams.example.com/channel132.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 133,
+    "name": "Channel 133",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel133.png",
+    "stream": "https://placeholder.streams.example.com/channel133.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 134,
+    "name": "Channel 134",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel134.png",
+    "stream": "https://placeholder.streams.example.com/channel134.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 135,
+    "name": "Channel 135",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel135.png",
+    "stream": "https://placeholder.streams.example.com/channel135.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 136,
+    "name": "Channel 136",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel136.png",
+    "stream": "https://placeholder.streams.example.com/channel136.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 137,
+    "name": "Channel 137",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel137.png",
+    "stream": "https://placeholder.streams.example.com/channel137.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 138,
+    "name": "Channel 138",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel138.png",
+    "stream": "https://placeholder.streams.example.com/channel138.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 139,
+    "name": "Channel 139",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel139.png",
+    "stream": "https://placeholder.streams.example.com/channel139.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 140,
+    "name": "Channel 140",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel140.png",
+    "stream": "https://placeholder.streams.example.com/channel140.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 141,
+    "name": "Channel 141",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel141.png",
+    "stream": "https://placeholder.streams.example.com/channel141.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 142,
+    "name": "Channel 142",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel142.png",
+    "stream": "https://placeholder.streams.example.com/channel142.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 143,
+    "name": "Channel 143",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel143.png",
+    "stream": "https://placeholder.streams.example.com/channel143.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 144,
+    "name": "Channel 144",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel144.png",
+    "stream": "https://placeholder.streams.example.com/channel144.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 145,
+    "name": "Channel 145",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel145.png",
+    "stream": "https://placeholder.streams.example.com/channel145.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 146,
+    "name": "Channel 146",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel146.png",
+    "stream": "https://placeholder.streams.example.com/channel146.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 147,
+    "name": "Channel 147",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel147.png",
+    "stream": "https://placeholder.streams.example.com/channel147.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 148,
+    "name": "Channel 148",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel148.png",
+    "stream": "https://placeholder.streams.example.com/channel148.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 149,
+    "name": "Channel 149",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel149.png",
+    "stream": "https://placeholder.streams.example.com/channel149.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 150,
+    "name": "Channel 150",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel150.png",
+    "stream": "https://placeholder.streams.example.com/channel150.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 151,
+    "name": "Channel 151",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel151.png",
+    "stream": "https://placeholder.streams.example.com/channel151.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 152,
+    "name": "Channel 152",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel152.png",
+    "stream": "https://placeholder.streams.example.com/channel152.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 153,
+    "name": "Channel 153",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel153.png",
+    "stream": "https://placeholder.streams.example.com/channel153.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 154,
+    "name": "Channel 154",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel154.png",
+    "stream": "https://placeholder.streams.example.com/channel154.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 155,
+    "name": "Channel 155",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel155.png",
+    "stream": "https://placeholder.streams.example.com/channel155.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 156,
+    "name": "Channel 156",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel156.png",
+    "stream": "https://placeholder.streams.example.com/channel156.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 157,
+    "name": "Channel 157",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel157.png",
+    "stream": "https://placeholder.streams.example.com/channel157.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 158,
+    "name": "Channel 158",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel158.png",
+    "stream": "https://placeholder.streams.example.com/channel158.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 159,
+    "name": "Channel 159",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel159.png",
+    "stream": "https://placeholder.streams.example.com/channel159.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 160,
+    "name": "Channel 160",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel160.png",
+    "stream": "https://placeholder.streams.example.com/channel160.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 161,
+    "name": "Channel 161",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel161.png",
+    "stream": "https://placeholder.streams.example.com/channel161.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 162,
+    "name": "Channel 162",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel162.png",
+    "stream": "https://placeholder.streams.example.com/channel162.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 163,
+    "name": "Channel 163",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel163.png",
+    "stream": "https://placeholder.streams.example.com/channel163.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 164,
+    "name": "Channel 164",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel164.png",
+    "stream": "https://placeholder.streams.example.com/channel164.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 165,
+    "name": "Channel 165",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel165.png",
+    "stream": "https://placeholder.streams.example.com/channel165.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 166,
+    "name": "Channel 166",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel166.png",
+    "stream": "https://placeholder.streams.example.com/channel166.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 167,
+    "name": "Channel 167",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel167.png",
+    "stream": "https://placeholder.streams.example.com/channel167.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 168,
+    "name": "Channel 168",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel168.png",
+    "stream": "https://placeholder.streams.example.com/channel168.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 169,
+    "name": "Channel 169",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel169.png",
+    "stream": "https://placeholder.streams.example.com/channel169.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 170,
+    "name": "Channel 170",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel170.png",
+    "stream": "https://placeholder.streams.example.com/channel170.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 171,
+    "name": "Channel 171",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel171.png",
+    "stream": "https://placeholder.streams.example.com/channel171.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 172,
+    "name": "Channel 172",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel172.png",
+    "stream": "https://placeholder.streams.example.com/channel172.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 173,
+    "name": "Channel 173",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel173.png",
+    "stream": "https://placeholder.streams.example.com/channel173.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 174,
+    "name": "Channel 174",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel174.png",
+    "stream": "https://placeholder.streams.example.com/channel174.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 175,
+    "name": "Channel 175",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel175.png",
+    "stream": "https://placeholder.streams.example.com/channel175.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 176,
+    "name": "Channel 176",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel176.png",
+    "stream": "https://placeholder.streams.example.com/channel176.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 177,
+    "name": "Channel 177",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel177.png",
+    "stream": "https://placeholder.streams.example.com/channel177.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 178,
+    "name": "Channel 178",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel178.png",
+    "stream": "https://placeholder.streams.example.com/channel178.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 179,
+    "name": "Channel 179",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel179.png",
+    "stream": "https://placeholder.streams.example.com/channel179.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 180,
+    "name": "Channel 180",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel180.png",
+    "stream": "https://placeholder.streams.example.com/channel180.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 181,
+    "name": "Channel 181",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel181.png",
+    "stream": "https://placeholder.streams.example.com/channel181.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 182,
+    "name": "Channel 182",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel182.png",
+    "stream": "https://placeholder.streams.example.com/channel182.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 183,
+    "name": "Channel 183",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel183.png",
+    "stream": "https://placeholder.streams.example.com/channel183.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 184,
+    "name": "Channel 184",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel184.png",
+    "stream": "https://placeholder.streams.example.com/channel184.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 185,
+    "name": "Channel 185",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel185.png",
+    "stream": "https://placeholder.streams.example.com/channel185.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 186,
+    "name": "Channel 186",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel186.png",
+    "stream": "https://placeholder.streams.example.com/channel186.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 187,
+    "name": "Channel 187",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel187.png",
+    "stream": "https://placeholder.streams.example.com/channel187.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 188,
+    "name": "Channel 188",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel188.png",
+    "stream": "https://placeholder.streams.example.com/channel188.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 189,
+    "name": "Channel 189",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel189.png",
+    "stream": "https://placeholder.streams.example.com/channel189.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 190,
+    "name": "Channel 190",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel190.png",
+    "stream": "https://placeholder.streams.example.com/channel190.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 191,
+    "name": "Channel 191",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel191.png",
+    "stream": "https://placeholder.streams.example.com/channel191.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 192,
+    "name": "Channel 192",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel192.png",
+    "stream": "https://placeholder.streams.example.com/channel192.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 193,
+    "name": "Channel 193",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel193.png",
+    "stream": "https://placeholder.streams.example.com/channel193.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 194,
+    "name": "Channel 194",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel194.png",
+    "stream": "https://placeholder.streams.example.com/channel194.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 195,
+    "name": "Channel 195",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel195.png",
+    "stream": "https://placeholder.streams.example.com/channel195.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 196,
+    "name": "Channel 196",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel196.png",
+    "stream": "https://placeholder.streams.example.com/channel196.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 197,
+    "name": "Channel 197",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel197.png",
+    "stream": "https://placeholder.streams.example.com/channel197.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 198,
+    "name": "Channel 198",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel198.png",
+    "stream": "https://placeholder.streams.example.com/channel198.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 199,
+    "name": "Channel 199",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel199.png",
+    "stream": "https://placeholder.streams.example.com/channel199.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 200,
+    "name": "Channel 200",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel200.png",
+    "stream": "https://placeholder.streams.example.com/channel200.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 201,
+    "name": "Channel 201",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel201.png",
+    "stream": "https://placeholder.streams.example.com/channel201.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 202,
+    "name": "Channel 202",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel202.png",
+    "stream": "https://placeholder.streams.example.com/channel202.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 203,
+    "name": "Channel 203",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel203.png",
+    "stream": "https://placeholder.streams.example.com/channel203.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 204,
+    "name": "Channel 204",
+    "category": "Sports",
+    "logo": "https://placeholder.example.com/logos/channel204.png",
+    "stream": "https://placeholder.streams.example.com/channel204.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 205,
+    "name": "Channel 205",
+    "category": "Entertainment",
+    "logo": "https://placeholder.example.com/logos/channel205.png",
+    "stream": "https://placeholder.streams.example.com/channel205.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 206,
+    "name": "Channel 206",
+    "category": "Documentary",
+    "logo": "https://placeholder.example.com/logos/channel206.png",
+    "stream": "https://placeholder.streams.example.com/channel206.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 207,
+    "name": "Channel 207",
+    "category": "Music",
+    "logo": "https://placeholder.example.com/logos/channel207.png",
+    "stream": "https://placeholder.streams.example.com/channel207.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 208,
+    "name": "Channel 208",
+    "category": "Lifestyle",
+    "logo": "https://placeholder.example.com/logos/channel208.png",
+    "stream": "https://placeholder.streams.example.com/channel208.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 209,
+    "name": "Channel 209",
+    "category": "Kids",
+    "logo": "https://placeholder.example.com/logos/channel209.png",
+    "stream": "https://placeholder.streams.example.com/channel209.m3u8",
+    "tier": "free"
+  },
+  {
+    "id": 210,
+    "name": "Channel 210",
+    "category": "News",
+    "logo": "https://placeholder.example.com/logos/channel210.png",
+    "stream": "https://placeholder.streams.example.com/channel210.m3u8",
+    "tier": "free"
+  }
+]
